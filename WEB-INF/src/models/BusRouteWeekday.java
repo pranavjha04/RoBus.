@@ -1,0 +1,35 @@
+package models;
+
+public class BusRouteWeekday {
+    private Integer busRouteWeekdayId;
+    private Weekday weekday;
+    private OperatorRoute operatorRoute;
+
+    public BusRouteWeekday() {
+
+    }
+
+    public void setOperatorRoute(OperatorRoute operatorRoute) {
+        this.operatorRoute = operatorRoute;
+    }
+
+    public OperatorRoute getOperatorRoute() {
+        return operatorRoute;
+    }
+
+    public void setWeekday(Weekday weekday) {
+        this.weekday = weekday;
+    }
+
+    public Weekday getWeekday() {
+        return weekday;
+    }
+
+    public void setBusRouteWeekdayId(Integer busRouteWeekdayId) {
+        this.busRouteWeekdayId = busRouteWeekdayId;
+    }
+
+    public Integer getBusRouteWeekdayId() {
+        return busRouteWeekdayId;
+    }
+}
