@@ -1,7 +1,7 @@
 package models;
 
 public class FareFactor {
-    public Integer fareFactorId;
+    private Integer fareFactorId;
     private String factor;
     private Boolean fixedCharge; 
 
@@ -9,11 +9,19 @@ public class FareFactor {
         
     }
 
-    public void setFactor(String fareFactor) {
-        this.fareFactor = fareFactor;
+    public void setFixedCharge(Boolean fixedCharge) {
+        this.fixedCharge = fixedCharge;
     }
 
-    public void getFactor() {
+    public Boolean getFixedCharge() {
+        return fixedCharge;
+    }
+
+    public void setFactor(String factor) {
+        this.factor = factor;
+    }
+
+    public String getFactor() {
         return factor;
     }
 

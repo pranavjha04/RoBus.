@@ -14,7 +14,7 @@ public class Bus implements Cloneable {
 
     @Override
     public Bus clone() {
-        Bus bus;
+        Bus bus = null;
         try {
             bus = (Bus) super.clone();
             bus.operator = this.operator.clone();

@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Date;
+
 public class Schedule {
     private Integer scheduleId;
     private Date date;
@@ -17,17 +19,29 @@ public class Schedule {
 
     }
 
+    
+
     public void setSleeperSeatsBooked(Integer sleeperSeatsBooked) {
         this.sleeperSeatsBooked = sleeperSeatsBooked;
     }
 
-    public void getSleeperSeatsBooked()
+    public Integer getSleeperSeatsBooked() {
+        return sleeperSeatsBooked;
+    }
+
+    public void setSeaterSeatsBooked(Integer seaterSeatsBooked) {
+        this.seaterSeatsBooked = seaterSeatsBooked;
+    }
+
+    public Integer getSeaterSeatsBooked() {
+        return seaterSeatsBooked;
+    }
 
     public void setAdditionalCharge(Integer additionalCharge) {
         this.additionalCharge = additionalCharge;
     }
 
-    public void getAdditionalCharge() {
+    public Integer getAdditionalCharge() {
         return additionalCharge;
     }
 

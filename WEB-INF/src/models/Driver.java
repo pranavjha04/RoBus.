@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Date;
+
 public class Driver {
     private Integer driverId;
     private Date startDate;
@@ -8,7 +10,7 @@ public class Driver {
     private Operator operator;
 
     public Driver() {
-        
+
     }
 
     public void setOperator(Operator operator) {

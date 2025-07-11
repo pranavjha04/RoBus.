@@ -3,7 +3,7 @@ package models;
 public class OperatorRouteMidCity {
     private Integer operatorRouteMidCityId;
     private Integer haultingTime;
-    private OperatorRoute OperatorRoute;
+    private OperatorRoute operatorRoute;
     private RouteMidCity routeMidCity;
 
     public OperatorRouteMidCity() {
@@ -11,7 +11,7 @@ public class OperatorRouteMidCity {
     }
 
     public void setRouteMidCity(RouteMidCity routeMidCity) {
-        return routeMidCity;
+        this.routeMidCity = routeMidCity;
     }
 
     public RouteMidCity getRouteMidCity() {
@@ -34,7 +34,7 @@ public class OperatorRouteMidCity {
         return haultingTime;
     }
 
-    public void setOperatorRouteMidCityId(Integer operatorRouteMidCityId) {
+    public void setMidCityId(Integer operatorRouteMidCityId) {
         this.operatorRouteMidCityId = operatorRouteMidCityId;
     }
 

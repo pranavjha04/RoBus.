@@ -6,7 +6,7 @@ public class OperatorRoute {
     private Route route;
 
     public OperatorRoute() {
-        
+
     }
 
     public void setRoute(Route route) {
@@ -21,7 +21,7 @@ public class OperatorRoute {
         this.operator = operator.clone();
     }
 
-    public void getOperator() {
+    public Operator getOperator() {
         return operator.clone();
     }
 

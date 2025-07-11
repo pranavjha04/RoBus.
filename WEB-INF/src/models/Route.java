@@ -15,7 +15,7 @@ public class Route {
         this.destination = destination;
     }
 
-    public void getDestination() {
+    public City getDestination() {
         return destination;
     }
 

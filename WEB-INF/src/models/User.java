@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Date;
 
 public class User implements Cloneable {
     private Integer userId;
@@ -16,6 +17,19 @@ public class User implements Cloneable {
 
     public User() {
 
+    }
+
+    @Override
+    public User clone() {
+        User user = null;
+        try {
+            user = (User) super.clone();
+            user.dob = new Date(dob.getTime());
+        }
+        catch(CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
     public void setStatus(Status status) {
@@ -54,7 +68,7 @@ public class User implements Cloneable {
         this.password = password;
     }
 
-    public void getPassword() {
+    public String getPassword() {
         return password;
     }
 
@@ -98,8 +112,8 @@ public class User implements Cloneable {
         return fullName;
     }
 
-    public void setUserId(Integer statusId) {
-        this.statusId = statusId;   
+    public void setUserId(Integer userId) {
+        this.userId = userId;   
     }
     
     public Integer getUserId() {

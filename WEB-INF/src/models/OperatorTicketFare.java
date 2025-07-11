@@ -22,7 +22,7 @@ public class OperatorTicketFare {
         this.operator = operator.clone();
     }
 
-    public void getOperator() {
+    public Operator getOperator() {
         return operator.clone();
     }
 
