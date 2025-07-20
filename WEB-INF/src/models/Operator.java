@@ -1,25 +1,26 @@
 package models;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class Operator implements Cloneable {
     private Integer operatorId;
     private String name;
     private Date registrationDate;
     private String address;
+    private String contact;
     private String email;
     private String password;
     private String certificate;
     private String website;
     private String logo;
-    private String verificationCode;
     private String banner;
+    private String verificationCode;
     private Integer baseCharge;
     private Status status;
 
 
     public Operator() {
-        
+
     }
 
     @Override
@@ -28,7 +29,6 @@ public class Operator implements Cloneable {
         try {
             operator = (Operator) super.clone();
             operator.registrationDate = new Date(registrationDate.getTime());
-            return operator;
         }
         catch(CloneNotSupportedException e) {
             e.printStackTrace();
@@ -102,6 +102,14 @@ public class Operator implements Cloneable {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    public String getContact() {
+        return contact;
+    } 
 
     public String getAddress() {
         return address;

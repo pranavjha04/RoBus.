@@ -1,15 +1,17 @@
 package models;
 
-public class City {
-    private Integer cityId;
-    private String name;
-    private State state;
+public final class City {
+    private final Integer cityId;
+    private final String city;
+    private final State state;
 
     public City() {
 
     }
 
-    public void setState(State state) {
+    public City(Integer cityId, String city, State state) {
+        this.cityId = cityId;
+        this.city = city;
         this.state = state;
     }
 
@@ -17,18 +19,10 @@ public class City {
         return state;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
+    public String getCity() {
         return name;
     }
     
-    public void setCityId(Integer cityId) {
-        this.cityId = cityId;
-    }
-
     public Integer getCityId() {
         return cityId;
     }

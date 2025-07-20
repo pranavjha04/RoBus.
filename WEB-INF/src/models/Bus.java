@@ -3,7 +3,7 @@ package models;
 public class Bus implements Cloneable {
     private Integer busId;
     private String busNumber;
-    private Integer seatCount;
+    private Integer seats;
     private String manufacturer;
     private String seatingType;
     private Operator operator;
@@ -17,7 +17,7 @@ public class Bus implements Cloneable {
         Bus bus = null;
         try {
             bus = (Bus) super.clone();
-            bus.operator = this.operator.clone();
+            bus.operator = operator.clone();
         }   
         catch(CloneNotSupportedException e) {
             e.printStackTrace();
@@ -49,12 +49,12 @@ public class Bus implements Cloneable {
         return manufacturer;
     }
 
-    public void setSeatCount(Integer seatCount) {
-        this.seatCount = seatCount;
+    public void setSeats(Integer seats) {
+        this.seats = seats;
     } 
 
-    public Integer getSeatCount() {
-        return seatCount;
+    public Integer getSeats() {
+        return seats;
     }
 
     public void setBusNumber(String busNumber) {

@@ -1,23 +1,20 @@
 package models;
 
-public class State {
-    private Integer stateId;
-    private String name;
+public final class State {
+    private final Integer stateId;
+    private final String state;
 
     public State() {
 
     }
-    
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setStateId(Integer stateId) {
+    public State(Integer stateId, String state) {
         this.stateId = stateId;
+        this.state = state;
+    }
+
+    public String getState() {
+        return name;
     }
     
     public Integer getStateId() {

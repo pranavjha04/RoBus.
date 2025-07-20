@@ -7,6 +7,10 @@ public class RouteMidCity {
     private Route route;
     private City midCity;
 
+    public RouteMidCity() {
+        
+    }
+
     public void setMidCity(City midCity) {
         this.midCity = midCity;
     }
@@ -38,7 +42,7 @@ public class RouteMidCity {
     public Integer getDurationFromSource() {
         return durationFromSource;
     }
-    
+
     public void setRouteMidCityId(Integer routeMidCityId) {
         this.routeMidCityId = routeMidCityId;
     }

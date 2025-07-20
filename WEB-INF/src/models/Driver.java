@@ -1,8 +1,8 @@
 package models;
 
-import java.util.Date;
+import java.sql.Date;
 
-public class Driver {
+public class Driver implements Cloneable {
     private Integer driverId;
     private Date startDate;
     private Date endDate;
@@ -11,6 +11,22 @@ public class Driver {
 
     public Driver() {
 
+    }
+
+    @Override
+    public Driver clone() {
+        Driver driver = null;
+        try {
+            driver = (Driver) super.clone();
+            driver.startDate = new Date(startDate.getTime());
+            driver.endDate = new Date(endDate.getTime());
+            driver.user = user.clone();
+            driver.operator = operator.clone();
+        }
+        catch(CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return driver;
     }
 
     public void setOperator(Operator operator) {
