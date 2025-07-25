@@ -205,7 +205,7 @@ html {
 
 body {
   height: 55vh;
-  background-color: var(--color-blue-50);
+  background-color: #f1f5f9;
   font-family: "Outfit", sans-serif;
 }
 
@@ -389,12 +389,76 @@ header p {
   transform: translate(0, -5.5%);
   z-index: -1;
   width: 75rem;
-  opacity: 0.15;
+  opacity: 0.1;
   position: absolute;
   image-rendering: smooth;
 }
 
+.feature-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 25rem;
+  padding: 0 7.5rem;
+}
+
+.feature-section header {
+  margin-bottom: 7.5rem;
+}
+
+.feature-main {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: space-between;
+  width: 100%;
+  gap: 2.5rem;
+}
+.feature-container {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  background-color: white;
+  gap: 1.25rem;
+  padding: 2.5rem;
+  border-radius: 2.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.feature-container img {
+  background-color: var(--color-blue-100);
+  width: 4.8rem;
+  height: 4.8rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.feature-container img:hover {
+  background-color: var(--color-blue-200);
+}
+
+.feature-container h2 {
+  font-size: 2.4rem;
+  color: var(--color-gray-800);
+}
+
+.feature-container p {
+  font-size: 1.8rem;
+  color: var(--color-gray-700);
+}
+
 /*************TESTIMONIALS***************/
+
+.testimonial-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  padding: 0 7.5rem;
+  margin-top: 10rem;
+}
 
 .input {
   font-family: "Outfit", sans-serif;

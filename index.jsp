@@ -107,8 +107,112 @@ contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
       />
     </div>
 
-    <%-- ########## MAIN END ########## --%>
+    <%-- ########## MAIN END ########## --%> <%-- ########## FEATURE START
+    ########## --%>
 
-    <div></div>
+    <section class="feature-section">
+      <header>
+        <h1><c:out value="Why Choose YatrikBus?" /></h1>
+        <p>
+          <c:out
+            value="Experience the best in bus travel with our comprehensive platform designed for your comfort and convenience"
+          />
+        </p>
+      </header>
+      <main class="feature-main">
+        <div class="feature-container">
+          <img
+            src="${pageContext.request.contextPath}/static/media/images/location_blue.svg"
+            alt="icon"
+          />
+          <h2><c:out value="Wide Network" /></h2>
+          <p>
+            <c:out
+              value="Connect to 1000+ destinations across the country with ease"
+            />
+          </p>
+        </div>
+        <div class="feature-container">
+          <img
+            src="${pageContext.request.contextPath}/static/media/images/star_blue.svg"
+            alt="icon"
+          />
+          <h2><c:out value="Best Prices" /></h2>
+          <p>
+            <c:out
+              value="Get the best prices, comfortable seats and best deals on bus tickets"
+            />
+          </p>
+        </div>
+        <div class="feature-container">
+          <img
+            src="${pageContext.request.contextPath}/static/media/images/save_blue.svg"
+            alt="icon"
+          />
+          <h2><c:out value="Save Tickets" /></h2>
+          <p>
+            <c:out
+              value="Easily save your booked tickets and access them anytime for quick reference, cancellations."
+            />
+          </p>
+        </div>
+        <div class="feature-container">
+          <img
+            src="${pageContext.request.contextPath}/static/media/images/support_blue.svg"
+            alt="icon"
+          />
+          <h2><c:out value="Customer Support" /></h2>
+          <p>
+            <c:out
+              value="Got a question or stuck somewhere? I'm here to help you as quickly as possible!"
+            />
+          </p>
+        </div>
+        <div class="feature-container">
+          <img
+            src="${pageContext.request.contextPath}/static/media/images/check_blue.svg"
+            alt="icon"
+          />
+          <h2><c:out value="Seamless Booking" /></h2>
+          <p>
+            <c:out
+              value="Book your bus tickets in just a few clicks with our user-friendly and fast booking system."
+            />
+          </p>
+        </div>
+        <div class="feature-container">
+          <img
+            src="${pageContext.request.contextPath}/static/media/images/credit_card.svg"
+            alt="icon"
+          />
+          <h2><c:out value="Easy payments" /></h2>
+          <p>
+            <c:out
+              value="Use UPI or scan a QR code to complete your payment instantly."
+            />
+          </p>
+        </div>
+      </main>
+    </section>
+    <%-- ########## FEATURE END ########## --%> <%-- ########## TESTIMONIALS
+    START ########## --%>
+    <section class="testimonial-section">
+      <header>
+        <h1><c:out value="What Our Customers Say" /></h1>
+        <p>
+          <c:out
+            value="Join thousands of satisfied travelers who trust
+          YatrikBus for their journey needs"
+          />
+        </p>
+      </header>
+      <main class="testimonial-main">
+        <div class="testimonial-container">
+          <div class="profile">
+            <img src="${pageContext.request.contextPath}/static/images/"
+          </div>
+        </div>
+      </main>
+    </section>
   </body>
 </html>
