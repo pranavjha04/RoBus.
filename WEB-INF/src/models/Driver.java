@@ -2,7 +2,7 @@ package models;
 
 import java.sql.Date;
 
-public class Driver implements Cloneable {
+public class Driver {
     private Integer driverId;
     private Date startDate;
     private Date endDate;
@@ -13,52 +13,36 @@ public class Driver implements Cloneable {
 
     }
 
-    @Override
-    public Driver clone() {
-        Driver driver = null;
-        try {
-            driver = (Driver) super.clone();
-            driver.startDate = new Date(startDate.getTime());
-            driver.endDate = new Date(endDate.getTime());
-            driver.user = user.clone();
-            driver.operator = operator.clone();
-        }
-        catch(CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        return driver;
-    }
-
     public void setOperator(Operator operator) {
-        this.operator = operator.clone();
+        this.operator = operator;
     }
 
     public Operator getOperator() {
-        return operator.clone();
+        return operator;
     }
 
     public void setUser(User user) {
-        this.user = user.clone();
+        this.user = user;
     }
 
     public User getUser() {
-        return user.clone();
+        return user;
     }
 
     public void setEndDate(Date endDate) {
-        this.endDate = new Date(endDate.getTime());
+        this.endDate = endDate;
     }
 
     public Date getEndDate() {
-        return new Date(endDate.getTime());
+        return endDate;
     }
 
     public void setStartDate(Date startDate) {
-        this.startDate = new Date(startDate.getTime());
+        this.startDate = startDate;
     }
 
     public Date getStartDate() {
-        return new Date(startDate.getTime());
+        return startDate;
     }
 
     public void setDriverId(Integer driverId) {

@@ -27,4 +27,64 @@
      Welcome to Tomcat
   </description>
 
+  <!--######## DB Config Start ########-->
+    <context-param>
+      <param-name>dbdriver</param-name>
+      <param-value>com.mysql.cj.jdbc.Driver</param-value>
+    </context-param>
+
+    <contex-param>
+      <param-name>dbprotocal</param-name>
+      <param-value>jdbc:mysql</param-value>
+    </contex-param>
+
+    <context-param>
+      <param-name>dbhost</param-name>
+      <param-value>localhost</param-value>
+    </context-param>
+
+    <context-param>
+      <param-name>dbport</param-name>
+      <param-value>3306</param-value>
+    </context-param>
+
+    <context-param>
+      <param-name>dbname</param-name>
+      <param-value>btsdb</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>dbuser</param-name>
+        <param-value>root</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>dbpassword</param-name>
+        <param-value>1234</param-value>
+    </context-param>
+    <!-- ######## DB Config End ########-->
+
+    <!-- ######## Email Config Start ######## -->
+    <context-param>
+        <param-name>app_email</param-name>
+        <param-value>pranavop2580@gmail.com</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>app_email_password</param-name>
+        <param-value>aapkqkchzmcfsuch</param-value>
+    </context-param>
+    <!-- ######## Email Config End ######## -->
+
+    <!-- ######## Recaptcha Config Start ######## -->
+     <context-param>
+        <param-name>captcha_site_key</param-name>
+        <param-value>6LdALp8rAAAAAI6ybepasYaWefPje5qDHQFrOOAW</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>captcha_secret_key</param-name>
+        <param-value>6LdALp8rAAAAAJRFB6BvwWG3y6x3lYjbHF_NfHtL</param-value>
+    </context-param>
+    <!-- ######## Recaptcha Config End ######## -->
 </web-app>

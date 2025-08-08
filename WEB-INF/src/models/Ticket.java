@@ -11,11 +11,11 @@ public class Ticket {
     }
 
     public void setStatus(Status status) {
-        this.status = status;
+        this.status = new Status(status.getStatusId(), status.getName());
     } 
 
     public Status getStatus() {
-        return status;
+        return new Status(status.getStatusId(), status.getName());
     }
 
     public void setBooking(Booking booking) {

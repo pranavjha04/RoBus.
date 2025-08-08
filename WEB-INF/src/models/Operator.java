@@ -1,140 +1,80 @@
 package models;
 
-import java.sql.Date;
-
-public class Operator implements Cloneable {
+public class Operator extends Account {
     private Integer operatorId;
-    private String name;
-    private Date registrationDate;
     private String address;
-    private String contact;
-    private String email;
-    private String password;
     private String certificate;
     private String website;
     private String logo;
     private String banner;
-    private String verificationCode;
     private Integer baseCharge;
-    private Status status;
-
+    private Account account;
 
     public Operator() {
 
     }
 
-    @Override
-    public Operator clone() {
-        Operator operator = null;
-        try {
-            operator = (Operator) super.clone();
-            operator.registrationDate = new Date(registrationDate.getTime());
-        }
-        catch(CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        return operator;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-    
-    public void setBaseCharge(Integer baseCharge) {
-        this.baseCharge = baseCharge;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     public Integer getBaseCharge() {
         return baseCharge;
     }
 
-    public void setBanner(String banner) {
-        this.banner = banner;
-    }
+    public void setBaseCharge(Integer baseCharge) {
+        this.baseCharge = baseCharge;
+    } 
 
     public String getBanner() {
         return banner;
     }
 
-    public void setLogo(String logo) {
-        this.logo = logo;
+    public void setBanner(String banner) {
+        this.banner = banner;
     }
 
     public String getLogo() {
         return logo;
     }
 
-    public void setWebsite(String website) {
-        this.website = website;
+    public void setLogo(String logo) {
+        this.logo = logo;
     }
 
     public String getWebsite() {
         return website;
     }
 
-    public void setCertificate(String certificate) {
-        this.certificate = certificate;
-    }    
+    public void setWebsite(String website) {
+        this.website = website;
+    }
 
     public String getCertificate() {
         return certificate;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setCertificate(String certificate) {
+        this.certificate = certificate;
     }
 
-    public String getPassword() {
-        return password;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }   
-
-    public String getEmail() {
-        return email;
+    public String getAddress() {
+        return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
     }
 
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
-    public String getContact() {
-        return contact;
-    } 
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setRegistrationDate(Date registrationDate) {
-        this.registrationDate = new Date(registrationDate.getTime());
-    }
-    
-    public Date getRegistrationDate() {
-        return new Date(registrationDate.getTime());
-    }
-    
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
+    public Integer getOperatorId() {
+        return operatorId;
     }
 
     public void setOperatorId(Integer operatorId) {
         this.operatorId = operatorId;
-    }
-    public Integer getOperatorId() {
-        return operatorId;
     }
 }

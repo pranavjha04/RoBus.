@@ -19,11 +19,11 @@ public class OperatorTicketFare {
     }
 
     public void setOperator(Operator operator) {
-        this.operator = operator.clone();
+        this.operator = operator;
     }
 
     public Operator getOperator() {
-        return operator.clone();
+        return operator;
     }
 
     public void setCharge(Integer charge) {

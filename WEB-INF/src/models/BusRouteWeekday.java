@@ -18,11 +18,11 @@ public class BusRouteWeekday {
     }
 
     public void setWeekday(Weekday weekday) {
-        this.weekday = weekday;
+        this.weekday = new Weekday(weekday.getWeekdayId(), weekday.getName());
     }
 
     public Weekday getWeekday() {
-        return weekday;
+        return new Weekday(weekday.getWeekdayId(), weekday.getName());
     }
 
     public void setBusRouteWeekdayId(Integer busRouteWeekdayId) {

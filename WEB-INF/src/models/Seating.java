@@ -14,11 +14,11 @@ public class Seating {
     }       
 
     private void setBus(Bus bus) {
-        this.bus = bus.clone();
+        this.bus = bus;
     }
 
     private Bus getBus() {
-        return bus.clone();
+        return bus;
     }
 
     private void setIsSleeper(Boolean isSleeper) {

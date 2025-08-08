@@ -18,11 +18,11 @@ public class OperatorRoute {
     }
 
     public void setOperator(Operator operator) {
-        this.operator = operator.clone();
+        this.operator = operator;
     }
 
     public Operator getOperator() {
-        return operator.clone();
+        return operator;
     }
 
     public void setOperatorRouteId(Integer operatorRouteId) {

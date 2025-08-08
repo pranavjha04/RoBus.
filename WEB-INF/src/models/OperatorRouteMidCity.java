@@ -2,7 +2,7 @@ package models;
 
 public class OperatorRouteMidCity {
     private Integer operatorRouteMidCityId;
-    private Integer haultingTime;
+    private Integer haltingTime;
     private OperatorRoute operatorRoute;
     private RouteMidCity routeMidCity;
 
@@ -26,12 +26,12 @@ public class OperatorRouteMidCity {
         return operatorRoute;
     }
 
-    public void setHaultingTime(Integer haultingTime) {
-        this.haultingTime = haultingTime;
+    public void setHaltingTime(Integer haltingTime) {
+        this.haltingTime = haltingTime;
     }
     
-    public Integer getHaultingTime() {
-        return haultingTime;
+    public Integer getHaltingTime() {
+        return haltingTime;
     }
 
     public void setMidCityId(Integer operatorRouteMidCityId) {

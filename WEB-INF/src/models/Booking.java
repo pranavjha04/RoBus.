@@ -24,19 +24,19 @@ public class Booking {
     }
 
     public void setUser(User user) {
-        this.user = user.clone();
+        this.user = user;
     }
 
     public User getUser() {
-        return user.clone();
+        return user;
     }
 
     public void setBookingDate(Date bookingDate) {
-        this.bookingDate = new Date(bookingDate.getTime());
+        this.bookingDate = bookingDate;
     }
 
     public Date getBookingDate() {
-        return new Date(bookingDate.getTime());
+        return bookingDate;
     }
 
     public void setTransactionPic(String transactionPic) {

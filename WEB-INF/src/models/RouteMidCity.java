@@ -12,11 +12,11 @@ public class RouteMidCity {
     }
 
     public void setMidCity(City midCity) {
-        this.midCity = midCity;
+        this.midCity = new City(midCity.getCityId(), midCity.getName(), midCity.getState());
     }
 
     public City getMidCity() {
-        return midCity;
+        return new City(midCity.getCityId(), midCity.getName(), midCity.getState());
     }
 
     public void setRoute(Route route) {
@@ -47,7 +47,7 @@ public class RouteMidCity {
         this.routeMidCityId = routeMidCityId;
     }
 
-    public Integer getRouteMidCity() {
+    public Integer getRouteMidCityId() {
         return routeMidCityId;
     }
 }

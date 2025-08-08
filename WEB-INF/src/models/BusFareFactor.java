@@ -19,11 +19,11 @@ public class BusFareFactor {
     }
 
     public void setBus(Bus bus) {
-        this.bus = bus.clone();
+        this.bus = bus;
     }
 
     public Bus getBus() {
-        return bus.clone();
+        return bus;
     }
 
     public void setPrice(Integer price) {

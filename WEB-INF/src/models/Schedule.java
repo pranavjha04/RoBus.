@@ -20,19 +20,19 @@ public class Schedule {
     }
 
     public void setBus(Bus bus) {
-        this.bus = bus.clone();
+        this.bus = bus;
     }
 
     public Bus getBus() {
-        return bus.clone();
+        return bus;
     }
 
     public void setDriver(Driver driver) {
-        this.driver = driver.clone();
+        this.driver = driver;
     }
 
     public Driver getDriver() {
-        return driver.clone();
+        return driver;
     }
 
     public void setBusRouteWeekday(BusRouteWeekday busRouteWeekday) {
@@ -84,11 +84,11 @@ public class Schedule {
     }
 
     public void setJourneyDate(Date journeyDate) {
-        this.journeyDate = new Date(journeyDate.getTime());
+        this.journeyDate = journeyDate;
     } 
 
     public Date getJourneyDate() {
-        return new Date(journeyDate.getTime());
+        return journeyDate;
     }
 
     public void setScheduleId(Integer scheduleId) {

@@ -1,6 +1,6 @@
 package models;
 
-public class Bus implements Cloneable {
+public class Bus  {
     private Integer busId;
     private String busNumber;
     private Integer seats;
@@ -10,19 +10,6 @@ public class Bus implements Cloneable {
 
     public Bus() {
         
-    }
-
-    @Override
-    public Bus clone() {
-        Bus bus = null;
-        try {
-            bus = (Bus) super.clone();
-            bus.operator = operator.clone();
-        }   
-        catch(CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        return bus;
     }
 
     public void setOperator(Operator operator) {

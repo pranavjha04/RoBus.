@@ -12,19 +12,19 @@ public class Route {
     }
 
     public void setDestination(City destination) {
-        this.destination = destination;
+        this.destination = new City(destination.getCityId(), destination.getName(), destination.getState());
     }
 
     public City getDestination() {
-        return destination;
+        return new City(destination.getCityId(), destination.getName(), destination.getState());
     }
 
     public void setSource(City source) {
-        this.source = source;
+        this.source = new City(source.getCityId(), source.getName(), source.getState());
     }
 
     public City getSource() {
-        return source;
+        return new City(source.getCityId(), source.getName(), source.getState());
     }
 
     public void setDuration(Integer duration) {

@@ -1,6 +1,6 @@
-DROP DATABASE btsdb;
+DROP DATABASE IF EXISTS btsdb;
 
-system cls;
+SYSTEM CLS;
 
 CREATE DATABASE btsdb;
 
@@ -8,11 +8,11 @@ USE btsdb;
 
 CREATE TABLE states (
     state_id INT AUTO_INCREMENT,
-    state CHAR(50) NOT NULL,
+    name VARCHAR(50) NOT NULL,
     PRIMARY KEY(state_id)
 );
 
-INSERT into states (state) values 
+INSERT INTO states (name) VALUES 
 ('Andaman and Nicobar Islands'),
 ('Andhra Pradesh'),
 ('Arunachal Pradesh'),
@@ -20,7 +20,7 @@ INSERT into states (state) values
 ('Bihar'),
 ('Chandigarh'),
 ('Chhattisgarh'),
-('Dandra and Nagar Haveli and Daman and Diu'),
+('Dadra and Nagar Haveli and Daman and Diu'),
 ('Delhi'),
 ('Goa'),
 ('Gujarat'),
@@ -52,14 +52,13 @@ INSERT into states (state) values
 
 CREATE TABLE cities (
     city_id INT AUTO_INCREMENT,
-    city CHAR(50) NOT NULL,
-    state_id INT,
+    name VARCHAR(50) NOT NULL,
+    state_id INT NOT NULL,
     PRIMARY KEY(city_id),
-    CONSTRAINT fk_ct_states FOREIGN KEY (state_id) REFERENCES states(state_id)
+    CONSTRAINT fk_city_state FOREIGN KEY (state_id) REFERENCES states(state_id)
 );
 
-
-INSERT into cities (city, state_id) values
+INSERT INTO cities (name, state_id) VALUES
 -- Andaman and Nicobar Islands (state_id: 1)
 ('Port Blair', 1), ('Diglipur', 1), ('Mayabunder', 1), ('Rangat', 1), ('Car Nicobar', 1),
 ('Malacca', 1), ('Mildera', 1), ('Kakana', 1), ('Manglutan', 1), ('Kanahinot', 1),
@@ -67,48 +66,71 @@ INSERT into cities (city, state_id) values
 -- Andhra Pradesh (state_id: 2)
 ('Visakhapatnam', 2), ('Vijayawada', 2), ('Guntur', 2), ('Nellore', 2), ('Kurnool', 2),
 ('Kadapa', 2), ('Anantapur', 2), ('Tirupati', 2), ('Rajahmundry', 2), ('Kakinada', 2),
-('Eluru', 2), ('Ongole', 2), ('Chittoor', 2), ('Proddatur', 2), ('Tenali', 2),
-('Eluru', 2), ('Nandyala', 2), ('Guntakal', 2), ('Gudivada', 2), ('Adoni', 2),
+('Ongole', 2), ('Chittoor', 2), ('Proddatur', 2), ('Tenali', 2),
+('Nandyala', 2), ('Guntakal', 2), ('Gudivada', 2), ('Adoni', 2),
 ('Nuzividu', 2), ('Mangalagiri', 2), ('Narsapur', 2), ('Dhone', 2), ('Punganur', 2),
 
 -- Arunachal Pradesh (state_id: 3)
-('East Siang', 3), ('Roing', 3), ('Ziro', 3), ('Bomdila', 3), ('Itanagar', 3), ('Dirang H.Q.', 3), ('Jairampur', 3), ('Pangin', 3), ('Gandhigram', 3), ('Wakro', 3), ('Nyapin', 3), ('Kharsang', 3),
-('Khonsa', 3), ('Changlang', 3), ('Tawang', 3), ('Aalo', 3), ('Pasighat', 3), ('Anini', 3), ('Yingkiong', 3), ('Boleng', 3), ('Sagalee', 3), ('Taliha', 3), ('Bameng', 3), ('Gelling', 3),
-('Tezu', 3), ('Hawai', 3), ('Seppa', 3), ('Namsai', 3), ('Daporijo', 3), ('Naharlagun', 3), ('Bordumsa', 3), ('Chowkham', 3), ('Deomali', 3), ('Dirang', 3), ('Lhou', 3), ('Kalaktang', 3),
+('East Siang', 3), ('Roing', 3), ('Ziro', 3), ('Bomdila', 3), ('Itanagar', 3), 
+('Dirang H.Q.', 3), ('Jairampur', 3), ('Pangin', 3), ('Gandhigram', 3), ('Wakro', 3), 
+('Nyapin', 3), ('Kharsang', 3), ('Khonsa', 3), ('Changlang', 3), ('Tawang', 3), 
+('Aalo', 3), ('Pasighat', 3), ('Anini', 3), ('Yingkiong', 3), ('Boleng', 3), 
+('Sagalee', 3), ('Taliha', 3), ('Bameng', 3), ('Gelling', 3), ('Tezu', 3), 
+('Hawai', 3), ('Seppa', 3), ('Namsai', 3), ('Daporijo', 3), ('Naharlagun', 3), 
+('Bordumsa', 3), ('Chowkham', 3), ('Deomali', 3), ('Dirang', 3), ('Lhou', 3), 
+('Kalaktang', 3),
 
 -- Assam (state_id: 4)
-('Guwahati', 4), ('Jorhat', 4), ('Tezpur', 4), ('Dibrugarh', 4), ('Silchar', 4), ('Nagaon', 4), ('North Lakhimpur', 4), ('Dhubri', 4), ('Karimganj', 4), ('Tinsukia', 4), ('Diphu', 4), ('Sivasagar', 4),
-('Bongaigaon', 4), ('Goalpara', 4), ('Kokrajhar', 4), ('Dhekiajuli', 4), ('Hailakandi', 4), ('Golaghat', 4), ('Lanka', 4), ('Sivasagar', 4), ('Bilasipara', 4), ('Chapar', 4), ('Lakhipur', 4), ('Haflong', 4),
-('Nalbari', 4), ('Sonitpur', 4), ('Silapathar', 4), ('Barpeta Road', 4), ('Hojai', 4), ('Mangaldoi', 4), ('Rangia', 4), ('Dergaon', 4), ('Barpeta', 4), ('Lumding', 4), ('Sonari', 4), ('Tangla', 4),
-
+('Guwahati', 4), ('Jorhat', 4), ('Tezpur', 4), ('Dibrugarh', 4), ('Silchar', 4), 
+('Nagaon', 4), ('North Lakhimpur', 4), ('Dhubri', 4), ('Karimganj', 4), ('Tinsukia', 4), 
+('Diphu', 4), ('Sivasagar', 4), ('Bongaigaon', 4), ('Goalpara', 4), ('Kokrajhar', 4), 
+('Dhekiajuli', 4), ('Hailakandi', 4), ('Golaghat', 4), ('Lanka', 4), 
+('Bilasipara', 4), ('Chapar', 4), ('Lakhipur', 4), ('Haflong', 4),
+('Nalbari', 4), ('Sonitpur', 4), ('Silapathar', 4), ('Barpeta Road', 4), ('Hojai', 4), 
+('Mangaldoi', 4), ('Rangia', 4), ('Dergaon', 4), ('Barpeta', 4), ('Lumding', 4), 
+('Sonari', 4), ('Tangla', 4),
 
 -- Bihar (state_id: 5)
-('Patna', 5), ('Bihar Sharif', 5), ('Bhagalpur', 5), ('Begusarai', 5), ('Munger', 5), ('Chhapra', 5), ('Purnia', 5), ('Dehri', 5), ('Jamalpur', 5), ('Jehanabad', 5), ('Forbesganj', 5), ('Revelganj', 5),
-('Badalpura', 5), ('Masaurhi', 5), ('Madhubani', 5), ('Bodh Gaya', 5), ('Muzaffarpur', 5), ('Buxar', 5), ('Darbhanga', 5), ('Bettiah', 5), ('Katihar', 5), ('Saharsa', 5), ('Nalanda', 5), ('Nawada', 5),
-('Gaya', 5), ('Habibpur', 5), ('Banka', 5), ('Mehsi', 5), ('Dumra', 5), ('Dhaka', 5), ('Rafiganj', 5), ('Gaya', 5), ('Siwan', 5), ('Arrah', 5), ('Motihari', 5), ('Sasaram', 5), ('Sitamarhi', 5),
-('Hajipur', 5), ('Samastipur', 5), ('Kishanganj', 5), ('Bagaha', 5), ('Madhubani', 5), ('Nokha', 5), ('Hilsa', 5), ('Supaul', 5), ('Rajgir', 5), ('Murliganj', 5),
-
+('Patna', 5), ('Bihar Sharif', 5), ('Bhagalpur', 5), ('Begusarai', 5), ('Munger', 5), 
+('Chhapra', 5), ('Purnia', 5), ('Dehri', 5), ('Jamalpur', 5), ('Jehanabad', 5), 
+('Forbesganj', 5), ('Revelganj', 5), ('Badalpura', 5), ('Masaurhi', 5), ('Madhubani', 5), 
+('Bodh Gaya', 5), ('Muzaffarpur', 5), ('Buxar', 5), ('Darbhanga', 5), ('Bettiah', 5), 
+('Katihar', 5), ('Saharsa', 5), ('Nalanda', 5), ('Nawada', 5), ('Habibpur', 5), 
+('Banka', 5), ('Mehsi', 5), ('Dumra', 5), ('Dhaka', 5), ('Rafiganj', 5), 
+('Siwan', 5), ('Arrah', 5), ('Motihari', 5), ('Sasaram', 5), ('Sitamarhi', 5), 
+('Hajipur', 5), ('Samastipur', 5), ('Kishanganj', 5), ('Bagaha', 5), ('Nokha', 5), 
+('Hilsa', 5), ('Supaul', 5), ('Rajgir', 5), ('Murliganj', 5),
 
 -- Chandigarh (state_id: 6)
-('Chandigarh', 6),('Mohali', 6),('Panchkula', 6),('Zirakpur', 6),('Kharar', 6),
+('Chandigarh', 6), ('Mohali', 6), ('Panchkula', 6), ('Zirakpur', 6), ('Kharar', 6),
 
 -- Chhattisgarh (state_id: 7)
-('Raipur', 7), ('Korba', 7), ('Bilaspur', 7), ('Raigarh', 7), ('Jagdalpur', 7), ('Chirmiri', 7), ('Bhatgaon-1', 7), ('Bemetara', 7), ('Bhatapara', 7), ('Bade Bacheli', 7), ('Dalli Rajhara', 7),
-('Ambagarh Chowki', 7), ('Saraipali', 7), ('Mungeli', 7), ('Jashpur Nagar', 7), ('Surajpur', 7), ('Akaltara', 7), ('Ambikapur', 7), ('Dhamtari', 7), ('Takhatpur', 7), ('Kanker', 7),
-('Durg', 7), ('Kawardha', 7), ('Baikunthpur', 7), ('Khamhria', 7), ('Baloda Bazar', 7), ('Sakti', 7), ('Simga', 7), ('Khairagarh', 7), ('Dongargarh', 7), ('Dongergaron', 7), ('Kharsia', 7),
-('Rajnandgaon', 7), ('Bhilai', 7), ('Gharghoda', 7), ('Naya Baradwar', 7), ('Mahasamund', 7), ('Kondagaon', 7), ('Arang', 7), ('Sarangarh', 7), ('Gobra', 7), ('Gourella', 7), ('Champa', 7),
-('Balod', 7), ('Dantewada', 7), ('Sukma', 7), ('Kathgora', 7),
+('Raipur', 7), ('Korba', 7), ('Bilaspur', 7), ('Raigarh', 7), ('Jagdalpur', 7), 
+('Chirmiri', 7), ('Bhatgaon-1', 7), ('Bemetara', 7), ('Bhatapara', 7), ('Bade Bacheli', 7), 
+('Dalli Rajhara', 7), ('Ambagarh Chowki', 7), ('Saraipali', 7), ('Mungeli', 7), 
+('Jashpur Nagar', 7), ('Surajpur', 7), ('Akaltara', 7), ('Ambikapur', 7), ('Dhamtari', 7), 
+('Takhatpur', 7), ('Kanker', 7), ('Durg', 7), ('Kawardha', 7), ('Baikunthpur', 7), 
+('Khamhria', 7), ('Baloda Bazar', 7), ('Sakti', 7), ('Simga', 7), ('Khairagarh', 7), 
+('Dongargarh', 7), ('Dongergaron', 7), ('Kharsia', 7), ('Rajnandgaon', 7), ('Bhilai', 7), 
+('Gharghoda', 7), ('Naya Baradwar', 7), ('Mahasamund', 7), ('Kondagaon', 7), ('Arang', 7), 
+('Sarangarh', 7), ('Gobra', 7), ('Gourella', 7), ('Champa', 7), ('Balod', 7), 
+('Dantewada', 7), ('Sukma', 7), ('Kathgora', 7),
 
 -- Dadra and Nagar Haveli and Daman and Diu (state_id: 8)
-('Silvassa', 8), ('Daman', 8), ('Diu', 8),('Naroli', 8), ('Amli', 8), ('Dadra', 8),
-('Gogola', 8), ('Dabhel', 8),
+('Silvassa', 8), ('Daman', 8), ('Diu', 8), ('Naroli', 8), ('Amli', 8), 
+('Dadra', 8), ('Gogola', 8), ('Dabhel', 8),
 
 -- Delhi (state_id: 9)
-('New Delhi', 9), ('Fatehpur Beri', 9), ('Mandoli', 9), ('Hasstsal Village', 9), ('Dallupura', 9), ('Bakhtawar Pur Village', 9), ('Begum Pur', 9), ('Chhawla', 9), ('Alipur', 9), ('Bawana', 9),
-('Taj Pul', 9), ('Bhalswa Jahangir Pur', 9), ('Sambhalka', 9), ('Karawal Nagar', 9), ('Burari', 9), ('Deoli', 9), ('Gokalpuri', 9), ('Kirari Suleman Nagar', 9), ('Pooth Kalan', 9), ('Kair', 9),
-('Nangloi', 9), ('Karala Village', 9), ('Khera Kalan', 9), ('Nilothi', 9), ('Dayalpur', 9), ('Jharoda Majra Burari', 9), ('Kanjhawala', 9), ('Kapas Hera', 9), ('Khazoori Khas', 9), ('Kondli', 9),
-('Siraspur', 9), ('Mundka', 9), ('Bankner', 9), ('Baprola', 9), ('Ghitorni', 9), ('Johripur', 9), ('Mithapur', 9), ('Delhi Cantonment', 9), ('Sultanpur', 9), ('Patparganj', 9), ('Roshanpura', 9),
-('Khera Khurd Village', 9),
+('New Delhi', 9), ('Fatehpur Beri', 9), ('Mandoli', 9), ('Hasstsal Village', 9), 
+('Dallupura', 9), ('Bakhtawar Pur Village', 9), ('Begum Pur', 9), ('Chhawla', 9), 
+('Alipur', 9), ('Bawana', 9), ('Taj Pul', 9), ('Bhalswa Jahangir Pur', 9), 
+('Sambhalka', 9), ('Karawal Nagar', 9), ('Burari', 9), ('Deoli', 9), ('Gokalpuri', 9), 
+('Kirari Suleman Nagar', 9), ('Pooth Kalan', 9), ('Kair', 9), ('Nangloi', 9), 
+('Karala Village', 9), ('Khera Kalan', 9), ('Nilothi', 9), ('Dayalpur', 9), 
+('Jharoda Majra Burari', 9), ('Kanjhawala', 9), ('Kapas Hera', 9), ('Khazoori Khas', 9), 
+('Kondli', 9), ('Siraspur', 9), ('Mundka', 9), ('Bankner', 9), ('Baprola', 9), 
+('Ghitorni', 9), ('Johripur', 9), ('Mithapur', 9), ('Delhi Cantonment', 9), 
+('Sultanpur', 9), ('Patparganj', 9), ('Roshanpura', 9), ('Khera Khurd Village', 9),
 
 -- Goa (state_id: 10)
 ('Panaji', 10), ('Margao', 10), ('Vasco da Gama', 10), ('Mapusa', 10), ('Ponda', 10),
@@ -128,7 +150,7 @@ INSERT into cities (city, state_id) values
 -- Himachal Pradesh (state_id: 13)
 ('Shimla', 13), ('Mandi', 13), ('Solan', 13), ('Kullu', 13), ('Dharamshala', 13),
 ('Bilaspur', 13), ('Una', 13), ('Chamba', 13), ('Hamirpur', 13), ('Kangra', 13),
-('Palampur', 13), ('Manali', 13), ('Kasauli', 13), ('Dalhousie', 13), ('Kullu', 13),
+('Palampur', 13), ('Manali', 13), ('Kasauli', 13), ('Dalhousie', 13),
 
 -- Jammu and Kashmir (state_id: 14)
 ('Srinagar', 14), ('Jammu', 14), ('Anantnag', 14), ('Baramulla', 14), ('Udhampur', 14),
@@ -168,7 +190,6 @@ INSERT into cities (city, state_id) values
 ('Multai', 20), ('Mungaoli', 20), ('Berasia', 20), ('Bhander', 20), ('Bhanpura', 20),
 ('Ambah', 20), ('Rehli', 20), ('Rajpur', 20),
 
-
 -- Maharashtra (state_id: 21)
 ('Mumbai', 21), ('Pune', 21), ('Nagpur', 21), ('Thane', 21), ('Nashik', 21),
 ('Chhatrapati Sambhajinagar', 21), ('Solapur', 21), ('Kolhapur', 21), ('Amravati', 21), ('Navi Mumbai', 21),
@@ -179,7 +200,6 @@ INSERT into cities (city, state_id) values
 ('Beed', 21), ('Wardha', 21), ('Satara', 21), ('Ratnagiri', 21), ('Barshi', 21),
 ('Yavatmal', 21), ('Gondia', 21), ('Dharashiv (Osmanabad)', 21), ('Hinganghat', 21), ('Bhusawal', 21),
 ('Udgir', 21), ('Nandurbar', 21), ('Achalpur', 21), ('Junnar', 21), ('Khed', 21),
-
 
 -- Manipur (state_id: 22)
 ('Imphal', 22), ('Thoubal', 22), ('Bishnupur', 22), ('Churachandpur', 22), ('Ukhrul', 22),
@@ -212,11 +232,10 @@ INSERT into cities (city, state_id) values
 ('Ajnala', 28), ('Phillaur', 28), ('Bassi Pathana', 28), ('Talwandi Sabo', 28), ('Sri Muktsar Sahib', 28),
 ('Kapurthala', 28), ('Faridkot', 28), ('Rupnagar', 28), ('Tarn Taran Sahib', 28), ('Mansa', 28),
 ('Mukerian', 28), ('Patran', 28), ('Sirhind', 28), ('Samana', 28), ('Gidderbaha', 28),
-('Kot Kapura', 28), ('Sanaur', 28), ('Jalalabad', 28), ('Bathinda', 28), ('Zira', 28),
+('Kot Kapura', 28), ('Sanaur', 28), ('Jalalabad', 28), ('Zira', 28),
 ('Talwara', 28), ('Maur', 28), ('Patti', 28), ('Gurdaspur', 28), ('Malerkotla', 28),
 ('Batala', 28), ('Anandpur Sahib', 28), ('Nawanshahr', 28), ('Rajpura', 28), ('Sangrur', 28),
 ('Moga', 28), ('Firozpur', 28),
-
 
 -- Rajasthan (state_id: 29)
 ('Jaipur', 29), ('Jodhpur', 29), ('Kota', 29), ('Bikaner', 29), ('Ajmer', 29),
@@ -253,7 +272,6 @@ INSERT into cities (city, state_id) values
 ('Jaunpur', 34), ('Shamli', 34), ('Mainpuri', 34), ('Gonda', 34), ('Hathras', 34),
 ('Pilibhit', 34), ('Meerut', 34), ('Jhansi', 34), ('Lakhimpur', 34),
 
-
 -- Uttarakhand (state_id: 35)
 ('Rishikesh', 35), ('Dehradun', 35), ('Haridwar', 35), ('Nainital', 35), ('Haldwani', 35),
 ('Mussoorie', 35), ('Roorkee', 35), ('Kashipur', 35), ('Rudrapur', 35), ('Almora', 35),
@@ -266,68 +284,66 @@ INSERT into cities (city, state_id) values
 ('Kotdwar', 35), ('Gangotri', 35), ('Ramnagar Kashipur', 35), ('Bhimtal', 35), ('Sitarganj', 35),
 ('Herbertpur', 35), ('Mohampur Mohammadpur', 35),
 
-
 -- West Bengal (state_id: 36)
 ('Kolkata', 36), ('Howrah', 36), ('Durgapur', 36), ('Asansol', 36), ('Siliguri', 36),
 ('Bardhaman', 36), ('Malda', 36), ('Baharampur', 36), ('Habra', 36), ('Kharagpur', 36),
 ('Shantipur', 36), ('Dankuni', 36), ('Dhulian', 36), ('Ranaghat', 36), ('Haldia', 36),
 ('Krishnanagar', 36), ('Bankura', 36), ('Jalpaiguri', 36);
 
-
 CREATE TABLE status (
     status_id INT AUTO_INCREMENT,
-    status CHAR(25) NOT NULL,
+    name VARCHAR(25) NOT NULL,
     PRIMARY KEY (status_id)
 );
 
-INSERT into status(status) values ('Verified'),('Unverified'),('Blocked'),('Active'),('Inactive'),('Cancelled'),('Confirmed'),('Waiting'),('Under Maintenance');
+INSERT INTO status(name) VALUES 
+('Verified'), ('Unverified'), ('Blocked'), ('Active'), ('Inactive'), 
+('Cancelled'), ('Confirmed'), ('Waiting'), ('Under Maintenance');
 
-
-CREATE TABLE users(
-    user_id INT AUTO_INCREMENT,
-    full_name CHAR(50) NOT NULL,
-    dob DATE NOT NULL,
-    contact CHAR(10) NOT NULL,
-    gender CHAR(10) NOT NULL,
-    email CHAR(255) NOT NULL,
-    password CHAR(20) NOT NULL,
-    profile_pic CHAR(255) NULL DEFAULT "user.png",
-    licence_pic CHAR(255) NULL,
-    licence_no CHAR(25) NULL,
+CREATE TABLE accounts (
+    account_id INT AUTO_INCREMENT,
+    full_name VARCHAR(75) NOT NULL,
+    contact VARCHAR(15) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    registration_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    verification_code VARCHAR(100) DEFAULT NULL,
     status_id INT NOT NULL,
-    PRIMARY KEY (user_id),
-    CONSTRAINT fk_users_status FOREIGN KEY (status_id) REFERENCES status (status_id)
+    PRIMARY KEY (account_id),
+    CONSTRAINT fk_account_status FOREIGN KEY (status_id) REFERENCES status(status_id)
 );
 
-
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT,
+    dob DATE NOT NULL,
+    gender VARCHAR(6) NOT NULL CHECK (gender IN ('Male', 'Female', 'Other')),
+    profile_pic VARCHAR(255),
+    licence_pic VARCHAR(255),
+    licence_no VARCHAR(25),
+    account_id INT NOT NULL,
+    PRIMARY KEY (user_id),
+    CONSTRAINT fk_users_account FOREIGN KEY (account_id) REFERENCES accounts(account_id)
+);
 
 CREATE TABLE operators (
     operator_id INT AUTO_INCREMENT,
-    name CHAR(80) NOT NULL,
-    registration_date DATETIME NOT NULL,
     address VARCHAR(500) NOT NULL,
-    email CHAR(255) NOT NULL UNIQUE,
-    contact CHAR(10) NOT NULL UNIQUE,
-    password CHAR(255) NOT NULL,
-    certificate CHAR(100) NOT NULL,
-    website CHAR(100) NULL UNIQUE,
-    logo CHAR(100) NOT NULL,
-    banner CHAR(100) NOT NULL,
-    verification_code CHAR(10) NOT NULL,
+    certificate VARCHAR(100) NOT NULL,
+    website VARCHAR(100) UNIQUE,
+    logo VARCHAR(100) NOT NULL,
+    banner VARCHAR(100) NOT NULL,
     base_charge INT NOT NULL,
-    status_id INT NOT NULL,
+    account_id INT NOT NULL,
     PRIMARY KEY(operator_id),
-    CONSTRAINT fk_oper_status FOREIGN KEY(status_id) REFERENCES status(status_id)
+    CONSTRAINT fk_operator_account FOREIGN KEY(account_id) REFERENCES accounts(account_id)
 );
-
-
 
 CREATE TABLE buses (
     bus_id INT AUTO_INCREMENT,
-    bus_number CHAR(20) NOT NULL UNIQUE,
+    bus_number VARCHAR(10) NOT NULL UNIQUE,
     seats INT NOT NULL,
-    manufacturer CHAR(50) NOT NULL,
-    seating_type CHAR(10) NOT NULL,
+    manufacturer VARCHAR(50) NOT NULL,
+    seating_type VARCHAR(10) NOT NULL,
     operator_id INT NOT NULL,
     PRIMARY KEY (bus_id),
     CONSTRAINT fk_buses_operators FOREIGN KEY (operator_id) REFERENCES operators(operator_id)
@@ -335,24 +351,24 @@ CREATE TABLE buses (
 
 CREATE TABLE routes (
     route_id INT AUTO_INCREMENT,
-    source INT NOT NULL,
     destination INT NOT NULL,
     distance INT NOT NULL,
     duration INT NOT NULL,
+    source INT NOT NULL,
     PRIMARY KEY (route_id),
-    CONSTRAINT fk_rts_cities FOREIGN KEY(source) REFERENCES cities(city_id),
-    FOREIGN KEY(destination) REFERENCES cities(city_id)
+    CONSTRAINT fk_source_cities FOREIGN KEY(source) REFERENCES cities(city_id),
+    CONSTRAINT fk_destination_cities FOREIGN KEY(destination) REFERENCES cities(city_id)
 );
 
 CREATE TABLE route_midcities (
     route_midcity_id INT AUTO_INCREMENT,
-    route_id INT NOT NULL ,
+    route_id INT NOT NULL,
     midcity_id INT NOT NULL,
     distance_from_source INT NOT NULL,
     duration_from_source INT NOT NULL,
     PRIMARY KEY (route_midcity_id),
-    CONSTRAINT fk_rt_m_routes FOREIGN KEY(route_id) REFERENCES routes(route_id),
-    CONSTRAINT fk_rt_m_cities FOREIGN KEY(midcity_id) REFERENCES cities(city_id)
+    CONSTRAINT fk_route_midcities_routes FOREIGN KEY(route_id) REFERENCES routes(route_id),
+    CONSTRAINT fk_route_midcities_city FOREIGN KEY(midcity_id) REFERENCES cities(city_id)
 );
 
 CREATE TABLE operator_routes (
@@ -360,50 +376,44 @@ CREATE TABLE operator_routes (
     operator_id INT NOT NULL,
     route_id INT NOT NULL,
     PRIMARY KEY (operator_route_id),
-    CONSTRAINT fk_oper_rt_operators FOREIGN KEY(operator_id) REFERENCES operators(operator_id),
-    CONSTRAINT fk_oper_rt_routes FOREIGN KEY(route_id) REFERENCES routes(route_id)
+    CONSTRAINT fk_operator_routes_operators FOREIGN KEY(operator_id) REFERENCES operators(operator_id),
+    CONSTRAINT fk_operator_routes_route FOREIGN KEY(route_id) REFERENCES routes(route_id)
 );
-
-
 
 CREATE TABLE operator_route_midcities (
     operator_route_midcity_id INT AUTO_INCREMENT,
-    houlting_time INT NOT NULL,
+    halting_time INT NOT NULL,
     operator_route_id INT NOT NULL,
     route_midcity_id INT NOT NULL,
     PRIMARY KEY (operator_route_midcity_id),
-    CONSTRAINT fk_oper_rtm_operator_routes FOREIGN KEY (operator_route_id) REFERENCES operator_routes(operator_route_id),
-    CONSTRAINT fk_oper_rtm_operator_route_midcities FOREIGN KEY (route_midcity_id) REFERENCES route_midcities(route_midcity_id)
+    CONSTRAINT fk_operator_route_midcities_operator_routes FOREIGN KEY (operator_route_id) REFERENCES operator_routes(operator_route_id),
+    CONSTRAINT fk_operator_route_midcities_route_midcities FOREIGN KEY (route_midcity_id) REFERENCES route_midcities(route_midcity_id)
 );
-
-
 
 CREATE TABLE weekdays (
     weekday_id INT AUTO_INCREMENT,
-    weekday CHAR(10) NOT NULL,
+    name VARCHAR(10) NOT NULL UNIQUE,
     PRIMARY KEY (weekday_id)
 );
 
-INSERT into weekdays(weekday) values ('Monday'),('Tuesday'),('Wednesday'),('Thursday'),('Friday'),('saturday'),('Sunday');
+INSERT INTO weekdays(name) VALUES 
+('Monday'), ('Tuesday'), ('Wednesday'), ('Thursday'), ('Friday'), ('Saturday'), ('Sunday');
 
-CREATE TABLE bus_route_weekdays(
+CREATE TABLE bus_route_weekdays (
     bus_route_weekday_id INT AUTO_INCREMENT,
     weekday_id INT NOT NULL,
     operator_route_id INT NOT NULL,
     PRIMARY KEY(bus_route_weekday_id),
-    CONSTRAINT fk_brw_weekdays FOREIGN KEY ( weekday_id) REFERENCES weekdays(weekday_id),
-    CONSTRAINT fk_brw_operator_routes FOREIGN KEY(operator_route_id) REFERENCES operator_routes (operator_route_id)
+    CONSTRAINT fk_brw_weekdays FOREIGN KEY (weekday_id) REFERENCES weekdays(weekday_id),
+    CONSTRAINT fk_brw_operator_routes FOREIGN KEY(operator_route_id) REFERENCES operator_routes(operator_route_id)
 );
 
-
-
-CREATE TABLE fare_factor(
-    fare_factor_id INT AUTO_INCREMENT ,
-    factor CHAR(30) NOT NULL,
-    fixed_charge boolean NOT NULL DEFAULT false,
+CREATE TABLE fare_factor (
+    fare_factor_id INT AUTO_INCREMENT,
+    factor VARCHAR(30) NOT NULL UNIQUE,
+    fixed_charge BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (fare_factor_id)
 );
-
 
 CREATE TABLE operator_ticket_fare (
     operator_ticket_fare_id INT AUTO_INCREMENT,
@@ -415,7 +425,6 @@ CREATE TABLE operator_ticket_fare (
     CONSTRAINT fk_otf_fare_factor FOREIGN KEY(fare_factor_id) REFERENCES fare_factor(fare_factor_id)
 );
 
-
 CREATE TABLE bus_fare_factor (
     bus_fare_factor_id INT AUTO_INCREMENT,
     price INT NOT NULL,
@@ -426,18 +435,16 @@ CREATE TABLE bus_fare_factor (
     CONSTRAINT fk_bff_fare_factor FOREIGN KEY(fare_factor_id) REFERENCES fare_factor(fare_factor_id)
 );
 
-
 CREATE TABLE drivers (
     driver_id INT AUTO_INCREMENT,
     start_date DATE NOT NULL,
-    end_date DATE NULL,
+    end_date DATE,
     user_id INT NOT NULL,
     operator_id INT NOT NULL,
     PRIMARY KEY(driver_id),
     CONSTRAINT fk_driv_users FOREIGN KEY(user_id) REFERENCES users(user_id),
     CONSTRAINT fk_driv_operators FOREIGN KEY(operator_id) REFERENCES operators(operator_id)
 );
-
 
 CREATE TABLE schedules (
     schedule_id INT AUTO_INCREMENT,
@@ -460,18 +467,18 @@ CREATE TABLE bookings (
     booking_id INT AUTO_INCREMENT,
     booked_seats INT NOT NULL,
     total_fare INT NOT NULL,
-    transaction_pic CHAR(255) NOT NULL,
+    transaction_pic VARCHAR(255) NOT NULL,
     booking_date DATETIME NOT NULL,
     user_id INT NOT NULL,
     schedule_id INT NOT NULL,
     PRIMARY KEY(booking_id),
     CONSTRAINT fk_booking_users FOREIGN KEY(user_id) REFERENCES users(user_id),
-    CONSTRAINT fk_booking_schedules FOREIGN KEY (schedule_id) REFERENCES schedules(schedule_id)
+    CONSTRAINT fk_booking_schedules FOREIGN KEY(schedule_id) REFERENCES schedules(schedule_id)
 );
 
 CREATE TABLE bus_images (
     bus_image_id INT AUTO_INCREMENT,
-    pic CHAR(255) NOT NULL,
+    pic VARCHAR(255) NOT NULL,
     bus_id INT NOT NULL,
     PRIMARY KEY(bus_image_id),
     CONSTRAINT fk_bimg_buses FOREIGN KEY(bus_id) REFERENCES buses(bus_id)
@@ -482,8 +489,8 @@ CREATE TABLE seatings (
     ls_count INT NOT NULL,
     rs_count INT NOT NULL,
     row_count INT NOT NULL,
-    deck boolean NOT NULL,
-    sleeper boolean NOT NULL DEFAULT false,
+    deck BOOLEAN NOT NULL,
+    sleeper BOOLEAN NOT NULL DEFAULT FALSE,
     bus_id INT NOT NULL,
     PRIMARY KEY(seating_id),
     CONSTRAINT fk_seating_buses FOREIGN KEY(bus_id) REFERENCES buses(bus_id)
@@ -491,10 +498,10 @@ CREATE TABLE seatings (
 
 CREATE TABLE tickets (
     ticket_id INT AUTO_INCREMENT,
-    seat_no CHAR(3) NOT NULL,
+    seat_no VARCHAR(3) NOT NULL,
     booking_id INT NOT NULL,
     status_id INT NOT NULL,
     PRIMARY KEY(ticket_id),
-    CONSTRAINT fk_tkt_bookings FOREIGN KEY (booking_id) REFERENCES bookings (booking_id),
-    CONSTRAINT fk_tkt_status FOREIGN KEY (status_id) REFERENCES status (status_id)
+    CONSTRAINT fk_tkt_bookings FOREIGN KEY(booking_id) REFERENCES bookings(booking_id),
+    CONSTRAINT fk_tkt_status FOREIGN KEY(status_id) REFERENCES status(status_id)
 );

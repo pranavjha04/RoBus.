@@ -1,19 +1,27 @@
 package models;
 
-public final class Weekday {
-    private final Integer weekdayId;
-    private final String weekday;
+public class Weekday {
+    private Integer weekdayId;
+    private String name;
 
     public Weekday() {
 
     }
 
-    public Weekday(Integer weekdayId, String weekday) {
+    public Weekday(Integer weekdayId, String name) {
         this.weekdayId = weekdayId;
-        this.weekday = weekday;
+        this.name = name;
     }
 
-    public String getWeekday() {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setWeekdayId(Integer weekdayId) {
+        this.weekdayId = weekdayId;
+    }
+
+    public String getName() {
         return name;
     }
 
