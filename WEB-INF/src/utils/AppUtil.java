@@ -5,7 +5,7 @@ public final class AppUtil {
         StringBuilder ans = new StringBuilder();
         for(String next : words) {
             ans.append(next);
-        }
+    }
         return ans.toString();
     }
 }

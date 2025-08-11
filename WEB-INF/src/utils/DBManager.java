@@ -3,6 +3,7 @@ package utils;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import utils.AppUtil;
 
 public class DBManager {
     private static String dbDriver;
@@ -39,8 +40,7 @@ public class DBManager {
         }
     }
 
-
-    private static void setDbURL() {
+    public static void setDbURL() {
         dbURL = AppUtil.concat(dbProtocol,"://",dbHost,":",dbPort,"/",dbName);
     }
 
@@ -48,8 +48,8 @@ public class DBManager {
         DBManager.dbDriver = dbDriver;
     }
 
-    public static void setDbProtocol(String dbProtocal) {
-        DBManager.dbDriver = dbDriver;
+    public static void setDbProtocol(String dbProtocol) {
+        DBManager.dbProtocol = dbProtocol;
     }
 
     public static void setDbHost(String dbHost) {
