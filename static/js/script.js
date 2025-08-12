@@ -1,10 +1,24 @@
-const dateInput = document.querySelector("#journey-date");
+const menuItemsContainer = document.querySelector("#navbar-hamburger");
+const menuBtn = document.querySelector(".menu");
 
-console.log(dateInput);
+menuBtn.addEventListener("click", () => {
+  const isOpen = menuItemsContainer.classList.contains("max-h-96");
 
-const formateDate = () => {
-  const today = new Date().toISOString().split("T")[0];
-  dateInput.setAttribute("min", today);
-};
+  if (isOpen) {
+    // Close
+    menuItemsContainer.classList.remove("max-h-96", "opacity-100");
+    menuItemsContainer.classList.add("max-h-0", "opacity-0");
+  } else {
+    // Open
+    menuItemsContainer.classList.remove("max-h-0", "opacity-0");
+    menuItemsContainer.classList.add("max-h-96", "opacity-100");
+  }
+});
 
-formateDate();
+menuItemsContainer.addEventListener("click", (e) => {
+  if (e.target.classList.contains("menu-nav-link")) {
+    // Close after selecting a link
+    menuItemsContainer.classList.remove("max-h-96", "opacity-100");
+    menuItemsContainer.classList.add("max-h-0", "opacity-0");
+  }
+});
