@@ -6,7 +6,5 @@
     <link href="static/css/style.css" rel="stylesheet" />
     <title>Document</title>
   </head>
-  <body>
-    <h1 class="bg-blue-500">hel</h1>
-  </body>
+  <body></body>
 </html>
