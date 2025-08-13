@@ -87,4 +87,9 @@
         <param-value>6LdALp8rAAAAAJRFB6BvwWG3y6x3lYjbHF_NfHtL</param-value>
     </context-param>
     <!-- ######## Recaptcha Config End ######## -->
+
+
+    <welcome-file-list>
+      <welcome-file>home.jsp</welcome-file>
+    </welcome-file-list>
 </web-app>
