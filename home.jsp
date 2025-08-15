@@ -15,28 +15,31 @@
     <script type="module" src="static/js/main.js"></script>
     <title>Document</title>
   </head>
-  <body class="bggray-50 text-stone-800 min-h-screen bg-gradient-subtle">
+  <body
+    class="bggray-50 text-stone-800 h-dvh bg-gradient-subtle grid grid-rows-[auto_1fr_auto]"
+  >
     <%-- #################### NAVBAR WRAPPER START #################### --%>
     <c:import url="welcome_navbar.jsp" />
     <%-- #################### NAVBAR WRAPPER END #################### --%> <%--
     #################### SEARCH BUSFORM START #################### --%>
     <section
-      class="relative h-screen w-full bg-cover bg-center bg-no-repeat"
+      class="relative w-full bg-cover bg-center bg-no-repeat"
       style="
         background-image: url('https://www.shutterstock.com/image-photo/tourist-bus-on-mountain-road-600nw-2444707101.jpg');
+        height:100vh;
       "
     >
       <!-- Overlay -->
       <div
-        class="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-800/40 to-gray-700/60"
+        class="absolute backdrop-blur-6xl inset-0 bg-gradient-to-b from-gray-900/60 via-gray-800/40 to-gray-700/60"
       ></div>
 
       <!-- Content -->
       <div
-        class="relative z-10 flex flex-col items-center justify-center h-full px-4 gap-8"
+        class="relative z-10 flex flex-col items-center justify-center h-full px-4 gap-4"
       >
         <!-- Title & Subtitle -->
-        <div class="mb-4 mt-20 text-center">
+        <div class="text-center">
           <h1 class="text-3xl md:text-6xl font-bold drop-shadow-lg text-white">
             Your Journey Begins with <span class="text-blue-400">RoBus</span>
           </h1>
@@ -72,20 +75,20 @@
                   id="from"
                   name="from"
                   autofocus
-                  class="flex-1 min-w-0 p-3 bg-transparent border-none outline-none text-stone-800 placeholder-stone-800/60 text-lg w-full"
+                  class="flex-1 min-w-0 p-1 bg-transparent border-none outline-none text-stone-800 placeholder-stone-800/60 text-lg w-full"
                   placeholder="From (Departure City)"
                   required
                   aria-label="Departure city"
                   aria-invalid="false"
                 />
-                <!-- <ul
+                <!--<ul
                   class="flex flex-col absolute font-medium rounded-lg bg-gray-50 shadow-md w-full z-10"
                   style="max-height: 12rem; overflow-y: auto"
                 >
                   <li>
                     <p
                       href="#"
-                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100  cursor-pointer "
+                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100 cursor-pointer"
                     >
                       San Francisco
                     </p>
@@ -93,7 +96,7 @@
                   <li>
                     <p
                       href="#"
-                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100  cursor-pointer "
+                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100 cursor-pointer"
                     >
                       Los Angeles
                     </p>
@@ -101,7 +104,7 @@
                   <li>
                     <p
                       href="#"
-                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100  cursor-pointer "
+                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100 cursor-pointer"
                     >
                       New York
                     </p>
@@ -109,7 +112,7 @@
                   <li>
                     <p
                       href="#"
-                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100  cursor-pointer "
+                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100 cursor-pointer"
                     >
                       Chicago
                     </p>
@@ -117,7 +120,7 @@
                   <li>
                     <p
                       href="#"
-                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100  cursor-pointer "
+                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100 cursor-pointer"
                     >
                       Miami
                     </p>
@@ -127,7 +130,7 @@
                       href="#"
                       class="menu-nav-link block py-2 px-3 hover:bg-gray-100 cursor-pointer"
                     >
-                      Dallas
+                      Dallass
                     </p>
                   </li>
                 </ul> -->
@@ -152,20 +155,20 @@
                   id="to"
                   name="To"
                   autofocus
-                  class="flex-1 min-w-0 p-3 bg-transparent border-none outline-none text-stone-800 placeholder-stone-800/60 text-lg w-full"
+                  class="flex-1 min-w-0 p-1 bg-transparent border-none outline-none text-stone-800 placeholder-stone-800/60 text-lg w-full"
                   placeholder="To (Destination City)"
                   required
                   aria-label="Destination city"
                   aria-invalid="false"
                 />
-                <!-- <ul
+                <!--<ul
                   class="flex flex-col absolute font-medium rounded-lg bg-gray-50 shadow-md w-full z-10"
                   style="max-height: 12rem; overflow-y: auto"
                 >
                   <li>
                     <p
                       href="#"
-                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100  cursor-pointer "
+                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100 cursor-pointer"
                     >
                       San Francisco
                     </p>
@@ -173,7 +176,7 @@
                   <li>
                     <p
                       href="#"
-                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100  cursor-pointer "
+                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100 cursor-pointer"
                     >
                       Los Angeles
                     </p>
@@ -181,7 +184,7 @@
                   <li>
                     <p
                       href="#"
-                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100  cursor-pointer "
+                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100 cursor-pointer"
                     >
                       New York
                     </p>
@@ -189,7 +192,7 @@
                   <li>
                     <p
                       href="#"
-                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100  cursor-pointer "
+                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100 cursor-pointer"
                     >
                       Chicago
                     </p>
@@ -197,7 +200,7 @@
                   <li>
                     <p
                       href="#"
-                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100  cursor-pointer "
+                      class="menu-nav-link block py-2 px-3 hover:bg-gray-100 cursor-pointer"
                     >
                       Miami
                     </p>
@@ -210,7 +213,7 @@
                       Dallas
                     </p>
                   </li>
-                </ul> -->
+                </ul>-->
               </div>
             </div>
 
@@ -262,5 +265,10 @@
       </div>
     </section>
     <%-- #################### SEARCH BUS #################### --%>
+    <section>
+      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Porro, a ut
+      tenetur facere minus culpa error fugit quae tempora accusantium laboriosam
+      ipsum, animi, et enim officia iure tempore aliquam earum
+    </section>
   </body>
 </html>

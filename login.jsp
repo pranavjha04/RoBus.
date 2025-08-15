@@ -22,7 +22,7 @@
     <section class="flex items-center justify-center font-medium px-4">
       <form
         method="post"
-        class="bg-white shadow-lg rounded-xl p-8 w-full max-w-md flex flex-col gap-6"
+        class="bg-white border-2 border-stone-200 shadow-lg rounded-xl p-8 w-full max-w-md flex flex-col gap-6"
       >
         <div class="flex flex-col items-center gap-2">
           <c:import url="logo.jsp" />
@@ -31,7 +31,6 @@
           </h3>
         </div>
 
-  
         <div>
           <label for="email" class="block text-sm font-medium mb-1"
             >Email address</label
@@ -42,7 +41,7 @@
             name="email"
             required
             placeholder="example@email.com"
-            autocomplete="email"
+            autocomplete="none"
             class="w-full border-2 border-stone-200 py-2 px-4 rounded-lg focus:outline-none focus:border-blue-600"
           />
         </div>

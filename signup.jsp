@@ -22,7 +22,7 @@
     <section class="flex items-center justify-center font-medium px-4">
       <form
         method="post"
-        class="bg-white shadow-lg rounded-xl p-8 w-full max-w-md flex flex-col gap-4"
+        class="bg-white border-2 border-stone-200 shadow-lg rounded-xl p-8 w-full max-w-md flex flex-col gap-4"
       >
         <div class="flex flex-col items-center gap-2">
           <c:import url="logo.jsp" />
@@ -141,7 +141,7 @@
                 Enter OTP
               </label>
             </div>
-            <div class="flex items-center gap-2 w-full justify-between">
+            <div class="flex items-center gap-4 w-full justify-between">
               <input
                 type="text"
                 maxlength="1"
