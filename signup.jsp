@@ -19,7 +19,7 @@
   <body class="h-dvh text-stone-800 bg-gray-100 grid grid-rows-[auto_1fr]">
     <c:import url="welcome_navbar.jsp" />
 
-    <section class="flex items-center justify-center font-medium px-4">
+    <section class="flex items-center justify-center font-medium px-2">
       <form
         method="post"
         class="bg-white border-2 border-stone-200 shadow-lg rounded-xl p-8 w-full max-w-md flex flex-col gap-4"
@@ -30,8 +30,7 @@
             Create an account
           </h3>
         </div>
-
-        <!--
+        <!-- 
         <div>
           <label for="full_name" class="block text-sm font-medium mb-1"
             >Full Name</label
@@ -86,7 +85,6 @@
             />
           </div>
 
-          Gender Select
           <div>
             <div class="flex items-center justify-between mb-1">
               <label for="gender" class="block text-sm font-medium">
@@ -110,7 +108,7 @@
           class="signup-next-btn w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors cursor-pointer self-end"
         >
           Next
-        </button>-->
+        </button> -->
 
         <div class="flex flex-col gap-2">
           <div>
@@ -181,6 +179,11 @@
             data-sitekey="${initParam.captcha_site_key}"
           ></div>
         </div>
+        <input
+          type="submit"
+          value="Create an account"
+          class="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors cursor-pointer"
+        />
 
         <p class="text-center text-sm text-stone-600">
           Already have an account?

@@ -5,77 +5,88 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <link href="static/css/output.css" rel="stylesheet" />
     <title>Login</title>
   </head>
 
-  <body class="h-dvh text-stone-800 bg-gray-100 grid grid-rows-[auto_1fr]">
+  <body class="d-grid bg-light min-vh-100">
     <c:import url="welcome_navbar.jsp" />
 
-    <section class="flex items-center justify-center font-medium px-4">
+    <!-- Login Section -->
+    <section class="d-flex align-items-center justify-content-center px-3">
       <form
         method="post"
-        class="bg-white border-2 border-stone-200 shadow-lg rounded-xl p-8 w-full max-w-md flex flex-col gap-6"
+        class="bg-white shadow p-4 border rounded-3 w-100"
+        style="max-width: 420px"
       >
-        <div class="flex flex-col items-center gap-2">
+        <!-- Logo + Title -->
+        <div class="mb-4 text-center">
           <c:import url="logo.jsp" />
-          <h3 class="text-center text-2xl font-bold tracking-tight">
-            Login to your account
-          </h3>
+          <h3 class="mt-2 fw-bold fs-4">Login to your account</h3>
         </div>
 
-        <div>
-          <label for="email" class="block text-sm font-medium mb-1"
+        <!-- Email -->
+        <div class="mb-3">
+          <label for="email" class="form-label small fw-semibold"
             >Email address</label
           >
           <input
-            id="email"
             type="email"
+            id="email"
             name="email"
             required
             placeholder="example@email.com"
-            autocomplete="none"
-            class="w-full border-2 border-stone-200 py-2 px-4 rounded-lg focus:outline-none focus:border-blue-600"
+            autocomplete="off"
+            class="form-control"
           />
         </div>
 
-        <div>
-          <div class="flex items-center justify-between mb-1">
-            <label for="password" class="block text-sm font-medium"
+        <!-- Password -->
+        <div class="mb-3">
+          <div class="d-flex align-items-center justify-content-between mb-1">
+            <label for="password" class="form-label small fw-semibold"
               >Password</label
             >
-            <a href="#" class="text-sm text-blue-600 hover:underline"
+            <a href="#" class="text-primary text-decoration-none small"
               >Forgot Password?</a
             >
           </div>
-          <input type="password" name="password" id="password" required
-          placeholder="<c:out value="********" />" class="w-full border-2
-          border-stone-200 py-2 px-4 rounded-lg focus:outline-none
-          focus:border-blue-600" />
+          <input
+            type="password"
+            name="password"
+            id="password"
+            required
+            placeholder="<c:out value='********' />"
+            class="form-control"
+          />
         </div>
-        <div class="flex justify-center">
+
+        <!-- reCAPTCHA -->
+        <div class="d-flex justify-content-center mb-3">
           <div
             class="g-recaptcha"
             data-sitekey="${initParam.captcha_site_key}"
           ></div>
         </div>
 
-        <input
-          type="submit"
-          value="Login"
-          class="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors cursor-pointer"
-        />
+        <!-- Login Button -->
+        <div class="d-grid mb-3">
+          <input
+            type="submit"
+            value="Login"
+            class="btn btn-primary fw-medium"
+          />
+        </div>
 
-        <p class="text-center text-sm text-stone-600">
+        <!-- Signup Link -->
+        <p class="text-muted text-center small">
           New here?
-          <a href="signup.do" class="text-blue-600 hover:underline"
+          <a href="signup.do" class="text-primary text-decoration-none"
             >Create an account</a
           >
         </p>
