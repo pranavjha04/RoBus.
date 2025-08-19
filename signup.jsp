@@ -5,189 +5,342 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
-      rel="stylesheet"
-    />
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <link href="static/css/output.css" rel="stylesheet" />
+    <c:import url="essential_page_import.jsp" />
+    <script type="module">
+      import { Pagination } from "./static/js/pagination.js";
+
+      const formPaginationInitialize = () => {
+        const type = new URLSearchParams(window.location.search).get("type");
+        new Pagination({
+          parentElement: document.getElementById("formWrapper"),
+        });
+      };
+
+      window.addEventListener("DOMContentLoaded", () => {
+        formPaginationInitialize();
+      });
+    </script>
     <title>Signup</title>
   </head>
 
-  <body class="h-dvh text-stone-800 bg-gray-100 grid grid-rows-[auto_1fr]">
+  <body class="d-flex flex-column bg-light vh-100">
     <c:import url="welcome_navbar.jsp" />
 
-    <section class="flex items-center justify-center font-medium px-2">
+    <section
+      class="d-flex align-items-center justify-content-center flex-grow-1 px-3"
+    >
       <form
-        method="post"
-        class="bg-white border-2 border-stone-200 shadow-lg rounded-xl p-8 w-full max-w-md flex flex-col gap-4"
+        method="get"
+        class="bg-white border shadow p-4 rounded-3 w-100"
+        style="max-width: 420px"
       >
-        <div class="flex flex-col items-center gap-2">
+        <div class="d-flex flex-column align-items-center">
           <c:import url="logo.jsp" />
-          <h3 class="text-center text-2xl font-bold tracking-tight">
-            Create an account
-          </h3>
-        </div>
-        <!-- 
-        <div>
-          <label for="full_name" class="block text-sm font-medium mb-1"
-            >Full Name</label
-          >
-          <input
-            id="full_name"
-            type="full_name"
-            name="full_name"
-            required
-            placeholder=""
-            class="w-full border-2 border-stone-200 py-2 px-4 rounded-lg focus:outline-none focus:border-blue-600"
-          />
-        </div>
-        <div>
-          <label for="email" class="block text-sm font-medium mb-1"
-            >Email address</label
-          >
-          <input
-            id="email"
-            type="email"
-            name="email"
-            required
-            placeholder="example@email.com"
-            autocomplete="email"
-            class="w-full border-2 border-stone-200 py-2 px-4 rounded-lg focus:outline-none focus:border-blue-600"
-          />
+          <h3 class="mt-2 fw-bold fs-4 text-center">Create an account</h3>
         </div>
 
-        <div>
-          <label for="password" class="block text-sm font-medium"
-            >Password</label
-          >
-          <input type="password" name="password" id="password" required
-          placeholder="<c:out value="********" />" class="w-full border-2
-          border-stone-200 py-2 px-4 rounded-lg focus:outline-none
-          focus:border-blue-600" />
-        </div>
-
-        <div class="flex items-center justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label for="dob" class="block text-sm font-medium">
-                Date of Birth
-              </label>
+        <div id="formWrapper">
+          <!-- ################ ACCOUNT ESSENTIALS PAGE 1 ################ -->
+          <div id="page_1" class="d-flex flex-column gap-3 d-block">
+            <!-- ############ ACCOUNT FULL NAME START ############ -->
+            <div>
+              <label for="full_name" class="form-label small fw-semibold"
+                >Full Name</label
+              >
+              <input
+                id="full_name"
+                type="text"
+                name="full_name"
+                class="form-control"
+                required
+              />
             </div>
+            <!-- ############ ACCOUNT FULL NAME END ############ -->
+
+            <!-- ############ ACCOUNT EMAIL START ############ -->
+            <div>
+              <label for="email" class="form-label small fw-semibold"
+                >Email address</label
+              >
+              <input
+                id="email"
+                type="email"
+                name="email"
+                placeholder="example@email.com"
+                autocomplete="email"
+                class="form-control"
+                required
+              />
+            </div>
+            <!-- ############ ACCOUNT EMAIL END ############ -->
+
+            <!-- ############ ACCOUNT PASSWORD START ############ -->
+            <div>
+              <label for="password" class="form-label small fw-semibold"
+                >Password</label
+              >
+              <input type="password" name="password" id="password"
+              placeholder="<c:out value="********" />" class="form-control"
+              required />
+            </div>
+            <!-- ############ ACCOUNT PASSWORD END ############ -->
+          </div>
+          <!-- ############ ACCOUNT ESSENTIAL PAGE 2  ############ -->
+          <div id="page_2" class="d-flex flex-column gap-3 d-none">
+            <!-- ############ ACCOUNT ESSENTIAL CONTACT START  ############ -->
+            <div>
+              <label for="contact" class="form-label small fw-semibold"
+                >Contact</label
+              >
+              <input
+                id="contact"
+                type="tel"
+                name="contact"
+                class="form-control"
+                required
+              />
+            </div>
+            <!-- ############ ACCOUNT ESSENTIAL CONTACT END  ############ -->
+
+            <!-- ############ ACCOUNT ESSENTIAL SEND OTP BUTTON START  ############ -->
             <input
-              type="date"
-              name="dob"
-              id="dob"
-              required
-              class="w-full border-2 border-stone-200 py-2 px-4 rounded-lg focus:outline-none focus:border-blue-600"
+              type="button"
+              value="Send OTP"
+              class="btn btn-primary px-4 fw-medium align-self-end"
             />
-          </div>
+            <!-- ############ ACCOUNT ESSENTIAL SEND OTP BUTTON END  ############ -->
 
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label for="gender" class="block text-sm font-medium">
-                Gender
-              </label>
+            <!-- ############ ACCOUNT ESSENTIAL  OTP INPUT START  ############ -->
+            <div>
+              <label for="otp-1" class="form-label small fw-semibold"
+                >Enter OTP</label
+              >
+              <div class="d-flex justify-content-between gap-2">
+                <input
+                  type="tel"
+                  class="form-control text-center py-md-2"
+                  id="otp-1"
+                  name="otp"
+                  maxlength="1"
+                  required
+                />
+                <input
+                  type="tel"
+                  class="form-control text-center py-md-2"
+                  id="otp-2"
+                  name="otp"
+                  maxlength="1"
+                  required
+                />
+                <input
+                  type="tel"
+                  class="form-control text-center py-md-2"
+                  id="otp-3"
+                  name="otp"
+                  maxlength="1"
+                  required
+                />
+                <input
+                  type="tel"
+                  class="form-control text-center py-md-2"
+                  id="otp-4"
+                  name="otp"
+                  maxlength="1"
+                  required
+                />
+                <input
+                  type="tel"
+                  class="form-control text-center py-md-2"
+                  id="otp-5"
+                  name="otp"
+                  maxlength="1"
+                  required
+                />
+                <input
+                  type="tel"
+                  class="form-control text-center py-md-2"
+                  id="otp-6"
+                  name="otp"
+                  maxlength="1"
+                  required
+                />
+              </div>
             </div>
-            <select
-              name="gender"
-              id="gender"
-              required
-              class="w-full border-2 border-stone-200 py-2 px-4 rounded-lg focus:outline-none focus:border-blue-600"
-            >
-              <option value="" disabled selected>Select your gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-        </div>
-        <button
-          class="signup-next-btn w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors cursor-pointer self-end"
-        >
-          Next
-        </button> -->
+            <!-- ############ ACCOUNT ESSENTIAL  OTP INPUT END  ############ -->
 
-        <div class="flex flex-col gap-2">
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label for="contact" class="block text-sm font-medium">
-                Contact
-              </label>
-            </div>
+            <!-- ############ ACCOUNT ESSENTIAL VERIFY OTP BUTTON START  ############ -->
             <input
-              type="tel"
-              name="contact"
-              id="contact"
-              required
-              placeholder="<c:out value='Enter your contact number' />"
-              class="w-full border-2 border-stone-200 py-2 px-4 rounded-lg focus:outline-none focus:border-blue-600"
+              type="button"
+              value="Verify OTP"
+              class="btn btn-primary px-4 fw-medium align-self-end"
             />
+            <!-- ############ ACCOUNT ESSENTIAL VERIFY OTP BUTTON END  ############ -->
           </div>
-          <button
-            class="bg-blue-600 px-6 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors cursor-pointer self-end"
-          >
-            Send OTP
-          </button>
-        </div>
-        <div class="flex items-center w-full">
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label for="otp" class="block text-sm font-medium">
-                Enter OTP
-              </label>
-            </div>
-            <div class="flex items-center gap-4 w-full justify-between">
-              <input
-                type="text"
-                maxlength="1"
-                class="w-12 h-12 text-center text-lg border-2 border-stone-200 rounded-lg focus:outline-none focus:border-blue-600"
-              />
-              <input
-                type="text"
-                maxlength="1"
-                class="w-12 h-12 text-center text-lg border-2 border-stone-200 rounded-lg focus:outline-none focus:border-blue-600"
-              />
-              <input
-                type="text"
-                maxlength="1"
-                class="w-12 h-12 text-center text-lg border-2 border-stone-200 rounded-lg focus:outline-none focus:border-blue-600"
-              />
-              <input
-                type="text"
-                maxlength="1"
-                class="w-12 h-12 text-center text-lg border-2 border-stone-200 rounded-lg focus:outline-none focus:border-blue-600"
-              />
-              <input
-                type="text"
-                maxlength="1"
-                class="w-12 h-12 text-center text-lg border-2 border-stone-200 rounded-lg focus:outline-none focus:border-blue-600"
-              />
-              <input
-                type="text"
-                maxlength="1"
-                class="w-12 h-12 text-center text-lg border-2 border-stone-200 rounded-lg focus:outline-none focus:border-blue-600"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="flex justify-center">
-          <div
-            class="g-recaptcha"
-            data-sitekey="${initParam.captcha_site_key}"
-          ></div>
-        </div>
-        <input
-          type="submit"
-          value="Create an account"
-          class="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors cursor-pointer"
-        />
+          <c:choose>
+            <c:when test="${param.type == 1}">
+              <div id="page_3" class="d-flex flex-column gap-3 d-none">
+                <div class="d-flex justify-content-between align-items-center">
+                  <!-- ############ USER TYPE DATE OF BIRTH START  ############ -->
+                  <div>
+                    <label for="dob" class="form-label small fw-semibold"
+                      >Date of Birth</label
+                    >
+                    <input
+                      id="dob"
+                      type="date"
+                      name="dob"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <!-- ############ USER TYPE DATE OF BIRTH END  ############ -->
 
-        <p class="text-center text-sm text-stone-600">
+                  <!-- ############ USER TYPE SELECT GENDER START  ############ -->
+                  <div>
+                    <label for="gender" class="form-label small fw-semibold"
+                      >Gender</label
+                    >
+                    <select
+                      id="gender"
+                      class="form-select"
+                      aria-label="Select Gender"
+                      required
+                    >
+                      <option selected disabled>Select Your Gender</option>
+                      <option value="1">Male</option>
+                      <option value="2">Female</option>
+                      <option value="3">Others</option>
+                    </select>
+                  </div>
+                  <!-- ############ USER TYPE SELECT GENDER END  ############ -->
+                </div>
+                <!-- ############ USER TYPE PROFILE PIC FILE START  ############ -->
+                <div>
+                  <label for="profile_pic" class="form-label small fw-semibold"
+                    >Profile Pic</label
+                  >
+                  <input class="form-control" type="file" id="profile_pic" />
+                </div>
+                <!-- ############ USER TYPE PROFILE PIC FILE END  ############ -->
+
+                <div class="text-end">
+                  <input
+                    type="submit"
+                    value="Create an account"
+                    class="btn btn-primary w-100"
+                  />
+                  <!-- ############ USER TYPE ESSENTIAL PAGE 1  ############ -->
+                </div>
+              </div>
+            </c:when>
+            <c:when test="${param.type == 2}">
+              <!-- ############ BUS OPERATOR ESSENTIAL PAGE 1  ############ -->
+              <div id="page_4" class="d-flex flex-column gap-3 d-none">
+                <!-- ############ BUS OPERATOR ADDRESS START  ############ -->
+                <div>
+                  <label for="address" class="form-label small fw-semibold"
+                    >Address</label
+                  >
+                  <textarea
+                    id="address"
+                    class="form-control"
+                    rows="3"
+                    style="resize: none"
+                    required
+                  ></textarea>
+                </div>
+                <!-- ############ BUS OPERATOR ADDRESS END  ############ -->
+
+                <!-- ############ BUS OPERATOR WEBSITE URL START  ############ -->
+                <div>
+                  <label for="website" class="form-label small fw-semibold"
+                    >Website URL
+                  </label>
+                  <input
+                    id="website"
+                    type="url"
+                    name="website"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <!-- ############ BUS OPERATOR WEBSITE URL END  ############ -->
+
+                <!-- ############ BUS OPERATOR BASE CHARGE START  ############ -->
+                <div>
+                  <label for="base_charge" class="form-label small fw-semibold"
+                    >Base Charge</label
+                  >
+                  <input
+                    id="base_charge"
+                    type="number"
+                    name="base_charge"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <!-- ############ BUS OPERATOR BASE CHARGE END  ############ -->
+              </div>
+
+              <!-- ############ BUS OPERATOR ESSENTIAL PAGE 2  ############ -->
+              <div id="page_5" class="d-flex flex-column gap-3 d-none">
+                <!-- ############ BUS OPERATOR CERTIFICATE FILE START  ############ -->
+                <div>
+                  <label for="certificate" class="form-label small fw-semibold"
+                    >Certificate</label
+                  >
+                  <input
+                    class="form-control"
+                    type="file"
+                    id="certificate"
+                    required
+                  />
+                </div>
+                <!-- ############ BUS OPERATOR CERTIFICATE FILE END  ############ -->
+
+                <!-- ############ BUS OPERATOR LOGO FILE START  ############ -->
+                <div>
+                  <label for="logo" class="form-label small fw-semibold"
+                    >Logo</label
+                  >
+                  <input class="form-control" type="file" id="logo" required />
+                </div>
+                <!-- ############ BUS OPERATOR LOGO FILE END  ############ -->
+
+                <!-- ############ BUS OPERATOR BANNER FILE START  ############ -->
+                <div>
+                  <label for="banner" class="form-label small fw-semibold"
+                    >Banner</label
+                  >
+                  <input
+                    class="form-control"
+                    type="file"
+                    id="banner"
+                    required
+                  />
+                </div>
+                <!-- ############ BUS OPERATOR BANNER FILE END  ############ -->
+                <div class="text-end">
+                  <input
+                    type="submit"
+                    value="Create an account"
+                    class="btn btn-primary"
+                  />
+                </div>
+              </div>
+            </c:when>
+            <c:otherwise>
+              <c:redirect url="login.do" />
+            </c:otherwise>
+          </c:choose>
+        </div>
+
+        <div id="pagination" class="mt-4 d-flex justify-content-between"></div>
+
+        <p class="text-center text-muted small mt-3 mb-0">
           Already have an account?
-          <a href="login.do" class="text-blue-600 hover:underline">Login</a>
+          <a href="login.do" class="text-primary text-decoration-none">Login</a>
         </p>
       </form>
     </section>

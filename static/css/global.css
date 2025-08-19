@@ -5,3 +5,45 @@ textarea,
 button {
   font-family: "Outfit", sans-serif;
 }
+
+.input-group:focus-within {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+.input-group .form-control:focus {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.hover-shadow:hover {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+}
+
+.add-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.login-option {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.login-option:hover {
+  background-color: #f1f1f1;
+  transform: scale(1.03);
+}
+
+.col-span {
+  grid-column: span 2;
+}
+
+@media (min-width: 768px) {
+  .fs-md {
+    font-size: 1.125rem !important;
+  }
+  .col-span {
+    grid-column: span 3;
+  }
+}

@@ -6,9 +6,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <c:import url="essential_page_import.jsp" />
-    <title>Document</title>
+    <title>Book Your Bus Tickets Online | RoBus</title>
   </head>
-  <body>
-    <input type="text" name=""  id="">
+  <body class="bg-body-tertiary">
+    <c:import url="welcome_navbar.jsp" />
+
+    <header
+      class="container-fluid position-relative d-flex align-items-center justify-content-center text-white"
+      style="
+        background-image: url('https://gst-contracts.s3.ap-southeast-1.amazonaws.com/uploads/bcc/cms/asset/avatar/324800/banner6.jpg');
+        background-size: cover;
+        background-position: center;
+        height: 100vh;
+      "
+    >
+      <div
+        class="position-absolute top-0 start-0 w-100 h-100"
+        style="background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px)"
+      ></div>
+
+      <div class="container position-relative text-center">
+        <h1 class="fw-bold display-3 mb-4">
+          Book Your Buses with <span class="text-primary">RoBus</span>
+        </h1>
+
+        <c:import url="search_bus_form.jsp" />
+      </div>
+    </header>
+
+    <section></section>
   </body>
 </html>

@@ -16,3 +16,4 @@
   crossorigin="anonymous"
 />
 <link href="static/css/global.css" rel="stylesheet" />
+<script type="module" src="static/js/main.js"></script>

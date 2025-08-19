@@ -4,193 +4,313 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-      crossorigin="anonymous"
-    ></script>
-    <script type="module" src="static/js/main.js"></script>
+    <c:import url="essential_page_import.jsp" />
     <title>Bus Search</title>
   </head>
   <body class="d-flex flex-column bg-light text-dark min-vh-100">
     <c:import url="welcome_navbar.jsp" />
 
-    <!-- Search Form -->
-    <div class="bg-white shadow-sm py-2 border-bottom">
-      <form
-        id="bus-search-form"
-        class="align-items-center px-3 px-md-5 row g-2"
-      >
-        <!-- FROM -->
-        <div
-          class="d-flex align-items-center bg-light px-2 border rounded col-md"
-        >
-          <label for="from" class="px-2 text-center">
-            <img
-              src="static/media/images/bus_walk.svg"
-              alt="From"
-              width="24"
-              height="24"
-            />
-            <div class="small">From</div>
-          </label>
-          <input
-            type="text"
-            id="from"
-            name="from"
-            value="${param.from}"
-            class="bg-transparent border-0 form-control"
-            placeholder="From (Departure City)"
-            required
-          />
-        </div>
+    <c:import url="search_bus_form.jsp" />
 
-        <!-- TO -->
-        <div
-          class="d-flex align-items-center bg-light px-2 border rounded col-md"
-        >
-          <label for="to" class="px-2 text-center">
-            <img
-              src="static/media/images/bus_walk.svg"
-              alt="To"
-              width="24"
-              height="24"
-            />
-            <div class="small">To</div>
-          </label>
-          <input
-            type="text"
-            id="to"
-            name="to"
-            value="${param.to}"
-            class="bg-transparent border-0 form-control"
-            placeholder="To (Destination City)"
-            required
-          />
-        </div>
-
-        <!-- DATE -->
-        <div class="col-md">
-          <div class="d-flex align-items-center bg-light px-2 border rounded">
-            <label for="date" class="px-2 text-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0
-                  002-2V7a2 2 0 00-2-2H5a2 2 0
-                  00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-              <div class="small">Date</div>
-            </label>
-            <input
-              type="date"
-              id="date"
-              name="date"
-              value="${param.date}"
-              class="bg-transparent border-0 form-control"
-              required
-            />
-          </div>
-          <span class="text-danger small"></span>
-        </div>
-
-        <!-- SEARCH BUTTON -->
-        <div class="col-md-auto">
-          <input
-            type="submit"
-            value="Search Buses"
-            class="w-100 btn btn-primary"
-          />
-        </div>
-      </form>
-    </div>
-
-    <!-- Results Section -->
-    <section class="my-3 container">
-      <main class="bg-white shadow-sm p-3 rounded">
-        <!-- Sorting -->
-        <form>
-          <div class="d-flex flex-wrap gap-2 mb-3">
-            <select class="w-auto form-select">
-              <option selected disabled>Sort by Pricing</option>
-              <option value="low">Low to High</option>
-              <option value="high">High to Low</option>
-            </select>
-            <select class="w-auto form-select">
-              <option selected disabled>Sort by Seats</option>
-              <option value="low">Low to High</option>
-              <option value="high">High to Low</option>
-            </select>
-          </div>
-        </form>
-
-        <!-- Bus Card -->
-        <ul class="list-unstyled">
-          <li class="shadow-sm mb-3 card">
-            <div
-              class="d-flex flex-column flex-md-row justify-content-between gap-3 card-body"
-            >
-              <!-- Operator Info -->
-              <div>
-                <h5 class="fw-semibold">Jai Mata Di Travels</h5>
-                <div class="d-flex gap-2">
-                  <span class="bg-primary badge">AC</span>
-                  <span class="bg-primary badge">Sleeper</span>
-                  <span class="bg-primary badge">2 + 1</span>
-                </div>
-              </div>
-
-              <!-- Journey Details -->
+    <section class="container-fluid px-3 mt-3">
+      <div class="row g-3">
+        <aside class="col-lg-3 d-none d-lg-block">
+          <form class="bg-white shadow-sm rounded p-3 border">
+            <h5 class="fw-semibold mb-3">Filters</h5>
+            <%-- #################### BUS TYPE #################### --%>
+            <div class="d-flex flex-column gap-2">
+              <h3 class="fs-6">Bus Type</h3>
               <div class="d-flex align-items-center gap-3">
-                <div class="text-center">
-                  <p class="mb-0 fw-medium">10:00 AM</p>
-                  <small class="text-muted">Delhi</small>
-                </div>
-                <div class="text-center">
-                  <div class="d-flex align-items-center justify-content-center">
-                    <div
-                      class="bg-dark rounded-circle"
-                      style="width: 6px; height: 6px"
-                    ></div>
-                    <div
-                      class="bg-dark mx-1"
-                      style="height: 1px; width: 60px"
-                    ></div>
-                    <div
-                      class="bg-dark rounded-circle"
-                      style="width: 6px; height: 6px"
-                    ></div>
-                  </div>
-                  <small class="text-muted">3h:00 mins</small>
-                </div>
-                <div class="text-center">
-                  <p class="mb-0 fw-medium">1:00 AM</p>
-                  <small class="text-muted">Kashmir</small>
-                </div>
+                <input
+                  type="radio"
+                  class="btn-check"
+                  name="bus_type_ac"
+                  id="ac"
+                  autocomplete="off"
+                />
+                <label
+                  class="btn btn-outline-primary flex-fill text-center"
+                  for="ac"
+                  >AC</label
+                >
+
+                <input
+                  type="radio"
+                  class="btn-check"
+                  name="bus_type_ac"
+                  id="non_ac"
+                  autocomplete="off"
+                />
+                <label
+                  class="btn btn-outline-primary flex-fill text-center"
+                  for="non_ac"
+                  >Non AC</label
+                >
               </div>
 
-              <!-- Price + CTA -->
-              <div class="text-end">
-                <div class="text-success fs-5 fw-bold">₹850</div>
-                <button class="mt-2 btn btn-primary btn-sm">Book Seats</button>
+              <div class="d-flex align-items-center gap-3 mt-2">
+                <input
+                  type="radio"
+                  class="btn-check"
+                  name="bus_type_seat"
+                  id="seater"
+                  autocomplete="off"
+                />
+                <label
+                  class="btn btn-outline-primary flex-fill text-center"
+                  for="seater"
+                  >Seater</label
+                >
+
+                <input
+                  type="radio"
+                  class="btn-check"
+                  name="bus_type_seat"
+                  id="sleeper"
+                  autocomplete="off"
+                />
+                <label
+                  class="btn btn-outline-primary flex-fill text-center"
+                  for="sleeper"
+                  >Sleeper</label
+                >
               </div>
+              <select class="form-select mt-2">
+                <option selected disabled>Sort by Departure</option>
+                <option value="low">Early</option>
+                <option value="high">Late</option>
+              </select>
             </div>
-          </li>
-        </ul>
-      </main>
+          </form>
+        </aside>
+
+        <main class="col-12 col-lg-9">
+          <div class="d-lg-none mb-3">
+            <button
+              class="btn btn-outline-primary"
+              type="button"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#filterOffcanvas"
+            >
+              <img
+                src="static/media/images/filter_list_24dp_5985E1_FILL0_wght400_GRAD0_opsz24.svg"
+              />
+              Filters
+            </button>
+          </div>
+
+          <form class="mb-3">
+            <p class="mb-0">Results 1 of 6</p>
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <select class="form-select w-auto">
+                <option selected disabled>Sort by Pricing</option>
+                <option value="low">Low to High</option>
+                <option value="high">High to Low</option>
+              </select>
+              <select class="form-select w-auto">
+                <option selected disabled>Sort by Seats</option>
+                <option value="low">Low to High</option>
+                <option value="high">High to Low</option>
+              </select>
+            </div>
+          </form>
+
+          <ul class="list-unstyled">
+            <li class="shadow-sm mb-3 card">
+              <div
+                class="d-flex flex-column flex-md-row justify-content-between gap-3 card-body"
+              >
+                <div>
+                  <h5 class="fw-semibold">Jai Mata Di Travels</h5>
+                  <div class="d-flex gap-2">
+                    <span class="text-bg-primary badge fw-medium">AC</span>
+                    <span class="text-bg-warning badge fw-medium">Sleeper</span>
+                    <span class="text-bg-success badge fw-medium">2 + 1</span>
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                  <div class="text-center">
+                    <p class="mb-0 fw-medium fs-5">10:00 AM</p>
+                    <small class="text-muted">Delhi</small>
+                  </div>
+                  <div class="text-center">
+                    <div
+                      class="d-flex align-items-center justify-content-center"
+                    >
+                      <div
+                        class="bg-dark rounded-circle"
+                        style="width: 6px; height: 6px"
+                      ></div>
+                      <div
+                        class="bg-dark mx-1"
+                        style="height: 1px; width: 60px"
+                      ></div>
+                      <div
+                        class="bg-dark rounded-circle"
+                        style="width: 6px; height: 6px"
+                      ></div>
+                    </div>
+                    <small class="text-muted">3h 00m</small>
+                  </div>
+                  <div class="text-center">
+                    <p class="mb-0 fw-medium fs-5">1:00 PM</p>
+                    <small class="text-muted">Kashmir</small>
+                  </div>
+                </div>
+
+                <div class="text-end d-flex flex-column">
+                  <div class="text-success fs-5 fw-bold">&#x20B9;850</div>
+                  <span class="text-danger">29 Seats Available</span>
+                  <a
+                    href="#"
+                    class="mt-2 align-self-end btn btn-primary px-4 fw-medium"
+                  >
+                    Book Seats
+                  </a>
+                </div>
+              </div>
+            </li>
+             <li class="shadow-sm mb-3 card">
+              <div
+                class="d-flex flex-column flex-md-row justify-content-between gap-3 card-body"
+              >
+                <div>
+                  <h5 class="fw-semibold">Jai Mata Di Travels</h5>
+                  <div class="d-flex gap-2">
+                    <span class="text-bg-primary badge fw-medium">AC</span>
+                    <span class="text-bg-warning badge fw-medium"
+                      >Sleeper</span
+                    >
+                    <span class="text-bg-success badge fw-medium">2 + 1</span>
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                  <div class="text-center">
+                    <p class="mb-0 fw-medium fs-5">10:00 AM</p>
+                    <small class="text-muted">Delhi</small>
+                  </div>
+                  <div class="text-center">
+                    <div
+                      class="d-flex align-items-center justify-content-center"
+                    >
+                      <div
+                        class="bg-dark rounded-circle"
+                        style="width: 6px; height: 6px"
+                      ></div>
+                      <div
+                        class="bg-dark mx-1"
+                        style="height: 1px; width: 60px"
+                      ></div>
+                      <div
+                        class="bg-dark rounded-circle"
+                        style="width: 6px; height: 6px"
+                      ></div>
+                    </div>
+                    <small class="text-muted">3h 00m</small>
+                  </div>
+                  <div class="text-center">
+                    <p class="mb-0 fw-medium fs-5">1:00 PM</p>
+                    <small class="text-muted">Kashmir</small>
+                  </div>
+                </div>
+
+                <div class="text-end d-flex flex-column">
+                  <div class="text-success fs-5 fw-bold">&#x20B9;850</div>
+                  <span class="text-danger">29 Seats Available</span>
+                  <a
+                    href="#"
+                    class="mt-2 align-self-end btn btn-primary px-4 fw-medium"
+                  >
+                    Book Seats
+                  </a>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </main>
+      </div>
     </section>
+
+    <%-- ####################### FILTER SIDE BAR START #######################
+    --%>
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="filterOffcanvas">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Filters</h5>
+        <button
+          type="button"
+          class="btn-close text-reset"
+          data-bs-dismiss="offcanvas"
+        ></button>
+      </div>
+      <div class="offcanvas-body">
+        <div class="d-flex flex-column gap-2">
+          <h3 class="fs-6">Bus Type</h3>
+          <div class="d-flex align-items-center gap-3">
+            <input
+              type="radio"
+              class="btn-check"
+              name="bus_type_ac"
+              id="ac"
+              autocomplete="off"
+            />
+            <label
+              class="btn btn-outline-primary flex-fill text-center"
+              for="ac"
+              >AC</label
+            >
+
+            <input
+              type="radio"
+              class="btn-check"
+              name="bus_type_ac"
+              id="non_ac"
+              autocomplete="off"
+            />
+            <label
+              class="btn btn-outline-primary flex-fill text-center"
+              for="non_ac"
+              >Non AC</label
+            >
+          </div>
+
+          <div class="d-flex align-items-center gap-3 mt-2">
+            <input
+              type="radio"
+              class="btn-check"
+              name="bus_type_seat"
+              id="seater"
+              autocomplete="off"
+            />
+            <label
+              class="btn btn-outline-primary flex-fill text-center"
+              for="seater"
+              >Seater</label
+            >
+
+            <input
+              type="radio"
+              class="btn-check"
+              name="bus_type_seat"
+              id="sleeper"
+              autocomplete="off"
+            />
+            <label
+              class="btn btn-outline-primary flex-fill text-center"
+              for="sleeper"
+              >Sleeper</label
+            >
+          </div>
+          <select class="form-select mt-2">
+            <option selected disabled>Sort by Departure</option>
+            <option value="low">Early</option>
+            <option value="high">Late</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <%-- ####################### FILTER SIDE BAR END #######################
+    --%>
   </body>
 </html>

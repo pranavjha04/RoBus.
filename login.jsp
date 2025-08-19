@@ -5,32 +5,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <c:import url="essential_page_import.jsp" />
     <title>Login</title>
   </head>
 
-  <body class="d-grid bg-light min-vh-100">
+  <body class="d-flex flex-column bg-light vh-100">
     <c:import url="welcome_navbar.jsp" />
 
-    <!-- Login Section -->
-    <section class="d-flex align-items-center justify-content-center px-3">
+    <section
+      class="d-flex align-items-center justify-content-center px-3 flex-grow-1"
+    >
       <form
         method="post"
         class="bg-white shadow p-4 border rounded-3 w-100"
         style="max-width: 420px"
       >
-        <!-- Logo + Title -->
         <div class="mb-4 text-center">
           <c:import url="logo.jsp" />
           <h3 class="mt-2 fw-bold fs-4">Login to your account</h3>
         </div>
 
-        <!-- Email -->
         <div class="mb-3">
           <label for="email" class="form-label small fw-semibold"
             >Email address</label
@@ -43,10 +37,10 @@
             placeholder="example@email.com"
             autocomplete="off"
             class="form-control"
+            autofocus
           />
         </div>
 
-        <!-- Password -->
         <div class="mb-3">
           <div class="d-flex align-items-center justify-content-between mb-1">
             <label for="password" class="form-label small fw-semibold"
@@ -66,7 +60,6 @@
           />
         </div>
 
-        <!-- reCAPTCHA -->
         <div class="d-flex justify-content-center mb-3">
           <div
             class="g-recaptcha"
@@ -74,7 +67,6 @@
           ></div>
         </div>
 
-        <!-- Login Button -->
         <div class="d-grid mb-3">
           <input
             type="submit"
@@ -83,12 +75,16 @@
           />
         </div>
 
-        <!-- Signup Link -->
         <p class="text-muted text-center small">
           New here?
-          <a href="signup.do" class="text-primary text-decoration-none"
-            >Create an account</a
+          <button
+            class="text-primary border-0 text-decoration-none"
+            style="background: none"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal"
           >
+            Create an account
+          </button>
         </p>
       </form>
     </section>

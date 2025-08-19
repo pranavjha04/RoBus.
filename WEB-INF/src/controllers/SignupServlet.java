@@ -11,6 +11,14 @@ import java.io.IOException;
 @WebServlet("/signup.do")
 public class SignupServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.getRequestDispatcher("signup.jsp").forward(request, response);
+        String nextPage = "signup.jsp?type=";
+        String type = request.getParameter("type");
+
+        if(type == "" || type == null) {
+            response.sendRedirect("login.do");
+        }
+        else {
+            request.getRequestDispatcher(nextPage + type).forward(request, response);
+        }
     }
 }
