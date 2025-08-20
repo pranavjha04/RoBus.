@@ -1,6 +1,12 @@
 package models;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
+
+import utils.DBManager;
 
 public class Account {
     private Integer accountId;
@@ -15,6 +21,27 @@ public class Account {
     public Account() {
         
     }
+
+    public static Boolean checkDuplicateEmail(String email) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = "SELECT account_id FROM accounts WHERE email=?";
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return flag;
+     }
 
     public Status getStatus() {
         return new Status(status.getStatusId(), status.getName());

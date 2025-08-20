@@ -27,13 +27,7 @@ export class Pagination {
 
   update() {
     this.clearContainer();
-    const firstElement = this.pages[this.page].querySelector(
-      "input, date, textarea, file"
-    );
 
-    if (firstElement) {
-      firstElement.focus();
-    }
     if (this.page == 0 && this.page < this.numOfPages) {
       this.buttonContainer.insertAdjacentHTML("afterbegin", this.#getNextBtn());
     }
@@ -75,17 +69,25 @@ export class Pagination {
     if (nextBtn) nextBtn.addEventListener("click", this.next.bind(this));
   }
 
+  hidePage(page) {
+    page.classList.replace("d-block", "d-none");
+  }
+
+  showPage(page) {
+    page.classList.replace("d-none", "d-block");
+  }
+
   next() {
-    this.pages[this.page].classList.replace("d-block", "d-none");
+    this.hidePage(this.pages[this.page]);
     this.page = Math.min(this.page + 1, this.numOfPages);
-    this.pages[this.page].classList.replace("d-none", "d-block");
+    this.showPage(this.pages[this.page]);
     this.update();
   }
 
   prev() {
-    this.pages[this.page].classList.replace("d-block", "d-none");
+    this.hidePage(this.pages[this.page]);
     this.page = Math.max(this.page - 1, 0);
-    this.pages[this.page].classList.replace("d-none", "d-block");
+    this.showPage(this.pages[this.page]);
     this.update();
   }
 }

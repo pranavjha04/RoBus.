@@ -14,11 +14,6 @@ public class SignupServlet extends HttpServlet {
         String nextPage = "signup.jsp?type=";
         String type = request.getParameter("type");
 
-        if(type == "" || type == null) {
-            response.sendRedirect("login.do");
-        }
-        else {
-            request.getRequestDispatcher(nextPage + type).forward(request, response);
-        }
+       request.getRequestDispatcher(type == null ? nextPage : nextPage + type).forward(request, response);
     }
 }

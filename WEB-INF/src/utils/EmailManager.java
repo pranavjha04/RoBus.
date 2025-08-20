@@ -5,10 +5,8 @@ public class EmailManager {
     private static String appEmailPassword;
 
     public EmailManager() {
-
+        
     }
-
-    public boolean sendMessage()
 
     public static void setAppEmail(String appEmail) {
         EmailManager.appEmail = appEmail;
@@ -17,4 +15,5 @@ public class EmailManager {
     public static void setAppEmailPassword(String appEmailPassword) {
         EmailManager.appEmailPassword = appEmailPassword;
     }
+
 }

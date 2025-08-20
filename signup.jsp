@@ -7,25 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <c:import url="essential_page_import.jsp" />
-    <script type="module">
-      import { Pagination } from "./static/js/pagination.js";
-
-      const formPaginationInitialize = () => {
-        const type = new URLSearchParams(window.location.search).get("type");
-        new Pagination({
-          parentElement: document.getElementById("formWrapper"),
-        });
-      };
-
-      window.addEventListener("DOMContentLoaded", () => {
-        formPaginationInitialize();
-      });
-    </script>
     <title>Signup</title>
   </head>
 
   <body class="d-flex flex-column bg-light vh-100">
     <c:import url="welcome_navbar.jsp" />
+    <!-- Toasts container -->
+    <div
+      class="toast-container position-fixed top-0 end-0 p-3"
+      style="z-index: 1080"
+    ></div>
 
     <section
       class="d-flex align-items-center justify-content-center flex-grow-1 px-3"
@@ -34,6 +25,7 @@
         method="get"
         class="bg-white border shadow p-4 rounded-3 w-100"
         style="max-width: 420px"
+        id="signup_form"
       >
         <div class="d-flex flex-column align-items-center">
           <c:import url="logo.jsp" />
@@ -53,7 +45,7 @@
                 type="text"
                 name="full_name"
                 class="form-control"
-                required
+                placeholder="${param.type == 1 ? 'Pranav Jha' : 'Pranav Travels'}"
               />
             </div>
             <!-- ############ ACCOUNT FULL NAME END ############ -->
@@ -70,7 +62,6 @@
                 placeholder="example@email.com"
                 autocomplete="email"
                 class="form-control"
-                required
               />
             </div>
             <!-- ############ ACCOUNT EMAIL END ############ -->
@@ -81,8 +72,7 @@
                 >Password</label
               >
               <input type="password" name="password" id="password"
-              placeholder="<c:out value="********" />" class="form-control"
-              required />
+              placeholder="<c:out value="********" />" class="form-control" />
             </div>
             <!-- ############ ACCOUNT PASSWORD END ############ -->
           </div>
@@ -98,7 +88,7 @@
                 type="tel"
                 name="contact"
                 class="form-control"
-                required
+                autocomplete="off"
               />
             </div>
             <!-- ############ ACCOUNT ESSENTIAL CONTACT END  ############ -->
@@ -107,12 +97,32 @@
             <input
               type="button"
               value="Send OTP"
+              id="send_otp_btn"
+              disabled
               class="btn btn-primary px-4 fw-medium align-self-end"
+            />
+            <button
+              class="ms-auto btn btn-primary d-none"
+              id="load_otp_btn"
+              type="button"
+              disabled
+            >
+              <span
+                class="spinner-border spinner-border-sm"
+                aria-hidden="true"
+              ></span>
+              <span role="status" class="fw-medium">Sending OTP</span>
+            </button>
+            <input
+              type="button"
+              value="Edit Contact"
+              id="edit_contact_btn"
+              class="btn btn-primary px-4 fw-medium align-self-end d-none"
             />
             <!-- ############ ACCOUNT ESSENTIAL SEND OTP BUTTON END  ############ -->
 
             <!-- ############ ACCOUNT ESSENTIAL  OTP INPUT START  ############ -->
-            <div>
+            <div id="otp_container" class="d-none">
               <label for="otp-1" class="form-label small fw-semibold"
                 >Enter OTP</label
               >
@@ -123,7 +133,6 @@
                   id="otp-1"
                   name="otp"
                   maxlength="1"
-                  required
                 />
                 <input
                   type="tel"
@@ -131,7 +140,6 @@
                   id="otp-2"
                   name="otp"
                   maxlength="1"
-                  required
                 />
                 <input
                   type="tel"
@@ -139,7 +147,6 @@
                   id="otp-3"
                   name="otp"
                   maxlength="1"
-                  required
                 />
                 <input
                   type="tel"
@@ -147,7 +154,6 @@
                   id="otp-4"
                   name="otp"
                   maxlength="1"
-                  required
                 />
                 <input
                   type="tel"
@@ -155,7 +161,6 @@
                   id="otp-5"
                   name="otp"
                   maxlength="1"
-                  required
                 />
                 <input
                   type="tel"
@@ -163,17 +168,18 @@
                   id="otp-6"
                   name="otp"
                   maxlength="1"
-                  required
                 />
               </div>
             </div>
             <!-- ############ ACCOUNT ESSENTIAL  OTP INPUT END  ############ -->
 
             <!-- ############ ACCOUNT ESSENTIAL VERIFY OTP BUTTON START  ############ -->
+
             <input
               type="button"
               value="Verify OTP"
-              class="btn btn-primary px-4 fw-medium align-self-end"
+              id="verify_otp_btn"
+              class="btn btn-primary px-4 fw-medium align-self-end d-none"
             />
             <!-- ############ ACCOUNT ESSENTIAL VERIFY OTP BUTTON END  ############ -->
           </div>
@@ -191,7 +197,6 @@
                       type="date"
                       name="dob"
                       class="form-control"
-                      required
                     />
                   </div>
                   <!-- ############ USER TYPE DATE OF BIRTH END  ############ -->
@@ -205,7 +210,7 @@
                       id="gender"
                       class="form-select"
                       aria-label="Select Gender"
-                      required
+                      name="gender"
                     >
                       <option selected disabled>Select Your Gender</option>
                       <option value="1">Male</option>
@@ -220,7 +225,12 @@
                   <label for="profile_pic" class="form-label small fw-semibold"
                     >Profile Pic</label
                   >
-                  <input class="form-control" type="file" id="profile_pic" />
+                  <input
+                    class="form-control"
+                    type="file"
+                    id="profile_pic"
+                    name="profile_pic"
+                  />
                 </div>
                 <!-- ############ USER TYPE PROFILE PIC FILE END  ############ -->
 
@@ -247,7 +257,6 @@
                     class="form-control"
                     rows="3"
                     style="resize: none"
-                    required
                   ></textarea>
                 </div>
                 <!-- ############ BUS OPERATOR ADDRESS END  ############ -->
@@ -262,7 +271,6 @@
                     type="url"
                     name="website"
                     class="form-control"
-                    required
                   />
                 </div>
                 <!-- ############ BUS OPERATOR WEBSITE URL END  ############ -->
@@ -277,7 +285,6 @@
                     type="number"
                     name="base_charge"
                     class="form-control"
-                    required
                   />
                 </div>
                 <!-- ############ BUS OPERATOR BASE CHARGE END  ############ -->
@@ -290,12 +297,7 @@
                   <label for="certificate" class="form-label small fw-semibold"
                     >Certificate</label
                   >
-                  <input
-                    class="form-control"
-                    type="file"
-                    id="certificate"
-                    required
-                  />
+                  <input class="form-control" type="file" id="certificate" />
                 </div>
                 <!-- ############ BUS OPERATOR CERTIFICATE FILE END  ############ -->
 
@@ -304,7 +306,7 @@
                   <label for="logo" class="form-label small fw-semibold"
                     >Logo</label
                   >
-                  <input class="form-control" type="file" id="logo" required />
+                  <input class="form-control" type="file" id="logo" />
                 </div>
                 <!-- ############ BUS OPERATOR LOGO FILE END  ############ -->
 
@@ -313,12 +315,7 @@
                   <label for="banner" class="form-label small fw-semibold"
                     >Banner</label
                   >
-                  <input
-                    class="form-control"
-                    type="file"
-                    id="banner"
-                    required
-                  />
+                  <input class="form-control" type="file" id="banner" />
                 </div>
                 <!-- ############ BUS OPERATOR BANNER FILE END  ############ -->
                 <div class="text-end">
@@ -344,5 +341,6 @@
         </p>
       </form>
     </section>
+    <script type="module" src="static/js/signup.js"></script>
   </body>
 </html>

@@ -1,11 +1,18 @@
 package utils;
 
+import java.util.Random;
 public final class AppUtil {
-    public static final String concat(String ...words) {
-        StringBuilder ans = new StringBuilder();
-        for(String next : words) {
-            ans.append(next);
+    private static final Random random = new Random();
+    
+    private AppUtil() {
+
     }
-        return ans.toString();
+    
+    public static final String concat(String ...words) {
+        return String.join("", words);
+    }
+
+    public static final int generateRandomOTP() {
+        return random.nextInt(888888) + 111111;
     }
 }
