@@ -13,28 +13,19 @@ import java.io.IOException;
 @WebServlet("/verify_otp.do")
 public class VerifyOTPServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        // 1 MEANS INVALID SESSION OR SERVER ERROR
-        // 2 MEANS SESSION OTP MISMATCHED
-        // 3 MEANS SESSION OTP SUCCESS
-
+        // 1 = invalid session / expired
+        // 2 = otp mismatch
+        // 3 = otp success
         int responseCode = 1;
         HttpSession session = request.getSession(false);
         String otp = request.getParameter("otp");
-        String sessionOTP = (session.getAttribute("otp")).toString();
-        System.out.println(otp);
+        String sessionOTP = (session.getAttribute("otp") == null ? "" : session.getAttribute("otp")).toString();
         
-        if(sessionOTP != null) {
-            if(!sessionOTP.equals(otp)) {
-                responseCode = 2;
-                System.out.println("Hi");
-            }
-            else {
-                responseCode = 3;
-                System.out.println("Hey");
-            }
+        if(!sessionOTP.equals(otp)) {
+            responseCode = 2;
         }
         else {
-            System.out.println("Hello");
+            responseCode = 3;
         }
 
         response.getWriter().print(responseCode);

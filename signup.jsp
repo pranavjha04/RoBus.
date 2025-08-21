@@ -1,4 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%@ page
+import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -171,6 +172,7 @@
                 />
               </div>
             </div>
+
             <!-- ############ ACCOUNT ESSENTIAL  OTP INPUT END  ############ -->
 
             <!-- ############ ACCOUNT ESSENTIAL VERIFY OTP BUTTON START  ############ -->
@@ -197,6 +199,7 @@
                       type="date"
                       name="dob"
                       class="form-control"
+                      min="${e:currentDate()}"
                     />
                   </div>
                   <!-- ############ USER TYPE DATE OF BIRTH END  ############ -->

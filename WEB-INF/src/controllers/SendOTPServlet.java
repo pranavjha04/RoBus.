@@ -15,13 +15,12 @@ import utils.RegexUtil;
 @WebServlet("/send_otp.do")
 public class SendOTPServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession();
         boolean flag = true;
         String contact = request.getParameter("contact");
 
-        // FIRST VALIDATE THE CONTACT
         flag = RegexUtil.validateContact(contact);
         if(flag) {
-            HttpSession session = request.getSession();
             int otp = AppUtil.generateRandomOTP();
             System.out.println("OTP ------" + otp);
             session.setAttribute("otp", otp);

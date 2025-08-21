@@ -19,6 +19,11 @@ export const validateContact = (value) => {
   return regex.test(value.trim());
 };
 
+export const validateDate = (value) => {
+  const date = new Date(value);
+  const today = new Date();
+};
+
 export const displayInputError = (element) => {
   if (element.classList.contains("border-danger")) return;
 
