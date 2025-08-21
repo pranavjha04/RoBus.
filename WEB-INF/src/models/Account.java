@@ -42,6 +42,27 @@ public class Account {
         }
         return flag;
      }
+     
+      public static Boolean checkDuplicateContact(String contact) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = "SELECT account_id FROM accounts WHERE contact=?";
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setString(1, contact);
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return flag;
+     }
 
     public Status getStatus() {
         return new Status(status.getStatusId(), status.getName());

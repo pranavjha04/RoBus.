@@ -72,8 +72,13 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
               <label for="password" class="form-label small fw-semibold"
                 >Password</label
               >
-              <input type="password" name="password" id="password"
-              placeholder="<c:out value="********" />" class="form-control" />
+              <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="<c:out value='********' />"
+                class="form-control"
+              />
             </div>
             <!-- ############ ACCOUNT PASSWORD END ############ -->
           </div>
@@ -199,7 +204,6 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                       type="date"
                       name="dob"
                       class="form-control"
-                      min="${e:currentDate()}"
                     />
                   </div>
                   <!-- ############ USER TYPE DATE OF BIRTH END  ############ -->
@@ -215,7 +219,7 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                       aria-label="Select Gender"
                       name="gender"
                     >
-                      <option selected disabled>Select Your Gender</option>
+                      <option selected value="">Select Your Gender</option>
                       <option value="1">Male</option>
                       <option value="2">Female</option>
                       <option value="3">Others</option>
@@ -235,6 +239,15 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                     name="profile_pic"
                   />
                 </div>
+
+                <img
+                  src=""
+                  alt="Your Uploaded Image"
+                  id="preview_image"
+                  class="w-25 h-25 rounded object-fit-cover d-none"
+                  style="max-height: 25%; max-width: 25%"
+                />
+
                 <!-- ############ USER TYPE PROFILE PIC FILE END  ############ -->
 
                 <div class="text-end">
