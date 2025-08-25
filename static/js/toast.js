@@ -40,7 +40,7 @@ class Toast {
   }
 
   #displayToast() {
-    const toast = new bootstrap.Toast(this.#toastEl, { delay: 2000 });
+    const toast = new bootstrap.Toast(this.#toastEl, { delay: 3000 });
     toast.show();
     this.#removeToast();
   }
@@ -48,7 +48,7 @@ class Toast {
   #removeToast() {
     setTimeout(() => {
       this.#toastEl.remove();
-    }, 2500);
+    }, 3000);
   }
 
   error(message, delay) {

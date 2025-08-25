@@ -16,6 +16,7 @@ import {
   validateUserAge,
   validateFileType,
   displayInputError,
+  validateFileSize,
 } from "./util.js";
 
 const signUpForm = document.querySelector("#signup_form");
@@ -58,21 +59,37 @@ const userValidate = (data) => {
 };
 const operatorValidate = (data) => {};
 
-const signUpRequest = async (data) => {
-  const queryParams = createURLParams(data);
-  console.log(queryParams.toString());
+const signUpRequest = async (formData) => {
+  try {
+    const response = await fetch(`signup.do?accountType=${accountType}`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with status: ${response.status}`);
+    }
+
+    const serverResponse = await response.text();
+    return serverResponse;
+  } catch (error) {
+    console.error("Signup request failed:", error);
+    throw error;
+  }
 };
 
 signUpForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  const data = Object.fromEntries(new FormData(signUpForm));
-  let isAccountValid = accountValidate(data);
+
+  const formData = new FormData(signUpForm);
+
+  let isAccountValid = accountValidate(Object.fromEntries(formData));
 
   if (accountType === 1) {
-    isAccountValid = userValidate(data);
+    isAccountValid = userValidate(Object.fromEntries(formData));
   }
   if (accountType === 2) {
-    isAccountValid = operatorValidate(data);
+    isAccountValid = operatorValidate(Object.fromEntries(formData));
   }
 
   if (!isAccountValid) {
@@ -84,7 +101,23 @@ signUpForm.addEventListener("submit", (e) => {
     return;
   }
 
-  signUpRequest(data).then((res) => console.log(res));
+  signUpRequest(formData)
+    .then((res) => {
+      const responseCode = +res;
+      if (isNaN(responseCode) || responseCode === 1) {
+        throw new Error();
+      }
+      if (responseCode === 2) {
+        toast.error("Invalid Input Details");
+      }
+      if (responseCode === 3) {
+        toast.success("Form submitted successfully");
+      }
+    })
+    .catch((error) => {
+      console.error("Signup failed:", error);
+      toast.error("Signup failed. Please try again.");
+    });
 });
 
 const userSignUp = () => {
@@ -119,7 +152,8 @@ const userSignUp = () => {
   profilePic.addEventListener("change", () => {
     console.log(profilePic.files);
     const [file] = profilePic.files;
-    const isValid = validateFileType(file?.type, "image");
+    const isValid =
+      validateFileType(file?.type, "image") && validateFileSize(file?.size);
     if (isValid && profilePic.files.length === 1) {
       removeInputError(profilePic);
       displayInputSuccess(profilePic);
@@ -132,7 +166,7 @@ const userSignUp = () => {
       hideElement(previeImage);
       previeImage.src = "";
       previeImage.setAttribute("alt", "");
-      toast.error("Uploaded file should be a single image ");
+      toast.error("Upload valid file <= 5 MB");
       profilePic.value = "";
     }
   });
@@ -185,8 +219,10 @@ otp.forEach((next) => {
 
     if (allFilled) {
       showElement(verifyOTPBtn);
+      sendOTPBtn.disabled = true;
     } else {
       hideElement(verifyOTPBtn);
+      sendOTPBtn.disabled = false;
     }
     otpEvent(next);
   });
@@ -230,13 +266,11 @@ verifyOTPBtn.addEventListener("click", () => {
         }
         if (data == 3) {
           // OTP MATCHED
-          otp.forEach((next) => {
-            next.classList.add("border-success");
-            next.disabled = true;
-          });
-          hideElement(verifyOTPBtn);
-          hideElement(otpContainer);
-          hideElement(editContactBtn);
+          sendOTPBtn.remove();
+          editContactBtn.remove();
+          otpContainer.remove();
+          verifyOTPBtn.remove();
+          loadingBtn.remove();
           displayInputValid(contact);
 
           toast.success(`${contact.value} Verified`);
@@ -305,7 +339,11 @@ sendOTPBtn.addEventListener("click", () => {
 
 contact.addEventListener("input", () => {
   const isValid = validateContact(contact.value);
-  if (isValid && !editContactBtn.classList.contains("d-block"))
+  if (
+    isValid &&
+    !editContactBtn.classList.contains("d-block") &&
+    !contact.classList.contains("border-success")
+  )
     sendOTPBtn.disabled = false;
 });
 
@@ -321,13 +359,11 @@ const markValidContact = () => {
   removeInputError(contact);
 };
 
-const checkDuplicateContactRequest = async () => {
+const checkUniqueContactRequest = async () => {
   const queryParams = createURLParams({
     contact: contact.value,
   });
-  const res = await fetch(
-    "check_duplicate_contact.do?" + queryParams.toString()
-  );
+  const res = await fetch("check_unique_contact.do?" + queryParams.toString());
   const data = await res.text();
   return data === "true";
 };
@@ -337,12 +373,12 @@ contact.addEventListener("blur", () => {
     hideElement(sendOTPBtn);
   } else {
     if (isValid) {
-      checkDuplicateContactRequest().then((data) => {
+      checkUniqueContactRequest().then((data) => {
         if (data === true) {
+          markValidContact();
+        } else {
           invalidateContact();
           toast.error("Duplicate Contact");
-        } else {
-          markValidContact();
         }
       });
     } else {
@@ -363,13 +399,13 @@ password.addEventListener("blur", () => {
   }
 });
 
-const checkDuplicateEmailRequest = async () => {
+const checkUniqueEmailRequest = async () => {
   const queryParams = createURLParams({
     email: email.value,
   });
 
   const response = await fetch(
-    "check_duplicate_email.do?" + queryParams.toString()
+    "check_unique_email.do?" + queryParams.toString()
   );
   if (!response.ok) throw new Error("Server Problem");
   const data = await response.text();
@@ -380,10 +416,11 @@ email.addEventListener("blur", () => {
   const isValidEmail = validateEmail(email.value);
 
   if (isValidEmail) {
-    checkDuplicateEmailRequest()
+    checkUniqueEmailRequest()
       .then((data) => {
-        if (!data) displayInputValid(email);
-        else {
+        if (data === true) {
+          displayInputValid(email);
+        } else {
           removeInputValid(email);
           toast.error("Duplicate Email");
         }

@@ -300,42 +300,42 @@ INSERT INTO status(name) VALUES
 ('Verified'), ('Unverified'), ('Blocked'), ('Active'), ('Inactive'), 
 ('Cancelled'), ('Confirmed'), ('Waiting'), ('Under Maintenance');
 
-CREATE TABLE accounts (
-    account_id INT AUTO_INCREMENT,
+
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT,
     full_name VARCHAR(75) NOT NULL,
     contact VARCHAR(15) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     registration_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     verification_code VARCHAR(100) DEFAULT NULL,
-    status_id INT NOT NULL,
-    PRIMARY KEY (account_id),
-    CONSTRAINT fk_account_status FOREIGN KEY (status_id) REFERENCES status(status_id)
-);
-
-CREATE TABLE users (
-    user_id INT AUTO_INCREMENT,
     dob DATE NOT NULL,
-    gender VARCHAR(6) NOT NULL CHECK (gender IN ('Male', 'Female', 'Other')),
+    gender VARCHAR(6) NOT NULL CHECK (gender IN ('M', 'F', 'O')),
     profile_pic VARCHAR(255),
     licence_pic VARCHAR(255),
     licence_no VARCHAR(25),
-    account_id INT NOT NULL,
+    status_id INT NOT NULL,
     PRIMARY KEY (user_id),
-    CONSTRAINT fk_users_account FOREIGN KEY (account_id) REFERENCES accounts(account_id)
+    CONSTRAINT fk_user_status FOREIGN KEY (status_id) REFERENCES status(status_id)
 );
 
 CREATE TABLE operators (
     operator_id INT AUTO_INCREMENT,
+    full_name VARCHAR(75) NOT NULL,
+    contact VARCHAR(15) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    registration_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    verification_code VARCHAR(100) DEFAULT NULL,
     address VARCHAR(500) NOT NULL,
     certificate VARCHAR(100) NOT NULL,
     website VARCHAR(100) UNIQUE,
     logo VARCHAR(100) NOT NULL,
     banner VARCHAR(100) NOT NULL,
     base_charge INT NOT NULL,
-    account_id INT NOT NULL,
+    status_id INT NOT NULL,
     PRIMARY KEY(operator_id),
-    CONSTRAINT fk_operator_account FOREIGN KEY(account_id) REFERENCES accounts(account_id)
+    CONSTRAINT fk_operator_status FOREIGN KEY (status_id) REFERENCES status(status_id)
 );
 
 CREATE TABLE buses (

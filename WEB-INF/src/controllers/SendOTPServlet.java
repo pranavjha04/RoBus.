@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import utils.AppUtil;
-import utils.RegexUtil;
+import utils.FieldUtil;
 
 @WebServlet("/send_otp.do")
 public class SendOTPServlet extends HttpServlet {
@@ -19,7 +19,7 @@ public class SendOTPServlet extends HttpServlet {
         boolean flag = true;
         String contact = request.getParameter("contact");
 
-        flag = RegexUtil.validateContact(contact);
+        flag = FieldUtil.validateContact(contact);
         if(flag) {
             int otp = AppUtil.generateRandomOTP();
             System.out.println("OTP ------" + otp);

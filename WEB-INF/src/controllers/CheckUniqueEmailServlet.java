@@ -8,21 +8,23 @@ import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
 
-import utils.RegexUtil;
-import models.Account;
+import utils.FieldUtil;
 
-@WebServlet("/check_duplicate_email.do")
-public class CheckDuplicateEmailServlet extends HttpServlet {
+import models.User;
+import models.Operator;
+
+@WebServlet("/check_unique_email.do")
+public class CheckUniqueEmailServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         boolean flag = true;
         String email = request.getParameter("email");
 
         // FIRST VALIDATE THE MAIL
-        flag = RegexUtil.validateEmail(email);
+        flag = FieldUtil.validateEmail(email);
 
         // CHECK DUPLICATE RECORD IF THE EMAIL IS VALID
         if(flag) {
-            flag = Account.checkDuplicateEmail(email);
+            flag = User.checkUniqueEmail(email) && Operator.checkUniqueEmail(email);
         }
 
         response.getWriter().print(flag);

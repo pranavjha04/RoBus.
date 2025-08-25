@@ -79,12 +79,12 @@
     <!-- ######## Recaptcha Config Start ######## -->
      <context-param>
         <param-name>captcha_site_key</param-name>
-        <param-value>6LdALp8rAAAAAI6ybepasYaWefPje5qDHQFrOOAW</param-value>
+        <param-value>6Lc4_a0rAAAAAHc1_-ZdtF-7wsKrlBVFWNxQT-PS</param-value>
     </context-param>
 
     <context-param>
         <param-name>captcha_secret_key</param-name>
-        <param-value>6LdALp8rAAAAAJRFB6BvwWG3y6x3lYjbHF_NfHtL</param-value>
+        <param-value>6Lc4_a0rAAAAAB-oDX_NDA5FvMvrG3UjgDRr9Wxe</param-value>
     </context-param>
     <!-- ######## Recaptcha Config End ######## -->
 

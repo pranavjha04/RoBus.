@@ -8,21 +8,23 @@ import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
 
-import utils.RegexUtil;
-import models.Account;
+import utils.FieldUtil;
 
-@WebServlet("/check_duplicate_contact.do")
-public class CheckDuplicateContactServlet extends HttpServlet {
+import models.User;
+import models.Operator;
+
+@WebServlet("/check_unique_contact.do")
+public class CheckUniqueContactServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         boolean flag = true;
         String contact = request.getParameter("contact");
 
         // FIRST VALIDATE THE CONTACT
-        flag = RegexUtil.validateContact(contact);
+        flag = FieldUtil.validateContact(contact);
 
         // CHECK DUPLICATE RECORD IF THE CONTACT IS VALID
         if(flag) {
-            flag = Account.checkDuplicateContact(contact);
+            flag = User.checkUniqueContact(contact) && Operator.checkUniqueContact(contact);
         }
 
         response.getWriter().print(flag);

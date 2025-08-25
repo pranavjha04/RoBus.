@@ -39,6 +39,12 @@ export const validateFileType = (type, targetType) => {
   return fileType === targetType;
 };
 
+export const validateFileSize = (size) => {
+  if (isNaN(size)) return false;
+
+  return size <= (5 * 1024 * 1024); // 5MB
+};
+
 export const displayInputError = (element) => {
   if (element.classList.contains("border-danger")) return;
 

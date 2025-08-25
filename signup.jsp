@@ -23,9 +23,11 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
       class="d-flex align-items-center justify-content-center flex-grow-1 px-3"
     >
       <form
-        method="get"
+        method="POST"
+        action="signup.do"
         class="bg-white border shadow p-4 rounded-3 w-100"
         style="max-width: 420px"
+        enctype="multipart/form-data"
         id="signup_form"
       >
         <div class="d-flex flex-column align-items-center">
@@ -76,6 +78,7 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 type="password"
                 name="password"
                 id="password"
+                autocomplete="current-password"
                 placeholder="<c:out value='********' />"
                 class="form-control"
               />
@@ -249,6 +252,13 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 />
 
                 <!-- ############ USER TYPE PROFILE PIC FILE END  ############ -->
+
+                <div class="d-flex justify-content-center">
+                  <div
+                    class="g-recaptcha"
+                    data-sitekey="${initParam.captcha_site_key}"
+                  ></div>
+                </div>
 
                 <div class="text-end">
                   <input
