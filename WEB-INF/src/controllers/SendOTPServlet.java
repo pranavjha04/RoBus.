@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import utils.AppUtil;
-import utils.FieldUtil;
+import utils.FieldManager;
 
 @WebServlet("/send_otp.do")
 public class SendOTPServlet extends HttpServlet {
@@ -19,13 +19,13 @@ public class SendOTPServlet extends HttpServlet {
         boolean flag = true;
         String contact = request.getParameter("contact");
 
-        flag = FieldUtil.validateContact(contact);
+        flag = FieldManager.validateContact(contact);
         if(flag) {
-            int otp = AppUtil.generateRandomOTP();
-            System.out.println("OTP ------" + otp);
-            session.setAttribute("otp", otp);
+            // int otp = AppUtil.generateRandomOTP();
+            // System.out.println("OTP ------" + otp);
+            session.setAttribute("otp", 123456);
             session.setAttribute("attempt", 1);
-            session.setMaxInactiveInterval(30);
+            session.setMaxInactiveInterval(300);
         }
 
         response.getWriter().print(flag);

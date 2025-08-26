@@ -8,7 +8,7 @@ import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
 
-import utils.FieldUtil;
+import utils.FieldManager;
 
 import models.User;
 import models.Operator;
@@ -20,7 +20,7 @@ public class CheckUniqueEmailServlet extends HttpServlet {
         String email = request.getParameter("email");
 
         // FIRST VALIDATE THE MAIL
-        flag = FieldUtil.validateEmail(email);
+        flag = FieldManager.validateEmail(email);
 
         // CHECK DUPLICATE RECORD IF THE EMAIL IS VALID
         if(flag) {

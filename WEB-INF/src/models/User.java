@@ -8,13 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import utils.DBManager;
+import utils.EncryptionManager;
 
-public class User {
+public class User implements Account {
 
     private Integer userId;
     private String fullName;
     private Date dob;
-    private Timestamp registrationDate;
     private String contact;
     private Integer gender;
     private String email;
@@ -23,9 +23,91 @@ public class User {
     private Status status;
     private String licencePic;
     private String licenceNumber;
+    private Timestamp createdAt;   
+    private Timestamp updatedAt; 
 
-    public User(String fullName,)
+    public User(String fullName, String contact, String email, String password, Date dob, Integer gender, Status status) {
+        this.fullName = fullName;
+        this.contact = contact;
+        this.email = email;
+        this.password = password;
+        this.dob = new Date(dob.getTime());
+        this.gender = gender;
+        this.status = new Status(status.getStatusId(), status.getName());
+    }
+
     public User() {
+    }
+
+    @Override
+    public boolean saveRecord() {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                    "INSERT INTO users " + 
+                    "(full_name,contact,email,password,dob,gender,status_id) " +
+                    "VALUES (?,?,?,?,?,?,2)";
+            
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, fullName);
+            ps.setString(2, contact);
+            ps.setString(3, email);
+            ps.setString(4, EncryptionManager.encryptPassword(password));
+            ps.setDate(5, dob);
+            ps.setInt(6, gender);
+
+            flag = ps.executeUpdate() == 1;
+
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return flag;
+    }
+
+    @Override
+    public void setField(String fieldName, String value) {
+        switch(fieldName) {
+            case "full_name":
+                setFullName(value);
+                break;
+            case "email":
+                setEmail(value);
+                break;
+            case "contact":
+                setContact(value);
+                break;
+            case "password":
+                setPassword(value);
+                break;
+            case "dob":
+                setDob(Date.valueOf(value));
+                break;
+            case "gender":
+                setGender(Integer.parseInt(value));
+                break;
+            case "licence_no":
+                setLicenceNumber(value);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void setFile(String fieldName, String value) {
+        switch(fieldName) {
+            case "profile_pic":
+                setProfilePic(value);
+                break;
+            case "licence_pic":
+                setLicencePic(value);
+                break;
+            default:
+                break;
+        }
     }
 
     public static boolean checkUniqueEmail(String email) {
@@ -68,31 +150,7 @@ public class User {
         return flag;
     }
 
-    public void setField(String field, String value) {
-        switch(field) {
-            case "full_name":
-                setFullName(value);
-                break
-                break;
-            case "email":
-                setEmail(value);
-                break;
-            case "contact":
-                setContact(value);
-                break;
-            case "password":
-                setPassword(value);
-                break;
-            case "dob":
-                setDob(Date.valueOf(value));
-                break;
-            case "gender":
-                setGender(Integer.parseInt(value));
-                break;
-            default:
-                break;
-        }
-    }
+
     public Integer getUserId() {
         return userId;
     }
@@ -110,19 +168,11 @@ public class User {
     }
 
     public Date getDob() {
-        return dob;
+        return new Date(dob.getTime());
     }
 
     public void setDob(Date dob) {
-        this.dob = dob;
-    }
-
-    public Timestamp getRegistrationDate() {
-        return registrationDate;
-    }
-
-    public void setRegistrationDate(Timestamp registrationDate) {
-        this.registrationDate = registrationDate;
+        this.dob = new Date(dob.getTime());
     }
 
     public String getContact() {
@@ -166,11 +216,11 @@ public class User {
     }
 
     public Status getStatus() {
-        return status;
+        return new Status(status.getStatusId(), status.getName());
     }
 
     public void setStatus(Status status) {
-        this.status = status;
+        this.status = new Status(status.getStatusId(), status.getName());
     }
 
     public String getLicencePic() {
@@ -187,5 +237,21 @@ public class User {
 
     public void setLicenceNumber(String licenceNumber) {
         this.licenceNumber = licenceNumber;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

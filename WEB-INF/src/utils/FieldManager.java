@@ -7,8 +7,9 @@ import models.User;
 import models.Operator;
 
 
-public final class FieldUtil {
-    private FieldUtil() {
+public final class FieldManager {
+    
+    private FieldManager() {
 
     }
     public static final boolean validateField(String field, String value) {
@@ -100,17 +101,5 @@ public final class FieldUtil {
     public static final boolean validateBaseCharge(Integer baseCharge) {
         return baseCharge >= 100 && baseCharge <= 1000;
     }
-
-    public static final boolean validateFileExtension(String fileName) {
-        String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
-        String[] accceptedImageExtensions = {"png","avif","jpeg","jpg","webp","svg"};
-        boolean flag = false;
-        for(int i = 0; i < accceptedImageExtensions.length; i++) {
-            if(extension.equalsIgnoreCase(accceptedImageExtensions[i])) {
-                flag = true;
-                break;
-            }
-        }
-        return flag;
-    }
+    
 }

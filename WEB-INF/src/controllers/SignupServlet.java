@@ -15,8 +15,13 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.FileItem;
 
-import utils.FieldUtil;
+import models.User;
+import models.Operator;
+import models.Account;
+
+import utils.FieldManager;
 import utils.RecaptchaManager;
+import utils.FileManager;
 
 @WebServlet("/signup.do")
 public class SignupServlet extends HttpServlet {
@@ -31,57 +36,84 @@ public class SignupServlet extends HttpServlet {
         response.setContentType("text/plain");
         /*
          RESPONSE CODE 
+         * 0 is Excpetion Occured
          * 1 is Not Multipart Content
-         * 2 is Not Valid Field Input
-         * 3 is Form Valid
+         * 2 is Captcha invalid
+         * 3 is Invalid field
+         * 4 is Invalid file
+         * 5 is Error while saving
+         * 6 is Valid Form
          */
-        int responseCode = 1;
-        Date date = null;
+        Integer accountType = Integer.parseInt(request.getParameter("accountType"));
         try {
             if (!ServletFileUpload.isMultipartContent(request)) {
-                responseCode = 1;
+                response.getWriter().print(1);
+                return;
             }
             else {
                 List<FileItem> fileItems = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
-                User user = new User();
+                Account account = accountType == 1 ? new User() : new Operator();
                 boolean areFieldsValid = true;
-                for (FileItem item : fileItems) {
-                    boolean flag = true;
+                for(FileItem item: fileItems) {
+                    // GET THE NAME OF THE FIELD
                     String fieldName = item.getFieldName();
+                    
+                    // FORM FIELD 
                     if(item.isFormField()) {
+                        // GET THE VALUE OF THE FIELD
                         String value = item.getString();
+                        // RECAPTCHA VALIDATE
                         if(fieldName.equals("g-recaptcha-response")) {
-                            flag = RecaptchaManager.checkCaptchaValid(value, getServletContext().getInitParameter("captcha_secret_key"));
-                        }
-                        else {
-                            flag = FieldUtil.validateField(fieldName, value);
-                        }
-
-                        if(flag) {
-                            user.setField(fieldName, value);
-                        }
-                    }
-                    else {
-                        if(FieldUtil.validateFileExtension(item.getName())) {
-                            long maxFileSize = 5 * 1024L * 1024L; 
-                            if (item.getSize() > maxFileSize) {
-                                flag = false;
+                            // CHECK CAPTCHA INVALID THEN BREAK THE LOOP
+                            if(!RecaptchaManager.checkCaptchaValid(value, getServletContext().getInitParameter("captcha_secret_key"))) {
+                                System.out.println(fieldName + "----captcha");
+                                response.getWriter().print(2); 
+                                return;
                             }
                         }
-                        else {   
-                            flag = false;
+                        else {
+                            // CHECK OTHER FIELD AS IF THEY ARE VALID
+                            boolean flag = FieldManager.validateField(fieldName, value);
+                            if(!flag) {
+                                System.out.println(fieldName);
+                                response.getWriter().print(3);
+                                return;
+                            }
+                            account.setField(fieldName, value);
                         }
                     }
-                    if(!flag) {
-                        areFieldsValid = false;
-                        responseCode = 2;
-                        break;
+                    else { // FILE FIELD
+                        
+                        // MEANS THE IMAGE IS UPLOADED
+                        long size = item.getSize();
+                        if(size > 0) {
+                            String name = item.getName();
+                            if(FileManager.validateFileSize(size) && FileManager.validateFileExtension(name, "image")) {
+                                String fileName = FileManager.generateFileName(name);
+                                // account.setFile(fieldName, fileName);
+                            }
+                            else {
+                                response.getWriter().print(4);
+                                return;
+                            }
+                        }
+                        else {
+                            System.out.println(fieldName + " Not Uploaded");
+                        }
                     }
                 }
 
-                if(areFieldsValid) {
-                    responseCode = 3;
-                }
+                System.out.println("Sab changa si");
+                boolean insrted = account.saveRecord();
+                System.out.println(insrted);
+                // if(!isInserted) {
+                //     response.getWriter().print(5);
+                //     return;
+                // }
+                // else {
+                //     response.getWriter().print(6);
+                //     return;
+                // }
             }
 
         } catch (FileUploadException e) {
@@ -90,13 +122,6 @@ public class SignupServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        response.getWriter().print(responseCode);
     }
 }
 
-// @RESPONSE CODE
-        /*  
-            1 means Recaptcha Invalid 
-            2 means Not Multipart Content
-
-         */

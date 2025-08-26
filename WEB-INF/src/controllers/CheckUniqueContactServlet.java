@@ -8,7 +8,7 @@ import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
 
-import utils.FieldUtil;
+import utils.FieldManager;
 
 import models.User;
 import models.Operator;
@@ -20,7 +20,7 @@ public class CheckUniqueContactServlet extends HttpServlet {
         String contact = request.getParameter("contact");
 
         // FIRST VALIDATE THE CONTACT
-        flag = FieldUtil.validateContact(contact);
+        flag = FieldManager.validateContact(contact);
 
         // CHECK DUPLICATE RECORD IF THE CONTACT IS VALID
         if(flag) {

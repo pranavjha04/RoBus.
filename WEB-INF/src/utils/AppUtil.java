@@ -15,4 +15,8 @@ public final class AppUtil {
     public static final int generateRandomOTP() {
         return random.nextInt(888888) + 111111;
     }
+    
+    public static final int generateRandomInt() {
+        return Math.abs(random.nextInt());
+    }
 }

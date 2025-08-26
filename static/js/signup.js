@@ -103,16 +103,7 @@ signUpForm.addEventListener("submit", (e) => {
 
   signUpRequest(formData)
     .then((res) => {
-      const responseCode = +res;
-      if (isNaN(responseCode) || responseCode === 1) {
-        throw new Error();
-      }
-      if (responseCode === 2) {
-        toast.error("Invalid Input Details");
-      }
-      if (responseCode === 3) {
-        toast.success("Form submitted successfully");
-      }
+      console.log(res);
     })
     .catch((error) => {
       console.error("Signup failed:", error);

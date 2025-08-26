@@ -48,6 +48,7 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 type="text"
                 name="full_name"
                 class="form-control"
+                value="Pranav Jha"
                 placeholder="${param.type == 1 ? 'Pranav Jha' : 'Pranav Travels'}"
               />
             </div>
@@ -64,6 +65,7 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 name="email"
                 placeholder="example@email.com"
                 autocomplete="email"
+                value="pranav2580@gmail.com"
                 class="form-control"
               />
             </div>
@@ -80,6 +82,7 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 id="password"
                 autocomplete="current-password"
                 placeholder="<c:out value='********' />"
+                value="HelloWorld@#$!@12323"
                 class="form-control"
               />
             </div>
@@ -97,6 +100,7 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 type="tel"
                 name="contact"
                 class="form-control"
+                value="9399208982"
                 autocomplete="off"
               />
             </div>
@@ -207,6 +211,7 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                       type="date"
                       name="dob"
                       class="form-control"
+                      value="2002-12-12"
                     />
                   </div>
                   <!-- ############ USER TYPE DATE OF BIRTH END  ############ -->
