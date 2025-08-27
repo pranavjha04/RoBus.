@@ -77,14 +77,13 @@
 
         <p class="text-muted text-center small">
           New here?
-          <button
+          <a
+            href="signup.do"
             class="text-primary border-0 text-decoration-none"
             style="background: none"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
           >
             Create an account
-          </button>
+          </a>
         </p>
       </form>
     </section>

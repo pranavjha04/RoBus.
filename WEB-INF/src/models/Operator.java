@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import utils.DBManager;
 import utils.EncryptionManager;
 
-public class Operator implements Account {
+public class Operator {
     private Integer operatorId;
     private String fullName;
     private Date registrationDate; 
@@ -27,95 +27,10 @@ public class Operator implements Account {
     private Status status;
     private Timestamp createdAt;   
     private Timestamp updatedAt;   
+    private UserType userType;
 
-    public Operator(String fullName, String contact, String email, String password, Date registrationDate, String address, Integer baseCharge, Status status) {
-        this.fullName = fullName;
-        this.contact = contact;
-        this.email = email;
-        this.password = password;
-        this.registrationDate = new Date(registrationDate.getTime());
-        this.address = address;
-        this.baseCharge = baseCharge;
-        this.status = new Status(status.getStatusId(), status.getName());
-    }
 
     public Operator() {
-    }
-
-    @Override
-    public boolean saveRecord() {
-        boolean flag = false;
-        try {
-            Connection con = DBManager.getConnection();
-            String query = 
-                    "INSERT INTO operators " + 
-                    "(full_name,contact,email,password,registration_date,address,base_charge,status_id)" + 
-                    "VALUES (?,?,?,?,?,?,?,2)";
-
-            PreparedStatement ps = con.prepareStatement(query);
-            ps.setString(1, fullName);
-            ps.setString(2, contact);
-            ps.setString(3, email);
-            ps.setString(4, EncryptionManager.encryptPassword(password));
-            ps.setDate(5, registrationDate);
-            ps.setString(6, address);
-            ps.setInt(7, baseCharge);
-
-            flag = ps.executeUpdate() == 1;
-            con.close();
-        }
-        catch(SQLException e) {
-            e.printStackTrace();
-        }
-        return flag;
-    }
-
-    @Override
-    public void setField(String fieldName, String value) {
-        switch(fieldName) {
-            case "full_name":
-                setFullName(value);
-                break;
-            case "email":
-                setEmail(value);
-                break;
-            case "contact":
-                setContact(value);
-                break;
-            case "password":
-                setPassword(value);
-                break;
-            case "registration_date":
-                setRegistrationDate(Date.valueOf(value));
-            case "address":
-                setAddress(value);
-                break;
-            case "website":
-                setWebsite(value);
-                break;
-            case "base_charge":
-                setBaseCharge(Integer.parseInt(value));
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void setFile(String fieldName, String value) {
-        switch(fieldName) {
-            case "certificate":
-                setCertificate(value);
-                break;
-            case "logo":
-                setLogo(value);
-                break;
-            case "banner":
-                setBanner(value);
-                break;
-            default:
-                break;
-        }
     }
 
     public static boolean checkUniqueEmail(String email) {
@@ -285,5 +200,13 @@ public class Operator implements Account {
 
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public UserType getUserType() {
+        return new UserType(userType.getUserTypeId(), userType.getName());
+    } 
+
+    public void setUserType(UserType userType) {
+        this.userType = new UserType(userType.getUserTypeId(), userType.getName());
     }
 }

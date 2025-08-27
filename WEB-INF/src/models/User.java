@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import utils.DBManager;
 import utils.EncryptionManager;
 
-public class User implements Account {
+public class User {
 
     private Integer userId;
     private String fullName;
@@ -23,91 +23,12 @@ public class User implements Account {
     private Status status;
     private String licencePic;
     private String licenceNumber;
+    private String verificationCode;
     private Timestamp createdAt;   
     private Timestamp updatedAt; 
-
-    public User(String fullName, String contact, String email, String password, Date dob, Integer gender, Status status) {
-        this.fullName = fullName;
-        this.contact = contact;
-        this.email = email;
-        this.password = password;
-        this.dob = new Date(dob.getTime());
-        this.gender = gender;
-        this.status = new Status(status.getStatusId(), status.getName());
-    }
+    private UserType userType;
 
     public User() {
-    }
-
-    @Override
-    public boolean saveRecord() {
-        boolean flag = false;
-        try {
-            Connection con = DBManager.getConnection();
-            String query = 
-                    "INSERT INTO users " + 
-                    "(full_name,contact,email,password,dob,gender,status_id) " +
-                    "VALUES (?,?,?,?,?,?,2)";
-            
-            PreparedStatement ps = con.prepareStatement(query);
-            ps.setString(1, fullName);
-            ps.setString(2, contact);
-            ps.setString(3, email);
-            ps.setString(4, EncryptionManager.encryptPassword(password));
-            ps.setDate(5, dob);
-            ps.setInt(6, gender);
-
-            flag = ps.executeUpdate() == 1;
-
-            con.close();
-        }
-        catch(SQLException e) {
-            e.printStackTrace();
-        }
-        return flag;
-    }
-
-    @Override
-    public void setField(String fieldName, String value) {
-        switch(fieldName) {
-            case "full_name":
-                setFullName(value);
-                break;
-            case "email":
-                setEmail(value);
-                break;
-            case "contact":
-                setContact(value);
-                break;
-            case "password":
-                setPassword(value);
-                break;
-            case "dob":
-                setDob(Date.valueOf(value));
-                break;
-            case "gender":
-                setGender(Integer.parseInt(value));
-                break;
-            case "licence_no":
-                setLicenceNumber(value);
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void setFile(String fieldName, String value) {
-        switch(fieldName) {
-            case "profile_pic":
-                setProfilePic(value);
-                break;
-            case "licence_pic":
-                setLicencePic(value);
-                break;
-            default:
-                break;
-        }
     }
 
     public static boolean checkUniqueEmail(String email) {
@@ -207,6 +128,14 @@ public class User implements Account {
         this.password = password;
     }
 
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
+
     public String getProfilePic() {
         return profilePic;
     }
@@ -253,5 +182,13 @@ public class User implements Account {
 
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public UserType getUserType() {
+        return new UserType(userType.getUserTypeId(), userType.getName());
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = new UserType(userType.getUserTypeId(), userType.getName());
     }
 }

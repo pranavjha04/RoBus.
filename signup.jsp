@@ -36,9 +36,8 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
         </div>
 
         <div id="formWrapper">
-          <!-- ################ ACCOUNT ESSENTIALS PAGE 1 ################ -->
           <div id="page_1" class="d-flex flex-column gap-3 d-block">
-            <!-- ############ ACCOUNT FULL NAME START ############ -->
+            <!-- FULL NAME -->
             <div>
               <label for="full_name" class="form-label small fw-semibold"
                 >Full Name</label
@@ -49,12 +48,10 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 name="full_name"
                 class="form-control"
                 value="Pranav Jha"
-                placeholder="${param.type == 1 ? 'Pranav Jha' : 'Pranav Travels'}"
+                placeholder="Pranav Jha"
               />
             </div>
-            <!-- ############ ACCOUNT FULL NAME END ############ -->
-
-            <!-- ############ ACCOUNT EMAIL START ############ -->
+            <!-- EMAIL -->
             <div>
               <label for="email" class="form-label small fw-semibold"
                 >Email address</label
@@ -69,9 +66,7 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 class="form-control"
               />
             </div>
-            <!-- ############ ACCOUNT EMAIL END ############ -->
-
-            <!-- ############ ACCOUNT PASSWORD START ############ -->
+            <!-- PASSWORD -->
             <div>
               <label for="password" class="form-label small fw-semibold"
                 >Password</label
@@ -86,11 +81,8 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 class="form-control"
               />
             </div>
-            <!-- ############ ACCOUNT PASSWORD END ############ -->
           </div>
-          <!-- ############ ACCOUNT ESSENTIAL PAGE 2  ############ -->
           <div id="page_2" class="d-flex flex-column gap-3 d-none">
-            <!-- ############ ACCOUNT ESSENTIAL CONTACT START  ############ -->
             <div>
               <label for="contact" class="form-label small fw-semibold"
                 >Contact</label
@@ -102,11 +94,10 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 class="form-control"
                 value="9399208982"
                 autocomplete="off"
+                minlength="10"
+                maxlength="10"
               />
             </div>
-            <!-- ############ ACCOUNT ESSENTIAL CONTACT END  ############ -->
-
-            <!-- ############ ACCOUNT ESSENTIAL SEND OTP BUTTON START  ############ -->
             <input
               type="button"
               value="Send OTP"
@@ -132,9 +123,6 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
               id="edit_contact_btn"
               class="btn btn-primary px-4 fw-medium align-self-end d-none"
             />
-            <!-- ############ ACCOUNT ESSENTIAL SEND OTP BUTTON END  ############ -->
-
-            <!-- ############ ACCOUNT ESSENTIAL  OTP INPUT START  ############ -->
             <div id="otp_container" class="d-none">
               <label for="otp-1" class="form-label small fw-semibold"
                 >Enter OTP</label
@@ -184,184 +172,43 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 />
               </div>
             </div>
-
-            <!-- ############ ACCOUNT ESSENTIAL  OTP INPUT END  ############ -->
-
-            <!-- ############ ACCOUNT ESSENTIAL VERIFY OTP BUTTON START  ############ -->
-
             <input
               type="button"
               value="Verify OTP"
               id="verify_otp_btn"
               class="btn btn-primary px-4 fw-medium align-self-end d-none"
             />
-            <!-- ############ ACCOUNT ESSENTIAL VERIFY OTP BUTTON END  ############ -->
           </div>
-          <c:choose>
-            <c:when test="${param.type == 1}">
-              <div id="page_3" class="d-flex flex-column gap-3 d-none">
-                <div class="d-flex justify-content-between align-items-center">
-                  <!-- ############ USER TYPE DATE OF BIRTH START  ############ -->
-                  <div>
-                    <label for="dob" class="form-label small fw-semibold"
-                      >Date of Birth</label
-                    >
-                    <input
-                      id="dob"
-                      type="date"
-                      name="dob"
-                      class="form-control"
-                      value="2002-12-12"
-                    />
-                  </div>
-                  <!-- ############ USER TYPE DATE OF BIRTH END  ############ -->
-
-                  <!-- ############ USER TYPE SELECT GENDER START  ############ -->
-                  <div>
-                    <label for="gender" class="form-label small fw-semibold"
-                      >Gender</label
-                    >
-                    <select
-                      id="gender"
-                      class="form-select"
-                      aria-label="Select Gender"
-                      name="gender"
-                    >
-                      <option selected value="">Select Your Gender</option>
-                      <option value="1">Male</option>
-                      <option value="2">Female</option>
-                      <option value="3">Others</option>
-                    </select>
-                  </div>
-                  <!-- ############ USER TYPE SELECT GENDER END  ############ -->
-                </div>
-                <!-- ############ USER TYPE PROFILE PIC FILE START  ############ -->
-                <div>
-                  <label for="profile_pic" class="form-label small fw-semibold"
-                    >Profile Pic</label
-                  >
-                  <input
-                    class="form-control"
-                    type="file"
-                    id="profile_pic"
-                    name="profile_pic"
-                  />
-                </div>
-
-                <img
-                  src=""
-                  alt="Your Uploaded Image"
-                  id="preview_image"
-                  class="w-25 h-25 rounded object-fit-cover d-none"
-                  style="max-height: 25%; max-width: 25%"
-                />
-
-                <!-- ############ USER TYPE PROFILE PIC FILE END  ############ -->
-
-                <div class="d-flex justify-content-center">
-                  <div
-                    class="g-recaptcha"
-                    data-sitekey="${initParam.captcha_site_key}"
-                  ></div>
-                </div>
-
-                <div class="text-end">
-                  <input
-                    type="submit"
-                    value="Create an account"
-                    class="btn btn-primary w-100"
-                  />
-                  <!-- ############ USER TYPE ESSENTIAL PAGE 1  ############ -->
-                </div>
-              </div>
-            </c:when>
-            <c:when test="${param.type == 2}">
-              <!-- ############ BUS OPERATOR ESSENTIAL PAGE 1  ############ -->
-              <div id="page_4" class="d-flex flex-column gap-3 d-none">
-                <!-- ############ BUS OPERATOR ADDRESS START  ############ -->
-                <div>
-                  <label for="address" class="form-label small fw-semibold"
-                    >Address</label
-                  >
-                  <textarea
-                    id="address"
-                    class="form-control"
-                    rows="3"
-                    style="resize: none"
-                  ></textarea>
-                </div>
-                <!-- ############ BUS OPERATOR ADDRESS END  ############ -->
-
-                <!-- ############ BUS OPERATOR WEBSITE URL START  ############ -->
-                <div>
-                  <label for="website" class="form-label small fw-semibold"
-                    >Website URL
-                  </label>
-                  <input
-                    id="website"
-                    type="url"
-                    name="website"
-                    class="form-control"
-                  />
-                </div>
-                <!-- ############ BUS OPERATOR WEBSITE URL END  ############ -->
-
-                <!-- ############ BUS OPERATOR BASE CHARGE START  ############ -->
-                <div>
-                  <label for="base_charge" class="form-label small fw-semibold"
-                    >Base Charge</label
-                  >
-                  <input
-                    id="base_charge"
-                    type="number"
-                    name="base_charge"
-                    class="form-control"
-                  />
-                </div>
-                <!-- ############ BUS OPERATOR BASE CHARGE END  ############ -->
-              </div>
-
-              <!-- ############ BUS OPERATOR ESSENTIAL PAGE 2  ############ -->
-              <div id="page_5" class="d-flex flex-column gap-3 d-none">
-                <!-- ############ BUS OPERATOR CERTIFICATE FILE START  ############ -->
-                <div>
-                  <label for="certificate" class="form-label small fw-semibold"
-                    >Certificate</label
-                  >
-                  <input class="form-control" type="file" id="certificate" />
-                </div>
-                <!-- ############ BUS OPERATOR CERTIFICATE FILE END  ############ -->
-
-                <!-- ############ BUS OPERATOR LOGO FILE START  ############ -->
-                <div>
-                  <label for="logo" class="form-label small fw-semibold"
-                    >Logo</label
-                  >
-                  <input class="form-control" type="file" id="logo" />
-                </div>
-                <!-- ############ BUS OPERATOR LOGO FILE END  ############ -->
-
-                <!-- ############ BUS OPERATOR BANNER FILE START  ############ -->
-                <div>
-                  <label for="banner" class="form-label small fw-semibold"
-                    >Banner</label
-                  >
-                  <input class="form-control" type="file" id="banner" />
-                </div>
-                <!-- ############ BUS OPERATOR BANNER FILE END  ############ -->
-                <div class="text-end">
-                  <input
-                    type="submit"
-                    value="Create an account"
-                    class="btn btn-primary"
-                  />
-                </div>
-              </div>
-            </c:when>
-            <c:otherwise>
-              <c:redirect url="login.do" />
-            </c:otherwise>
-          </c:choose>
+          <div id="page_3" class="d-flex flex-column gap-3 d-none">
+            <div>
+              <label for="dob" class="form-label small fw-semibold"
+                >Date of birth</label
+              >
+              <input id="dob" type="date" name="dob" class="form-control" />
+            </div>
+            <div>
+              <label for="gender" class="form-label small fw-semibold"
+                >Date of birth</label
+              >
+              <select class="form-select" id="gender">
+                <option selected>Select Gender</option>
+                <option value="1">Male</option>
+                <option value="2">Female</option>
+                <option value="3">Others</option>
+              </select>
+            </div>
+            <div class="d-flex justify-content-center">
+              <div
+                class="g-recaptcha"
+                data-sitekey="${initParam.captcha_site_key}"
+              ></div>
+            </div>
+            <input
+              type="submit"
+              value="Create an account"
+              class="btn btn-primary px-4 fw-medium"
+            />
+          </div>
         </div>
 
         <div id="pagination" class="mt-4 d-flex justify-content-between"></div>

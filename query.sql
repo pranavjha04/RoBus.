@@ -300,6 +300,15 @@ INSERT INTO status(name) VALUES
 ('Verified'), ('Unverified'), ('Blocked'), ('Active'), ('Inactive'), 
 ('Cancelled'), ('Confirmed'), ('Waiting'), ('Under Maintenance');
 
+CREATE TABLE user_types (
+    user_type_id INT AUTO_INCREMENT,
+    name VARCHAR(20) NOT NULL,
+    PRIMARY KEY (user_type_id)
+);
+
+INSERT INTO user_types(name) VALUES
+('Passenger'), ('Operator'), ('Driver');
+
 
 CREATE TABLE users (
     user_id INT AUTO_INCREMENT,
@@ -313,11 +322,11 @@ CREATE TABLE users (
     dob DATE NOT NULL,
     gender INT NOT NULL CHECK (gender IN (1, 2, 3)),
     profile_pic VARCHAR(255),
-    licence_pic VARCHAR(255),
-    licence_no VARCHAR(25),
     status_id INT NOT NULL,
+    user_type_id INT NOT NULL,
     PRIMARY KEY (user_id),
-    CONSTRAINT fk_user_status FOREIGN KEY (status_id) REFERENCES status(status_id)
+    CONSTRAINT fk_user_status FOREIGN KEY (status_id) REFERENCES status(status_id),
+    CONSTRAINT fk_user_type FOREIGN KEY (user_type_id) REFERENCES user_types(user_type_id)
 );
 
 CREATE TABLE operators (
@@ -337,8 +346,10 @@ CREATE TABLE operators (
     banner VARCHAR(100),
     base_charge INT NOT NULL,
     status_id INT NOT NULL,
+    user_id INT NOT NULL,
     PRIMARY KEY(operator_id),
-    CONSTRAINT fk_operator_status FOREIGN KEY (status_id) REFERENCES status(status_id)
+    CONSTRAINT fk_operator_status FOREIGN KEY (status_id) REFERENCES status(status_id),
+    CONSTRAINT fk_operator_user FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE buses (
@@ -444,6 +455,8 @@ CREATE TABLE drivers (
     end_date DATE,
     user_id INT NOT NULL,
     operator_id INT NOT NULL,
+    licence_pic VARCHAR(50),
+    licence_no VARCHAR(50),
     PRIMARY KEY(driver_id),
     CONSTRAINT fk_driv_users FOREIGN KEY(user_id) REFERENCES users(user_id),
     CONSTRAINT fk_driv_operators FOREIGN KEY(operator_id) REFERENCES operators(operator_id)

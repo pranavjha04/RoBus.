@@ -42,10 +42,11 @@ export const validateFileType = (type, targetType) => {
 export const validateFileSize = (size) => {
   if (isNaN(size)) return false;
 
-  return size <= (5 * 1024 * 1024); // 5MB
+  return size <= 5 * 1024 * 1024; // 5MB
 };
 
 export const displayInputError = (element) => {
+  removeInputSuccess(element);
   if (element.classList.contains("border-danger")) return;
 
   element.classList.add("border-danger");
@@ -58,6 +59,7 @@ export const removeInputError = (element) => {
 };
 
 export const displayInputSuccess = (element) => {
+  removeInputError(element);
   if (element.classList.contains("border-success")) return;
 
   element.classList.add("border-success");
@@ -96,4 +98,20 @@ export const showElement = (element) => {
 
 export const createURLParams = (params) => {
   return new URLSearchParams(params);
+};
+
+export const disableElements = (...elements) => {
+  elements.forEach((next) => (next.disabled = true));
+};
+
+export const enableElements = (...elements) => {
+  elements.forEach((next) => (next.disabled = false));
+};
+
+export const readOnlyElements = (...elements) => {
+  elements.forEach((next) => (next.readOnly = true));
+};
+
+export const removeReadOnlyElements = (...elements) => {
+  elements.forEach((next) => (next.readOnly = false));
 };

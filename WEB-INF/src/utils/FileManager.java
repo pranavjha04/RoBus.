@@ -10,7 +10,7 @@ public final class FileManager {
     }
 
     public static final String generateFileName(String fileName) {
-        return new Date().getTime() + AppUtil.generateRandomInt() + fileName;
+        return "" + (new Date()).getTime() + AppUtil.generateRandomInt() + fileName;
     }
 
     public static final boolean validateFileExtension(String fileName, String expectedType) {

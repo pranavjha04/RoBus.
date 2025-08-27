@@ -8,25 +8,22 @@ import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
 
-import utils.FieldManager;
-
 import models.User;
 import models.Operator;
+
+import utils.FieldManager;
 
 @WebServlet("/check_unique_contact.do")
 public class CheckUniqueContactServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        boolean flag = true;
         String contact = request.getParameter("contact");
-
-        // FIRST VALIDATE THE CONTACT
-        flag = FieldManager.validateContact(contact);
-
-        // CHECK DUPLICATE RECORD IF THE CONTACT IS VALID
-        if(flag) {
-            flag = User.checkUniqueContact(contact) && Operator.checkUniqueContact(contact);
+        boolean isValid = FieldManager.validateContact(contact);
+        if(!isValid) {
+            response.getWriter().println(false);
+            return;
         }
 
-        response.getWriter().print(flag);
+        boolean isUnique = User.checkUniqueContact(contact) && Operator.checkUniqueContact(contact);
+        response.getWriter().println(isUnique);
     }
 }

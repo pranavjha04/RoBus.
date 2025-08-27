@@ -9,37 +9,54 @@ import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-
 @WebServlet("/verify_otp.do")
 public class VerifyOTPServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        // 1 = invalid session / expired
-        // 2 = otp mismatch
-        // 3 = otp success
-        int responseCode = 1;
-        HttpSession session = request.getSession(false);
         String otp = request.getParameter("otp");
-        Integer attempt = (Integer) session.getAttribute("attempt");
-        String sessionOTP = (session.getAttribute("otp") == null ? "" : session.getAttribute("otp")).toString();
-        
-        if(!sessionOTP.equals(otp)) {
-            responseCode = 2; // MISMATCH HOGYA
-            System.out.println(attempt);
-            attempt++;
-            session.setAttribute("attempt", attempt);
-            
+        boolean isOTPValid = otp.trim().length() == 6;
+        int responseCode = 0;
+        if(!isOTPValid) {
+            responseCode = 1;
+            response.getWriter().println(responseCode);
+            return;
+        }
+
+        HttpSession session = request.getSession();
+        if(session.getAttribute("otp") == null) {
+            responseCode = 2;
+            response.getWriter().println(responseCode);
+            return;
+        }
+
+        String sessionOTP = (String) session.getAttribute("otp");
+        System.out.println(sessionOTP);
+        Integer attempt = (Integer) session.getAttribute("remainingAttempts");
+
+        if(sessionOTP.equals(otp)) {
+            responseCode = 3;
+            System.out.println("YUSSSSSSSSSSSSSSSSSs");
+            response.getWriter().println(responseCode);
+            session.invalidate();
+            return;
         }
         else {
-            responseCode = 3; // MATCH HOGYA
-        }
+            if(attempt == 1) {
+                responseCode = 2;
+                session.invalidate();
+                response.getWriter().println(responseCode);
+                return;
+            }
 
-        if(responseCode == 1 || attempt == 4) {
-            session.invalidate();
-            session.removeAttribute("otp");
-            session.removeAttribute("attempt");
+            session.setAttribute("remainingAttempts", attempt - 1);
+            String message = "You have " + (attempt - 1) + " ";
+            if(attempt - 1 == 1) {
+                message += "attemp remaining";
+            }
+            else {
+                message += "attempt's remaining";
+            }
+            response.getWriter().println(message);
+            return;
         }
-
-        response.getWriter().print(responseCode);
     }
 }
-

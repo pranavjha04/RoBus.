@@ -1,465 +1,206 @@
 import { Pagination } from "./pagination.js";
-import { toast } from "./toast.js";
 import {
-  createURLParams,
-  showElement,
+  checkEmailValid,
+  checkContactValid,
+  sendOtpHandler,
+  checkOTP,
+} from "./service.js";
+import {
+  disableElements,
+  displayInputError,
   displayInputSuccess,
-  displayInputValid,
+  enableElements,
   hideElement,
+  readOnlyElements,
   removeInputError,
-  removeInputSuccess,
-  removeInputValid,
-  validateContact,
-  validateEmail,
+  removeReadOnlyElements,
+  showElement,
   validateName,
   validatePassword,
   validateUserAge,
-  validateFileType,
-  displayInputError,
-  validateFileSize,
 } from "./util.js";
 
-const signUpForm = document.querySelector("#signup_form");
+import { toast } from "./toast.js";
 
-// ----------- ACCOUNT ESSENTIALS ---------------
+(function () {
+  new Pagination({
+    parentElement: document.getElementById("formWrapper"),
+  });
+})();
+
 const fullName = document.querySelector("#full_name");
 const email = document.querySelector("#email");
 const password = document.querySelector("#password");
+
 const contact = document.querySelector("#contact");
-
-// ----------- OTP -----------------
-const otp = document.querySelectorAll("input[name='otp']");
-const otpContainer = document.querySelector("#otp_container");
-const sendOTPBtn = document.querySelector("#send_otp_btn");
+const sendOtpBtn = document.querySelector("#send_otp_btn");
 const editContactBtn = document.querySelector("#edit_contact_btn");
-const loadingBtn = document.querySelector("#load_otp_btn");
-const verifyOTPBtn = document.querySelector("#verify_otp_btn");
-const accountType = +window.location.search.slice(-1);
+const loadingOtpBtn = document.querySelector("#load_otp_btn");
+const otpContainer = document.querySelector("#otp_container");
+const otpFields = Array.from(document.querySelectorAll("input[name='otp']"));
+const verifyOtpBtn = document.querySelector("#verify_otp_btn");
 
-const accountValidate = (data) => {
-  if (
-    !validateName(data.full_name) ||
-    !validateEmail(data.email) ||
-    !validatePassword(data.password) ||
-    !validateContact(data.contact) ||
-    !Array.from(otp).every((next) => next.classList.contains("border-success"))
-  ) {
-    return false;
+const dob = document.querySelector("#dob");
+const gender = document.querySelector("#gender");
+
+gender.addEventListener("change", (e) => {
+  const value = e.target.value;
+  const isValid = !isNaN(value) && value > 0 && value < 3;
+  if (isValid) {
+    displayInputSuccess(gender);
+  } else {
+    displayInputError(gender);
   }
-  return true;
-};
+});
 
-const userValidate = (data) => {
-  const isGenderValid = ["1", "2", "3"].includes(gender.value);
-  if (!validateUserAge(data.dob) || !isGenderValid) {
-    toast.error("Please enter valid user details !!!");
-    return false;
+dob.addEventListener("blur", () => {
+  const isValid = validateUserAge(dob.value);
+  if (isValid) {
+    displayInputSuccess(dob);
+  } else {
+    displayInputError(dob);
   }
-  return true;
-};
-const operatorValidate = (data) => {};
+});
 
-const signUpRequest = async (formData) => {
+verifyOtpBtn.addEventListener("click", async () => {
+  const otpValue = otpFields.map((otp) => otp.value).join("");
+  if (otpValue.trim().length < 6) return;
+
   try {
-    const response = await fetch(`signup.do?accountType=${accountType}`, {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!response.ok) {
-      throw new Error(`Server responded with status: ${response.status}`);
+    const serverResponse = await checkOTP(otpValue);
+    if (serverResponse === "1") {
+      toast.error("Invalid OTP");
+      document.querySelector("#otp-1").focus();
+    } else if (serverResponse === "2") {
+      throw new Error("Session Expired");
+    } else if (serverResponse === "3") {
+      otpContainer.remove();
+      verifyOtpBtn.remove();
+      sendOtpBtn.remove();
+      editContactBtn.remove();
+      loadingOtpBtn.remove();
+      displayInputSuccess(contact);
+      toast.success("Number verified successfully");
+    } else {
+      toast.warning(serverResponse);
     }
-
-    const serverResponse = await response.text();
-    return serverResponse;
-  } catch (error) {
-    console.error("Signup request failed:", error);
-    throw error;
+  } catch (err) {
+    toast.error(err.message);
+    hideElement(otpContainer);
+    hideElement(editContactBtn);
+    hideElement(verifyOtpBtn);
+    showElement(sendOtpBtn);
   }
-};
+});
 
-signUpForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const formData = new FormData(signUpForm);
-
-  let isAccountValid = accountValidate(Object.fromEntries(formData));
-
-  if (accountType === 1) {
-    isAccountValid = userValidate(Object.fromEntries(formData));
-  }
-  if (accountType === 2) {
-    isAccountValid = operatorValidate(Object.fromEntries(formData));
-  }
-
-  if (!isAccountValid) {
-    toast.error(
-      accountType === 1
-        ? "Please enter valid user details !!!"
-        : "Please enter valid operator details !!!"
+otpFields.forEach((otp) => {
+  otp.addEventListener("input", (e) => {
+    const allFilled = otpFields.every((next) => next.value !== "");
+    if (allFilled) showElement(verifyOtpBtn);
+    else hideElement(verifyOtpBtn);
+    const currId = +e.target.getAttribute("id").slice(-1);
+    const nextTarget = document.querySelector(
+      `#otp-${Math.min(currId + 1, 6)}`
     );
-    return;
-  }
 
-  signUpRequest(formData)
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((error) => {
-      console.error("Signup failed:", error);
-      toast.error("Signup failed. Please try again.");
-    });
-});
+    if (currId === 6 && e.target.value !== "") verifyOtpBtn.focus();
 
-const userSignUp = () => {
-  // USER ESSENTIALS FIELDS;
-  const dob = document.querySelector("#dob");
-  const gender = document.querySelector("#gender");
-  const profilePic = document.querySelector("#profile_pic");
-  const previeImage = document.querySelector("#preview_image");
-
-  dob.addEventListener("input", () => {
-    const isValid = validateUserAge(dob.value);
-    if (isValid) {
-      displayInputSuccess(dob);
-    } else {
-      dob.value = "";
-      removeInputSuccess(dob);
-      toast.error("Age must be greater or equal to 16");
-    }
+    if (currId < 6 && nextTarget && e.target.value !== "") nextTarget.focus();
   });
-
-  gender.addEventListener("input", () => {
-    const isValid = ["1", "2", "3"].includes(gender.value);
-    if (isValid) {
-      displayInputSuccess(gender);
-    } else {
-      gender.value = "";
-      removeInputSuccess(gender);
-      toast.error("Invalid Gender");
-    }
-  });
-
-  profilePic.addEventListener("change", () => {
-    console.log(profilePic.files);
-    const [file] = profilePic.files;
-    const isValid =
-      validateFileType(file?.type, "image") && validateFileSize(file?.size);
-    if (isValid && profilePic.files.length === 1) {
-      removeInputError(profilePic);
-      displayInputSuccess(profilePic);
-      showElement(previeImage);
-      previeImage.src = URL.createObjectURL(file);
-      previeImage.setAttribute("alt", file.name);
-    } else {
-      removeInputSuccess(profilePic);
-      displayInputError(profilePic);
-      hideElement(previeImage);
-      previeImage.src = "";
-      previeImage.setAttribute("alt", "");
-      toast.error("Upload valid file <= 5 MB");
-      profilePic.value = "";
-    }
-  });
-};
-
-const operatorSignUp = () => {};
-
-// **********************  ACCOUNT ESSENTIALS VERIFICATION  *********************************
-const sendOTPRequest = async () => {
-  const queryParams = createURLParams({
-    contact: contact.value,
-  });
-  const response = await fetch("send_otp.do?" + queryParams.toString());
-  if (!response.ok) throw new Error("Servler Problem");
-  const data = await response.text();
-  return data === "true";
-};
-
-const verifyOTPRequest = async () => {
-  const queryParams = createURLParams({
-    otp: Array.from(otp)
-      .map((next) => next.value)
-      .join(""),
-  });
-  console.log(queryParams.get("otp"));
-  const response = await fetch("verify_otp.do?" + queryParams.toString());
-  if (!response.ok) throw new Error("Servler Problem");
-  const data = await response.text();
-  return +data;
-};
-
-const otpEvent = (otp) => {
-  if (otp.value === "") return;
-
-  const currId = +otp.getAttribute("id").slice(-1);
-  const nextTarget = Math.min(currId + 1, 6);
-  const nextElement = document.querySelector(`#otp-${nextTarget}`);
-
-  if (nextElement) {
-    nextElement.focus();
-    setTimeout(() => {
-      nextElement.select();
-    }, 0);
-  }
-};
-
-otp.forEach((next) => {
-  next.addEventListener("input", () => {
-    const allFilled = Array.from(otp).every((el) => el.value.trim() !== "");
-
-    if (allFilled) {
-      showElement(verifyOTPBtn);
-      sendOTPBtn.disabled = true;
-    } else {
-      hideElement(verifyOTPBtn);
-      sendOTPBtn.disabled = false;
-    }
-    otpEvent(next);
-  });
-});
-
-const otpTryAgain = () => {
-  otp.forEach((next) => {
-    next.classList.remove("border-danger");
-    next.value = "";
-    next.disabled = false;
-  });
-  editContactBtn.disabled = false;
-  verifyOTPBtn.disabled = false;
-  hideElement(verifyOTPBtn);
-};
-
-const otpSendFailure = () => {
-  showElement(sendOTPBtn);
-  hideElement(loadingBtn);
-};
-
-verifyOTPBtn.addEventListener("click", () => {
-  otp.forEach((next) => {
-    next.classList.remove("border-success", "border-danger");
-    next.disabled = true;
-  });
-  verifyOTPBtn.disabled = true;
-  editContactBtn.disabled = true;
-
-  setTimeout(() => {
-    verifyOTPRequest()
-      .then((data) => {
-        if (data == 1) {
-          // SERVER GYA
-          throw new Error();
-        }
-        if (data == 2) {
-          // OTP MISMATCHED
-          toast.error("OTP Mismatched. Please try Again");
-          otpTryAgain();
-        }
-        if (data == 3) {
-          // OTP MATCHED
-          sendOTPBtn.remove();
-          editContactBtn.remove();
-          otpContainer.remove();
-          verifyOTPBtn.remove();
-          loadingBtn.remove();
-          displayInputValid(contact);
-
-          toast.success(`${contact.value} Verified`);
-        }
-        verifyOTPBtn.disabled = false;
-      })
-      .catch((err) => {
-        // SESSION EXPIRED
-        toast.error("Session Expired Please try again!!!");
-        console.log("Hel");
-        otpTryAgain();
-        hideElement(otpContainer);
-        hideElement(editContactBtn);
-        showElement(sendOTPBtn);
-      });
-  }, 1000);
 });
 
 editContactBtn.addEventListener("click", () => {
-  contact.readOnly = false;
-  hideElement(editContactBtn);
+  removeReadOnlyElements(contact);
   hideElement(otpContainer);
-  hideElement(verifyOTPBtn);
-  showElement(sendOTPBtn);
-
-  contact.focus();
+  hideElement(editContactBtn);
+  showElement(sendOtpBtn);
+  hideElement(verifyOtpBtn);
 });
 
-sendOTPBtn.addEventListener("click", () => {
-  if (editContactBtn.classList.contains("d-block")) contact.readOnly = true;
-  contact.readOnly = true;
-  if (!validateContact(contact.value)) {
-    hideElement(sendOTPBtn);
-    return;
-  }
-
-  hideElement(sendOTPBtn);
-  showElement(loadingBtn);
-
-  otp.forEach((next) => {
-    next.classList.remove("border-success");
-    next.disabled = false;
-    next.value = "";
-  });
-
-  setTimeout(() => {
-    sendOTPRequest()
-      .then((data) => {
-        if (data === true) {
-          toast.warning(`You have 3 Attempts`);
-          document.querySelector("#otp-1").focus();
-          showElement(editContactBtn);
-          showElement(otpContainer);
-          hideElement(loadingBtn);
-        } else {
-          otpSendFailure();
-          toast.error("Invalid Contact");
-        }
-      })
-      .catch((err) => {
-        otpSendFailure();
-        toast.error("Server Problem");
-      });
-  }, 1000);
-});
-
-contact.addEventListener("input", () => {
-  const isValid = validateContact(contact.value);
-  if (
-    isValid &&
-    !editContactBtn.classList.contains("d-block") &&
-    !contact.classList.contains("border-success")
-  )
-    sendOTPBtn.disabled = false;
-});
-
-const invalidateContact = () => {
-  sendOTPBtn.disabled = true;
-  removeInputSuccess(contact);
-  displayInputError(contact);
-};
-
-const markValidContact = () => {
-  sendOTPBtn.disabled = false;
-  showElement(sendOTPBtn);
-  removeInputError(contact);
-};
-
-const checkUniqueContactRequest = async () => {
-  const queryParams = createURLParams({
-    contact: contact.value,
-  });
-  const res = await fetch("check_unique_contact.do?" + queryParams.toString());
-  const data = await res.text();
-  return data === "true";
-};
-contact.addEventListener("blur", () => {
-  const isValid = validateContact(contact.value);
-  if (editContactBtn.classList.contains("d-block")) {
-    hideElement(sendOTPBtn);
-  } else {
-    if (isValid) {
-      checkUniqueContactRequest().then((data) => {
-        if (data === true) {
-          markValidContact();
-        } else {
-          invalidateContact();
-          toast.error("Duplicate Contact");
-        }
-      });
-    } else {
-      invalidateContact();
-      toast.error("Invalid contact");
+sendOtpBtn.addEventListener("click", async () => {
+  const response = await checkContactValid(contact.value);
+  contactInvalid(response);
+  if (!response || response === "Invalid Contact") return;
+  hideElement(sendOtpBtn);
+  showElement(loadingOtpBtn);
+  setTimeout(async () => {
+    try {
+      const otpResponse = await sendOtpHandler(contact.value);
+      if (otpResponse === true) {
+        toast.success(`OTP sent to ${contact.value}`);
+        hideElement(sendOtpBtn);
+        hideElement(loadingOtpBtn);
+        showElement(editContactBtn);
+        showElement(otpContainer);
+        otpFields.forEach((otp) => (otp.value = ""));
+        readOnlyElements(contact);
+      } else {
+        throw new Error("An error occured");
+      }
+    } catch (err) {
+      enableElements(sendOtpBtn);
+      removeReadOnlyElements(contact);
+      hideElement(loadingOtpBtn);
+      showElement(sendOtpBtn);
+      toast.error(err.message);
     }
+  }, 500);
+});
+
+const contactInvalid = (response) => {
+  if (response === "Invalid Contact") {
+    displayInputError(contact);
+    disableElements(sendOtpBtn);
+  }
+  if (response === true) {
+    enableElements(sendOtpBtn);
+    removeInputError(contact);
+  } else {
+    disableElements(sendOtpBtn);
+  }
+};
+
+contact.addEventListener("blur", async () => {
+  if (contact.readOnly) return;
+  try {
+    const response = await checkContactValid(contact.value);
+    contactInvalid(response);
+  } catch (err) {
+    toast.error(err.message);
   }
 });
 
 password.addEventListener("blur", () => {
   const isValid = validatePassword(password.value);
-
   if (isValid) {
     displayInputSuccess(password);
   } else {
-    removeInputSuccess(password);
-    toast.error("Invalid Password");
+    displayInputError(password);
   }
 });
 
-const checkUniqueEmailRequest = async () => {
-  const queryParams = createURLParams({
-    email: email.value,
-  });
+email.addEventListener("blur", async () => {
+  try {
+    const response = await checkEmailValid(email.value);
 
-  const response = await fetch(
-    "check_unique_email.do?" + queryParams.toString()
-  );
-  if (!response.ok) throw new Error("Server Problem");
-  const data = await response.text();
-  return data === "true";
-};
-
-email.addEventListener("blur", () => {
-  const isValidEmail = validateEmail(email.value);
-
-  if (isValidEmail) {
-    checkUniqueEmailRequest()
-      .then((data) => {
-        if (data === true) {
-          displayInputValid(email);
-        } else {
-          removeInputValid(email);
-          toast.error("Duplicate Email");
-        }
-      })
-      .catch((err) => {
-        removeInputValid(email);
-        toast.error("Server Problem");
-      });
-  } else {
-    removeInputValid(email);
-    toast.error("Invalid Email");
+    if (response === "Invalid Email") {
+      displayInputError(email);
+    }
+    if (response === true) {
+      displayInputSuccess(email);
+    } else {
+      displayInputError(email);
+    }
+  } catch (err) {
+    toast.error(err.message);
   }
 });
 
 fullName.addEventListener("blur", () => {
-  const isValid = validateName(fullName.value);
-
-  if (isValid) {
-    displayInputValid(fullName);
+  const response = validateName(fullName.value);
+  if (response) {
+    displayInputSuccess(fullName);
   } else {
-    removeInputValid(fullName);
-    toast.error("Invalid Full Name");
+    displayInputError(fullName);
   }
 });
-
-const formPaginationInitialize = () => {
-  new Pagination({
-    parentElement: document.getElementById("formWrapper"),
-  });
-};
-
-password.addEventListener("focus", () => {
-  removeInputError(password);
-});
-
-email.addEventListener("focus", () => {
-  removeInputError(email);
-});
-
-fullName.addEventListener("focus", () => {
-  removeInputError(fullName);
-});
-
-formPaginationInitialize();
-
-if (accountType === 1) {
-  userSignUp();
-}
-if (accountType === 2) {
-  operatorSignUp();
-}

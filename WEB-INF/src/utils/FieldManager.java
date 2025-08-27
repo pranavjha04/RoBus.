@@ -12,48 +12,12 @@ public final class FieldManager {
     private FieldManager() {
 
     }
-    public static final boolean validateField(String field, String value) {
-        boolean flag = true;
-        
-        switch(field) {
-            case "full_name":
-                flag = validateName(value);
-                break;
-            case "contact":
-                flag = validateContact(value) && User.checkUniqueContact(value) && Operator.checkUniqueContact(value);
-                break;
-            case "email":
-                flag = validateEmail(value) && User.checkUniqueEmail(value) && Operator.checkUniqueEmail(value);
-                break;
-            case "password":
-                flag = validatePassword(value);
-                break;
-            case "dob":
-                flag = validateDob(value);
-                break;
-            case "gender":
-                flag = validateGender(Integer.parseInt(value));
-                break;
-            case "address":
-                flag = validateAddress(value);
-                break;
-            case "website":
-                flag = validateWebsite(value);
-                break;
-            case "base_charge":
-                flag = validateBaseCharge(Integer.parseInt(value));
-                break;
-            default:
-                flag = false;
-                break;
-        }
-        return flag;
-    } 
+   
     public static final boolean validateName(String name) {
         Pattern pattern = Pattern.compile("^[A-Za-z .-]{6,75}$");
         Matcher matcher = pattern.matcher(name);
 
-        return matcher.find();
+        return matcher.matches();
     }
 
     public static final boolean validateEmail(String email) {
@@ -89,7 +53,7 @@ public final class FieldManager {
         Pattern pattern = Pattern.compile("^[a-zA-Z0-9\\s,.'-]{5,100}$");
         Matcher matcher = pattern.matcher(address);
         
-        return matcher.find();
+        return matcher.matches();
     }
 
     public static final boolean validateWebsite(String website) {
