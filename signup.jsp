@@ -46,7 +46,7 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 id="full_name"
                 type="text"
                 name="full_name"
-                class="form-control"
+                class="form-control fld"
                 value="Pranav Jha"
                 placeholder="Pranav Jha"
               />
@@ -63,7 +63,7 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 placeholder="example@email.com"
                 autocomplete="email"
                 value="pranav2580@gmail.com"
-                class="form-control"
+                class="form-control fld"
               />
             </div>
             <!-- PASSWORD -->
@@ -78,7 +78,7 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 autocomplete="current-password"
                 placeholder="<c:out value='********' />"
                 value="HelloWorld@#$!@12323"
-                class="form-control"
+                class="form-control fld"
               />
             </div>
           </div>
@@ -91,7 +91,7 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 id="contact"
                 type="tel"
                 name="contact"
-                class="form-control"
+                class="form-control fld"
                 value="9399208982"
                 autocomplete="off"
                 minlength="10"
@@ -184,13 +184,13 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
               <label for="dob" class="form-label small fw-semibold"
                 >Date of birth</label
               >
-              <input id="dob" type="date" name="dob" class="form-control" />
+              <input id="dob" type="date" name="dob" class="form-control fld" />
             </div>
             <div>
               <label for="gender" class="form-label small fw-semibold"
-                >Date of birth</label
+                >Gender</label
               >
-              <select class="form-select" id="gender">
+              <select class="form-select fld" id="gender">
                 <option selected>Select Gender</option>
                 <option value="1">Male</option>
                 <option value="2">Female</option>
@@ -207,6 +207,7 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
               type="submit"
               value="Create an account"
               class="btn btn-primary px-4 fw-medium"
+              id="submit_form_btn"
             />
           </div>
         </div>

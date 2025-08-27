@@ -43,6 +43,34 @@ const verifyOtpBtn = document.querySelector("#verify_otp_btn");
 const dob = document.querySelector("#dob");
 const gender = document.querySelector("#gender");
 
+const signUpForm = document.querySelector("#signup_form");
+const submitBtn = document.querySelector("#submit_form_btn");
+
+const allFields = document.querySelectorAll(".fld");
+const invalidFieldMessages = [
+  "Invalid name",
+  "Invalid email",
+  "Invalid password",
+  "Invalid contact",
+  "Invalid date of birth",
+  "Invalid gender",
+];
+
+signUpForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  let flag = true;
+  allFields.forEach((next, i) => {
+    if (!next.classList.contains("border-success")) {
+      flag = false;
+      toast.error(invalidFieldMessages[i]);
+      displayInputError(next);
+    }
+  });
+
+  if (flag) {
+  }
+});
+
 gender.addEventListener("change", (e) => {
   const value = e.target.value;
   const isValid = !isNaN(value) && value > 0 && value < 3;
