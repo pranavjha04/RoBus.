@@ -10,10 +10,11 @@ import java.sql.SQLException;
 import utils.DBManager;
 import utils.EncryptionManager;
 
-public class Operator {
+import exceptions.PasswordMismatchException;
+
+public class Operator implements Cloneable {
     private Integer operatorId;
     private String fullName;
-    private Date registrationDate; 
     private String address;
     private String email;
     private String password;
@@ -28,9 +29,93 @@ public class Operator {
     private Timestamp createdAt;   
     private Timestamp updatedAt;   
     private UserType userType;
+    private User user;
 
+    public Operator(Integer operatorId, String fullName, String address, String email, String password, String contact, String certificate, String website, String logo, String banner, String verificationCode, Integer baseCharge, Status status, Timestamp createdAt, Timestamp updatedAt, UserType userType, User user) {
+        this(fullName, contact, email, password, address, website, baseCharge, user);
+        this.operatorId = operatorId;
+        this.certificate = certificate;
+        this.logo = logo;
+        this.banner = banner;
+        this.verificationCode = verificationCode;
+        this.status = status.clone();
+        this.createdAt = createdAt;
+        this.updatedAt =  updatedAt;
+        this.userType = userType.clone();
+    }
+    public Operator(String fullName, String contact, String email, String password, String address, String website, Integer baseCharge, User user) {
+        this.fullName = fullName;
+        this.contact = contact;
+        this.email = email;
+        this.password = password;
+        this.address = address;
+        this.website = website;
+        this.baseCharge = baseCharge;
+        this.user = user.clone();
+    }
 
     public Operator() {
+    }
+
+    public boolean addRecord() {
+        boolean flag = false;
+
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                    "INSERT INTO operators " + 
+                    "(full_name,contact,email,password,address,website,base_charge,status_id,user_id) " +
+                    "VALUES (?,?,?,?,?,?,?,?,?)";
+            
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setString(1, fullName);
+            ps.setString(2, contact);
+            ps.setString(3, email);
+            ps.setString(4, EncryptionManager.encryptPassword(password));
+            ps.setString(5, address);
+            ps.setString(6, website);
+            ps.setInt(7, baseCharge);
+            ps.setInt(8, 2); 
+            ps.setInt(9, user.getUserId());
+
+            flag = ps.executeUpdate() == 1;
+
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        return flag;
+    }
+
+    public static Operator login(String email, String password) throws PasswordMismatchException {
+        Operator operator = null;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                    "SELECT * FROM operators " +
+                    "JOIN status ON operators.status_id=status.status_id " +
+                    "JOIN users ON operators.user_id=users.user_id " +
+                    "WHERE operators.email=?";
+
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, email); 
+
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                if(!EncryptionManager.checkPassword(password, rs.getString("password"))) {
+                    throw new PasswordMismatchException("Wrong password");
+                }
+                operator = new Operator();
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return operator;
     }
 
     public static boolean checkUniqueEmail(String email) {
@@ -73,6 +158,28 @@ public class Operator {
         return flag;
     }
 
+    @Override
+    public Operator clone() {
+        return new Operator(
+            getOperatorId(),
+            getFullName(),
+            getAddress(),
+            getEmail(),
+            getPassword(),
+            getContact(),
+            getCertificate(),
+            getWebsite(),
+            getLogo(),
+            getBanner(),
+            getVerificationCode(),
+            getBaseCharge(),
+            getStatus(),
+            getCreatedAt(),
+            getUpdatedAt(),
+            getUserType(),
+            getUser()
+        );
+    }
 
     public Integer getOperatorId() {
         return operatorId;
@@ -88,14 +195,6 @@ public class Operator {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
-    }
-
-    public Date getRegistrationDate() {
-        return new Date(registrationDate.getTime());
-    }
-
-    public void setRegistrationDate(Date registrationDate) {
-        this.registrationDate = new Date(registrationDate.getTime());
     }
 
     public String getAddress() {
@@ -179,34 +278,42 @@ public class Operator {
     }
 
     public Status getStatus() {
-        return new Status(status.getStatusId(), status.getName());
+        return status.clone();
     }
 
     public void setStatus(Status status) {
-        this.status = new Status(status.getStatusId(), status.getName());
+        this.status = status.clone();
     }
 
     public Timestamp getCreatedAt() {
-        return createdAt;
+        return new Timestamp(createdAt.getTime());
     }
 
     public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
+        this.createdAt = new Timestamp(createdAt.getTime());
     }
 
     public Timestamp getUpdatedAt() {
-        return updatedAt;
+        return new Timestamp(updatedAt.getTime());
     }
 
     public void setUpdatedAt(Timestamp updatedAt) {
-        this.updatedAt = updatedAt;
+        this.updatedAt = new Timestamp(updatedAt.getTime());
     }
 
     public UserType getUserType() {
-        return new UserType(userType.getUserTypeId(), userType.getName());
+        return userType.clone();
     } 
 
     public void setUserType(UserType userType) {
-        this.userType = new UserType(userType.getUserTypeId(), userType.getName());
+        this.userType = userType.clone();
+    }
+
+    public void setUser(User user) {
+        this.user = user.clone();
+    }
+
+    public User getUser() {
+        return user.clone();
     }
 }

@@ -1,6 +1,6 @@
 package models;
 
-public class Status {
+public class Status implements Cloneable {
     private Integer statusId;
     private String name;
     
@@ -10,14 +10,18 @@ public class Status {
     }
 
     public Status() {
+    }
 
+    @Override
+    public Status clone() {
+        return new Status(getStatusId(), getName());
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName() {
+    public void setName(String name) {
         this.name = name;
     }
 

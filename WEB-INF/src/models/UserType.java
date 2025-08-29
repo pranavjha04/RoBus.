@@ -1,6 +1,6 @@
 package models;
 
-public class UserType {
+public class UserType implements Cloneable {
     private Integer userTypeId;
     private String name;
 
@@ -10,6 +10,11 @@ public class UserType {
     }
     
     public UserType() {}
+    
+    @Override
+    public UserType clone() {
+        return new UserType(getUserTypeId(), getName());
+    }
 
     public Integer getUserTypeId() {
         return userTypeId;

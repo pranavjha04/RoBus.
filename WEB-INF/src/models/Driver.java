@@ -6,11 +6,29 @@ public class Driver {
     private Integer driverId;
     private Date startDate;
     private Date endDate;
+    private String licencePic;
+    private String licenceNumber;
     private User user;
     private Operator operator;
 
     public Driver() {
 
+    }
+
+    public String getLicencePic() {
+        return licencePic;
+    }
+
+    public void setLicencePic(String licencePic) {
+        this.licencePic = licencePic;
+    }
+
+    public String getLicenceNumber() {
+        return licenceNumber;
+    }
+
+    public void setLicenceNumber(String licenceNumber) {
+        this.licenceNumber = licenceNumber;
     }
 
     public void setOperator(Operator operator) {

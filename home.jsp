@@ -1,5 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<c:if test="${not empty sessionScope.operator}">
+  <c:redirect url="operator_dashboard.do" />
+</c:if>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -9,6 +13,15 @@
     <title>Book Your Bus Tickets Online | RoBus</title>
   </head>
   <body class="bg-body-tertiary">
+    <c:if test="${not empty sessionScope.user}">
+      <c:if test="${sessionScope.user.status.statusId eq 2}">
+        <div class="bg-danger py-2 text-white text-center">
+          <a href="#" class="text-white fs-6"
+            >Complete your email verification and unlock everything &#8594;</a
+          >
+        </div>
+      </c:if>
+    </c:if>
     <c:import url="welcome_navbar.jsp" />
 
     <header

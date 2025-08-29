@@ -3,6 +3,8 @@ package utils;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import java.util.Date;
+
 import models.User;
 import models.Operator;
 
@@ -41,12 +43,14 @@ public final class FieldManager {
         return matcher.matches();
     }
 
-    public static final boolean validateDob(String date) {
+    public static final boolean validateDob(String value) {
+       if(value == null || value.isEmpty()) return false;
+
        return true;
     }
 
     public static final boolean validateGender(Integer gender) {
-        return gender > 0 && gender < 4;
+        return gender != null && gender > 0 && gender < 4;
     }
     
     public static final boolean validateAddress(String address) {
@@ -57,13 +61,14 @@ public final class FieldManager {
     }
 
     public static final boolean validateWebsite(String website) {
+        if(website == null)  return true;
         Pattern pattern = Pattern.compile("^(https?:\\/\\/)?(www\\.)?[a-zA-Z0-9-]+\\.[a-zA-Z]{2,}(/.*)?$");
         Matcher matcher = pattern.matcher(website);
         return matcher.matches();
     }
 
     public static final boolean validateBaseCharge(Integer baseCharge) {
-        return baseCharge >= 100 && baseCharge <= 1000;
+        return baseCharge >= 0 && baseCharge <= 200;
     }
     
 }

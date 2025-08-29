@@ -1,4 +1,18 @@
-import { validateContact, validateEmail } from "./util.js";
+import { createURLParams, validateContact, validateEmail } from "./util.js";
+
+export const checkEmailExist = async (value) => {
+  console.log(value);
+  const res = await fetch(`check_email_exist.do`, {
+    method: "POST",
+    body: createURLParams({
+      email: value,
+    }),
+  });
+  if (!res.ok) throw new Error("Internal server error");
+
+  const data = await res.text();
+  return data.trim();
+};
 
 const checkUniqueEmailRequest = async (value) => {
   const res = await fetch(`check_unique_email.do?email=${value}`);
@@ -22,6 +36,26 @@ const sendOtpRequest = async (value) => {
 
   const data = await res.text();
   return data.trim() === "true";
+};
+
+const signUpRequest = async (value) => {
+  const urlParams = createURLParams(value);
+  const res = await fetch("signup.do", {
+    method: "POST",
+    body: urlParams,
+  });
+  if (!res.ok) throw new Error("Internal server error");
+  return await res.text();
+};
+
+export const signupUser = async (value) => {
+  let result = "";
+  try {
+    result = await signUpRequest(value);
+  } catch (err) {
+    throw new Error(err);
+  }
+  return result.trim();
 };
 
 const verifyOTPRequest = async (value) => {

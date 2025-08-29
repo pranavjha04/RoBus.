@@ -4,12 +4,16 @@ import {
   checkContactValid,
   sendOtpHandler,
   checkOTP,
-  signupUser,
 } from "./service.js";
+import { toast } from "./toast.js";
+
 import {
-  disableElements,
   displayInputError,
   displayInputSuccess,
+  validateAddress,
+  validateBaseCharge,
+  validateWebsite,
+  disableElements,
   enableElements,
   hideElement,
   readOnlyElements,
@@ -19,10 +23,18 @@ import {
   showElement,
   validateName,
   validatePassword,
-  validateUserAge,
 } from "./util.js";
 
-import { toast } from "./toast.js";
+const invalidFieldMessages = [
+  "Invalid captcha",
+  "Invalid name",
+  "Invalid email",
+  "Invalid password",
+  "Invalid contact",
+  "Invalid address",
+  "Invalid website",
+  "Invalid base Charge",
+];
 
 const fullName = document.querySelector("#full_name");
 const email = document.querySelector("#email");
@@ -36,21 +48,11 @@ const otpContainer = document.querySelector("#otp_container");
 const otpFields = Array.from(document.querySelectorAll("input[name='otp']"));
 const verifyOtpBtn = document.querySelector("#verify_otp_btn");
 
-const dob = document.querySelector("#dob");
-const gender = document.querySelector("#gender");
-
-const signUpForm = document.querySelector("#signup_form");
+const address = document.querySelector("#address");
+const website = document.querySelector("#website");
+const baseCharge = document.querySelector("#base_charge");
 const allFields = Array.from(document.querySelectorAll(".fld"));
-
-const invalidFieldMessages = [
-  "Invalid captcha",
-  "Invalid name",
-  "Invalid email",
-  "Invalid password",
-  "Invalid contact",
-  "Invalid date of birth",
-  "Invalid gender",
-];
+const signUpForm = document.querySelector("#signup_form");
 
 (function () {
   new Pagination({
@@ -71,41 +73,58 @@ const invalidFieldMessages = [
     });
 })();
 
-signUpForm.addEventListener("submit", async (e) => {
+signUpForm.addEventListener("submit", (e) => {
   e.preventDefault();
+
   let flag = true;
+
   for (let i = 0; i < allFields.length; i++) {
     const next = allFields[i];
     console.log(next);
     if (next != null && !next.classList.contains("border-success")) {
+      if (next === website && website.value === "") continue;
       flag = false;
       toast.error(invalidFieldMessages[i + 1]);
       displayInputError(next);
     }
   }
+
   if (flag) {
     signUpForm.submit();
   }
 });
 
-gender.addEventListener("change", (e) => {
-  const value = e.target.value;
-  const isValid = !isNaN(value) && value > 0 && value < 3;
+baseCharge.addEventListener("change", () => {
+  const isValid = validateBaseCharge(baseCharge.value);
   if (isValid) {
-    displayInputSuccess(gender);
+    displayInputSuccess(baseCharge);
   } else {
-    toast.error(invalidFieldMessages[5]);
-    displayInputError(gender);
+    toast.error(invalidFieldMessages[7]);
+    displayInputError(baseCharge);
   }
 });
 
-dob.addEventListener("blur", () => {
-  const isValid = validateUserAge(dob.value);
-  if (isValid) {
-    displayInputSuccess(dob);
+website.addEventListener("blur", () => {
+  if (website.value === "") {
+    removeInputError(website);
+    return;
+  }
+  const isValid = validateWebsite(website.value);
+  if (website.value === "" || isValid) {
+    displayInputSuccess(website);
   } else {
-    toast.error(invalidFieldMessages[4]);
-    displayInputError(dob);
+    toast.error(invalidFieldMessages[6]);
+    displayInputError(website);
+  }
+});
+
+address.addEventListener("blur", () => {
+  const isValid = validateAddress(address.value);
+  if (isValid) {
+    displayInputSuccess(address);
+  } else {
+    toast.error(invalidFieldMessages[5]);
+    displayInputError(address);
   }
 });
 

@@ -302,7 +302,7 @@ INSERT INTO status(name) VALUES
 
 CREATE TABLE user_types (
     user_type_id INT AUTO_INCREMENT,
-    name VARCHAR(20) NOT NULL,
+    name VARCHAR(15) NOT NULL,
     PRIMARY KEY (user_type_id)
 );
 

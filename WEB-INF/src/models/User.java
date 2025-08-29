@@ -10,7 +10,9 @@ import java.sql.SQLException;
 import utils.DBManager;
 import utils.EncryptionManager;
 
-public class User {
+import exceptions.PasswordMismatchException;
+
+public class User implements Cloneable {
 
     private Integer userId;
     private String fullName;
@@ -21,14 +23,115 @@ public class User {
     private String password;
     private String profilePic;
     private Status status;
-    private String licencePic;
-    private String licenceNumber;
     private String verificationCode;
     private Timestamp createdAt;   
     private Timestamp updatedAt; 
     private UserType userType;
 
-    public User() {
+
+    public User(Integer userId, String fullName, Date dob, String contact, Integer gender, 
+            String email, String password, String profilePic, Status status, 
+            String verificationCode, Timestamp createdAt, Timestamp updatedAt, 
+            UserType userType) {
+        this(fullName, contact, email, password, dob, gender,status, userType);
+        this.userId = userId;
+        this.profilePic = profilePic;
+        this.verificationCode = verificationCode;
+        this.createdAt = new Timestamp(createdAt.getTime());
+        this.updatedAt = new Timestamp(updatedAt.getTime());
+    }
+
+
+    public User(String fullName, String contact, String email, String password, Date dob, Integer gender) {
+        this.fullName = fullName;
+        this.contact = contact;
+        this.email = email;
+        this.password = password;
+        this.dob = new Date(dob.getTime());
+        this.gender = gender;
+    }
+
+    public User(String fullName, String contact, String email, String password, Date dob, Integer gender, Status status, UserType userType) {
+        this(fullName, contact, email, password, dob, gender);
+        this.status = status.clone();
+        this.userType = userType.clone();
+    }
+
+    
+    public User() {}
+
+    public static User login(String email, String password) throws PasswordMismatchException {
+        User user = null;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                    "SELECT * FROM USERS " +
+                    "JOIN status ON users.status_id = status.status_id " +
+                    "JOIN user_types ON users.user_type_id = user_types.user_type_id " +
+                    "WHERE email=?";
+
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, email);
+
+            ResultSet rs = ps.executeQuery();
+            // dekho ki koi record aaya hai ya nahi
+            if(rs.next()) {
+                // check password sahi nahi hai toh bhaga do usko
+                if(!EncryptionManager.checkPassword(password, rs.getString("password"))) {
+                    throw new PasswordMismatchException("Wrong password");
+                }   
+                
+                user = new User(
+                    rs.getInt("user_id"), 
+                    rs.getString("full_name"),
+                    rs.getDate("dob"),
+                    rs.getString("contact"),
+                    rs.getInt("gender"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("profile_pic"),
+                    new Status(rs.getInt("status.status_id"), rs.getString("status.name")),
+                    rs.getString("verification_code"),
+                    rs.getTimestamp("created_at"),
+                    rs.getTimestamp("updated_at"),
+                    new UserType(rs.getInt("user_types.user_type_id"), rs.getString("user_types.name"))
+                );
+            }   
+
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    public boolean addRecord() {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                    "INSERT INTO users " +
+                    "(full_name,contact,email,password,dob,gender,status_id,user_type_id) " +
+                    "VALUES (?,?,?,?,?,?,?,?)";
+
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, fullName);
+            ps.setString(2, contact);
+            ps.setString(3, email);
+            ps.setString(4, EncryptionManager.encryptPassword(password));
+            ps.setDate(5, dob);
+            ps.setInt(6, gender);
+            ps.setInt(7, 2); // STATUUS -> NOT VERIFIED
+            ps.setInt(8, 1); // USER TYPE -> PASSENGER 
+
+            flag = ps.executeUpdate() == 1;
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return flag;
     }
 
     public static boolean checkUniqueEmail(String email) {
@@ -71,6 +174,24 @@ public class User {
         return flag;
     }
 
+    @Override
+    public User clone() {
+        return new User(
+            getUserId(),
+            getFullName(),
+            getDob(),
+            getContact(),
+            getGender(),
+            getEmail(),
+            getPassword(),
+            getProfilePic(),
+            status.clone(),
+            getVerificationCode(),
+            getCreatedAt(),
+            getUpdatedAt(),
+            getUserType()
+        );
+    }
 
     public Integer getUserId() {
         return userId;
@@ -145,50 +266,35 @@ public class User {
     }
 
     public Status getStatus() {
-        return new Status(status.getStatusId(), status.getName());
+        return status.clone();
     }
 
     public void setStatus(Status status) {
-        this.status = new Status(status.getStatusId(), status.getName());
+        this.status = status.clone();
     }
 
-    public String getLicencePic() {
-        return licencePic;
-    }
-
-    public void setLicencePic(String licencePic) {
-        this.licencePic = licencePic;
-    }
-
-    public String getLicenceNumber() {
-        return licenceNumber;
-    }
-
-    public void setLicenceNumber(String licenceNumber) {
-        this.licenceNumber = licenceNumber;
-    }
 
     public Timestamp getCreatedAt() {
-        return createdAt;
+        return new Timestamp(createdAt.getTime());
     }
 
     public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
+        this.createdAt = new Timestamp(createdAt.getTime());
     }
 
     public Timestamp getUpdatedAt() {
-        return updatedAt;
+        return new Timestamp(updatedAt.getTime());
     }
 
     public void setUpdatedAt(Timestamp updatedAt) {
-        this.updatedAt = updatedAt;
+        this.updatedAt = new Timestamp(updatedAt.getTime());;;
     }
 
     public UserType getUserType() {
-        return new UserType(userType.getUserTypeId(), userType.getName());
+        return userType.clone();
     }
 
     public void setUserType(UserType userType) {
-        this.userType = new UserType(userType.getUserTypeId(), userType.getName());
+        this.userType = userType.clone();
     }
 }

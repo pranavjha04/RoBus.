@@ -1,5 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%@ page
-import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<%@ taglib prefix="e" uri="bts" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -27,7 +27,6 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
         action="signup.do"
         class="bg-white border shadow p-4 rounded-3 w-100"
         style="max-width: 420px"
-        enctype="multipart/form-data"
         id="signup_form"
       >
         <div class="d-flex flex-column align-items-center">
@@ -46,8 +45,8 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 id="full_name"
                 type="text"
                 name="full_name"
-                class="form-control fld"
-                value="Pranav Jha"
+                class="form-control fld ${empty param.full_name ? '' : 'border-success'}"
+                value="${param.full_name}"
                 placeholder="Pranav Jha"
               />
             </div>
@@ -62,8 +61,8 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 name="email"
                 placeholder="example@email.com"
                 autocomplete="email"
-                value="pranav2580@gmail.com"
-                class="form-control fld"
+                value="${param.email}"
+                class="form-control fld ${empty param.email ? '' : 'border-success'}"
               />
             </div>
             <!-- PASSWORD -->
@@ -77,8 +76,8 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 id="password"
                 autocomplete="current-password"
                 placeholder="<c:out value='********' />"
-                value="HelloWorld@#$!@12323"
-                class="form-control fld"
+                value="${param.password}"
+                class="form-control fld ${empty param.password ? '' : 'border-success'}"
               />
             </div>
           </div>
@@ -91,111 +90,122 @@ import="java.util.Calendar" %> <%@ taglib prefix="e" uri="bts" %>
                 id="contact"
                 type="tel"
                 name="contact"
-                class="form-control fld"
-                value="9399208982"
+                class="form-control fld ${empty param.contact ? '' : 'border-success'}"
+                value="${param.contact}"
                 autocomplete="off"
                 minlength="10"
                 maxlength="10"
               />
             </div>
-            <input
-              type="button"
-              value="Send OTP"
-              id="send_otp_btn"
-              disabled
-              class="btn btn-primary px-4 fw-medium align-self-end"
-            />
-            <button
-              class="ms-auto btn btn-primary d-none"
-              id="load_otp_btn"
-              type="button"
-              disabled
-            >
-              <span
-                class="spinner-border spinner-border-sm"
-                aria-hidden="true"
-              ></span>
-              <span role="status" class="fw-medium">Sending OTP</span>
-            </button>
-            <input
-              type="button"
-              value="Edit Contact"
-              id="edit_contact_btn"
-              class="btn btn-primary px-4 fw-medium align-self-end d-none"
-            />
-            <div id="otp_container" class="d-none">
-              <label for="otp-1" class="form-label small fw-semibold"
-                >Enter OTP</label
+    
+              <input
+                type="button"
+                value="Send OTP"
+                id="send_otp_btn"
+                disabled
+                class="btn btn-primary px-4 fw-medium align-self-end"
+              />
+              <button
+                class="ms-auto btn btn-primary d-none"
+                id="load_otp_btn"
+                type="button"
+                disabled
               >
-              <div class="d-flex justify-content-between gap-2">
-                <input
-                  type="tel"
-                  class="form-control text-center py-md-2"
-                  id="otp-1"
-                  name="otp"
-                  maxlength="1"
-                />
-                <input
-                  type="tel"
-                  class="form-control text-center py-md-2"
-                  id="otp-2"
-                  name="otp"
-                  maxlength="1"
-                />
-                <input
-                  type="tel"
-                  class="form-control text-center py-md-2"
-                  id="otp-3"
-                  name="otp"
-                  maxlength="1"
-                />
-                <input
-                  type="tel"
-                  class="form-control text-center py-md-2"
-                  id="otp-4"
-                  name="otp"
-                  maxlength="1"
-                />
-                <input
-                  type="tel"
-                  class="form-control text-center py-md-2"
-                  id="otp-5"
-                  name="otp"
-                  maxlength="1"
-                />
-                <input
-                  type="tel"
-                  class="form-control text-center py-md-2"
-                  id="otp-6"
-                  name="otp"
-                  maxlength="1"
-                />
+                <span
+                  class="spinner-border spinner-border-sm"
+                  aria-hidden="true"
+                ></span>
+                <span role="status" class="fw-medium">Sending OTP</span>
+              </button>
+              <input
+                type="button"
+                value="Edit Contact"
+                id="edit_contact_btn"
+                class="btn btn-primary px-4 fw-medium align-self-end d-none"
+              />
+              <div id="otp_container" class="d-none">
+                <label for="otp-1" class="form-label small fw-semibold"
+                  >Enter OTP</label
+                >
+                <div class="d-flex justify-content-between gap-2">
+                  <input
+                    type="tel"
+                    class="form-control text-center py-md-2"
+                    id="otp-1"
+                    name="otp"
+                    maxlength="1"
+                  />
+                  <input
+                    type="tel"
+                    class="form-control text-center py-md-2"
+                    id="otp-2"
+                    name="otp"
+                    maxlength="1"
+                  />
+                  <input
+                    type="tel"
+                    class="form-control text-center py-md-2"
+                    id="otp-3"
+                    name="otp"
+                    maxlength="1"
+                  />
+                  <input
+                    type="tel"
+                    class="form-control text-center py-md-2"
+                    id="otp-4"
+                    name="otp"
+                    maxlength="1"
+                  />
+                  <input
+                    type="tel"
+                    class="form-control text-center py-md-2"
+                    id="otp-5"
+                    name="otp"
+                    maxlength="1"
+                  />
+                  <input
+                    type="tel"
+                    class="form-control text-center py-md-2"
+                    id="otp-6"
+                    name="otp"
+                    maxlength="1"
+                  />
+                </div>
               </div>
-            </div>
-            <input
-              type="button"
-              value="Verify OTP"
-              id="verify_otp_btn"
-              class="btn btn-primary px-4 fw-medium align-self-end d-none"
-            />
+              <input
+                type="button"
+                value="Verify OTP"
+                id="verify_otp_btn"
+                class="btn btn-primary px-4 fw-medium align-self-end d-none"
+              />
           </div>
           <div id="page_3" class="d-flex flex-column gap-3 d-none">
             <div>
-              <label for="dob" class="form-label small fw-semibold"
-                >Date of birth</label
-              >
-              <input id="dob" type="date" name="dob" class="form-control fld" />
+              <label for="dob" class="form-label small fw-semibold">
+                Date of Birth
+              </label>
+
+              <input 
+                id="dob" 
+                type="date" 
+                name="dob" 
+                class="form-control fld ${empty param.dob ? '' : 'border-success'}"
+                value="${param.dob}" />
+
             </div>
             <div>
               <label for="gender" class="form-label small fw-semibold"
                 >Gender</label
               >
-              <select class="form-select fld" id="gender">
-                <option selected>Select Gender</option>
-                <option value="1">Male</option>
-                <option value="2">Female</option>
-                <option value="3">Others</option>
-              </select>
+             <select class="form-select fld ${empty param.gender ? '' : 'border-success'}" 
+                    id="gender" 
+                    name="gender">
+
+              <option value="" ${empty param.gender ? 'selected' : ''}>Select Gender</option>
+              <option value="1" ${param.gender == '1' ? 'selected' : ''}>Male</option>
+              <option value="2" ${param.gender == '2' ? 'selected' : ''}>Female</option>
+              <option value="3" ${param.gender == '3' ? 'selected' : ''}>Others</option>
+            </select>
             </div>
             <div class="d-flex justify-content-center">
               <div

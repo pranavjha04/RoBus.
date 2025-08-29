@@ -25,8 +25,6 @@ public class SendOTPServlet extends HttpServlet {
         HttpSession session = request.getSession();
         session.setAttribute("otp", "123456");
         session.setAttribute("remainingAttempts", 3);
-        session.setMaxInactiveInterval(30);
-
         response.getWriter().println(true);
     }
 }

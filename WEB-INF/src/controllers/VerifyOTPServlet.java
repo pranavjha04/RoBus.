@@ -36,7 +36,8 @@ public class VerifyOTPServlet extends HttpServlet {
             responseCode = 3;
             System.out.println("YUSSSSSSSSSSSSSSSSSs");
             response.getWriter().println(responseCode);
-            session.invalidate();
+            session.removeAttribute("otp");
+            session.removeAttribute("remainingAttempts");
             return;
         }
         else {

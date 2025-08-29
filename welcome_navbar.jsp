@@ -3,9 +3,15 @@
 <nav class="navbar sticky-top navbar-expand-lg bg-white shadow-sm">
   <div class="container-fluid px-4 md:px-5 py-1">
     <c:import url="logo.jsp" />
-
+    <c:if test="${not empty sessionScope.user}">
+      <c:if test="${sessionScope.user.status.statusId eq 1 and sessionScope.user.userType.userTypeId eq 1}">
+        <a href="operator_sigup.do">Become an operator</a>
+      </c:if>
+    </c:if>
     <div class="d-flex ms-auto">
-      <a class="btn d-block d-lg-none me-2 btn-primary px-4" href="login.do">Login</a>
+      <a class="btn d-block d-lg-none me-2 btn-primary px-4" href="login.do"
+        >Login</a
+      >
       <button
         class="navbar-toggler"
         type="button"
@@ -57,4 +63,3 @@
     </div>
   </div>
 </nav>
-

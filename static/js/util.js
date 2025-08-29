@@ -45,6 +45,23 @@ export const validateFileSize = (size) => {
   return size <= 5 * 1024 * 1024; // 5MB
 };
 
+export const validateAddress = (value) => {
+  const regex = /^[a-zA-Z0-9\s,.'\-/#]{5,100}$/;
+
+  return regex.test(value.trim());
+};
+
+export const validateWebsite = (value) => {
+  const regex =
+    /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:[0-9]{1,5})?(\/.*)?$/;
+
+  return regex.test(value.trim());
+};
+
+export const validateBaseCharge = (value) => {
+  return value >= 0 && value <= 200;
+}
+
 export const displayInputError = (element) => {
   removeInputSuccess(element);
   if (element.classList.contains("border-danger")) return;
