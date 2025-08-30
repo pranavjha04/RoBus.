@@ -51,6 +51,9 @@ public class LoginServlet extends HttpServlet {
                     User user = User.login(email, password);
                     if(user != null) {
                         HttpSession session = request.getSession();
+                        if(session.getAttribute("operator") != null) {
+                            session.removeAttribute("operator");
+                        }
                         session.setAttribute("user", user);
                         response.sendRedirect("/bts");
                         return;
@@ -68,6 +71,9 @@ public class LoginServlet extends HttpServlet {
                     Operator operator = Operator.login(email, password);
                     if(operator != null) {
                         HttpSession session = request.getSession();
+                        if(session.getAttribute("user") != null) {
+                            session.removeAttribute("user");
+                        }
                         session.setAttribute("operator", operator);
                         response.sendRedirect("operator_dashboard.do");
                         return;

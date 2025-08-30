@@ -4,8 +4,10 @@
   <div class="container-fluid px-4 md:px-5 py-1">
     <c:import url="logo.jsp" />
     <c:if test="${not empty sessionScope.user}">
-      <c:if test="${sessionScope.user.status.statusId eq 1 and sessionScope.user.userType.userTypeId eq 1}">
-        <a href="operator_sigup.do">Become an operator</a>
+      <c:if
+        test="${sessionScope.user.status.statusId eq 1 and sessionScope.user.userType.userTypeId eq 1}"
+      >
+        <a href="operator_signup.do">Become an operator</a>
       </c:if>
     </c:if>
     <div class="d-flex ms-auto">

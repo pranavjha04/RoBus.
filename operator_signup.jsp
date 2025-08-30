@@ -39,6 +39,7 @@ prefix="e" uri="bts" %>
       <form
         method="POST"
         action="operator_signup.do"
+        enctype="multipart/form-data"
         class="bg-white border shadow p-4 rounded-3 w-100"
         style="max-width: 420px"
         id="signup_form"

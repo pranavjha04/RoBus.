@@ -203,7 +203,7 @@ const contactInvalid = (response) => {
     enableElements(sendOtpBtn);
     removeInputError(contact);
   } else {
-    toast.error("Duplicate Contact");
+    toast.error("Contact number already in use");
     disableElements(sendOtpBtn);
   }
 };

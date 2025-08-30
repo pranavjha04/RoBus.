@@ -27,6 +27,8 @@ public class RecaptchaManager {
 
             DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
 
+            connection.connect();
+
             dos.flush();
             dos.close();
 
