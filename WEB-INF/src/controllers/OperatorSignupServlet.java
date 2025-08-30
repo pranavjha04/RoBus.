@@ -102,7 +102,7 @@ public class OperatorSignupServlet extends HttpServlet {
                             // match nahi hua toh seedha bhaga do or kuch krne he nahi do
                             if(!RecaptchaManager.checkCaptchaValid(value, context.getInitParameter("captcha_secret_key"))) {
                                 // captcha invalid hai toh kick user to sign up page
-                                response.sendRedirect("operator_signup.do?error_message=" + 0 + "&" + params);
+                                response.sendRedirect("operator_signup.do?error_message=" + 0 + ",&" + params);
                                 return;
                             }
                         }

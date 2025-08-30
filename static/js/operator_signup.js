@@ -88,6 +88,7 @@ const signUpForm = document.querySelector("#signup_form");
   }
   if (!errorMessage) return;
   errorMessage = errorMessage.split(",");
+  console.log(errorMessage);
   if (errorMessage.length > 1) {
     errorMessage.pop();
   }
