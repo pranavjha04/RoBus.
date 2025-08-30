@@ -23,17 +23,21 @@ import {
   showElement,
   validateName,
   validatePassword,
+  fileUpload,
 } from "./util.js";
 
 const invalidFieldMessages = [
-  "Invalid captcha",
-  "Invalid name",
-  "Invalid email",
-  "Invalid password",
-  "Invalid contact",
-  "Invalid address",
-  "Invalid website",
-  "Invalid base Charge",
+  "captcha", // 0
+  "name", // 1
+  "email", // 2
+  "password", // 3
+  "contact", // 4
+  "address", // 5
+  "website", // 6
+  "base Charge", // 7
+  "certificate file", // 8
+  "logo file", // 9
+  "banner file", // 10
 ];
 
 const fullName = document.querySelector("#full_name");
@@ -51,6 +55,15 @@ const verifyOtpBtn = document.querySelector("#verify_otp_btn");
 const address = document.querySelector("#address");
 const website = document.querySelector("#website");
 const baseCharge = document.querySelector("#base_charge");
+
+const certificate = document.querySelector("#certificate");
+const logo = document.querySelector("#logo");
+const banner = document.querySelector("#banner");
+
+const certificatePreview = document.querySelector("#certificate_preview");
+const logoPreview = document.querySelector("#logo_preview");
+const bannerPreview = document.querySelector("#banner_preview");
+
 const allFields = Array.from(document.querySelectorAll(".fld"));
 const signUpForm = document.querySelector("#signup_form");
 
@@ -58,35 +71,50 @@ const signUpForm = document.querySelector("#signup_form");
   new Pagination({
     parentElement: document.getElementById("formWrapper"),
   });
-
-  const errorMessage = new URLSearchParams(window.location.search).get(
-    "error_message"
-  );
+  const urlParams = new URLSearchParams(window.location.search);
+  const blankForm = urlParams.get("blank_form");
+  const invalidReq = urlParams.get("server_invalid");
+  if (blankForm && blankForm === "true") {
+    toast.error("Empty Form");
+    return;
+  }
+  if (invalidReq && invalidReq === "true") {
+    toast.error("Internal Server error");
+    return;
+  }
+  let errorMessage = urlParams.get("error_message");
+  if (errorMessage && errorMessage.length > 0) {
+    errorMessage = errorMessage.slice(1);
+  }
   if (!errorMessage) return;
-  errorMessage
-    .split("")
-    .map((num) => +num)
-    .forEach((id) => {
-      if (invalidFieldMessages[id]) {
-        toast.error(invalidFieldMessages[id]);
-      }
-    });
+  errorMessage = errorMessage.split(",");
+  if (errorMessage.length > 1) {
+    errorMessage.pop();
+  }
+
+  let message =
+    "Invalid " +
+    errorMessage.map((num) => invalidFieldMessages[+num]).join(", ");
+
+  toast.error(message);
 })();
 
 signUpForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
   let flag = true;
-
+  let error = "Invalid ";
   for (let i = 0; i < allFields.length; i++) {
     const next = allFields[i];
-    console.log(next);
     if (next != null && !next.classList.contains("border-success")) {
       if (next === website && website.value === "") continue;
       flag = false;
-      toast.error(invalidFieldMessages[i + 1]);
+      error += invalidFieldMessages[i + 1] + ", ";
       displayInputError(next);
     }
+  }
+  if (!flag) {
+    toast.error(error);
   }
 
   if (flag) {
@@ -94,12 +122,24 @@ signUpForm.addEventListener("submit", (e) => {
   }
 });
 
+banner.addEventListener("change", (e) => {
+  fileUpload(e, bannerPreview);
+});
+
+logo.addEventListener("change", (e) => {
+  fileUpload(e, logoPreview);
+});
+
+certificate.addEventListener("change", (e) => {
+  fileUpload(e, certificatePreview);
+});
+
 baseCharge.addEventListener("change", () => {
   const isValid = validateBaseCharge(baseCharge.value);
   if (isValid) {
     displayInputSuccess(baseCharge);
   } else {
-    toast.error(invalidFieldMessages[7]);
+    toast.error("Invalid " + invalidFieldMessages[7]);
     displayInputError(baseCharge);
   }
 });
@@ -113,7 +153,7 @@ website.addEventListener("blur", () => {
   if (website.value === "" || isValid) {
     displayInputSuccess(website);
   } else {
-    toast.error(invalidFieldMessages[6]);
+    toast.error("Invalid " + invalidFieldMessages[6]);
     displayInputError(website);
   }
 });
@@ -123,7 +163,7 @@ address.addEventListener("blur", () => {
   if (isValid) {
     displayInputSuccess(address);
   } else {
-    toast.error(invalidFieldMessages[5]);
+    toast.error("Invalid " + invalidFieldMessages[5]);
     displayInputError(address);
   }
 });
@@ -215,7 +255,7 @@ sendOtpBtn?.addEventListener("click", async () => {
 
 const contactInvalid = (response) => {
   if (response === "Invalid Contact") {
-    toast.error(invalidFieldMessages[4]);
+    toast.error("Invalid " + invalidFieldMessages[4]);
     displayInputError(contact);
     disableElements(sendOtpBtn);
   } else if (response === true) {
@@ -243,7 +283,7 @@ password.addEventListener("blur", () => {
   if (isValid) {
     displayInputSuccess(password);
   } else {
-    toast.error(invalidFieldMessages[3]);
+    toast.error("Invalid " + invalidFieldMessages[3]);
     displayInputError(password);
   }
 });
@@ -253,7 +293,7 @@ email.addEventListener("blur", async () => {
     const response = await checkEmailValid(email.value);
 
     if (response === "Invalid Email") {
-      toast.error(invalidFieldMessages[2]);
+      toast.error("Invalid " + invalidFieldMessages[2]);
       displayInputError(email);
     }
     if (response === true) {
@@ -272,7 +312,7 @@ fullName.addEventListener("blur", () => {
   if (response) {
     displayInputSuccess(fullName);
   } else {
-    toast.error(invalidFieldMessages[1]);
+    toast.error("Invalid " + invalidFieldMessages[1]);
     displayInputError(fullName);
   }
 });

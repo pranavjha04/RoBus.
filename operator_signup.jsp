@@ -2,18 +2,16 @@
 prefix="e" uri="bts" %>
 
 <!-- user bina login kuch ni kr payega -->
-<%--
-<c:if test="${empty sessionScope.user}">
-  <c:redirect url="/bts" />
-</c:if>
 
-<!--agr user ka type driver hai toh usko bhaga do -->
-<c:if test="${not empty sessionScope.user}">
-  <c:if test="${sessionScope.user.userType.userTypeId != 3}">
-    <c:redirect url="/bts" />
-  </c:if>
-</c:if>
---%>
+<c:choose>
+  <c:when
+    test="${empty sessionScope.user 
+            or sessionScope.user.status.statusId == 2 
+            or sessionScope.user.userType.userTypeId > 2}"
+  >
+    <c:redirect url="/" />
+  </c:when>
+</c:choose>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -99,6 +97,7 @@ prefix="e" uri="bts" %>
             </div>
           </div>
           <div id="page_2" class="d-flex flex-column gap-3 d-none">
+            <!-- CONTACT -->
             <div>
               <label for="contact" class="form-label small fw-semibold"
                 >Contact</label
@@ -140,6 +139,8 @@ prefix="e" uri="bts" %>
               id="edit_contact_btn"
               class="btn btn-primary px-4 fw-medium align-self-end d-none"
             />
+
+            <!-- OTP CONTAINER -->
             <div id="otp_container" class="d-none">
               <label for="otp-1" class="form-label small fw-semibold"
                 >Enter OTP</label
@@ -197,6 +198,7 @@ prefix="e" uri="bts" %>
             />
           </div>
           <div id="page_3" class="d-flex flex-column gap-3 d-none">
+            <!-- ADDRESS -->
             <div>
               <label for="address" class="form-label small fw-semibold"
                 >Address</label
@@ -212,6 +214,7 @@ prefix="e" uri="bts" %>
 ${empty param.address ? '' : param.address}</textarea
               >
             </div>
+            <!-- WEBSITE -->
             <div>
               <label for="website" class="form-label small fw-semibold"
                 >Website (Optional)</label
@@ -225,6 +228,7 @@ ${empty param.address ? '' : param.address}</textarea
                 placeholder="https://www.pranavtravels.com"
               />
             </div>
+            <!-- BASE CHARGE -->
             <div>
               <label for="base_charge" class="form-label small fw-semibold"
                 >Base charge</label
@@ -239,6 +243,98 @@ ${empty param.address ? '' : param.address}</textarea
                 value="${param.base_charge}"
                 placeholder="Amount Ranging from 0 to 200"
               />
+            </div>
+          </div>
+          <div id="page_4" class="d-flex flex-column gap-3 d-none">
+            <!-- CERTIFICATE -->
+            <div>
+              <label for="certificate" class="form-label small fw-semibold"
+                >Certificate</label
+              >
+              <input
+                class="form-control fld"
+                type="file"
+                name="certificate"
+                id="certificate"
+                accept="image/*"
+              />
+            </div>
+            <!-- LOGO -->
+            <div>
+              <label for="logo" class="form-label small fw-semibold"
+                >Logo</label
+              >
+              <input
+                class="form-control fld"
+                type="file"
+                id="logo"
+                name="logo"
+                accept="image/*"
+              />
+            </div>
+            <!-- BANNER -->
+            <div>
+              <label for="banner" class="form-label small fw-semibold"
+                >Banner</label
+              >
+              <input
+                class="form-control fld"
+                type="file"
+                id="banner"
+                name="banner"
+                accept="image/*"
+              />
+            </div>
+            <!-- PREVIEW OF CERTIFICATE,LOGO,BANNER -->
+            <div>
+              <div
+                class="d-flex gap-4 align-items-start justify-content-between flex-wrap"
+              >
+                <!-- Certificate -->
+                <div class="d-flex flex-column text-center">
+                  <span class="fw-semibold mb-2">Certificate</span>
+                  <div
+                    class="border rounded overflow-hidden"
+                    style="width: 120px; height: 120px"
+                  >
+                    <img
+                      id="certificate_preview"
+                      class="w-100 h-100 object-fit-cover"
+                      alt="Certificate Preview"
+                    />
+                  </div>
+                </div>
+
+                <!-- Logo -->
+                <div class="d-flex flex-column text-center">
+                  <span class="fw-semibold mb-2">Logo</span>
+                  <div
+                    class="border rounded overflow-hidden"
+                    style="width: 120px; height: 120px"
+                  >
+                    <img
+                      id="logo_preview"
+                      class="w-100 h-100 object-fit-cover"
+                      alt="Logo Preview"
+                    />
+                  </div>
+                </div>
+
+                <!-- Banner -->
+                <div class="d-flex flex-column text-center">
+                  <span class="fw-semibold mb-2">Banner</span>
+                  <div
+                    class="border rounded overflow-hidden"
+                    style="width: 120px; height: 120px"
+                  >
+                    <img
+                      id="banner_preview"
+                      class="w-100 h-100 object-fit-cover"
+                      alt="Banner Preview"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="d-flex justify-content-center">
               <div

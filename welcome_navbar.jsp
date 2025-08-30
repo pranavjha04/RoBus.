@@ -1,5 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<div
+  class="toast-container position-fixed top-0 end-0 p-3"
+  style="z-index: 1080"
+></div>
 <nav class="navbar sticky-top navbar-expand-lg bg-white shadow-sm">
   <div class="container-fluid px-4 md:px-5 py-1">
     <c:import url="logo.jsp" />

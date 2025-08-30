@@ -1,3 +1,5 @@
+import { toast } from "./toast.js";
+
 export const validateName = (value) => {
   const regex = /^[A-Za-z .-]{6,75}$/;
   return regex.test(value.trim());
@@ -60,7 +62,7 @@ export const validateWebsite = (value) => {
 
 export const validateBaseCharge = (value) => {
   return value >= 0 && value <= 200;
-}
+};
 
 export const displayInputError = (element) => {
   removeInputSuccess(element);
@@ -131,4 +133,20 @@ export const readOnlyElements = (...elements) => {
 
 export const removeReadOnlyElements = (...elements) => {
   elements.forEach((next) => (next.readOnly = false));
+};
+
+export const fileUpload = (element, previewElement) => {
+  const [file] = element.target.files;
+  const isFileSizeValid = validateFileSize(file.size);
+  const isFileTypeValid = validateFileType(file.type, "image");
+
+  if (!file || !isFileSizeValid || !isFileTypeValid) {
+    toast.error("Upload file should be an Image and not be greater than 5MB");
+    element.target.value = "";
+    previewElement.removeAttribute("src");
+    displayInputError(element.target);
+    return;
+  }
+  displayInputSuccess(element.target);
+  previewElement.src = URL.createObjectURL(file);
 };

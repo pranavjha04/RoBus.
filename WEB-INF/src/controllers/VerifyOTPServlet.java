@@ -20,7 +20,7 @@ public class VerifyOTPServlet extends HttpServlet {
             response.getWriter().println(responseCode);
             return;
         }
-
+        
         HttpSession session = request.getSession();
         if(session.getAttribute("otp") == null) {
             responseCode = 2;

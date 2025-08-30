@@ -14,11 +14,6 @@
   <body class="d-flex flex-column bg-light vh-100">
     <c:import url="welcome_navbar.jsp" />
     <!-- Toasts container -->
-    <div
-      class="toast-container position-fixed top-0 end-0 p-3"
-      style="z-index: 1080"
-    ></div>
-
     <section
       class="d-flex align-items-center justify-content-center flex-grow-1 px-3"
     >

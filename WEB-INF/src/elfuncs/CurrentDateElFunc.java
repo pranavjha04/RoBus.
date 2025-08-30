@@ -10,5 +10,5 @@ public class CurrentDateElFunc {
     int dayOfMonth = cld.get(Calendar.DAY_OF_MONTH);
 
     return String.format("%04d-%02d-%02d", year, month, dayOfMonth);
-}
+    }
 }

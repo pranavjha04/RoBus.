@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
+import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpSession;
 
@@ -13,7 +14,17 @@ import models.Operator;
 import utils.RecaptchaManager;
 import utils.FieldManager;
 
+import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
+
+import java.io.File;
 import java.io.IOException;
+
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
 
 @WebServlet("/operator_signup.do")
 public class OperatorSignupServlet extends HttpServlet {
@@ -29,114 +40,151 @@ public class OperatorSignupServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
 
-        // user logged in nahi hai so kick to home page;
-        if(session.getAttribute("user") == null) {
-            response.sendRedirect("/bts");
-            return;
-        }
-        // user jo logged in uska status verified nahi hai ya phir uska type driver hai toh show him invalid request;
-        User user = (User) session.getAttribute("user");
-        if(user.getStatus().getStatusId() != 1 || user.getUserType().getUserTypeId() == 3) {
-            response.sendRedirect("/bts?invalid=true");
-            return;
-        }
-
-        String errorMessage = "";
-        String params = "";
-        String captchaResponse = request.getParameter("g-recaptcha-response");
-        
-        // captcha invalid hai 
-        if(!RecaptchaManager.checkCaptchaValid(captchaResponse, getServletContext().getInitParameter("captcha_secret_key"))) {
-            errorMessage += "0";
-            response.getWriter().println(errorMessage);
-            return;
-        }
-        String fullName = request.getParameter("full_name");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        String contact = request.getParameter("contact");
-        String address = request.getParameter("address");
-        String website = request.getParameter("website");
-        Integer baseCharge = Integer.parseInt(request.getParameter("base_charge"));
         String backURL = request.getParameter("back_url");
+        
         if(backURL == null) {
             backURL = "/bts";
         }
 
-        // full_name validate
-        if(!FieldManager.validateName(fullName)) {
-            System.out.println("FULL_NAME");
-            errorMessage += "1";
-        }
-        else {
-            params += "full_name="+fullName+"&";
+        // user logged in nahi hai so kick to home page;
+        if(session.getAttribute("user") == null) {
+            response.sendRedirect(backURL);
+            return;
         }
 
-        // email validate
-        boolean isEmailValid = FieldManager.validateEmail(email) && User.checkUniqueEmail(email) && Operator.checkUniqueEmail(email);
-
-        if(!isEmailValid) {
-            System.out.println("EMAIL");
-
-            errorMessage += "2";
-        }
-        else {
-            params += "email="+email+"&";
+        // user jo logged in uska status verified nahi hai ya phir uska type driver hai toh show him invalid request;
+        User user = (User) session.getAttribute("user");
+        if(user.getStatus().getStatusId() != 1 || user.getUserType().getUserTypeId() == 3) {
+            response.sendRedirect(backURL + "?invalid=true");
+            return;
         }
 
-        // contact validate
-        boolean isContactValid = FieldManager.validateContact(contact) && User.checkUniqueContact(contact) && Operator.checkUniqueContact(contact);
+        String errorMessage = ",";
+        String params = "";
+        
+        // check kro multipart content hai kya nahi
 
-        if(!isContactValid) {
-            System.out.println("CONTACT");
-            errorMessage += "4";
-        }
-        else{
-            params += "contact="+contact+"&";
-        }
+        if(ServletFileUpload.isMultipartContent(request)) {
+            try {
+                // Saare form fields ko get krdo store kro list mei
+                List<FileItem> items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
+                
+                // check kro ki form mei kuch hai bhi ya nahi
+                if(items.size() == 0) {
+                    response.sendRedirect("operator_signup.do?empty_form=true");
+                    return;
+                }
 
-        // address validate
-        if(!FieldManager.validateAddress(address)) {
-            System.out.println("ADDRESS");
+                // content object 
+                ServletContext context = getServletContext();
+                // operator ka object bnao empty
+                Operator operator = new Operator();
 
-            errorMessage += "5";
-        }
-        else {
-            params += "address="+address+"&";
-        }
+                // operator mei current user set krdo ye help krega userId foregin key daalne mei
+                operator.setUser(user);
 
-        if(website != null && !website.equals(website.trim())) {
-            if(!FieldManager.validateWebsite(website)) {
-                errorMessage += "6";
+                // ye mera temp List hai jisme insert hone ke baad mai isse files ko write krunga
+                List<FileItem> storedFiles = new ArrayList<>();
+                
+                // ye mapping zaruir hai fieldName ko fileke random name se link krne mei
+                HashMap<String,String> fileMap = new HashMap<>();
+
+                // iterate kro
+                for(FileItem item: items) {
+                    // fieldName name store kro
+                    String fieldName = item.getFieldName();
+                    // check kro ki wo simple input field ho koi file input nahi
+                    if(item.isFormField()) {
+                        // value of the that input field
+                        String value = item.getString();
+                        // captcha wala alag handle kro
+                        if(fieldName.equals("g-recaptcha-response")) {
+                            // match nahi hua toh seedha bhaga do or kuch krne he nahi do
+                            if(!RecaptchaManager.checkCaptchaValid(value, context.getInitParameter("captcha_secret_key"))) {
+                                // captcha invalid hai toh kick user to sign up page
+                                response.sendRedirect("operator_signup.do?error_message=" + 0 + "&" + params);
+                                return;
+                            }
+                        }
+                        else {
+                            // jo error response code mila hai wo get kro store kro
+                            String result = operator.setField(fieldName, value);
+                            // agr empty nahi hai mtlb gadbad hai
+                            if(!result.equals("")) {
+                                errorMessage += result + ',';
+                            }
+                            else {
+                                // password ko hm params mei nahi dikhayge kyuki usme special symbol hote
+                                // + secuirity reason baakiyo ko params mei store krdo 
+                                // wrna user baar baar input daalega same same
+                                if(!fieldName.equals("password")) {
+                                    params += fieldName + "=" + value + "&";
+                                }
+                            }
+                        }   
+                    }
+                    else {
+                        // Ab ye saari file inputs hai
+                        // inko set krdo and map bhi krdo name, random name se
+                        String result = operator.setFile(fieldName, item.getName(), item.getSize(), fileMap);
+                        // same check kro response empty toh nahi hai
+                        if(!result.equals("")) {
+                            errorMessage += result + ',';
+                        }
+                        // nahi hai toh hamari tempList mei store krdo
+                        else {
+                            storedFiles.add(item);
+                        }
+                    }
+                }
+
+                // kuch error aaya toh seedha kick krdo error message ke saath and jo params sahi the unke saath 
+                if(errorMessage.length() > 1) {
+                    response.sendRedirect("operator_signup.do?error_message=" + errorMessage + "&" + params);
+                    return;
+                }
+
+                // ab generatedId le aao
+                int generatedId = operator.addRecord();
+                
+                // saved record krte time error aagyi
+                if(generatedId == -1) { 
+                    response.sendRedirect("operator_signup.do?server_invalid=true");
+                    return;
+                }
+
+                // ek dir bnao jisme store kroge operator ke saari cheeze ko
+                File file = new File(context.getRealPath("/WEB-INF/uploads/operator"), generatedId + "");
+                file.mkdir();
+
+                // ab wo temp List hai usme iterate krdo and ek ek krke unko write krte jao 
+                for(FileItem item : storedFiles) {
+                    File currFile = new File(file, fileMap.get(item.getFieldName()));
+                    item.write(currFile);
+                }
+
+                // user ka type update krdo from passenger to operator
+                user.updateUserType(2); // 2 means operator krdo
+                // update hone ke baad session mei change krdo user ko with updated values
+                session.setAttribute("user", User.getUserById(user.getUserId()));
+                // ab login page bhejdo 
+                response.sendRedirect(backURL +"?success=true");
+                return;
             }
-            else {
-                params += "website="+website+"&";
+            catch(FileUploadException e) {
+                e.printStackTrace();
+                response.sendRedirect("operator_signup.do?server_invalid=true");
+                return;
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+                response.sendRedirect("operator_signup.do?server_invalid=true");
+                return;
             }
         }
-
-        if(!FieldManager.validateBaseCharge(baseCharge)) {
-            System.out.println("BASE CHARGE");
-            errorMessage += "7";
-        }
         else {
-            params += "base_charge="+baseCharge+"&";
+            response.sendRedirect("operator_signup.do?server_invalid=true");
+            return;
         }
-
-        if(!FieldManager.validatePassword(password)) {
-            errorMessage += "3";
-        }
-    
-        String nextPage = "operator_signup.do";
-        if(errorMessage.length() > 0) {
-            nextPage = "operator_signup.do?error_message="+errorMessage+"&"+params;
-        }    
-        else {
-            Operator operator = new Operator(fullName, contact, email, password, address, website, baseCharge, user);
-            if(operator.addRecord()) {
-                nextPage = backURL+"?success=true";
-            }
-        }
-
-        response.sendRedirect(nextPage);
     }
 }

@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.sql.SQLException;
 
 import utils.DBManager;
@@ -60,6 +61,72 @@ public class User implements Cloneable {
     
     public User() {}
 
+    public boolean updateUserType(int targetType) {
+        if(getUserType().getUserTypeId() == targetType) {
+            return true;
+        }
+
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                    "UPDATE users SET user_type_id=? " + 
+                    "WHERE user_id=?";
+
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, targetType);
+            ps.setInt(2, userId);
+
+            flag = ps.executeUpdate() == 1;
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        return flag;
+    }
+
+    public static User getUserById(int userId) {
+        User user = null;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                    "SELECT * FROM USERS " +
+                    "JOIN status ON users.status_id = status.status_id " +
+                    "JOIN user_types ON users.user_type_id = user_types.user_type_id " +
+                    "WHERE user_id=?";
+            
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setInt(1, userId);
+
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                user = new User(
+                        rs.getInt("user_id"), 
+                        rs.getString("full_name"),
+                        rs.getDate("dob"),
+                        rs.getString("contact"),
+                        rs.getInt("gender"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("profile_pic"),
+                        new Status(rs.getInt("status.status_id"), rs.getString("status.name")),
+                        rs.getString("verification_code"),
+                        rs.getTimestamp("created_at"),
+                        rs.getTimestamp("updated_at"),
+                        new UserType(rs.getInt("user_types.user_type_id"), rs.getString("user_types.name"))
+                    );
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
     public static User login(String email, String password) throws PasswordMismatchException {
         User user = null;
         try {
@@ -105,7 +172,6 @@ public class User implements Cloneable {
         }
         return user;
     }
-
     public boolean addRecord() {
         boolean flag = false;
         try {
@@ -115,7 +181,7 @@ public class User implements Cloneable {
                     "(full_name,contact,email,password,dob,gender,status_id,user_type_id) " +
                     "VALUES (?,?,?,?,?,?,?,?)";
 
-            PreparedStatement ps = con.prepareStatement(query);
+            PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, fullName);
             ps.setString(2, contact);
             ps.setString(3, email);
@@ -126,6 +192,13 @@ public class User implements Cloneable {
             ps.setInt(8, 1); // USER TYPE -> PASSENGER 
 
             flag = ps.executeUpdate() == 1;
+            if(flag) {
+                ResultSet rs = ps.getGeneratedKeys();
+                if(rs.next()) {
+                    userId = rs.getInt(1);
+
+                }
+            }
             con.close();
         }
         catch(SQLException e) {

@@ -22,7 +22,6 @@ public final class FileManager {
                 for(int i = 0; i < acceptedImageExtensions.length; i++) {
                     if(extension.equalsIgnoreCase(acceptedImageExtensions[i])) {
                         flag = true;
-                        break;
                     }
                 }
                 break;

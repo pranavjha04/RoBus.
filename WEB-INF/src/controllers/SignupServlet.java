@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.List;
 import java.sql.Date;
 
+import java.io.File;
+
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
@@ -105,10 +107,14 @@ public class SignupServlet extends HttpServlet {
         }
         else {
             User user = new User(fullName, contact, email, password, Date.valueOf(dob), gender);
+
             if(user.addRecord()) {
+                // folder create krlo uska personal
+                File file = new File(getServletContext().getRealPath("/WEB-INF/uploads/user"), user.getUserId() + "");
+                file.mkdir();
+
                 nextPage = "login.do?success=true";
             }
-            
         }
         response.sendRedirect(nextPage);
     }

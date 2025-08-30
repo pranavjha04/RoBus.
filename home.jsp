@@ -27,7 +27,7 @@
     <header
       class="container-fluid position-relative d-flex align-items-center justify-content-center text-white"
       style="
-        background-image: url('https://gst-contracts.s3.ap-southeast-1.amazonaws.com/uploads/bcc/cms/asset/avatar/324800/banner6.jpg');
+        background-image: url('static/media/images/Gemini_Generated_Image_1x50bu1x50bu1x50.png');
         background-size: cover;
         background-position: center;
         height: 100vh;
@@ -35,7 +35,7 @@
     >
       <div
         class="position-absolute top-0 start-0 w-100 h-100"
-        style="background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px)"
+        style="background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(1.5px)"
       ></div>
 
       <div class="container position-relative text-center">

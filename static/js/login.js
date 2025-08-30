@@ -22,14 +22,19 @@ const invalidFieldMessages = [
     return;
   }
 
+  const invalidReq = urlParams.get("server_invalid");
+  if (invalidReq && invalidReq === "true") {
+    toast.error("Internal Server error");
+    return;
+  }
+  
   const errorMessage = urlParams?.get("error_message");
   if (errorMessage) {
-    errorMessage
-      .split("")
-      .map((num) => num - 1)
-      .forEach((num) => {
-        toast.error(invalidFieldMessages[num]);
-      });
+    let message =
+      "Invalid " +
+      errorMessage.map((num) => invalidFieldMessages[+num]).join(", ");
+
+    toast.error(message);
   }
 })();
 
