@@ -3,15 +3,14 @@ prefix="e" uri="bts" %>
 
 <!-- user bina login kuch ni kr payega -->
 
-<c:choose>
-  <c:when
+<c:if
     test="${empty sessionScope.user 
             or sessionScope.user.status.statusId == 2 
             or sessionScope.user.userType.userTypeId > 2}"
   >
     <c:redirect url="/" />
-  </c:when>
-</c:choose>
+</c:if>
+
 
 <!DOCTYPE html>
 <html lang="en">

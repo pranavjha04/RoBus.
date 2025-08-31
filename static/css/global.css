@@ -47,3 +47,10 @@ button {
     grid-column: span 3;
   }
 }
+
+.side-bar-link {
+  transition: all 0.3s ease;
+  &:hover {
+    background-color: oklch(97% 0.001 106.424);
+  }
+}

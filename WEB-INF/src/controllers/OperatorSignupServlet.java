@@ -167,7 +167,7 @@ public class OperatorSignupServlet extends HttpServlet {
                 // user ka type update krdo from passenger to operator
                 user.updateUserType(2); // 2 means operator krdo
                 // update hone ke baad session mei change krdo user ko with updated values
-                session.setAttribute("user", User.getUserById(user.getUserId()));
+                session.setAttribute("user", operator.getUser());
                 // ab login page bhejdo 
                 response.sendRedirect(backURL +"?success=true");
                 return;
