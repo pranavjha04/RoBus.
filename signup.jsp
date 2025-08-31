@@ -1,6 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@ taglib prefix="e" uri="bts" %>
 
+<c:if test="${
+            not empty sessionScope.operator
+            or not empty sessionScope.user}">
+  <c:redirect url="/" />
+</c:if>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -225,6 +231,7 @@
         </p>
       </form>
     </section>
-    <script type="module" src="static/js/signup.js"></script>
+    <!-- <script type="module" src="static/js/signup.js"></script> -->
+    <script type="module" src="static/js/signup2.js"></script>
   </body>
 </html>

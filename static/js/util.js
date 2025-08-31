@@ -150,3 +150,77 @@ export const fileUpload = (element, previewElement) => {
   displayInputSuccess(element.target);
   previewElement.src = URL.createObjectURL(file);
 };
+
+export const genderHandler = (e) => {
+  const value = e.target.value;
+  const isValid = !isNaN(value) && value > 0 && value < 3;
+  if (isValid) {
+    displayInputSuccess(e.target);
+  } else {
+    toast.error("Gender not valid");
+    displayInputError(e.target);
+  }
+};
+
+export const addressHandler = (e) => {
+  const isValid = validateAddress(e.target.value);
+  if (isValid) {
+    displayInputSuccess(e.target);
+  } else {
+    toast.error("Invalid address");
+    displayInputError(e.target);
+  }
+};
+
+export const websiteHandler = (e) => {
+  if (e.target.value === "") {
+    removeInputError(e.target);
+    return;
+  }
+  const isValid = validateWebsite(e.target.value);
+  if (e.target.value === "" || isValid) {
+    displayInputSuccess(e.target);
+  } else {
+    toast.error("Invalid website");
+    displayInputError(e.target);
+  }
+};
+
+export const baseChargeHandler = (e) => {
+  const isValid = validateBaseCharge(e.target.value);
+  if (isValid) {
+    displayInputSuccess(e.target);
+  } else {
+    toast.error("Invalid Base charge");
+    displayInputError(e.target);
+  }
+};
+export const dobHandler = (e) => {
+  const isValid = validateUserAge(e.target.value);
+  if (isValid) {
+    displayInputSuccess(e.target);
+  } else {
+    toast.error("Age should be greater than 16");
+    displayInputError(e.target);
+  }
+};
+
+export const passwordHandler = (e) => {
+  const isValid = validatePassword(e.target.value);
+  if (isValid) {
+    displayInputSuccess(e.target);
+  } else {
+    toast.error("Invalid Password");
+    displayInputError(e.target);
+  }
+};
+
+export const nameHandler = (e) => {
+  const response = validateName(e.target.value);
+  if (response) {
+    displayInputSuccess(e.target);
+  } else {
+    toast.error("Invalid Name");
+    displayInputError(e.target);
+  }
+};

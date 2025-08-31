@@ -124,6 +124,7 @@ public class OperatorSignupServlet extends HttpServlet {
                         }   
                     }
                     else {
+                        
                         // Ab ye saari file inputs hai
                         // inko set krdo and map bhi krdo name, random name se
                         String result = operator.setFile(fieldName, item.getName(), item.getSize(), fileMap);

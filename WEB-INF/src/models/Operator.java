@@ -34,10 +34,9 @@ public class Operator implements Cloneable {
     private Status status;
     private Timestamp createdAt;   
     private Timestamp updatedAt;   
-    private UserType userType;
     private User user;
 
-    public Operator(Integer operatorId, String fullName, String address, String email, String password, String contact, String certificate, String website, String logo, String banner, String verificationCode, Integer baseCharge, Status status, Timestamp createdAt, Timestamp updatedAt, UserType userType, User user) {
+    public Operator(Integer operatorId, String fullName, String address, String email, String password, String contact, String certificate, String website, String logo, String banner, String verificationCode, Integer baseCharge, Status status, Timestamp createdAt, Timestamp updatedAt, User user) {
         this(fullName, contact, email, password, address, website, baseCharge, user);
         this.operatorId = operatorId;
         this.certificate = certificate;
@@ -46,8 +45,7 @@ public class Operator implements Cloneable {
         this.verificationCode = verificationCode;
         this.status = status.clone();
         this.createdAt = createdAt;
-        this.updatedAt =  updatedAt;
-        this.userType = userType.clone();
+        this.updatedAt = updatedAt;
     }
     public Operator(String fullName, String contact, String email, String password, String address, String website, Integer baseCharge, User user) {
         this.fullName = fullName;
@@ -112,21 +110,86 @@ public class Operator implements Cloneable {
         Operator operator = null;
         try {
             Connection con = DBManager.getConnection();
-            String query = 
-                    "SELECT o.*, o.status_id AS operator_status, os.name as operator_name  FROM operators AS o " +
-                    "JOIN status as s ON o.status_id=s.status_id " +
-                    "JOIN users AS u ON o.user_id=u.user_id " +
-                    "WHERE o.email=?";
+            String query =
+                    "SELECT " +
+                    "o.operator_id, " +
+                    "o.full_name AS operator_full_name, " +
+                    "o.contact AS operator_contact, " +
+                    "o.email AS operator_email, " +
+                    "o.password AS operator_password, " +
+                    "o.address AS operator_address, " +
+                    "o.certificate AS operator_certificate, " +
+                    "o.website AS operator_website, " +
+                    "o.logo AS operator_logo, " +
+                    "o.banner AS operator_banner, " +
+                    "o.base_charge AS operator_base_charge, " +
+                    "o.created_at AS operator_created_at, " +
+                    "o.updated_at AS operator_updated_at, " +
+                    "o.verification_code AS operator_verification_code, " +
+                    "os.status_id AS operator_status_id, " +
+                    "os.name AS operator_status_name, " +
+                    "u.user_id, " +
+                    "u.full_name AS user_full_name, " +
+                    "u.contact AS user_contact, " +
+                    "u.email AS user_email, " +
+                    "u.password AS user_password, " +
+                    "u.dob AS user_dob, " +
+                    "u.gender AS user_gender, " +
+                    "u.profile_pic AS user_profile_pic, " +
+                    "u.created_at AS user_created_at, " +
+                    "u.updated_at AS user_updated_at, " +
+                    "u.verification_code AS user_verification_code, " +
+                    "us.status_id AS user_status_id, " +
+                    "us.name AS user_status_name, " +
+                    "ut.user_type_id, " +
+                    "ut.name AS user_type_name " +
+                    "FROM operators o " +
+                    "JOIN status os ON o.status_id = os.status_id " +
+                    "JOIN users u ON o.user_id = u.user_id " +
+                    "JOIN status us ON u.status_id = us.status_id " +
+                    "JOIN user_types ut ON u.user_type_id = ut.user_type_id " +
+                    "WHERE o.email = ?";
 
             PreparedStatement ps = con.prepareStatement(query);
             ps.setString(1, email); 
 
             ResultSet rs = ps.executeQuery();
             if(rs.next()) {
-                if(!EncryptionManager.checkPassword(password, rs.getString("password"))) {
+                if(!EncryptionManager.checkPassword(password, rs.getString("operator_password"))) {
                     throw new PasswordMismatchException("Wrong password");
                 }
-                operator = new Operator();
+                operator = new Operator(
+                    rs.getInt("operator_id"),
+                    rs.getString("operator_full_name"),
+                    rs.getString("operator_address"),
+                    rs.getString("operator_email"),
+                    rs.getString("operator_password"),
+                    rs.getString("operator_contact"),
+                    rs.getString("operator_certificate"),
+                    rs.getString("operator_website"),
+                    rs.getString("operator_logo"),
+                    rs.getString("operator_banner"),
+                    rs.getString("operator_verification_code"),
+                    rs.getInt("operator_base_charge"),
+                    new Status(rs.getInt("operator_status_id"), rs.getString("operator_status_name")),
+                    rs.getTimestamp("operator_created_at"),
+                    rs.getTimestamp("operator_updated_at"),
+                    new User(
+                        rs.getInt("user_id"),
+                        rs.getString("user_full_name"),
+                        rs.getDate("user_dob"),
+                        rs.getString("user_contact"),
+                        rs.getInt("user_gender"),
+                        rs.getString("user_email"),
+                        rs.getString("user_password"),
+                        rs.getString("user_profile_pic"),
+                        new Status(rs.getInt("user_status_id"), rs.getString("user_status_name")),
+                        rs.getString("user_verification_code"),
+                        rs.getTimestamp("user_created_at"),
+                        rs.getTimestamp("user_updated_at"),
+                        new UserType(rs.getInt("user_type_id"), rs.getString("user_type_name"))
+                    )
+                );
             }
             con.close();
         }
@@ -282,7 +345,6 @@ public class Operator implements Cloneable {
             getStatus(),
             getCreatedAt(),
             getUpdatedAt(),
-            getUserType(),
             getUser()
         );
     }
@@ -405,14 +467,6 @@ public class Operator implements Cloneable {
 
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = new Timestamp(updatedAt.getTime());
-    }
-
-    public UserType getUserType() {
-        return userType.clone();
-    } 
-
-    public void setUserType(UserType userType) {
-        this.userType = userType.clone();
     }
 
     public void setUser(User user) {

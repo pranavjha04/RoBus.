@@ -16,20 +16,21 @@ const invalidFieldMessages = [
 
 (() => {
   const urlParams = new URLSearchParams(window.location.search);
-  const signUpSuccess = urlParams?.get("success");
-  if (signUpSuccess) {
-    toast.success("Account Created Successfully");
-    return;
-  }
 
   const invalidReq = urlParams.get("server_invalid");
   if (invalidReq && invalidReq === "true") {
     toast.error("Internal Server error");
     return;
   }
-  
-  const errorMessage = urlParams?.get("error_message");
-  if (errorMessage) {
+  const success = urlParams.get("success");
+  if (success && success == "true") {
+    toast.success("Account created successfully");
+    return;
+  }
+
+  let errorMessage = urlParams?.get("error_message");
+  errorMessage = errorMessage?.split("");
+  if (errorMessage && errorMessage?.length > 0) {
     let message =
       "Invalid " +
       errorMessage.map((num) => invalidFieldMessages[+num]).join(", ");
@@ -61,6 +62,8 @@ password.addEventListener("blur", () => {
 });
 
 email.addEventListener("blur", async () => {
+  const isValidEmail = validateEmail(email.value);
+  if (!isValidEmail) return;
   try {
     const response = await checkEmailExist(email.value);
     if (response === "Invalid email") {

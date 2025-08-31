@@ -31,16 +31,17 @@ public class User implements Cloneable {
 
 
     public User(Integer userId, String fullName, Date dob, String contact, Integer gender, 
-            String email, String password, String profilePic, Status status, 
-            String verificationCode, Timestamp createdAt, Timestamp updatedAt, 
-            UserType userType) {
-        this(fullName, contact, email, password, dob, gender,status, userType);
+                String email, String password, String profilePic, Status status, 
+                String verificationCode, Timestamp createdAt, Timestamp updatedAt, 
+                UserType userType) {
+        this(fullName, contact, email, password, dob, gender, status, userType);
         this.userId = userId;
         this.profilePic = profilePic;
         this.verificationCode = verificationCode;
         this.createdAt = new Timestamp(createdAt.getTime());
         this.updatedAt = new Timestamp(updatedAt.getTime());
     }
+
 
 
     public User(String fullName, String contact, String email, String password, Date dob, Integer gender) {

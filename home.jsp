@@ -35,7 +35,11 @@
     >
       <div
         class="position-absolute top-0 start-0 w-100 h-100"
-        style="background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(1.5px)"
+        style="
+          background: rgba(0, 0, 0, 0.5);
+          backdrop-filter: blur(1.5px);
+          image-rendering: optimizeSpeed;
+        "
       ></div>
 
       <div class="container position-relative text-center">

@@ -1,7 +1,13 @@
-import { createURLParams, validateContact, validateEmail } from "./util.js";
+import {
+  createURLParams,
+  validateContact,
+  validateEmail,
+  displayInputSuccess,
+  displayInputError,
+} from "./util.js";
+import { toast } from "./toast.js";
 
 export const checkEmailExist = async (value) => {
-  console.log(value);
   const res = await fetch(`check_email_exist.do`, {
     method: "POST",
     body: createURLParams({
@@ -115,4 +121,23 @@ export const checkEmailValid = async (value) => {
     throw new Error(err);
   }
   return result;
+};
+
+export const emailHandler = async (e) => {
+  try {
+    const response = await checkEmailValid(e.target.value);
+
+    if (response === "Invalid Email") {
+      toast.error("Invalid Email");
+      displayInputError(e.target);
+    }
+    if (response === true) {
+      displayInputSuccess(e.target);
+    } else if (response === false) {
+      toast.error("Email already in use");
+      displayInputError(e.target);
+    }
+  } catch (err) {
+    toast.error(err.message);
+  }
 };
