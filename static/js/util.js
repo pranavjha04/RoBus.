@@ -21,6 +21,11 @@ export const validateContact = (value) => {
   return regex.test(value.trim());
 };
 
+export const validateBusNumber = (value) => {
+  const regex = /^[A-Z]{2}\d{1,2}\s?[A-Z]{1,2}\s?\d{1,4}$/;
+  return regex.test(value);
+};
+
 export const validateUserAge = (value) => {
   const birthDate = new Date(value);
   if (!birthDate) return false;

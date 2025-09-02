@@ -29,5 +29,11 @@
       <function-class>elfuncs.CurrentDateElFunc</function-class>
       <function-signature>java.lang.String currentDate()</function-signature>
     </function>
+
+    <tag>
+        <name>layout</name>
+        <tag-class>tlds.OperatorDashboardLayoutTagHandler</tag-class>
+        <body-content>scriptless</body-content>
+    </tag>
 </taglib>
 

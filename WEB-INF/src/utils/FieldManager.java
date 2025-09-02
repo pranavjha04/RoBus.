@@ -70,5 +70,11 @@ public final class FieldManager {
     public static final boolean validateBaseCharge(Integer baseCharge) {
         return baseCharge >= 0 && baseCharge <= 200;
     }
-    
+
+    public static final boolean validateBusNumber(String busNumber) {
+        Pattern pattern = Pattern.compile("^[A-Z]{2}\\d{1,2}\\s?[A-Z]{1,3}\\s?\\d{1,4}$");
+        Matcher matcher = pattern.matcher(busNumber.trim());
+        return matcher.matches();
+    }
+
 }

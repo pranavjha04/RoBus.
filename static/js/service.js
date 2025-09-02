@@ -4,21 +4,9 @@ import {
   validateEmail,
   displayInputSuccess,
   displayInputError,
+  validateBusNumber,
 } from "./util.js";
 import { toast } from "./toast.js";
-
-export const checkEmailExist = async (value) => {
-  const res = await fetch(`check_email_exist.do`, {
-    method: "POST",
-    body: createURLParams({
-      email: value,
-    }),
-  });
-  if (!res.ok) throw new Error("Internal server error");
-
-  const data = await res.text();
-  return data.trim();
-};
 
 const checkUniqueEmailRequest = async (value) => {
   const res = await fetch(`check_unique_email.do?email=${value}`);
@@ -26,6 +14,14 @@ const checkUniqueEmailRequest = async (value) => {
 
   const data = await res.text();
   return data.trim() === "true";
+};
+
+export const checkUniqueBusNumberRequest = async (value) => {
+  const res = await fetch(`check_unique_bus_number.do?bus_number=${value}`);
+  if (!res.ok) throw new Error("Internal server error");
+
+  const data = await res.text();
+  return data.trim();
 };
 
 const checkUniqueContactRequest = async (value) => {
@@ -42,26 +38,6 @@ const sendOtpRequest = async (value) => {
 
   const data = await res.text();
   return data.trim() === "true";
-};
-
-const signUpRequest = async (value) => {
-  const urlParams = createURLParams(value);
-  const res = await fetch("signup.do", {
-    method: "POST",
-    body: urlParams,
-  });
-  if (!res.ok) throw new Error("Internal server error");
-  return await res.text();
-};
-
-export const signupUser = async (value) => {
-  let result = "";
-  try {
-    result = await signUpRequest(value);
-  } catch (err) {
-    throw new Error(err);
-  }
-  return result.trim();
 };
 
 const verifyOTPRequest = async (value) => {
@@ -136,6 +112,38 @@ export const emailHandler = async (e) => {
     } else if (response === false) {
       toast.error("Email already in use");
       displayInputError(e.target);
+    }
+  } catch (err) {
+    toast.error(err.message);
+  }
+};
+
+export const checkBusNumberValid = async (value) => {
+  const isRegexValid = validateBusNumber(value);
+  if (!isRegexValid) return "Invalid";
+
+  let result = false;
+  try {
+    result = await checkUniqueBusNumberRequest(value);
+  } catch (err) {
+    throw new Error(err);
+  }
+  return result.trim();
+};
+
+export const busNumberHandler = async (e) => {
+  try {
+    const response = await checkBusNumberValid(e.target.value);
+    console.log(response);
+    if (response === "Invalid") {
+      displayInputError(e.target);
+    } else if (response === "true" || response === true) {
+      displayInputError(e.target);
+      toast.error("Number already registered");
+    } else if (response === "false") {
+      displayInputSuccess(e.target);
+    } else {
+      throw new Error(response);
     }
   } catch (err) {
     toast.error(err.message);
