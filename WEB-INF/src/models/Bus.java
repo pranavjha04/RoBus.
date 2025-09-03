@@ -38,8 +38,8 @@ public class Bus implements Cloneable {
             Connection con = DBManager.getConnection();
             String query = 
                     "INSERT INTO buses " + 
-                    "(bus_number, manufacturer, operator_id) " + 
-                    "VALUES (?,?,?)";
+                    "(bus_number, manufacturer, operator_id, status_id) " + 
+                    "VALUES (?,?,?,2)";
             
             PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
