@@ -1,4 +1,8 @@
-import { checkContactValid, sendOtpHandler, checkOTP } from "./service.js";
+import {
+  sendOtpHandler,
+  checkOTP,
+  checkContactExistRequest,
+} from "./service.js";
 import { toast } from "./toast.js";
 import {
   disableElements,
@@ -55,7 +59,7 @@ export class OTPHandler {
     if (this.contact.readOnly) return;
     removeInputSuccess(this.contact);
     try {
-      const response = await checkContactValid(this.contact.value);
+      const response = await checkContactExistRequest(this.contact.value);
       this.contactInvalid(response);
     } catch (err) {
       toast.error(err.message);
@@ -63,24 +67,24 @@ export class OTPHandler {
   }
 
   contactInvalid = (response) => {
-    if (response === "Invalid Contact") {
+    if (response === "Invalid") {
       toast.error("Invalid contact number");
       displayInputError(this.contact);
       disableElements(this.sendOTPBtn);
-    } else if (response === true) {
-      enableElements(this.sendOTPBtn);
-      removeInputError(this.contact);
-    } else {
+    } else if (response === "true") {
       toast.error("Contact number already in use");
       disableElements(this.sendOTPBtn);
+    } else {
+      enableElements(this.sendOTPBtn);
+      removeInputError(this.contact);
     }
   };
 
   async sendOTPEvent() {
-    const response = await checkContactValid(this.contact.value);
+    const response = await checkContactExistRequest(this.contact.value);
     this.contactInvalid(response);
 
-    if (!response || response === "Invalid Contact") return;
+    if (response === "true" || response === "Invalid") return;
 
     hideElement(this.sendOTPBtn);
     showElement(this.loadingOTPBtn);

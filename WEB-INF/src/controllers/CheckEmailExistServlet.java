@@ -13,17 +13,17 @@ import models.Operator;
 
 import utils.FieldManager;
 
-@WebServlet("/check_unique_email.do")
-public class CheckUniqueEmailServlet extends HttpServlet {
+@WebServlet("/check_email_exist.do")
+public class CheckEmailExistServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String email = request.getParameter("email");
         boolean isValid = FieldManager.validateEmail(email);
         if(!isValid) {
-            response.getWriter().println(false);
+            response.getWriter().println("Invalid");
             return;
         }
 
-        boolean isUnique = User.checkUniqueEmail(email) && Operator.checkUniqueEmail(email);
-        response.getWriter().println(isUnique);
+        boolean alreadyExist = User.checkEmailExist(email) || Operator.checkEmailExist(email);
+        response.getWriter().println(alreadyExist);
     }
 }

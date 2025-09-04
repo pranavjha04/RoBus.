@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.SQLException;
 
+import java.util.ArrayList;
+
 import utils.DBManager;
 import utils.FieldManager;
 
@@ -16,6 +18,7 @@ public class Bus implements Cloneable {
     private String manufacturer;
     private String seatingType;
     private Operator operator;
+    private ArrayList<Seating> seatings;
 
     public Bus(String busNumber, String manufacturer, Operator operator) {
         this.busNumber = busNumber;
@@ -113,6 +116,14 @@ public class Bus implements Cloneable {
     public Bus clone() {
         return new Bus(getBusId(), getBusNumber(), getManufacturer(), getOperator());
     }
+
+    public void setSeatings(ArrayList<Seating> seatings) {
+        this.seatings = seatings;
+    }
+
+    public ArrayList<Seating> getSeatings() {
+        return seatings;
+    }
     public void setOperator(Operator operator) {
         this.operator = operator.clone();
     }
@@ -135,14 +146,6 @@ public class Bus implements Cloneable {
 
     public String getManufacturer() {
         return manufacturer;
-    }
-
-    public void setSeats(Integer seats) {
-        this.seats = seats;
-    } 
-
-    public Integer getSeats() {
-        return seats;
     }
 
     public void setBusNumber(String busNumber) {

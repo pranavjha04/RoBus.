@@ -6,19 +6,96 @@
     <c:import url="essential_page_import.jsp" />
     <title>Bus Configuration</title>
   </head>
+  <style>
+    .bus {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 12px;
+
+      max-width: fit-content;
+    }
+
+    .bus-row {
+    }
+
+    .seater_seat {
+      width: 30px;
+      aspect-ratio: 1 / 1;
+    }
+
+    .sleeper_seat {
+      width: 40px;
+      aspect-ratio: 1 / 2;
+    }
+    .seat {
+      border: 2px solid #198754;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .seat:hover {
+      background-color: #198754;
+      color: white;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+  </style>
+  <div
+    class="toast-container position-fixed top-0 end-0 p-3"
+    style="z-index: 1080"
+  ></div>
   <body
     class="m-0"
     style="display: grid; grid-template-rows: auto 1fr; height: 100dvh"
   >
     <c:import url="operator_navbar.jsp" />
     <div class="d-flex">
-      <main class="flex-grow-1 border bg-light p-3">
+      <main
+        class="flex-grow-1 border bg-light gap-4 p-3 justify-content-center d-flex align-items-center"
+      >
         <!-- Main content -->
-        Main Content Area
+
+        <div>
+          <h5 class="text-center">Single Decker</h5>
+          <div class="border rounded border-primary">
+            <div
+              class="d-flex align-items-center justify-content-between py-2 px-2 border-bottom border-primary"
+            >
+              <div class="d-flex flex-column align-items-center">
+                <img
+                  src="static/media/images/conductor.svg"
+                  style="width: 30px; height: 30px"
+                />
+                <span>Conductor</span>
+              </div>
+              <div class="d-flex flex-column align-items-center">
+                <img
+                  src="static/media/images/steering_wheel.svg"
+                  style="width: 30px; height: 30px"
+                />
+                <span>Driver</span>
+              </div>
+            </div>
+            <div class="bus"></div>
+          </div>
+        </div>
       </main>
 
       <aside class="border bg-white p-3" style="width: 320px">
-        <form class="d-flex flex-column gap-4">
+        <form class="d-flex flex-column gap-4" id="bus_config_form">
           <!-- Bus Type -->
           <div class="d-flex flex-column gap-2">
             <h4 class="fs-5 mb-1">Bus Type</h4>
@@ -26,7 +103,7 @@
               <input
                 class="form-check-input"
                 type="radio"
-                name="busType"
+                name="sleeper"
                 id="bus_seater"
                 checked
               />
@@ -38,7 +115,7 @@
               <input
                 class="form-check-input"
                 type="radio"
-                name="busType"
+                name="sleeper"
                 id="bus_sleeper"
               />
               <label class="form-check-label fw-medium" for="bus_sleeper">
@@ -54,20 +131,30 @@
               <div class="col">
                 <input
                   type="number"
+                  min="1"
+                  max="3"
+                  step="1"
+                  required
                   class="form-control"
                   placeholder="Left side seats"
+                  id="ls_count"
+                  name="ls_count"
                   aria-label="Left seats per row"
-                  min="1"
                 />
               </div>
               <div class="col-auto fw-bold">+</div>
               <div class="col">
                 <input
                   type="number"
+                  min="1"
+                  max="3"
+                  step="1"
+                  required
                   class="form-control"
+                  id="rs_count"
+                  name="rs_count"
                   placeholder="Right side seats"
                   aria-label="Right seats per row"
-                  min="1"
                 />
               </div>
             </div>
@@ -84,6 +171,9 @@
                   type="number"
                   class="form-control"
                   id="rows_count"
+                  step="1"
+                  required
+                  name="row_count"
                   placeholder="e.g. 10"
                   aria-label="Rows count"
                   min="1"
@@ -95,6 +185,7 @@
                   type="number"
                   class="form-control"
                   id="total_seats"
+                  name="seats"
                   placeholder="Auto"
                   aria-label="Total seats"
                   readonly
@@ -111,6 +202,7 @@
                 class="form-check-input"
                 type="checkbox"
                 id="double_decker"
+                name="deck"
               />
               <label class="form-check-label fw-medium" for="double_decker">
                 Enable Double Decker
@@ -129,5 +221,6 @@
         </form>
       </aside>
     </div>
+    <script type="module" src="static/js/bus_config.js"></script>
   </body>
 </html>

@@ -208,8 +208,8 @@ public class User implements Cloneable {
         return flag;
     }
 
-    public static boolean checkUniqueEmail(String email) {
-        boolean flag = true;
+    public static boolean checkEmailExist(String email) {
+        boolean flag = false;
         try {
             Connection con = DBManager.getConnection();
             String query = "SELECT user_id FROM users WHERE email=?";
@@ -218,7 +218,7 @@ public class User implements Cloneable {
             
             ResultSet rs = ps.executeQuery();
             if(rs.next()) {
-                flag = false;
+                flag = true;
             }
             con.close();
         }   
@@ -228,8 +228,8 @@ public class User implements Cloneable {
         return flag;
     }
 
-    public static boolean checkUniqueContact(String contact) {
-        boolean flag = true;
+    public static boolean checkContactExist(String contact) {
+        boolean flag = false;
         try {
             Connection con = DBManager.getConnection();
             String query = "SELECT user_id FROM users WHERE contact=?";
@@ -238,7 +238,7 @@ public class User implements Cloneable {
             
             ResultSet rs = ps.executeQuery();
             if(rs.next()) {
-                flag = false;
+                flag = true;
             }
             con.close();
         }

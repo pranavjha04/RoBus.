@@ -1,10 +1,9 @@
 import { Pagination } from "./pagination.js";
 import {
-  checkEmailValid,
   checkContactValid,
   sendOtpHandler,
   checkOTP,
-  signupUser,
+  signupEmailHandler,
 } from "./service.js";
 import {
   disableElements,
@@ -229,24 +228,7 @@ password.addEventListener("blur", () => {
   }
 });
 
-email.addEventListener("blur", async () => {
-  try {
-    const response = await checkEmailValid(email.value);
-
-    if (response === "Invalid Email") {
-      toast.error(invalidFieldMessages[2]);
-      displayInputError(email);
-    }
-    if (response === true) {
-      displayInputSuccess(email);
-    } else if (response === false) {
-      toast.error("Duplicate Email");
-      displayInputError(email);
-    }
-  } catch (err) {
-    toast.error(err.message);
-  }
-});
+email.addEventListener("blur", signupEmailHandler);
 
 fullName.addEventListener("blur", () => {
   const response = validateName(fullName.value);

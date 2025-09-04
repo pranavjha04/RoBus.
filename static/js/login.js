@@ -1,9 +1,8 @@
-import { checkEmailExist } from "./service.js";
+import { loginEmailHandler } from "./service.js";
 import { toast } from "./toast.js";
 import {
   displayInputError,
   displayInputSuccess,
-  validateEmail,
   validatePassword,
 } from "./util.js";
 
@@ -61,21 +60,4 @@ password.addEventListener("blur", () => {
   }
 });
 
-email.addEventListener("blur", async () => {
-  const isValidEmail = validateEmail(email.value);
-  if (!isValidEmail) return;
-  try {
-    const response = await checkEmailExist(email.value);
-    if (response === "Invalid email") {
-      toast.error(response);
-      displayInputError(email);
-    } else if (response === "true") {
-      toast.error("No account found with this email address.");
-      displayInputError(email);
-    } else {
-      displayInputSuccess(email);
-    }
-  } catch (err) {
-    toast.error(err.message);
-  }
-});
+email.addEventListener("blur", loginEmailHandler);

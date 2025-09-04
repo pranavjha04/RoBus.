@@ -1,5 +1,5 @@
 import { Pagination } from "./pagination.js";
-import { emailHandler } from "./service.js";
+import { signupEmailHandler } from "./service.js";
 import {
   displayInputError,
   dobHandler,
@@ -89,5 +89,5 @@ new OTPHandler(
 );
 
 password.addEventListener("blur", passwordHandler);
-email.addEventListener("blur", emailHandler);
+email.addEventListener("blur", signupEmailHandler);
 fullName.addEventListener("blur", nameHandler);

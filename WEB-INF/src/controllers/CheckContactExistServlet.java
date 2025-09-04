@@ -13,17 +13,17 @@ import models.Operator;
 
 import utils.FieldManager;
 
-@WebServlet("/check_unique_contact.do")
-public class CheckUniqueContactServlet extends HttpServlet {
+@WebServlet("/check_contact_exist.do")
+public class CheckContactExistServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String contact = request.getParameter("contact");
         boolean isValid = FieldManager.validateContact(contact);
         if(!isValid) {
-            response.getWriter().println(false);
+            response.getWriter().println("Invalid");
             return;
         }
 
-        boolean isUnique = User.checkUniqueContact(contact) && Operator.checkUniqueContact(contact);
-        response.getWriter().println(isUnique);
+        boolean alreadyExist = User.checkContactExist(contact) || Operator.checkContactExist(contact);
+        response.getWriter().println(alreadyExist);
     }
 }

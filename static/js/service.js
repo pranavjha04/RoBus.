@@ -5,15 +5,24 @@ import {
   displayInputSuccess,
   displayInputError,
   validateBusNumber,
+  removeInputSuccess,
 } from "./util.js";
 import { toast } from "./toast.js";
 
-const checkUniqueEmailRequest = async (value) => {
-  const res = await fetch(`check_unique_email.do?email=${value}`);
+const checkEmailExistRequest = async (email) => {
+  const res = await fetch(`check_email_exist.do?email=${email}`);
   if (!res.ok) throw new Error("Internal server error");
 
   const data = await res.text();
-  return data.trim() === "true";
+  return data.trim();
+};
+
+export const checkContactExistRequest = async (contact) => {
+  const res = await fetch(`check_contact_exist.do?contact=${contact}`);
+  if (!res.ok) throw new Error("Internal server error");
+
+  const data = await res.text();
+  return data.trim();
 };
 
 export const checkUniqueBusNumberRequest = async (value) => {
@@ -22,14 +31,6 @@ export const checkUniqueBusNumberRequest = async (value) => {
 
   const data = await res.text();
   return data.trim();
-};
-
-const checkUniqueContactRequest = async (value) => {
-  const res = await fetch(`check_unique_contact.do?contact=${value}`);
-  if (!res.ok) throw new Error("Interval server error");
-
-  const data = await res.text();
-  return data.trim() === "true";
 };
 
 const sendOtpRequest = async (value) => {
@@ -73,48 +74,74 @@ export const sendOtpHandler = async (value) => {
   return result;
 };
 
-export const checkContactValid = async (value) => {
-  const isRegexValid = validateContact(value);
-  if (!isRegexValid) return "Invalid Contact";
+export const signupEmailHandler = async (e) => {
+  const email = e.target.value;
+  const element = e.target;
+  const isRegexValid = validateEmail(email);
 
-  let result = false;
-  try {
-    result = await checkUniqueContactRequest(value);
-  } catch (err) {
-    throw new Error(err);
+  if (!isRegexValid) {
+    toast.error("Please enter valid mail");
+    displayInputError(element);
+    return;
   }
-  return result;
-};
 
-export const checkEmailValid = async (value) => {
-  const isRegexValid = validateEmail(value);
-  if (!isRegexValid) return "Invalid Email";
 
-  let result = false;
   try {
-    result = await checkUniqueEmailRequest(value);
-  } catch (err) {
-    throw new Error(err);
-  }
-  return result;
-};
+    const response = await checkEmailExistRequest(email);
 
-export const emailHandler = async (e) => {
-  try {
-    const response = await checkEmailValid(e.target.value);
-
-    if (response === "Invalid Email") {
-      toast.error("Invalid Email");
-      displayInputError(e.target);
-    }
-    if (response === true) {
-      displayInputSuccess(e.target);
-    } else if (response === false) {
-      toast.error("Email already in use");
-      displayInputError(e.target);
+    switch (response) {
+      case "true": {
+        throw new Error("Email already in use");
+      }
+      case "false": {
+        displayInputSuccess(element);
+        break;
+      }
+      case "Invalid": {
+        throw new Error("Invalid email");
+      }
+      default: {
+        throw new Error("Internal server error");
+      }
     }
   } catch (err) {
     toast.error(err.message);
+    displayInputError(element);
+  }
+};
+
+export const loginEmailHandler = async (e) => {
+  const email = e.target.value;
+  const element = e.target;
+  const isRegexValid = validateEmail(email);
+
+  if (!isRegexValid) {
+    toast.error("Please enter valid mail");
+    displayInputError(element);
+    return;
+  }
+
+  try {
+    const response = await checkEmailExistRequest(email);
+
+    switch (response) {
+      case "true": {
+        displayInputSuccess(element);
+        break;
+      }
+      case "false": {
+        throw new Error("No account found with this email address");
+      }
+      case "Invalid": {
+        throw new Error("Invalid email");
+      }
+      default: {
+        throw new Error("Internal server error");
+      }
+    }
+  } catch (err) {
+    toast.error(err.message);
+    displayInputError(element);
   }
 };
 

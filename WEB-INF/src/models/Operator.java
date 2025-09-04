@@ -199,8 +199,8 @@ public class Operator implements Cloneable {
         return operator;
     }
 
-    public static boolean checkUniqueEmail(String email) {
-        boolean flag = true;
+    public static boolean checkEmailExist(String email) {
+        boolean flag = false;
         try {
             Connection con = DBManager.getConnection();
             String query = "SELECT operator_id FROM operators WHERE email=?";
@@ -209,7 +209,7 @@ public class Operator implements Cloneable {
             
             ResultSet rs = ps.executeQuery();
             if(rs.next()) {
-                flag = false;
+                flag = true;
             }
             con.close();
         }   
@@ -219,8 +219,8 @@ public class Operator implements Cloneable {
         return flag;
     }
 
-    public static boolean checkUniqueContact(String contact) {
-        boolean flag = true;
+    public static boolean checkContactExist(String contact) {
+        boolean flag = false;
         try {
             Connection con = DBManager.getConnection();
             String query = "SELECT operator_id FROM operators WHERE contact=?";
@@ -229,7 +229,7 @@ public class Operator implements Cloneable {
             
             ResultSet rs = ps.executeQuery();
             if(rs.next()) {
-                flag = false;
+                flag = true;
             }
             con.close();
         }
@@ -248,7 +248,7 @@ public class Operator implements Cloneable {
                 setFullName(value);
                 break;
             case "contact":
-                boolean isContactValid = FieldManager.validateContact(value) && User.checkUniqueContact(value) && Operator.checkUniqueContact(value);
+                boolean isContactValid = FieldManager.validateContact(value) && !User.checkContactExist(value) && !Operator.checkContactExist(value);
 
                 if(!isContactValid) {
                     return "4";
@@ -256,7 +256,7 @@ public class Operator implements Cloneable {
                 setContact(value);
                 break;
             case "email":
-                boolean isEmailValid = FieldManager.validateEmail(value) && User.checkUniqueEmail(value) && Operator.checkUniqueEmail(value);
+                boolean isEmailValid = FieldManager.validateEmail(value) && !User.checkEmailExist(value) && !Operator.checkEmailExist(value);
                 
                 if(!isEmailValid) {
                     return "2";

@@ -1,6 +1,6 @@
 import { OTPHandler } from "./otpHandler.js";
 import { Pagination } from "./pagination.js";
-import { emailHandler } from "./service.js";
+import { signupEmailHandler } from "./service.js";
 import { toast } from "./toast.js";
 
 import {
@@ -137,5 +137,5 @@ new OTPHandler(
 );
 
 password.addEventListener("blur", passwordHandler);
-email.addEventListener("blur", emailHandler);
+email.addEventListener("blur", signupEmailHandler);
 fullName.addEventListener("blur", nameHandler);

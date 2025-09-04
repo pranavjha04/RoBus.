@@ -45,7 +45,7 @@ public class LoginServlet extends HttpServlet {
         if(isEmailRegValid && isPasswordRegValid) {
             boolean found = false;
             // user mei record milgya
-            if(!User.checkUniqueEmail(email)) {
+            if(User.checkEmailExist(email)) {
                 found = true;
                 try {
                     User user = User.login(email, password);
@@ -65,7 +65,7 @@ public class LoginServlet extends HttpServlet {
                 }
             }
 
-            if(!found && !Operator.checkUniqueEmail(email)) {
+            if(!found && Operator.checkEmailExist(email)) {
                 found = true;
                 try {
                     Operator operator = Operator.login(email, password);

@@ -61,7 +61,7 @@ public class SignupServlet extends HttpServlet {
         }
 
         // email validate
-        boolean isEmailValid = FieldManager.validateEmail(email) && User.checkUniqueEmail(email) && Operator.checkUniqueEmail(email);
+        boolean isEmailValid = FieldManager.validateEmail(email) && !User.checkEmailExist(email) && !Operator.checkEmailExist(email);
 
         if(!isEmailValid) {
             errorMessage += "2";
@@ -71,7 +71,7 @@ public class SignupServlet extends HttpServlet {
         }
 
         // contact validate
-        boolean isContactValid = FieldManager.validateContact(contact) && User.checkUniqueContact(contact) && Operator.checkUniqueContact(contact);
+        boolean isContactValid = FieldManager.validateContact(contact) && !User.checkContactExist(contact) && !Operator.checkContactExist(contact);
 
         if(!isContactValid) {
             errorMessage += "4";
