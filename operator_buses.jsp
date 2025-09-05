@@ -25,7 +25,9 @@
           enctype="multipart/form-data"
         >
           <div class="modal-header">
-            <h5 class="modal-title fs-3" id="centeredModalLabel">Add Bus Details</h5>
+            <h5 class="modal-title fs-3" id="centeredModalLabel">
+              Add Bus Details
+            </h5>
             <button
               type="reset"
               class="btn-close"
@@ -129,6 +131,6 @@
         </div>
       </main>
     </div>
-    <script type="module" src="static/js/bus.js"></script>
+    <script type="module" src="static/js/add_bus.js"></script>
   </body>
 </html>

@@ -25,8 +25,8 @@ export const checkContactExistRequest = async (contact) => {
   return data.trim();
 };
 
-export const checkUniqueBusNumberRequest = async (value) => {
-  const res = await fetch(`check_unique_bus_number.do?bus_number=${value}`);
+export const checkBusNumberExistRequest = async (busNumber) => {
+  const res = await fetch(`check_bus_number_exist.do?bus_number=${busNumber}`);
   if (!res.ok) throw new Error("Internal server error");
 
   const data = await res.text();
@@ -84,7 +84,6 @@ export const signupEmailHandler = async (e) => {
     displayInputError(element);
     return;
   }
-
 
   try {
     const response = await checkEmailExistRequest(email);
@@ -145,34 +144,34 @@ export const loginEmailHandler = async (e) => {
   }
 };
 
-export const checkBusNumberValid = async (value) => {
-  const isRegexValid = validateBusNumber(value);
-  if (!isRegexValid) return "Invalid";
-
-  let result = false;
-  try {
-    result = await checkUniqueBusNumberRequest(value);
-  } catch (err) {
-    throw new Error(err);
-  }
-  return result.trim();
-};
-
 export const busNumberHandler = async (e) => {
+  const busNumber = e.target.value.toString().toUpperCase();
+  e.target.value = busNumber;
+  const element = e.target;
+
+  const isRegexValid = validateBusNumber(busNumber);
+  if (!isRegexValid) {
+    toast.error("Invalid bus number");
+    displayInputError(element);
+    return;
+  }
+
   try {
-    const response = await checkBusNumberValid(e.target.value);
-    console.log(response);
-    if (response === "Invalid") {
-      displayInputError(e.target);
-    } else if (response === "true" || response === true) {
-      displayInputError(e.target);
-      toast.error("Number already registered");
-    } else if (response === "false") {
-      displayInputSuccess(e.target);
-    } else {
-      throw new Error(response);
+    const response = await checkBusNumberExistRequest(busNumber);
+
+    switch (response) {
+      case "Invalid": {
+        throw new Error("Invalid bus number");
+      }
+      case "true": {
+        throw new Error("Bus number already registered");
+      }
+      case "false": {
+        displayInputSuccess(element);
+      }
     }
   } catch (err) {
     toast.error(err.message);
+    displayInputError(element);
   }
 };

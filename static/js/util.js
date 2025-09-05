@@ -156,6 +156,17 @@ export const fileUpload = (element, previewElement) => {
   previewElement.src = URL.createObjectURL(file);
 };
 
+export const manufacturerHandler = (e) => {
+  const manufacturer = e.target.value;
+  const element = e.target;
+
+  if (!manufacturer) {
+    displayInputError(element);
+  } else {
+    displayInputSuccess(element);
+  }
+};
+
 export const genderHandler = (e) => {
   const value = e.target.value;
   const isValid = !isNaN(value) && value > 0 && value < 3;

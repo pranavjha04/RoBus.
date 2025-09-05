@@ -12,16 +12,16 @@ import utils.FieldManager;
 
 import models.Bus;
 
-@WebServlet("/check_unique_bus_number.do")
-public class CheckUniqueBusNumberServlet extends HttpServlet {
+@WebServlet("/check_bus_number_exist.do")
+public class CheckBusNumberExistServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String busNumber = request.getParameter("bus_number");
         if(busNumber == null || !FieldManager.validateBusNumber(busNumber)) {
-            response.getWriter().println("Internal server error");
+            response.getWriter().println("Invalid");
             return;
         }
 
-        boolean isUnique = Bus.checkUniqueBusNumber(busNumber);
-        response.getWriter().println(isUnique);
+        boolean isExist = Bus.checkBusNumberExist(busNumber);
+        response.getWriter().println(isExist);
     }
 }

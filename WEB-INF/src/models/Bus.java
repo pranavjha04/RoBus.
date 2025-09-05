@@ -70,7 +70,7 @@ public class Bus implements Cloneable {
         return generatedId;
     }
 
-    public static boolean checkUniqueBusNumber(String busNumber) {
+    public static boolean checkBusNumberExist(String busNumber) {
         boolean flag = false;
         try {
             Connection con = DBManager.getConnection();
