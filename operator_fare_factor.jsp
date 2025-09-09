@@ -192,7 +192,10 @@
             </div>
           </div>
 
-          <table class="border rounded-2 border-bottom-0">
+          <table
+            class="border rounded-2 border-bottom-0"
+            id="fare_factor_table"
+          >
             <thead>
               <tr class="border border-bottom text-center">
                 <th class="p-3">Fare Factor</th>
@@ -201,7 +204,7 @@
                 <th class="p-3">Options</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="fare_table_body">
               <tr class="text-center border-bottom">
                 <td class="p-3">AC</td>
                 <td class="p-3">Per person per km</td>

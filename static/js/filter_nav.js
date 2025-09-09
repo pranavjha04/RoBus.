@@ -1,4 +1,4 @@
-export class FilterNav {
+class FilterNav {
   #parentElement;
   #childrens;
 
@@ -6,10 +6,30 @@ export class FilterNav {
     this.#parentElement = document.querySelector("#filter_nav");
     this.#childrens = Array.from(this.#parentElement.children);
     this.#parentElement.addEventListener("click", this.#event.bind(this));
+    this.#init();
+  }
+  start() {
+    new FilterNav();
+  }
+  #init() {
+    this.#childrens.forEach((child) => {
+      child.classList.remove("btn-primary");
+      child.style.border = "none";
+    });
+
+    this.#childrens[0].classList.add("btn-primary");
   }
 
-  static start() {
-    new FilterNav();
+  disable() {
+    this.#childrens.forEach((child) => {
+      child.disabled = true;
+    });
+  }
+
+  enable() {
+    this.#childrens.forEach((child) => {
+      child.disabled = false;
+    });
   }
 
   #event(e) {
@@ -20,3 +40,5 @@ export class FilterNav {
     e.target.classList.add("btn-primary");
   }
 }
+
+export const filterNav = new FilterNav();

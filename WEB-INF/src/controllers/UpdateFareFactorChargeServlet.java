@@ -9,39 +9,35 @@ import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
 
-import java.util.ArrayList;
-
-import com.google.gson.Gson;
-
-import models.Operator;
 import models.OperatorTicketFare;
+import models.Operator;
 
+import utils.FieldManager;
 
-@WebServlet("/get_fare_factor.do")
-public class GetFareFactorServlet extends HttpServlet {
+@WebServlet("/update_fare_factor_charge.do")
+public class UpdateFareFactorChargeServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
-
         if(
-            request.getParameter("id") == null || 
-            request.getParameter("onlyFactors") == null ||
-            session.getAttribute("operator") == null
+            session.getAttribute("operator") == null ||
+            request.getParameter("operator_ticket_fare_id") == null ||
+            request.getParameter("charge") == null
         ) {
             response.getWriter().println("invalid");
             return;
-        }
+        } 
 
-        Integer operatorId = Integer.parseInt(request.getParameter("id"));
-        boolean onlyFactors = request.getParameter("onlyFactors").equals("true") ? true : false;
         Operator operator = (Operator) session.getAttribute("operator");
+        int operatorTicketFareId = Integer.parseInt(request.getParameter("operator_ticket_fare_id"));
+        int newChargeValue = Integer.parseInt(request.getParameter("charge"));
 
-        if(operator.getOperatorId() != operatorId) {
+        if(!FieldManager.validateCharge(newChargeValue)) {
             response.getWriter().println("invalid");
             return;
         }
+        
+        boolean success = OperatorTicketFare.updateCharge(newChargeValue, operatorTicketFareId);
 
-        ArrayList<OperatorTicketFare> factors = OperatorTicketFare.getAvailableFareFactors(operatorId, onlyFactors);
-
-        response.getWriter().println(new Gson().toJson(factors));        
+        response.getWriter().println(success == true ? "success" : "internal");
     }
 }

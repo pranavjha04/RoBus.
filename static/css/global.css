@@ -94,3 +94,17 @@ tbody tr {
   outline: none;
 }
 
+.charge {
+  width: 242px;
+  max-width: 242px;
+}
+
+.input {
+  border: none;
+  outline: none;
+  transition: all 0.3s;
+  &:read-only {
+    outline: none;
+    border: none;
+  }
+}

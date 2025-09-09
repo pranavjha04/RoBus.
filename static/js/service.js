@@ -33,13 +33,10 @@ export const checkBusNumberExistRequest = async (busNumber) => {
   return data.trim();
 };
 
-export const collectFareFactorRequest = async (id, wantAll = false) => {
-  const queryParams = createURLParams({
-    id,
-    wantAll,
-  });
-
-  const res = await fetch(`get_fare_factor.do?${queryParams.toString()}`);
+export const collectFareFactorRequest = async (id, onlyFactors = true) => {
+  const res = await fetch(
+    `get_fare_factor.do?id=${+id}&onlyFactors=${onlyFactors}`
+  );
   if (!res.ok) throw new Error("Internal server error");
 
   const data = await res.text();
@@ -51,7 +48,29 @@ export const getActiveAccountID = async (accountType) => {
   if (!res.ok) throw new Error("Internal server error");
 
   const data = await res.text();
-  console.log(data);
+  return data.trim();
+};
+
+export const updateFareFactorChargeRequest = async (
+  charge,
+  operatorTicketFareId
+) => {
+  const res = await fetch(
+    `update_fare_factor_charge.do?charge=${charge}&operator_ticket_fare_id=${operatorTicketFareId}`
+  );
+  if (!res.ok) throw new Error("Internal server error");
+
+  const data = await res.text();
+  return data.trim();
+};
+
+export const deleteFareFactorRequest = async (operatorTicketFareId) => {
+  const res = await fetch(
+    `delete_fare_factor.do?operator_ticket_fare_id=${operatorTicketFareId}`
+  );
+  if (!res.ok) throw new Error("Internal server error");
+
+  const data = await res.text();
   return data.trim();
 };
 

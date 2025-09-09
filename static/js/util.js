@@ -240,3 +240,8 @@ export const nameHandler = (e) => {
     displayInputError(e.target);
   }
 };
+
+export const validateCharge = (element) => {
+  const value = +element.value;
+  return value > 0 && value <= 100;
+};

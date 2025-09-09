@@ -77,4 +77,8 @@ public final class FieldManager {
         return matcher.matches();
     }
 
+    public static final boolean validateCharge(int charge) {
+        return charge > 0 && charge <= 100;
+    }
+
 }
