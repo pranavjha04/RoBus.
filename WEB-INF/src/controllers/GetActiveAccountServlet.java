@@ -15,9 +15,8 @@ import models.User;
 @WebServlet("/get_active_account.do")
 public class GetActiveAccountServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String accountType = request.getParameter("acccountType");
+        String accountType = request.getParameter("accountType");
         HttpSession session = request.getSession();
-
         if(accountType == null || accountType.isEmpty() || session.getAttribute(accountType) == null) {
             response.getWriter().println("invalid");
             return;

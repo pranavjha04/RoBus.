@@ -22,37 +22,24 @@ public class GetFareFactorServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
 
-        if(request.getAttribute("id") == null) {
-            System.out.println("1");
+        if(
+            request.getParameter("id") == null || 
+            request.getParameter("wantAll") == null ||  
+            session.getAttribute("operator") == null
+        ) {
+            response.getWriter().println("invalid");
             return;
         }
 
-        if(request.getAttribute("wantAll") == null) {
-            System.out.println("2");
-            return;
-        }
-
-        if(session.getAttribute("operator") == null) {
-            System.out.println("3");
-            return;
-        }
-
-        // if(
-        //     request.getAttribute("operator_id") == null || 
-        //     request.getAttribute("wantAll") == null ||  
-        //     session.getAttribute("operator") == null
-        // ) {
-        //     System.out.println("yoo");
-        //     response.getWriter().println("invalid");
-        //     return;
-        // }
-        
-        Integer operatorId = (Integer) request.getAttribute("operator_id");
-        Boolean wantAll = (Boolean) request.getAttribute("wantAll");
+        Integer operatorId = Integer.parseInt(request.getParameter("id"));
+        boolean wantAll = request.getParameter("wantAll").equals("true") ? true : false;
         Operator operator = (Operator) session.getAttribute("operator");
-        
+
+        System.out.println(operatorId);
+        System.out.println(wantAll);
+        System.out.println(operator);
+
         if(operator.getOperatorId() != operatorId) {
-            System.out.println("heii");
             response.getWriter().println("invalid");
             return;
         }

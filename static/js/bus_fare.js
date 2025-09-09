@@ -16,9 +16,14 @@ const handleFareFactorList = async () => {
     if (activeId == "invalid" || isNaN(+activeId)) {
       throw new Error("Invalid request");
     }
-    const id = +activeId;
-    const fareFactorList = await collectFareFactorRequest(id);
-    console.log(fareFactorList);
+    let fareFactorList = await collectFareFactorRequest(+activeId);
+    if (fareFactorList === "invalid") {
+      throw new Error("Invalid request");
+    }
+    if (fareFactorList.startsWith("[")) {
+      fareFactorList = JSON.parse(fareFactorList);
+      
+    }
   } catch (err) {
     toast.error(err.message);
   }

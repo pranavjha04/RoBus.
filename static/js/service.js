@@ -34,9 +34,12 @@ export const checkBusNumberExistRequest = async (busNumber) => {
 };
 
 export const collectFareFactorRequest = async (id, wantAll = false) => {
-  const res = await fetch(
-    `get_fare_factor.do?id=${id}&wantAll=${wantAll}`
-  );
+  const queryParams = createURLParams({
+    id,
+    wantAll,
+  });
+
+  const res = await fetch(`get_fare_factor.do?${queryParams.toString()}`);
   if (!res.ok) throw new Error("Internal server error");
 
   const data = await res.text();
