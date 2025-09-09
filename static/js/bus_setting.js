@@ -8,28 +8,44 @@ import {
   validateFileType,
 } from "./util.js";
 
-const addBusForm = document.querySelector("#add_bus_form");
-
+// BASIC BUS FORM
+const basicBusForm = document.querySelector("#basic_form");
+const basicNavBtn = document.querySelector("#basic_nav");
+const basiContainer = document.querySelector("#basic");
 const busNumber = document.querySelector("#bus_number");
 const manufacturer = document.querySelector("#manufacturer");
 const busImages = document.querySelector("#bus_images");
 
 const allFields = Array.from(document.querySelectorAll(".bfld"));
-
 const prevImagesContainer = document.querySelector("#preview_img_container");
+
+// FEATURES
+const featureContainer = document.querySelector("#features");
+const featureTable = document.querySelector("#feature_table");
+const featureNavBtn = document.querySelector("#feature_nav");
+const featureTableBody = document.querySelector("#feature_table_body");
+const featurForm = document.querySelector("#features_form");
+
+const fareFactor = document.querySelector("#fare_factor");
 
 const reset = () => {
   busNumber.classList.remove("border-danger", "border-success");
   manufacturer.classList.remove("border-danger", "border-success");
   busImages.classList.remove("border-danger", "border-success");
   prevImagesContainer.innerHTML = "";
+  sessionStorage.removeItem("activeBus");
+  featureContainer.classList.remove("active", "show");
+  basicNavBtn.classList.add("active");
+  featureNavBtn.classList.remove("active");
+  basiContainer.classList.add("active", "show");
+  featureNavBtn.disabled = true;
 };
 
 document
   .getElementById("centeredModal")
   .addEventListener("hidden.bs.modal", function () {
     reset();
-    addBusForm.reset();
+    basicBusForm.reset();
   });
 
 busImages.addEventListener("input", (e) => {
@@ -69,7 +85,7 @@ busImages.addEventListener("input", (e) => {
 manufacturer.addEventListener("change", manufacturerHandler);
 busNumber.addEventListener("blur", busNumberHandler);
 
-addBusForm.addEventListener("submit", async (e) => {
+basicBusForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   try {
@@ -99,7 +115,7 @@ addBusForm.addEventListener("submit", async (e) => {
   try {
     const response = await fetch("add_bus.do", {
       method: "POST",
-      body: new FormData(addBusForm),
+      body: new FormData(basicBusForm),
     });
     if (!response.ok) throw new Error("Internal server error");
 
@@ -107,11 +123,14 @@ addBusForm.addEventListener("submit", async (e) => {
     data = data.trim();
     if (data === "Invalid") {
       throw new Error("Invalid request");
-    } else if (data === "success") {
+    } else if (data.startsWith("{")) {
+      sessionStorage.setItem("activeBus", JSON.stringify(JSON.parse(data)));
       toast.success("Bus added successfully");
-      const modalEl = document.getElementById("centeredModal");
-      const modalInstance = bootstrap.Modal.getInstance(modalEl);
-      modalInstance.hide();
+      basiContainer.classList.remove("active", "show");
+      document.querySelector("#basic_nav").classList.remove("active");
+      featureContainer.classList.add("active", "show");
+      featureNavBtn.classList.add("active");
+      featureNavBtn.disabled = false;
     } else {
       if (data === "") {
         throw new Error("Invalid request");

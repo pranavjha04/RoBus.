@@ -13,12 +13,20 @@
     <title>${sessionScope.operator.fullName} Dashboard</title>
   </head>
   <body>
-    <div class="d-flex h-100">
+    <div
+      class="toast-container position-fixed top-0 end-0 p-3"
+      style="z-index: 1080"
+    ></div>
+
+    <div class="dashContainer">
       <!-- Sidebar -->
       <c:import url="operator_sidebar.jsp" />
 
       <!-- Main content -->
-      <main class="flex-grow-1 d-flex flex-column bg-light">
+      <main
+        class="flex-grow-1 d-flex flex-column bg-light"
+        style="overflow: auto"
+      >
         <!-- Top Navbar -->
         <c:import url="operator_navbar.jsp" />
 

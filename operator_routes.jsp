@@ -7,7 +7,7 @@
     <title>Document</title>
   </head>
   <body>
-    <div class="d-flex h-100">
+    <div class="dashContainer">
       <!-- Sidebar -->
       <c:import url="operator_sidebar.jsp" />
 

@@ -1,5 +1,7 @@
 const ctx = document.getElementById("bookingsChart");
 
+const init = async () => {};
+
 new Chart(ctx, {
   type: "bar",
   maintainAspectRation: true,

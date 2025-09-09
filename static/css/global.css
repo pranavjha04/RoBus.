@@ -39,6 +39,33 @@ button {
   grid-column: span 2;
 }
 
+.dashContainer {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  height: 100dvh;
+}
+
+.feature-btn {
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+}
+
+.feature-icon {
+  transition: all 0.3s;
+
+  &:hover,
+  &:focus {
+    transform: scale(1.25);
+  }
+}
+
+.busAddContainer {
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
 @media (min-width: 768px) {
   .fs-md {
     font-size: 1.125rem !important;
@@ -54,3 +81,16 @@ button {
     background-color: oklch(97% 0.001 106.424);
   }
 }
+thead tr:first-child {
+  background-color: transparent !important;
+}
+tbody tr {
+  background-color: white;
+}
+
+.my-select {
+  padding: 0.75rem;
+  font-size: 1rem;
+  outline: none;
+}
+

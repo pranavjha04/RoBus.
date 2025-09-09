@@ -33,6 +33,25 @@ export const checkBusNumberExistRequest = async (busNumber) => {
   return data.trim();
 };
 
+export const collectFareFactorRequest = async (id, wantAll = false) => {
+  const res = await fetch(
+    `get_fare_factor.do?id=${id}&wantAll=${wantAll}`
+  );
+  if (!res.ok) throw new Error("Internal server error");
+
+  const data = await res.text();
+  return data.trim();
+};
+
+export const getActiveAccountID = async (accountType) => {
+  const res = await fetch(`get_active_account.do?accountType=${accountType}`);
+  if (!res.ok) throw new Error("Internal server error");
+
+  const data = await res.text();
+  console.log(data);
+  return data.trim();
+};
+
 const sendOtpRequest = async (value) => {
   const res = await fetch(`send_otp.do?contact=${value}`);
   if (!res.ok) throw new Error("Internal server error");

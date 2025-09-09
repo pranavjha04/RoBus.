@@ -35,7 +35,7 @@
           <h3 class="mt-2 fw-bold fs-4 text-center">Create an account</h3>
         </div>
 
-        <div id="formWrapper">
+        <div id="formWrapper" >
           <div id="page_1" class="d-flex flex-column gap-3 d-block">
             <!-- FULL NAME -->
             <div>
