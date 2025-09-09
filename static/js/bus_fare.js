@@ -21,7 +21,16 @@ const fareTable = document.querySelector("#fare_factor_table");
 
 const filterNavContainer = document.querySelector("#filter_nav");
 
+const setLoader = () => {
+  fareTable.innerHTML = ViewHelper.getTableLoader();
+};
+
+const removeLoader = () => {
+  fareTable.innerHTML = "";
+};
+
 const handleFareFactorsListDisplay = (fareFactorList = []) => {
+  removeLoader();
   if (fareFactorList.length == 0) {
     fareTable.innerHTML =
       "<h3 class='text-center fs-3 align-self-center '>Add records to display :)</h3>";
@@ -108,23 +117,7 @@ const handleEdit = async (e) => {
     try {
       const response = await updateFareFactorChargeRequest(
         newValue,
-        +parentTableRow.dataset.id/* HTML: <div class="loader"></div> */
-.loader {
-  width: 50px;
-  padding: 8px;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: #25b09b;
-  --_m: 
-    conic-gradient(#0000 10%,#000),
-    linear-gradient(#000 0 0) content-box;
-  -webkit-mask: var(--_m);
-          mask: var(--_m);
-  -webkit-mask-composite: source-out;
-          mask-composite: subtract;
-  animation: l3 1s infinite linear;
-}
-@keyframes l3 {to{transform: rotate(1turn)}}
+        +parentTableRow.dataset.id
       );
       switch (response) {
         case "internal": {
@@ -271,6 +264,7 @@ const handleFareFactorList = async () => {
       sessionStorage.removeItem("active");
       throw new Error("Invalid request");
     }
+    console.log(fareTable.innerHTML);
     sessionStorage.setItem("active", activeId);
     let fareFactorList = await collectFareFactorRequest(+activeId, false);
     if (fareFactorList === "invalid") {
@@ -283,12 +277,14 @@ const handleFareFactorList = async () => {
     }
   } catch (err) {
     toast.error(err.message);
+    removeLoader();
   }
 };
 
 const init = async () => {
   filterNav.start();
   try {
+    setLoader();
     await handleFareFactorList();
   } catch (err) {
     toast.error(err.message);

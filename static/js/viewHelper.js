@@ -32,6 +32,19 @@ export class ViewHelper {
       <tbody id="fare_table_body"></tbody>
     `;
   }
+
+  static getTableLoader() {
+    return `
+            <tbody class="bg-transparent mt-5">
+              <tr class="bg-transparent mt-5">
+                <td class="text-center mt-5 bg-transparent align-self-center d-flex justify-content-center align-items-center">
+                  <div class="mt-5 justify-content-center align-self-center">
+                    <div class="mt-5 loader"></div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>`;
+  }
 }
 
 // <input class="input text-center rounded-2" readonly value=${charge} />
