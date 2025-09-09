@@ -33,10 +33,12 @@ const handleFareFactorsListDisplay = (fareFactorList = []) => {
   removeLoader();
   if (fareFactorList.length == 0) {
     fareTable.innerHTML =
-      "<h3 class='text-center fs-3 align-self-center '>Add records to display :)</h3>";
+      "<h3 class='text-center fs-3 align-self-center mt-5'>Add records to display :)</h3>";
     sortCharges.disabled = true;
     filterNav.disable();
+    fareTable.classList.remove("border");
   } else {
+    fareTable.classList.add("border");
     filterNav.enable();
     fareTable.innerHTML = ViewHelper.getFareFactorHeading();
 
@@ -51,6 +53,7 @@ const handleFareFactorsListDisplay = (fareFactorList = []) => {
 const enableChargeInput = (parentTableData, oldChargeValue) => {
   parentTableData.innerHTML = `<span><input class="input text-center p-0 rounded-2 focus-ring" value=${oldChargeValue} /></span>`;
 };
+
 const disableChargeInput = (parentTableData, oldChargeValue) => {
   parentTableData.innerHTML = `<td class="p-3 charge"><span>&#x20B9;${oldChargeValue}</span></td>`;
 };

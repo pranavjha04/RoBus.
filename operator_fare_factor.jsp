@@ -193,7 +193,7 @@
           </div>
 
           <table
-            class="border rounded-2 border-bottom-0"
+            class="border rounded table-responsive border-bottom-0 "
             id="fare_factor_table"
           ></table>
         </div>
