@@ -45,6 +45,10 @@ export class ViewHelper {
               </tr>
             </tbody>`;
   }
+
+  static getTableEmptyMessage(message) {
+    return `<td class="text-center bg-transparent mt-5 py-5" colspan="100%"><h3>${message}</h3></td>`;
+  }
 }
 
 // <input class="input text-center rounded-2" readonly value=${charge} />

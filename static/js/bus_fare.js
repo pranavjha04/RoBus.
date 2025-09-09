@@ -67,16 +67,15 @@ const updateFactorAfterEdit = (operatorTicketFareId, newValue) => {
 
 const updateFactorAfterDelete = (operatorTicketFareId) => {
   const factorList = JSON.parse(sessionStorage.getItem("fareList"));
-  sessionStorage.setItem(
-    "fareList",
-    JSON.stringify(
-      factorList.filter((factor) => {
-        factor.operatorTicketFareId !== operatorTicketFareId;
-      })
-    )
-  );
+  console.log(factorList, operatorTicketFareId);
+  const filterList = factorList.filter((factor) => {
+    return factor.operatorTicketFareId !== operatorTicketFareId;
+  });
+  sessionStorage.setItem("fareList", JSON.stringify(filterList));
 
-  console.log(JSON.parse(sessionStorage.getItem("fareList")));
+  if (filterList.length === 0) {
+    handleFareFactorsListDisplay();
+  }
 };
 
 const handleEdit = async (e) => {
@@ -164,7 +163,7 @@ const handleDelete = async (e) => {
       }
       case "success": {
         toast.success("Fare factor deleted successfully");
-        updateFactorAfterDelete();
+        updateFactorAfterDelete(operatorTicketFareId);
         break;
       }
       default: {
@@ -201,7 +200,6 @@ sortCharges.addEventListener("change", (e) => {
     return;
   }
   const fareFactorList = JSON.parse(sessionStorage.getItem("fareList"));
-
   switch (sortCharges.value) {
     case "low": {
       handleFareFactorsListDisplay(
@@ -230,24 +228,33 @@ filterNavContainer.addEventListener("click", (e) => {
   }
   const element = e.target;
   const fareFactorList = JSON.parse(sessionStorage.getItem("fareList"));
-  console.log(element.textContent);
   switch (element.textContent) {
     case "All": {
       handleFareFactorsListDisplay(fareFactorList);
       break;
     }
     case "Person / km": {
-      handleFareFactorsListDisplay(
-        fareFactorList.filter(
-          (factor) => factor.fareFactor.fixedCharge == false
-        )
+      const filterResult = fareFactorList.filter(
+        (factor) => factor.fareFactor.fixedCharge == false
       );
+      if (filterResult.length == 0) {
+        document.querySelector("tbody").innerHTML =
+          ViewHelper.getTableEmptyMessage("No such records.");
+        break;
+      }
+      handleFareFactorsListDisplay(filterResult);
       break;
     }
     case "Fixed charge": {
-      handleFareFactorsListDisplay(
-        fareFactorList.filter((factor) => factor.fareFactor.fixedCharge == true)
+      const filterResult = fareFactorList.filter(
+        (factor) => factor.fareFactor.fixedCharge == true
       );
+      if (filterResult.length == 0) {
+        document.querySelector("tbody").innerHTML =
+          ViewHelper.getTableEmptyMessage("No such records");
+        break;
+      }
+      handleFareFactorsListDisplay(filterResult);
       break;
     }
     default: {
