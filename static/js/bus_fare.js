@@ -2,40 +2,50 @@ import { filterNav } from "./filter_nav.js";
 import {
   collectFareFactorRequest,
   deleteFareFactorRequest,
-  getActiveAccountID,
+  handleAddFareFactor,
   updateFareFactorChargeRequest,
 } from "./service.js";
 import { ViewHelper } from "./viewHelper.js";
 import { toast } from "./toast.js";
-import { validateCharge } from "./util.js";
+import { displayInputError, validateCharge } from "./util.js";
 
 const fareFactorSelectBtn = document.querySelector("#fare_factor_select");
 const fareFactorSelectList = document.querySelector(
   "#form_factor_available_list"
 );
-
+const charge = document.querySelector("#charge");
+const fareFactor = document.querySelector("#fare_factor");
 const fareFactorForm = document.querySelector("#fare_factor_form");
 const sortCharges = document.querySelector("#sort_charges");
-
+const formModal = document.getElementById("centeredModal");
 const fareTable = document.querySelector("#fare_factor_table");
 
 const filterNavContainer = document.querySelector("#filter_nav");
 
-const setLoader = () => {
+const totalFare = document.querySelector("#total_fare");
+const totalCharges = document.querySelector("#total_charges");
+
+const collectFareCharge = (acc, curr) => {
+  return acc + curr.charge;
+};
+
+const setTableLoader = () => {
   fareTable.innerHTML = ViewHelper.getTableLoader();
 };
 
-const removeLoader = () => {
+const removeTableLoader = () => {
   fareTable.innerHTML = "";
 };
 
 const handleFareFactorsListDisplay = (fareFactorList = []) => {
-  removeLoader();
+  removeTableLoader();
   if (fareFactorList.length == 0) {
     fareTable.innerHTML =
       "<h3 class='text-center fs-3 align-self-center mt-5'>Add records to display :)</h3>";
     sortCharges.disabled = true;
     filterNav.disable();
+    totalCharges.textContent = 0;
+    totalFare.textContent = 0;
     fareTable.classList.remove("border");
   } else {
     fareTable.classList.add("border");
@@ -43,7 +53,8 @@ const handleFareFactorsListDisplay = (fareFactorList = []) => {
     fareTable.innerHTML = ViewHelper.getFareFactorHeading();
 
     const fareTableBody = document.getElementById("fare_table_body");
-
+    totalCharges.textContent = fareFactorList.reduce(collectFareCharge, 0);
+    totalFare.textContent = fareFactorList.length;
     fareTableBody.innerHTML = fareFactorList
       .map((factor) => ViewHelper.getFareFactorBody(factor))
       .join("");
@@ -65,15 +76,16 @@ const updateFactorAfterEdit = (operatorTicketFareId, newValue) => {
   );
 
   target.charge = newValue;
+  totalCharges.textContent = factorList.reduce(collectFareCharge, 0);
   sessionStorage.setItem("fareList", JSON.stringify(factorList));
 };
 
 const updateFactorAfterDelete = (operatorTicketFareId) => {
   const factorList = JSON.parse(sessionStorage.getItem("fareList"));
-  console.log(factorList, operatorTicketFareId);
   const filterList = factorList.filter((factor) => {
     return factor.operatorTicketFareId !== operatorTicketFareId;
   });
+
   sessionStorage.setItem("fareList", JSON.stringify(filterList));
 
   if (filterList.length === 0) {
@@ -150,12 +162,9 @@ const handleDelete = async (e) => {
   const parentTableRow = e.target.closest("tr");
   const operatorTicketFareId = +parentTableRow.dataset.id;
 
-  console.log(parentTableRow, operatorTicketFareId);
-
   parentTableRow.remove();
   try {
     const response = await deleteFareFactorRequest(operatorTicketFareId);
-    console.log(response);
 
     switch (response) {
       case "invalid": {
@@ -221,6 +230,8 @@ sortCharges.addEventListener("change", (e) => {
       break;
     }
   }
+
+  filterNav.init();
 });
 
 filterNavContainer.addEventListener("click", (e) => {
@@ -268,15 +279,7 @@ filterNavContainer.addEventListener("click", (e) => {
 
 const handleFareFactorList = async () => {
   try {
-    const activeId = await getActiveAccountID("operator");
-
-    if (activeId == "invalid" || isNaN(+activeId)) {
-      sessionStorage.removeItem("active");
-      throw new Error("Invalid request");
-    }
-    console.log(fareTable.innerHTML);
-    sessionStorage.setItem("active", activeId);
-    let fareFactorList = await collectFareFactorRequest(+activeId, false);
+    let fareFactorList = await collectFareFactorRequest(false);
     if (fareFactorList === "invalid") {
       throw new Error("Invalid request");
     }
@@ -287,19 +290,132 @@ const handleFareFactorList = async () => {
     }
   } catch (err) {
     toast.error(err.message);
-    removeLoader();
+    removeTableLoader();
   }
 };
 
 const init = async () => {
   filterNav.start();
   try {
-    setLoader();
+    setTableLoader();
     await handleFareFactorList();
   } catch (err) {
     toast.error(err.message);
   }
 };
+
 await init();
 
 const reset = () => {};
+
+fareFactorForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!fareFactor.value) {
+    toast.error("Select a fare factor");
+    return;
+  }
+
+  if (!charge.value || !validateCharge(charge)) {
+    toast.error("Invalid charge value");
+    console.log("eh");
+    displayInputError(charge);
+    return;
+  }
+
+  try {
+    const response = await handleAddFareFactor(
+      +charge.value,
+      +fareFactor.value
+    );
+    console.log(response);
+    switch (response) {
+      case "internal": {
+        throw new Error("Internal server error");
+      }
+      case "success": {
+        toast.success("Fare Addedd successfully");
+        setTableLoader();
+        const modal = bootstrap.Modal.getInstance(formModal);
+        modal.hide();
+        await handleFareFactorList();
+        break;
+      }
+      case "1": {
+        throw new Error("Invalid Charge");
+      }
+      default: {
+        break;
+      }
+    }
+  } catch (err) {
+    toast.error(err.message);
+    fareFactorForm.reset();
+    charge.classList.remove("border-success", "border-danger");
+    charge.setAttribute("placeholder", "Charges");
+  }
+});
+
+fareFactorSelectList.addEventListener("click", (e) => {
+  const target = e.target.closest("li");
+  if (!target) return;
+  fareFactorSelectBtn.textContent = target.querySelector("span").textContent;
+  const id = target.dataset.id;
+  let attribute = "Charges ";
+  if (id != 0) {
+    const type = +target.dataset.type;
+    console.log(type);
+    if (type == 0) {
+      // fixed
+      attribute += "(Personn / km)";
+    } else {
+      // person / km
+      attribute += "(Fixed Charge)";
+    }
+
+    fareFactor.value = id;
+  }
+
+  charge.setAttribute("placeholder", attribute);
+});
+
+charge.addEventListener("blur", (e) => {
+  validateCharge(e.target);
+});
+
+formModal.addEventListener("show.bs.modal", async function () {
+  try {
+    const response = await collectFareFactorRequest();
+    fareFactorSelectList.classList.remove("overflow-y-scroll");
+    fareFactorSelectList.innerHTML = `<div class="loader"></div>`;
+    if (response === "invalid") {
+      throw new Error("Invalid request");
+    }
+    if (response.startsWith("[")) {
+      fareFactorSelectList.innerHTML = "";
+      fareFactorSelectList.innerHTML += "<li>Select Fare Factor</li>";
+      const fareList = JSON.parse(response);
+      fareFactorSelectList.innerHTML = fareList
+        .map((factor) => ViewHelper.getSelectFareTable(factor))
+        .join("");
+      fareFactorSelectList.insertAdjacentHTML(
+        "afterbegin",
+        `<li data-id=0 class="py-2 border-bottom pnt">
+              <a class="dropdown-item d-flex flex-column">
+                <span class="fw-semibold">Select Fair Factor</span>
+              </a>
+            </li>`
+      );
+      fareFactorSelectList.classList.add("overflow-y-scroll");
+    }
+  } catch (err) {
+    toast.error(err.message);
+    fareFactorSelectList.innerHTML = "";
+  }
+});
+
+formModal.addEventListener("hidden.bs.modal", () => {
+  fareFactorSelectBtn.textContent = "Select Fare Factor";
+  fareFactorForm.reset();
+  charge.setAttribute("placeholder", "Charges");
+  charge.classList.remove("border-danger", "border-success");
+});

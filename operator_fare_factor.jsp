@@ -53,74 +53,7 @@
                   class="dropdown-menu w-100 shadow overflow-y-scroll"
                   style="max-height: 275px"
                   aria-labelledby="dropdownMenuButton"
-                >
-                  <li>
-                    <a class="dropdown-item d-flex flex-column" href="#">
-                      <span class="fw-semibold">Blanket</span>
-                      <small class="text-secondary">(Fixed charge)</small>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item d-flex flex-column" href="#">
-                      <span class="fw-semibold">Wi-Fi</span>
-                      <small class="text-secondary">(Per person/km)</small>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item d-flex flex-column" href="#">
-                      <span class="fw-semibold">Recliner Seat</span>
-                      <small class="text-secondary">(Per person/km)</small>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item d-flex flex-column" href="#">
-                      <span class="fw-semibold">Wi-Fi</span>
-                      <small class="text-secondary">(Per person/km)</small>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item d-flex flex-column" href="#">
-                      <span class="fw-semibold">Recliner Seat</span>
-                      <small class="text-secondary">(Per person/km)</small>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item d-flex flex-column" href="#">
-                      <span class="fw-semibold">Wi-Fi</span>
-                      <small class="text-secondary">(Per person/km)</small>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item d-flex flex-column" href="#">
-                      <span class="fw-semibold">Recliner Seat</span>
-                      <small class="text-secondary">(Per person/km)</small>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item d-flex flex-column" href="#">
-                      <span class="fw-semibold">Wi-Fi</span>
-                      <small class="text-secondary">(Per person/km)</small>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item d-flex flex-column" href="#">
-                      <span class="fw-semibold">Recliner Seat</span>
-                      <small class="text-secondary">(Per person/km)</small>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item d-flex flex-column" href="#">
-                      <span class="fw-semibold">Wi-Fi</span>
-                      <small class="text-secondary">(Per person/km)</small>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item d-flex flex-column" href="#">
-                      <span class="fw-semibold">Recliner Seat</span>
-                      <small class="text-secondary">(Per person/km)</small>
-                    </a>
-                  </li>
-                </ul>
+                ></ul>
               </div>
               <div>
                 <label class="form-label small fw-semibold" for="charge"
@@ -129,13 +62,18 @@
                 <input
                   type="number"
                   class="form-control"
-                  placeholder="Charges (Ranging 1 to 100)"
+                  placeholder="Charges"
                   name="charge"
                   id="charge"
                 />
               </div>
               <div>
-                <input type="hidden" value="" id="fare_factor" />
+                <input
+                  type="hidden"
+                  value=""
+                  name="fare_factor_id"
+                  id="fare_factor"
+                />
               </div>
               <div class="align-self-center ms-auto">
                 <input
@@ -154,16 +92,81 @@
       <c:import url="operator_sidebar.jsp" />
 
       <!-- Main content -->
-      <main class="flex-grow-1 d-flex flex-column bg-light">
+      <main
+        class="flex-grow-1 d-flex flex-column bg-light"
+        style="overflow: auto"
+      >
         <!-- Top Navbar -->
         <c:import url="operator_navbar.jsp" />
 
         <!-- Dashboard Content -->
 
-        <div class="p-4 d-flex flex-column gap-4">
+        <div class="p-4 d-flex flex-column gap-4 overflow-scroll">
+          <h3>All Fare Factors</h3>
+          <div class="d-flex align-items-center gap-2">
+            <div
+              class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
+            >
+              <div
+                class="bg-primary-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="28"
+                  height="28"
+                  fill="#0d6efd"
+                  class="bi bi-credit-card"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1H0V4z" />
+                  <path
+                    fill-rule="evenodd"
+                    d="M0 7v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7H0zm3 3.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p
+                  class="mb-1 text-secondary fw-medium"
+                  style="font-size: small"
+                >
+                  TOTAL FARE FACTOR
+                </p>
+                <h5 class="mb-0 fs-5 fw-medium" id="total_fare">0</h5>
+              </div>
+            </div>
+            <div
+              class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
+            >
+              <div
+                class="bg-success-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="28"
+                  height="28"
+                  fill="#198754"
+                  class="bi bi-currency-rupee"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p
+                  class="mb-1 text-secondary fw-medium"
+                  style="font-size: small"
+                >
+                  TOTAL FARE CHARGES
+                </p>
+                <h5 class="mb-0 fs-5 fw-medium" id="total_charges">0</h5>
+              </div>
+            </div>
+          </div>
           <div class="d-flex justify-content-between align-items-center">
-            <h3>All Fare Factors</h3>
-            <div class="d-flex align-items-center gap-2">
+            <div class="ms-auto d-flex align-items-center gap-2">
               <div
                 class="d-flex align-items-center bg-white rounded p-1"
                 id="filter_nav"
@@ -193,7 +196,7 @@
           </div>
 
           <table
-            class="border rounded table-responsive border-bottom-0 "
+            class="border rounded table-responsive border-bottom-0"
             id="fare_factor_table"
           ></table>
         </div>

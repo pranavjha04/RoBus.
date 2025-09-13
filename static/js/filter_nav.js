@@ -6,12 +6,12 @@ class FilterNav {
     this.#parentElement = document.querySelector("#filter_nav");
     this.#childrens = Array.from(this.#parentElement.children);
     this.#parentElement.addEventListener("click", this.#event.bind(this));
-    this.#init();
+    this.init();
   }
   start() {
     new FilterNav();
   }
-  #init() {
+  init() {
     this.#childrens.forEach((child) => {
       child.classList.remove("btn-primary");
       child.style.border = "none";

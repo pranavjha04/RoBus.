@@ -243,5 +243,11 @@ export const nameHandler = (e) => {
 
 export const validateCharge = (element) => {
   const value = +element.value;
-  return value > 0 && value <= 100;
+  const isValid = value > 0 && value <= 100;
+  if (isValid) {
+    displayInputSuccess(element);
+  } else {
+    displayInputError(element);
+  }
+  return isValid;
 };

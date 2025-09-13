@@ -109,6 +109,10 @@ tbody tr {
   }
 }
 
+.pnt {
+  cursor: pointer;
+}
+
 .loader {
   width: 50px;
   padding: 8px;

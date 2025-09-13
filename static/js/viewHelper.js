@@ -49,6 +49,18 @@ export class ViewHelper {
   static getTableEmptyMessage(message) {
     return `<td class="text-center bg-transparent mt-5 py-5" colspan="100%"><h3>${message}</h3></td>`;
   }
-}
 
-// <input class="input text-center rounded-2" readonly value=${charge} />
+  static getSelectFareTable({ fareFactor }) {
+    const { fareFactorId, fixedCharge, name } = fareFactor;
+    return `<li data-id=${fareFactorId} class='border-bottom pnt' data-type=${
+      fixedCharge ? 1 : 0
+    }>
+              <a class="dropdown-item d-flex flex-column">
+                <span class="fw-semibold">${name}</span>
+                <small class="text-secondary">(${
+                  fixedCharge ? "Fixed Charge" : "Person / km"
+                })</small>
+              </a>
+            </li>`;
+  }
+}

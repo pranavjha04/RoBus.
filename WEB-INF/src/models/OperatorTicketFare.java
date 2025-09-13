@@ -33,6 +33,33 @@ public class OperatorTicketFare {
 
     }
 
+    public static boolean addRecord(int fareFactorId, int charges, int operatorId) {
+        boolean flag = false;
+
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                    "INSERT INTO " +
+                    "operator_ticket_fare" +
+                    "(fare_factor_id, charges, operator_id) " +
+                    "VALUES (?,?,?)";
+            
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setInt(1, fareFactorId);
+            ps.setInt(2, charges);
+            ps.setInt(3, operatorId);
+
+            flag = ps.executeUpdate() == 1;
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        return flag;
+    }
+
     public static boolean deleteRecord(int operatorTicketFareId) {
         boolean flag = false;
         try {

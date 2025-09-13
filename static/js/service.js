@@ -1,11 +1,11 @@
 import {
-  createURLParams,
   validateContact,
   validateEmail,
   displayInputSuccess,
   displayInputError,
   validateBusNumber,
   removeInputSuccess,
+  createURLParams,
 } from "./util.js";
 import { toast } from "./toast.js";
 
@@ -33,10 +33,8 @@ export const checkBusNumberExistRequest = async (busNumber) => {
   return data.trim();
 };
 
-export const collectFareFactorRequest = async (id, onlyFactors = true) => {
-  const res = await fetch(
-    `get_fare_factor.do?id=${+id}&onlyFactors=${onlyFactors}`
-  );
+export const collectFareFactorRequest = async (onlyFactors = true) => {
+  const res = await fetch(`get_fare_factor.do?onlyFactors=${onlyFactors}`);
   if (!res.ok) throw new Error("Internal server error");
 
   const data = await res.text();
@@ -215,4 +213,15 @@ export const busNumberHandler = async (e) => {
     toast.error(err.message);
     displayInputError(element);
   }
+};
+
+export const handleAddFareFactor = async (charge, fareFactorId) => {
+  console.log(charge, fareFactorId);
+  const res = await fetch(
+    `add_operator_ticket_fare.do?charge=${charge}&fare_factor_id=${fareFactorId}`
+  );
+  if (!res.ok) throw new Error("Internal server error");
+
+  const data = await res.text();
+  return data.trim();
 };

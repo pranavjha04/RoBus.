@@ -23,7 +23,6 @@ public class GetFareFactorServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         if(
-            request.getParameter("id") == null || 
             request.getParameter("onlyFactors") == null ||
             session.getAttribute("operator") == null
         ) {
@@ -31,16 +30,10 @@ public class GetFareFactorServlet extends HttpServlet {
             return;
         }
 
-        Integer operatorId = Integer.parseInt(request.getParameter("id"));
         boolean onlyFactors = request.getParameter("onlyFactors").equals("true") ? true : false;
         Operator operator = (Operator) session.getAttribute("operator");
 
-        if(operator.getOperatorId() != operatorId) {
-            response.getWriter().println("invalid");
-            return;
-        }
-
-        ArrayList<OperatorTicketFare> factors = OperatorTicketFare.getAvailableFareFactors(operatorId, onlyFactors);
+        ArrayList<OperatorTicketFare> factors = OperatorTicketFare.getAvailableFareFactors(operator.getOperatorId(), onlyFactors);
 
         response.getWriter().println(new Gson().toJson(factors));        
     }
