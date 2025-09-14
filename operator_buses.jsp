@@ -28,34 +28,8 @@
 
           <div class="modal-body">
             <!-- Nav Tabs -->
-            <ul class="nav nav-tabs" id="busTab" role="tablist">
-              <li class="nav-item" role="presentation">
-                <button
-                  class="nav-link active"
-                  id="basic_nav"
-                  data-bs-toggle="tab"
-                  data-bs-target="#basic"
-                  type="button"
-                >
-                  Basic Info
-                </button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button
-                  class="nav-link"
-                  id="feature_nav"
-                  disabled
-                  data-bs-toggle="tab"
-                  data-bs-target="#features"
-                  type="button"
-                >
-                  Features
-                </button>
-              </li>
-            </ul>
-
             <!-- Tab Content -->
-            <div class="tab-content mt-3">
+            <div class="tab-content">
               <!-- Basic Info -->
               <div class="tab-pane fade show active" id="basic">
                 <form
@@ -95,6 +69,15 @@
                       <option value="mahindra">Mahindra & Mahindra</option>
                     </select>
                   </div>
+                  <div>
+                    <label class="form-label small fw-semibold"
+                      >Amenities
+                    </label>
+                    <ul
+                      id="feature_list"
+                      class="d-flex flex-wrap checkbox-grid list-unstyled"
+                    ></ul>
+                  </div>
 
                   <div>
                     <label for="bus_images" class="form-label small fw-semibold"
@@ -111,8 +94,7 @@
                   </div>
 
                   <div
-                    class="d-grid gap-2"
-                    style="grid-template-columns: repeat(4, 1fr)"
+                    class="gap-2 prevcontainer"
                     id="preview_img_container"
                   ></div>
                   <div class="ms-auto">
@@ -135,117 +117,6 @@
               </div>
 
               <!-- Features -->
-              <div class="tab-pane fade" id="features">
-                <table class="table" id="feature_table">
-                  <thead>
-                    <tr>
-                      <th scope="col" class="text-center">Fare Factor</th>
-                      <th scope="col" class="text-center">Charge</th>
-                      <th scope="col" class="text-center">Status</th>
-                      <th scope="col" class="text-center">Options</th>
-                    </tr>
-                  </thead>
-                  <tbody id="feature_table_body">
-                    <tr class="text-center">
-                      <td>AC</td>
-                      <td>235</td>
-                      <td>Fixed Charge</td>
-                      <td>
-                        <button class="feature-btn">
-                          <img
-                            src="static/media/images/edit_sm_blue.svg"
-                            class="feature-icon"
-                          />
-                        </button>
-                        <button class="feature-btn ms-2">
-                          <img
-                            src="static/media/images/delete_sm_red.svg"
-                            class="feature-icon"
-                          />
-                        </button>
-                      </td>
-                    </tr>
-                    <tr class="text-center">
-                      <td>AC</td>
-                      <td>235</td>
-                      <td>Per person per km</td>
-                      <td>
-                        <button class="feature-btn">
-                          <img
-                            src="static/media/images/edit_sm_blue.svg"
-                            class="feature-icon"
-                          />
-                        </button>
-                        <button class="feature-btn ms-2">
-                          <img
-                            src="static/media/images/delete_sm_red.svg"
-                            class="feature-icon"
-                          />
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <form id="features_form" class="d-flex flex-column gap-3">
-                  <!-- AC Type -->
-                  <div
-                    class="d-flex align-items-center justify-content-center gap-4"
-                  >
-                    <div class="d-flex flex-column">
-                      <label
-                        for="fare_factor"
-                        class="form-label small fw-semibold"
-                        >Fare factor</label
-                      >
-                      <select
-                        class="form-select fld"
-                        id="fare_factor"
-                        name="fare_factor"
-                      >
-                        <option value="">Select Factor</option>
-                        <option value="1">AC</option>
-                        <option value="2">Sleeper</option>
-                        <option value="3">Wifi</option>
-                      </select>
-                    </div>
-
-                    <div class="d-flex flex-column">
-                      <label for="charge" class="form-label small fw-semibold"
-                        >Price</label
-                      >
-                      <input
-                        id="charge"
-                        type="number"
-                        name="charge"
-                        class="form-control"
-                        placeholder="Amount ranging between 0 to 100"
-                      />
-                    </div>
-
-                    <div class="d-flex flex-column">
-                      <div class="form-check mt-4">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          value="fixed_charge"
-                          id="fixed_charge"
-                        />
-                        <label class="form-check-label" for="fixed_charge"
-                          >Fixed charge</label
-                        >
-                        <img
-                          src="static/media/images/help_sm_blue.svg"
-                          class="bi bi-question-circle-fill text-muted"
-                          tabindex="0"
-                          data-bs-toggle="popover"
-                          data-bs-trigger="focus"
-                          data-bs-content="If not checked then charge will be assumed as per person per km"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
             </div>
           </div>
         </div>
@@ -266,23 +137,218 @@
         <c:import url="operator_navbar.jsp" />
 
         <!-- Page Header -->
-        <div class="p-4 d-flex flex-column align-items-end gap-3">
-          <button
-            type="button"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#centeredModal"
-          >
-            + Add Bus
-          </button>
+        <div class="p-4 d-flex flex-column gap-3 overflow-scroll">
+          <h2>All Buses</h2>
+          <div class="businfo gap-2 align-items-center justify-content-between">
+            <div
+              class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
+            >
+              <div
+                class="bg-primary-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="28"
+                  height="28"
+                  fill="#0d6efd"
+                  class="bi bi-bus-front"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M5 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0m8 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m-6-1a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2zm1-6c-1.876 0-3.426.109-4.552.226A.5.5 0 0 0 3 4.723v3.554a.5.5 0 0 0 .448.497C4.574 8.891 6.124 9 8 9s3.426-.109 4.552-.226A.5.5 0 0 0 13 8.277V4.723a.5.5 0 0 0-.448-.497A44 44 0 0 0 8 4m0-1c-1.837 0-3.353.107-4.448.22a.5.5 0 1 1-.104-.994A44 44 0 0 1 8 2c1.876 0 3.426.109 4.552.226a.5.5 0 1 1-.104.994A43 43 0 0 0 8 3"
+                  />
+                  <path
+                    d="M15 8a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1V2.64c0-1.188-.845-2.232-2.064-2.372A44 44 0 0 0 8 0C5.9 0 4.208.136 3.064.268 1.845.408 1 1.452 1 2.64V4a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1v3.5c0 .818.393 1.544 1 2v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5V14h6v1.5a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2c.607-.456 1-1.182 1-2zM8 1c2.056 0 3.71.134 4.822.261.676.078 1.178.66 1.178 1.379v8.86a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 11.5V2.64c0-.72.502-1.301 1.178-1.379A43 43 0 0 1 8 1"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p
+                  class="mb-1 text-secondary fw-medium"
+                  style="font-size: small"
+                >
+                  TOTAL BUSES
+                </p>
+                <h5 class="mb-0 fs-5 fw-medium">25</h5>
+              </div>
+            </div>
+            <div
+              class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
+            >
+              <div
+                class="bg-success-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="28"
+                  height="28"
+                  fill="#198754"
+                  class="bi bi-bus-front"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M5 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0m8 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m-6-1a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2zm1-6c-1.876 0-3.426.109-4.552.226A.5.5 0 0 0 3 4.723v3.554a.5.5 0 0 0 .448.497C4.574 8.891 6.124 9 8 9s3.426-.109 4.552-.226A.5.5 0 0 0 13 8.277V4.723a.5.5 0 0 0-.448-.497A44 44 0 0 0 8 4m0-1c-1.837 0-3.353.107-4.448.22a.5.5 0 1 1-.104-.994A44 44 0 0 1 8 2c1.876 0 3.426.109 4.552.226a.5.5 0 1 1-.104.994A43 43 0 0 0 8 3"
+                  />
+                  <path
+                    d="M15 8a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1V2.64c0-1.188-.845-2.232-2.064-2.372A44 44 0 0 0 8 0C5.9 0 4.208.136 3.064.268 1.845.408 1 1.452 1 2.64V4a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1v3.5c0 .818.393 1.544 1 2v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5V14h6v1.5a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2c.607-.456 1-1.182 1-2zM8 1c2.056 0 3.71.134 4.822.261.676.078 1.178.66 1.178 1.379v8.86a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 11.5V2.64c0-.72.502-1.301 1.178-1.379A43 43 0 0 1 8 1"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p
+                  class="mb-1 text-secondary fw-medium"
+                  style="font-size: small"
+                >
+                  ACTIVE BUSES
+                </p>
+                <h5 class="mb-0 fs-5 fw-medium">25</h5>
+              </div>
+            </div>
+            <div
+              class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
+            >
+              <div
+                class="bg-danger-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="28"
+                  height="28"
+                  fill="#dc3545"
+                  class="bi bi-bus-front"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M5 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0m8 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m-6-1a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2zm1-6c-1.876 0-3.426.109-4.552.226A.5.5 0 0 0 3 4.723v3.554a.5.5 0 0 0 .448.497C4.574 8.891 6.124 9 8 9s3.426-.109 4.552-.226A.5.5 0 0 0 13 8.277V4.723a.5.5 0 0 0-.448-.497A44 44 0 0 0 8 4m0-1c-1.837 0-3.353.107-4.448.22a.5.5 0 1 1-.104-.994A44 44 0 0 1 8 2c1.876 0 3.426.109 4.552.226a.5.5 0 1 1-.104.994A43 43 0 0 0 8 3"
+                  />
+                  <path
+                    d="M15 8a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1V2.64c0-1.188-.845-2.232-2.064-2.372A44 44 0 0 0 8 0C5.9 0 4.208.136 3.064.268 1.845.408 1 1.452 1 2.64V4a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1v3.5c0 .818.393 1.544 1 2v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5V14h6v1.5a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2c.607-.456 1-1.182 1-2zM8 1c2.056 0 3.71.134 4.822.261.676.078 1.178.66 1.178 1.379v8.86a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 11.5V2.64c0-.72.502-1.301 1.178-1.379A43 43 0 0 1 8 1"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p
+                  class="mb-1 text-secondary fw-medium"
+                  style="font-size: small"
+                >
+                  INACTIVE BUSES
+                </p>
+                <h5 class="mb-0 fs-5 fw-medium">25</h5>
+              </div>
+            </div>
+            <div
+              class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
+            >
+              <div
+                class="bg-warning-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="28"
+                  height="28"
+                  fill="#ffc107"
+                  class="bi bi-bus-front"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M5 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0m8 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m-6-1a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2zm1-6c-1.876 0-3.426.109-4.552.226A.5.5 0 0 0 3 4.723v3.554a.5.5 0 0 0 .448.497C4.574 8.891 6.124 9 8 9s3.426-.109 4.552-.226A.5.5 0 0 0 13 8.277V4.723a.5.5 0 0 0-.448-.497A44 44 0 0 0 8 4m0-1c-1.837 0-3.353.107-4.448.22a.5.5 0 1 1-.104-.994A44 44 0 0 1 8 2c1.876 0 3.426.109 4.552.226a.5.5 0 1 1-.104.994A43 43 0 0 0 8 3"
+                  />
+                  <path
+                    d="M15 8a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1V2.64c0-1.188-.845-2.232-2.064-2.372A44 44 0 0 0 8 0C5.9 0 4.208.136 3.064.268 1.845.408 1 1.452 1 2.64V4a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1v3.5c0 .818.393 1.544 1 2v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5V14h6v1.5a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-2c.607-.456 1-1.182 1-2zM8 1c2.056 0 3.71.134 4.822.261.676.078 1.178.66 1.178 1.379v8.86a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 11.5V2.64c0-.72.502-1.301 1.178-1.379A43 43 0 0 1 8 1"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p
+                  class="mb-1 text-secondary fw-medium"
+                  style="font-size: small"
+                >
+                  INCOMPLETE BUSES
+                </p>
+                <h5 class="mb-0 fs-5 fw-medium">25</h5>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="ms-auto d-flex align-items-center gap-2">
+              <div
+                class="d-flex align-items-center bg-white rounded p-1"
+                id="filter_nav"
+              >
+                <button class="btn btn-primary">All</button>
+                <button class="btn">Fixed charge</button>
+                <button class="btn">Person / km</button>
+              </div>
 
-          <input
-            type="search"
-            id="search_bus"
-            class="form-control w-auto"
-            placeholder="Search bus by number"
-            style="min-width: 250px"
-          />
+              <select
+                class="my-select focus-ring rounded border-0"
+                id="sort_charges"
+              >
+                <option value="">Sort by Charges</option>
+                <option value="low">Low to High</option>
+                <option value="high">High to Low</option>
+              </select>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#centeredModal"
+              >
+                + Add Bus
+              </button>
+            </div>
+          </div>
+          <table class="border rounded table-responsive border-bottom-0">
+            <thead>
+              <tr class="border border-bottom text-center">
+                <th class="p-3">Bus Number</th>
+                <th class="p-3">Manufacturer</th>
+                <th class="p-3">Status</th>
+                <th class="p-3">Options</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class="text-center border-bottom"
+                data-id="${operatorTicketFareId}"
+              >
+                <td class="p-3">MP20 KM 3767</td>
+                <td class="p-3">Tata Moters</td>
+
+                <td class="p-3 charge">
+                  <span class="badge rounded-pill text-bg-primary"
+                    >Primary</span
+                  >
+                </td>
+                <td class="p-3">
+                  <div class="dropdown">
+                    <button
+                      class="btn bg-transparent"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <img
+                        src="static/media/images/options_sm.svg"
+                        alt="option"
+                      />
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li class="border-bottom">
+                        <a class="dropdown-item" href="#">Edit</a>
+                      </li>
+                      <li class="border-bottom">
+                        <a class="dropdown-item" href="#">Seating</a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="#">Schedule</a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </main>
     </div>

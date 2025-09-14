@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import models.Bus;
 import models.BusImage;
 import models.Operator;
+import models.BusFareFactor;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -47,12 +48,14 @@ public class AddBusServlet extends HttpServlet {
             List<FileItem> items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
 
             if (items.isEmpty()) {
-                response.getWriter().println("Invalid req");
+                response.getWriter().println("Invalid");
                 return;
             }
+            ServletContext context = this.getServletContext();
 
             List<FileItem> validFiles = new ArrayList<>();
-            ServletContext context = this.getServletContext();
+            List<FileItem> fareFactors = new ArrayList<>();
+            
             Operator operator = (Operator) session.getAttribute("operator");
 
             Bus bus = new Bus();
@@ -63,8 +66,11 @@ public class AddBusServlet extends HttpServlet {
 
             for (FileItem item : items) {
                 String fieldName = item.getFieldName();
-
                 if (item.isFormField()) {
+                    if(fieldName.equals("fare_factor")) {
+                        fareFactors.add(item);
+                        continue;
+                    }
                     String value = item.getString().trim();
                     errorMessage.append(bus.setField(fieldName, value));
                 } else {
@@ -77,6 +83,11 @@ public class AddBusServlet extends HttpServlet {
                         hasInvalidFiles = true;
                     }
                 }
+            }
+
+            if(fareFactors.size() == 0) {
+                response.getWriter().println("Invalid");
+                return;
             }
 
             if (hasInvalidFiles) {
@@ -95,6 +106,17 @@ public class AddBusServlet extends HttpServlet {
             }
 
             bus.setBusId(generatedId);
+
+            for(FileItem item : fareFactors) {
+                Integer operatorTicketFareId = Integer.parseInt(item.getString().trim());
+
+                boolean success = BusFareFactor.addRecord(bus.getBusId(), operatorTicketFareId);
+
+                if(!success) {
+                    response.getWriter().println("Invalid");
+                    return;
+                }
+            }
 
             File uploadDir = new File(context.getRealPath("/WEB-INF/uploads/bus"), String.valueOf(generatedId));
             if (!uploadDir.exists()) {

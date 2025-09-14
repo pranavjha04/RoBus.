@@ -17,22 +17,68 @@ public class Bus implements Cloneable {
     private Integer seats;
     private String manufacturer;
     private String seatingType;
+    private Status status;
     private Operator operator;
-    private ArrayList<Seating> seatings;
 
-    public Bus(String busNumber, String manufacturer, Operator operator) {
+    public Bus(String busNumber, String manufacturer, Status status) {
         this.busNumber = busNumber;
         this.manufacturer = manufacturer;
-        this.operator = operator.clone();
+        this.status = new Status(status.getStatusId(), status.getName());
     }
 
-    public Bus(Integer busId, String busNumber, String manufacturer, Operator operator) {
-        this(busNumber, manufacturer, operator);
+    public Bus(Integer busId, String busNumber, String manufacturer, Status status) {
+        this(busNumber, manufacturer, status);
         this.busId = busId;
     }
 
     public Bus() {
         
+    }
+    
+    public static ArrayList<Bus> collectRecords(int operatorId, boolean allData) {
+        ArrayList<Bus> busList = new ArrayList<>();
+
+        try {
+            Connection con = DBManager.getConnection();
+            String query = "";
+            if(allData) {}
+            else {
+                query = 
+                    "SELECT * FROM " +
+                    "buses JOIN status " + 
+                    "ON buses.status_id = status.status_id " +
+                    "WHERE operator_id=?";
+            }
+
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, operatorId);
+
+            ResultSet rs = ps.executeQuery();
+
+            if(allData) {}
+            else {
+                while(!rs.next()) {
+                    Bus bus = new Bus(
+                        rs.getInt("bus_id"),
+                        rs.getString("bus_number"),
+                        rs.getString("manufacturer"),
+                        new Status(
+                            rs.getInt("status_id"),
+                            rs.getString("name")
+                        )
+                    );
+
+                    busList.add(bus);
+                }
+            }
+
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            busList = null;
+        }
+
+        return busList;
     }
 
     public int addRecord() {
@@ -42,7 +88,7 @@ public class Bus implements Cloneable {
             String query = 
                     "INSERT INTO buses " + 
                     "(bus_number, manufacturer, operator_id, status_id) " + 
-                    "VALUES (?,?,?,2)";
+                    "VALUES (?,?,?,10)";
             
             PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
@@ -114,16 +160,17 @@ public class Bus implements Cloneable {
     
     @Override
     public Bus clone() {
-        return new Bus(getBusId(), getBusNumber(), getManufacturer(), getOperator());
+        return new Bus(getBusId(), getBusNumber(), getManufacturer(), getStatus());
     }
 
-    public void setSeatings(ArrayList<Seating> seatings) {
-        this.seatings = seatings;
+    public void setStatus(Status status) {
+        this.status = new Status(status.getStatusId(), status.getName());
     }
 
-    public ArrayList<Seating> getSeatings() {
-        return seatings;
+    public Status getStatus() {
+        return new Status(status.getStatusId(), status.getName());
     }
+
     public void setOperator(Operator operator) {
         this.operator = operator.clone();
     }

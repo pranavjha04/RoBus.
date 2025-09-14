@@ -101,9 +101,9 @@
 
         <!-- Dashboard Content -->
 
-        <div class="p-4 d-flex flex-column gap-4 overflow-scroll">
-          <h3>All Fare Factors</h3>
-          <div class="d-flex align-items-center gap-2">
+        <div class="p-4 d-flex flex-column gap-3 overflow-scroll">
+          <h2>All Fare Factors</h2>
+          <div class="businfo justify-content-between align-items-center gap-2">
             <div
               class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
             >

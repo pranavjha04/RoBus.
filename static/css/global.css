@@ -126,8 +126,41 @@ tbody tr {
   mask-composite: subtract;
   animation: l3 2s infinite linear;
 }
+
+.sm-loader {
+  width: 35px;
+  padding: 6.5px;
+}
 @keyframes l3 {
   to {
     transform: rotate(1turn);
+  }
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.5rem 1rem;
+}
+
+.businfo {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.prevcontainer {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+@media (max-width: 1024px) {
+  .prevcontainer {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .prevcontainer {
+    grid-template-columns: repeat(3, 1fr);
   }
 }

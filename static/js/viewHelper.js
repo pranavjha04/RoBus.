@@ -63,4 +63,20 @@ export class ViewHelper {
               </a>
             </li>`;
   }
+  static getFareCheckBox(factor) {
+    const { operatorTicketFareId, fareFactor } = factor;
+    const { name } = fareFactor;
+
+    return `<li class="form-check form-check-inline">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  name="fare_factor"
+                  id="factor_${operatorTicketFareId}"
+                  value="${operatorTicketFareId}"
+                />
+                <label class="form-check-label" for="factor_${operatorTicketFareId}"
+                  >${name}</label>
+            </li>`;
+  }
 }

@@ -349,6 +349,7 @@ fareFactorForm.addEventListener("submit", async (e) => {
         toast.success("Fare added successfully");
         setTableLoader();
         filterNav.init();
+        sortCharges.value = "";
         const modal = bootstrap.Modal.getInstance(formModal);
         modal.hide();
         await handleFareFactorList();
