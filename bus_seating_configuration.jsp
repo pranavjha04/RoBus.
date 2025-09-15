@@ -194,21 +194,7 @@
             </div>
           </div>
 
-          <!-- Double Decker -->
-          <div class="d-flex flex-column gap-2">
-            <h4 class="fs-5 mb-1">Deck Type</h4>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="double_decker"
-                name="deck"
-              />
-              <label class="form-check-label fw-medium" for="double_decker">
-                Enable Double Decker
-              </label>
-            </div>
-          </div>
+  
 
           <div class="d-flex gap-2 justify-content-between">
             <input type="reset" class="btn btn-secondary px-4" value="Reset" />

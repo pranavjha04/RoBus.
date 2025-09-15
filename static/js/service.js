@@ -4,6 +4,7 @@ import {
   displayInputSuccess,
   displayInputError,
   validateBusNumber,
+  createURLParams,
 } from "./util.js";
 import { toast } from "./toast.js";
 
@@ -39,8 +40,18 @@ export const collectFareFactorRequest = async (onlyFactors = true) => {
 };
 
 export const collectBusRecordRequest = async (allRecord = false) => {
-  const res = await fetch(`get_bus.do?all_record=${allRecord}`);
-  if (!res.ok) throw new Error("Internal server error");
+  const queryParams = createURLParams({
+    allRecord,
+  });
+  console.log(queryParams.toString());
+  const res = await fetch(`get_bus.do?${queryParams.toString()}`, {
+    method: "GET",
+  });
+
+  if (!res.ok) {
+    console.log("hello");
+    throw new Error("Internal server error");
+  }
 
   const data = await res.text();
   return data.trim();

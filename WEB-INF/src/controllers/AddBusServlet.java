@@ -125,8 +125,11 @@ public class AddBusServlet extends HttpServlet {
 
             for (FileItem item : validFiles) {
                 String fileName = FileManager.generateFileName(item.getName());
-                BusImage busImg = new BusImage(fileName, bus);
-                busImg.addRecord();
+                boolean success = BusImage.addRecord(fileName, bus.getBusId());
+                if(!success) {
+                    response.getWriter().println("Invalid");
+                    return;
+                }
 
                 File currFile = new File(uploadDir, fileName);
                 item.write(currFile);

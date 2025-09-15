@@ -22,8 +22,8 @@ public class BusImage {
 
     }
 
-    public int addRecord() {
-        int generatedId = -1;
+    public static boolean addRecord(String pic, int busId) {
+        boolean flag = false;
 
         try {
             Connection con = DBManager.getConnection();
@@ -31,28 +31,20 @@ public class BusImage {
                     "INSERT INTO bus_images " +
                     "(pic, bus_id) " + 
                     "VALUES (?,?)";
-            PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = con.prepareStatement(query);
 
             ps.setString(1, pic);
-            ps.setInt(2, bus.getBusId());
+            ps.setInt(2, busId);
 
-            if(ps.executeUpdate() != 1) {
-                generatedId = -1;
-            }
+            flag = ps.executeUpdate() == 1;
 
-            if(generatedId != -1) {
-                ResultSet rs = ps.getGeneratedKeys();
-                if(rs.next()) {
-                    generatedId = rs.getInt(1);
-                }
-            }
             con.close();
         }
         catch(SQLException e) {
             e.printStackTrace();
         }
         
-        return generatedId;
+        return flag;
     }
 
     public void setBus(Bus bus) {

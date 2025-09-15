@@ -1,6 +1,8 @@
+import { filterNav } from "./filter_nav.js";
 import {
   busNumberHandler,
   checkBusNumberExistRequest,
+  collectBusRecordRequest,
   collectFareFactorRequest,
 } from "./service.js";
 import { toast } from "./toast.js";
@@ -24,6 +26,8 @@ const addBusModal = document.querySelector("#centeredModal");
 
 const allFields = Array.from(document.querySelectorAll(".bfld"));
 const prevImagesContainer = document.querySelector("#preview_img_container");
+
+const busTable = document.querySelector("#bus_table");
 
 const setFareLoader = () => {
   fareList.innerHTML = '<div class="loader sm-loader"></div>';
@@ -112,6 +116,43 @@ busImages.addEventListener("input", (e) => {
 manufacturer.addEventListener("change", manufacturerHandler);
 busNumber.addEventListener("blur", busNumberHandler);
 
+const handleBusListDisplay = (busList) => {
+  if (busList.length === 0) {
+    busTable.innerHTML =
+      "<h3 class='text-center fs-3 align-self-center mt-5'>Add records to display :)</h3>";
+    filterNav.disable();
+    filterNav.init();
+    busTable.classList.remove("border");
+  } else {
+    busTable.classList.add("border");
+    filterNav.enable();
+    busTable.innerHTML = ViewHelper.getBusTableHeading();
+    const busTableBody = document.getElementById("bus_table_body");
+    busTableBody.innerHTML = busList
+      .map((bus) => ViewHelper.getBusTableRow(bus))
+      .join("");
+  }
+};
+
+const handleBusRecords = async () => {
+  try {
+    const response = await collectBusRecordRequest();
+    if (response === "internal") {
+      throw new Error("Internal server error");
+    }
+    if (response === "invalid") {
+      throw new Error("Invalid Request");
+    }
+    if (response.startsWith("[")) {
+      const busList = JSON.parse(response);
+      handleBusListDisplay(busList);
+    }
+  } catch (err) {
+    toast.error(err.message);
+  } finally {
+  }
+};
+
 basicBusForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -155,20 +196,21 @@ basicBusForm.addEventListener("submit", async (e) => {
 
     let data = await response.text();
     data = data.trim();
+
     if (data === "Invalid") {
       throw new Error("Invalid request");
     } else if (data.startsWith("{")) {
-      sessionStorage.setItem("activeBus", JSON.stringify(JSON.parse(data)));
       toast.success("Bus added successfully");
+      await handleBusRecords();
       const modal = bootstrap.Modal.getInstance(addBusModal);
       modal.hide();
     } else {
-      if (data === "") {
-        throw new Error("Invalid request");
+      if (data.split("").length > 0) {
+        data.split("").forEach((i) => {
+          if (isNaN(+i)) throw new Error("Internal server error");
+          displayInputError(allFields[+i - 1]);
+        });
       }
-      data.split("").forEach((i) => {
-        displayInputError(allFields[+i - 1]);
-      });
 
       throw new Error("Invalid request");
     }
@@ -178,12 +220,7 @@ basicBusForm.addEventListener("submit", async (e) => {
 });
 
 const init = async () => {
-  try {
-    
-  }
-  catch (err) {
-    err
-  }
+  await handleBusRecords();
 };
 
 await init();

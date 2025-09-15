@@ -22,15 +22,28 @@ export class ViewHelper {
 
   static getFareFactorHeading() {
     return `<thead>
-        <tr class="border border-bottom text-center">
-          <th class="p-3">Fare Factor</th>
-          <th class="p-3">Type</th>
-          <th class="p-3">Charges</th>
-          <th class="p-3">Options</th>
-        </tr>
-      </thead>
-      <tbody id="fare_table_body"></tbody>
-    `;
+              <tr class="border border-bottom text-center">
+                <th class="p-3">Fare Factor</th>
+                <th class="p-3">Type</th>
+                <th class="p-3">Charges</th>
+                <th class="p-3">Options</th>
+              </tr>
+           </thead>
+          <tbody id="fare_table_body"></tbody>
+          `;
+  }
+
+  static getBusTableHeading() {
+    return `<thead>
+              <tr class="border border-bottom text-center">
+                <th class="p-3">Bus Number</th>
+                <th class="p-3">Manufacturer</th>
+                <th class="p-3">Status</th>
+                <th class="p-3">Options</th>
+              </tr>
+            </thead>
+            <tbody id="bus_table_body"></tbody>
+            `;
   }
 
   static getTableLoader() {
@@ -63,6 +76,7 @@ export class ViewHelper {
               </a>
             </li>`;
   }
+
   static getFareCheckBox(factor) {
     const { operatorTicketFareId, fareFactor } = factor;
     const { name } = fareFactor;
@@ -78,5 +92,67 @@ export class ViewHelper {
                 <label class="form-check-label" for="factor_${operatorTicketFareId}"
                   >${name}</label>
             </li>`;
+  }
+
+  static getBusTableRow(bus) {
+    const { busId, manufacturer, busNumber, status } = bus;
+    const { name: statusName } = status;
+    console.log(statusName);
+    return `<tr
+                class="text-center border-bottom"
+                data-id=""
+              >
+                <td class="p-3">${busNumber}</td>
+                <td class="p-3">${
+                  manufacturer.charAt(0).toUpperCase() + manufacturer.slice(1)
+                }</td>
+
+                <td class="p-3 charge">
+                  <span
+                    class="badge border
+                    
+                    ${
+                      statusName === "Active" &&
+                      "text-success bg-success-subtle border-success"
+                    }
+                    ${
+                      statusName === "Inactive" &&
+                      "text-warning bg-warning-subtle border-warning"
+                    }
+                    ${
+                      statusName === "Incomplete" &&
+                      "text-danger bg-danger-subtle border-danger"
+                    }
+                    "
+                    >${statusName.toUpperCase()}</span
+                  >
+                </td>
+                <td class="p-3">
+                  <div class="dropdown">
+                    <button
+                      class="btn bg-transparent"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <img
+                        src="static/media/images/options_sm.svg"
+                        alt="option"
+                      />
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li class="border-bottom">
+                        <a class="dropdown-item" href="#">Edit</a>
+                      </li>
+                      <li class="border-bottom">
+                        <a class="dropdown-item" href="#">Seating</a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="#">Schedule</a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>`;
   }
 }

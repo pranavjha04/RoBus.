@@ -298,7 +298,10 @@
               </button>
             </div>
           </div>
-          <table class="border rounded table-responsive border-bottom-0">
+          <table
+            class="border rounded table-responsive border-bottom-0"
+            id="bus_table"
+          >
             <thead>
               <tr class="border border-bottom text-center">
                 <th class="p-3">Bus Number</th>
@@ -316,8 +319,9 @@
                 <td class="p-3">Tata Moters</td>
 
                 <td class="p-3 charge">
-                  <span class="badge rounded-pill text-bg-primary"
-                    >Primary</span
+                  <span
+                    class="badge border text-danger bg-danger-subtle border-danger"
+                    >ACTIVE</span
                   >
                 </td>
                 <td class="p-3">

@@ -57,7 +57,8 @@ public class Bus implements Cloneable {
 
             if(allData) {}
             else {
-                while(!rs.next()) {
+                while(rs.next()) {
+                    System.out.println("hello");
                     Bus bus = new Bus(
                         rs.getInt("bus_id"),
                         rs.getString("bus_number"),

@@ -21,18 +21,20 @@ public class GetBusServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
 
-        if(session.getAttribute("operator") == null || request.getParameter("all_record") == null) {
+        if(session.getAttribute("operator") == null || request.getParameter("allRecord") == null) {
             response.getWriter().println("invalid");
             return;
         }
 
-        Boolean allRecord = Boolean.parseBoolean(request.getParameter("all_record"));
-        Operator operator = (Operator) request.getSession();
+        Boolean allRecord = Boolean.parseBoolean(request.getParameter("allRecord"));
+        Operator operator = (Operator) session.getAttribute("operator");
         
         ArrayList<Bus> busList = Bus.collectRecords(operator.getOperatorId(), allRecord);
+        System.out.println(busList);
 
         if(busList == null) {
             response.getWriter().println("internal");
+            return;
         }
 
         response.getWriter().println(new Gson().toJson(busList));
