@@ -88,6 +88,21 @@ export const deleteFareFactorRequest = async (operatorTicketFareId) => {
   return data.trim();
 };
 
+export const collectSeatingRecordRequest = async (busId) => {
+  const queryParams = createURLParams({
+    bus_id: busId,
+  });
+  const res = await fetch("get_seating.do", {
+    method: "GET",
+    body: queryParams.toString(),
+  });
+
+  if (!res.ok) throw new Error("Internal server error");
+
+  const data = await res.text();
+  return data.trim();
+};
+
 const sendOtpRequest = async (value) => {
   const res = await fetch(`send_otp.do?contact=${value}`);
   if (!res.ok) throw new Error("Internal server error");

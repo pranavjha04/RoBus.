@@ -82,6 +82,29 @@ public class Bus implements Cloneable {
         return busList;
     }
 
+    public static boolean checkRecordExist(int busId) {
+        boolean flag = false;
+
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "SELECT bus_id FROM BUSES WHERE bus_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, busId);
+
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        return flag;   
+    }
+
     public int addRecord() {
         int generatedId = -1;
         try {

@@ -1,3 +1,4 @@
+import { collectSeatingRecordRequest } from "./service.js";
 import { toast } from "./toast.js";
 import { displayInputError, displayInputSuccess } from "./util.js";
 
@@ -79,35 +80,47 @@ busConfigForm.addEventListener("submit", (e) => {
   }
 });
 
-// let count = 1;
+let count = 1;
 
-// buses.forEach(
-//   (bus) =>
-//     (bus.innerHTML = `${Array.from({ length: 10 })
-//       .map((_) => {
-//         return `<div class="d-flex align-items-center gap-5 justify-content-between">
-//                 <div class="d-flex gap-1">
-//                     <button class="sleeper_seat seat btn">${count++}</button>
-//                     <button class="sleeper_seat seat btn">${count++}</button>
-//                 </div>
-//                 <div class="d-flex gap-1">
-//                     <button class="sleeper_seat seat btn">${count++}</button>
-//                 </div>
-//             </div>`;
-//       })
-//       .join("")}`)
-// );
+const buses = document.querySelectorAll(".bus");
+buses.forEach(
+  (bus) =>
+    (bus.innerHTML = `${Array.from({ length: 10 })
+      .map((_) => {
+        return `<div class="d-flex align-items-center gap-5 justify-content-between">
+                <div class="d-flex gap-1">
+                    <button class="seater_seat seat btn ">${count++}</button>
+                    <button class="seater_seat seat btn ">${count++}</button>
+                    <button class="seater_seat seat btn ">${count++}</button>
+                </div>
+                <div class="d-flex gap-1">
+                    <button class="seater_seat seat btn ">${count++}</button>
+                    <button class="seater_seat seat btn ">${count++}</button>
+                    <button class="seater_seat seat btn ">${count++}</button>
+                </div>
+            </div>`;
+      })
+      .join("")}`)
+);
 
-// // Back Seats
-// buses.forEach(
-//   (bus) =>
-//     (bus.innerHTML += `<div class="d-flex align-items-center gap-4 ">
-//                     <div class="d-flex w-100 gap-1 justify-content-between">
-//                         <div class="seat w-100">${count++}</div>
-//                         <div class="seat w-100">${count++}</div>
-//                         <div class="seat w-100">${count++}</div>
-//                         <div class="seat w-100">${count++}</div>
-//                         <div class="seat w-100">${count++}</div>
-//                     </div>
-//                 </div>`)
-// );
+// Back Seats
+buses.forEach(
+  (bus) =>
+    (bus.innerHTML += `<div class="d-flex align-items-center gap-4 ">
+                    <div class="d-flex w-100 gap-1 justify-content-between">
+                        <div class="seat w-100">${count++}</div>
+                        <div class="seat w-100">${count++}</div>
+                        <div class="seat w-100">${count++}</div>
+                        <div class="seat w-100">${count++}</div>
+                        <div class="seat w-100">${count++}</div>
+                    </div>
+                </div>`)
+);
+
+window.addEventListener("DOMContentLoaded", async () => {
+  const busId = new URLSearchParams(window.location.search).get("bus_id");
+  if (!busId) return;
+
+  const response = await collectSeatingRecordRequest(busId);
+});
+(async () => {})();

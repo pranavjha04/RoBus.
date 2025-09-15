@@ -9,6 +9,8 @@ import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
 
+import models.Bus;
+
 @WebServlet("/bus_seating_configuration.do")
 public class BusSeatingConfiguration extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -18,10 +20,16 @@ public class BusSeatingConfiguration extends HttpServlet {
         }
         
         HttpSession session = request.getSession();
-        if(session.getAttribute("operator") == null) {
+        if(
+            session.getAttribute("operator") == null ||
+            request.getParameter("bus_id") == null ||
+            !Bus.checkRecordExist(Integer.parseInt(request.getParameter("bus_id")))
+        ) {
             response.sendRedirect(backURL);
             return;
         }
+
+        int busId = Integer.parseInt(request.getParameter("bus_id"));
         
         request.getRequestDispatcher("bus_seating_configuration.jsp").forward(request, response);
     }

@@ -12,7 +12,7 @@
       grid-template-columns: 1fr;
       gap: 10px;
       padding: 12px;
-
+      min-width: 200px;
       max-width: fit-content;
     }
 
@@ -20,7 +20,7 @@
     }
 
     .seater_seat {
-      width: 30px;
+      width: 35px;
       aspect-ratio: 1 / 1;
     }
 
@@ -193,8 +193,6 @@
               </div>
             </div>
           </div>
-
-  
 
           <div class="d-flex gap-2 justify-content-between">
             <input type="reset" class="btn btn-secondary px-4" value="Reset" />

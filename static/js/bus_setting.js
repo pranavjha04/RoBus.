@@ -135,22 +135,25 @@ const handleBusListDisplay = (busList) => {
 };
 
 const handleBusRecords = async () => {
-  try {
-    const response = await collectBusRecordRequest();
-    if (response === "internal") {
-      throw new Error("Internal server error");
+  busTable.innerHTML = ViewHelper.getTableLoader();
+  setTimeout(async () => {
+    try {
+      const response = await collectBusRecordRequest();
+      if (response === "internal") {
+        throw new Error("Internal server error");
+      }
+      if (response === "invalid") {
+        throw new Error("Invalid Request");
+      }
+      if (response.startsWith("[")) {
+        const busList = JSON.parse(response);
+        handleBusListDisplay(busList);
+      }
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
     }
-    if (response === "invalid") {
-      throw new Error("Invalid Request");
-    }
-    if (response.startsWith("[")) {
-      const busList = JSON.parse(response);
-      handleBusListDisplay(busList);
-    }
-  } catch (err) {
-    toast.error(err.message);
-  } finally {
-  }
+  }, 500);
 };
 
 basicBusForm.addEventListener("submit", async (e) => {
@@ -222,5 +225,7 @@ basicBusForm.addEventListener("submit", async (e) => {
 const init = async () => {
   await handleBusRecords();
 };
+
+sessionStorage.setItem("activeBus", 1);
 
 await init();
