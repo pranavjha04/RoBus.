@@ -16,18 +16,19 @@ public class Bus implements Cloneable {
     private String busNumber;
     private Integer seats;
     private String manufacturer;
-    private String seatingType;
+    private Boolean doubleDecker;
     private Status status;
     private Operator operator;
 
-    public Bus(String busNumber, String manufacturer, Status status) {
+    public Bus(String busNumber, String manufacturer, Boolean doubleDecker, Status status) {
         this.busNumber = busNumber;
         this.manufacturer = manufacturer;
+        this.doubleDecker = doubleDecker;
         this.status = new Status(status.getStatusId(), status.getName());
     }
 
-    public Bus(Integer busId, String busNumber, String manufacturer, Status status) {
-        this(busNumber, manufacturer, status);
+    public Bus(Integer busId, String busNumber, String manufacturer, Boolean doubleDecker, Status status) {
+        this(busNumber, manufacturer, doubleDecker, status);
         this.busId = busId;
     }
 
@@ -58,11 +59,11 @@ public class Bus implements Cloneable {
             if(allData) {}
             else {
                 while(rs.next()) {
-                    System.out.println("hello");
                     Bus bus = new Bus(
                         rs.getInt("bus_id"),
                         rs.getString("bus_number"),
                         rs.getString("manufacturer"),
+                        rs.getBoolean("double_decker"),
                         new Status(
                             rs.getInt("status_id"),
                             rs.getString("name")
@@ -111,14 +112,15 @@ public class Bus implements Cloneable {
             Connection con = DBManager.getConnection();
             String query = 
                     "INSERT INTO buses " + 
-                    "(bus_number, manufacturer, operator_id, status_id) " + 
-                    "VALUES (?,?,?,10)";
+                    "(bus_number, manufacturer, double_decker, operator_id, status_id) " + 
+                    "VALUES (?,?,?,?,10)";
             
             PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
             ps.setString(1, busNumber);
             ps.setString(2, manufacturer);
-            ps.setInt(3, operator.getOperatorId());
+            ps.setBoolean(3, doubleDecker);
+            ps.setInt(4, operator.getOperatorId());
 
             if(ps.executeUpdate() != 1) {
                 generatedId = -1;
@@ -176,6 +178,8 @@ public class Bus implements Cloneable {
                 }
                 setManufacturer(value);
                 break;
+            case "double_decker":
+                setDoubleDecker(Boolean.parseBoolean(value));
             default:
                 break;
         }
@@ -184,7 +188,7 @@ public class Bus implements Cloneable {
     
     @Override
     public Bus clone() {
-        return new Bus(getBusId(), getBusNumber(), getManufacturer(), getStatus());
+        return new Bus(getBusId(), getBusNumber(), getManufacturer(), getDoubleDecker(), getStatus());
     }
 
     public void setStatus(Status status) {
@@ -203,12 +207,12 @@ public class Bus implements Cloneable {
         return operator.clone();
     }
 
-    public void setSeatingType(String seatingType) {
-        this.seatingType = seatingType;
+    public boolean getDoubleDecker() {
+        return doubleDecker;
     }
 
-    public String getSeatingType() {
-        return seatingType;
+    public void setDoubleDecker(boolean doubleDecker) {
+        this.doubleDecker = doubleDecker;
     }
     
     public void setManufacturer(String manufacturer) {

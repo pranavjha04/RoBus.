@@ -52,6 +52,18 @@
     input[type="number"] {
       -moz-appearance: textfield;
     }
+
+    .side-bar {
+      max-width: 400px;
+    }
+
+    .link {
+      gap: 5px;
+      transition: all 0.3s;
+      &:hover {
+        margin-left: 10px;
+      }
+    }
   </style>
   <div
     class="toast-container position-fixed top-0 end-0 p-3"
@@ -59,8 +71,47 @@
   ></div>
   <body>
     <div class="dashContainer">
-      <aside class="border bg-white p-3" style="overflow: auto">
-        <form class="d-flex flex-column gap-4" id="bus_config_form">
+      <aside
+        class="border bg-white p-3 d-flex flex-column gap-5 side-bar gap-4 h-100 bg-da"
+        style="overflow: auto"
+      >
+        <a
+          href="operator_buses.do"
+          class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link align-self-start"
+        >
+          <span>&larr;</span>
+          <span>Back</span>
+        </a>
+        <div
+          class="btn-group w-100"
+          role="group"
+          id="deck_cont"
+          aria-label="Deck Toggle"
+        >
+          <input
+            type="radio"
+            class="btn-check"
+            name="deck"
+            id="lower"
+            autocomplete="off"
+            checked
+          />
+          <label class="btn btn-outline-primary" for="lower">Lower Deck</label>
+
+          <input
+            type="radio"
+            class="btn-check"
+            name="deck"
+            id="upper"
+            autocomplete="off"
+          />
+          <label class="btn btn-outline-primary" for="upper">Upper Deck</label>
+        </div>
+
+        <form
+          class="d-flex flex-column flex-grow-1 gap-4 align-self-end"
+          id="bus_config_form"
+        >
           <!-- DECK Type -->
           <div class="d-flex flex-column gap-2">
             <h4 class="fs-5 mb-1">Deck Type</h4>
@@ -159,11 +210,6 @@
             </div>
           </div>
 
-          <div>
-            <button class="btn btn-primary">
-              Copy Settings from Upper Deck
-            </button>
-          </div>
           <div
             class="d-flex align-items-center justify-content-between mt-auto"
           >
@@ -183,7 +229,9 @@
         <!-- Main content -->
         <c:import url="operator_navbar.jsp" />
 
-        <div class="p-4 d-flex flex-column gap-3 overflow-scroll align-items-center justify-content-center">
+        <div
+          class="p-4 d-flex flex-column gap-3 align-items-center justify-content-center overflow-scroll"
+        >
           <h5 class="text-center">Single Decker</h5>
           <div class="border rounded border-primary">
             <div

@@ -30,8 +30,6 @@ public class GetBusServlet extends HttpServlet {
         Operator operator = (Operator) session.getAttribute("operator");
         
         ArrayList<Bus> busList = Bus.collectRecords(operator.getOperatorId(), allRecord);
-        System.out.println(busList);
-
         if(busList == null) {
             response.getWriter().println("internal");
             return;

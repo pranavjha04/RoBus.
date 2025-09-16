@@ -71,6 +71,7 @@ public class AddBusServlet extends HttpServlet {
                         fareFactors.add(item);
                         continue;
                     }
+                    System.out.println(fieldName);
                     String value = item.getString().trim();
                     errorMessage.append(bus.setField(fieldName, value));
                 } else {

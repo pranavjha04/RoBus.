@@ -70,6 +70,24 @@
                     </select>
                   </div>
                   <div>
+                    <label
+                      for="double_decker"
+                      class="form-label small fw-semibold"
+                      >Double Decker</label
+                    >
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="double_decker"
+                        id="double_decker"
+                      />
+                      <label class="form-check-label" for="double_decker">
+                        Double Decker
+                      </label>
+                    </div>
+                  </div>
+                  <div>
                     <label class="form-label small fw-semibold"
                       >Amenities
                     </label>
@@ -110,7 +128,7 @@
                       class="btn btn-primary px-4 fw-medium ms-1"
                       form="basic_form"
                     >
-                      Save Changes
+                      Add Bus
                     </button>
                   </div>
                 </form>

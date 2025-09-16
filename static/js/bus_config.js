@@ -2,6 +2,7 @@ import { collectSeatingRecordRequest } from "./service.js";
 import { toast } from "./toast.js";
 import { displayInputError, displayInputSuccess } from "./util.js";
 
+// SEATING FORM
 const busConfigForm = document.querySelector("#bus_config_form");
 const seater = document.querySelector("#bus_seater");
 const sleeper = document.querySelector("#bus_sleeper");
@@ -11,6 +12,11 @@ const rsCount = document.querySelector("#rs_count");
 
 const rowCount = document.querySelector("#rows_count");
 const totalSeats = document.querySelector("#total_seats");
+
+// UI/UX
+const deckContainer = document.querySelector("#deck_cont");
+const lowerBtn = document.querySelector("#lower");
+const upperBtn = document.querySelector("#upper");
 
 const isRowsCountValid = (inputEl) => {
   const val = +inputEl.value;
@@ -69,12 +75,8 @@ busConfigForm.addEventListener("submit", (e) => {
     isRowsCountValid(rowCount)
   ) {
     totalSeats.value = (+lsCount.value + +rsCount.value) * +rowCount.value;
-    const formData = Object.fromEntries(new FormData(busConfigForm));
-    formData.sleeper = sleeper.checked;
-    if (!formData.deck) {
-      formData.deck = false;
-    }
-    console.log(formData);
+    const formData = new FormData(busConfigForm);
+    formData.append("sleeper", sleeper.checked);
   } else {
     toast.error("Please input valid values");
   }
@@ -138,7 +140,62 @@ const handleLoadingSeatingData = async () => {
   }
 };
 
+const fillAlreadyExistFormDetails = (obj) => {
+  lsCount.value = obj.lsCount;
+  rsCount.value = obj.rsCount;
+  sleeper.checked = obj.sleeper;
+  rowCount.value = obj.rowCount;
+  totalSeats.value = (lsCount.value + rsCount.value) * rowCount.value;
+};
+
+deckContainer.addEventListener("click", (e) => {
+  const target = e.target.closest("input[name='deck']");
+  if (!target) return;
+  const deck = target.getAttribute("id");
+  const seatingList = JSON.parse(sessionStorage.getItem("seatingList"));
+  const [lowerSeat, upperSeat] = seatingList;
+  switch (deck) {
+    case "lower": {
+      if (!lowerSeat) return;
+      fillAlreadyExistFormDetails(lowerSeat);
+      break;
+    }
+    case "upper": {
+      if (!upperSeat) return;
+      fillAlreadyExistFormDetails(upperSeat);
+      break;
+    }
+    default: {
+      history.back();
+    }
+  }
+});
+
+let watchSessionStorageInterval = setInterval(() => {
+  if (
+    !sessionStorage.getItem("activeBus") ||
+    !sessionStorage.getItem("seatingList")
+  ) {
+    history.back();
+  }
+
+  const activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
+  if (!activeBus.doubleDecker) {
+    upperBtn.disabled = true;
+  }
+}, 500);
+
 window.addEventListener("DOMContentLoaded", () => {
   handleLoadingSeatingData();
+  const activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
+  if (!activeBus.doubleDecker) {
+    upperBtn.disabled = true;
+    upperBtn.checked = false;
+  }
 });
-(async () => {})();
+
+window.addEventListener("beforeunload", () => {
+  clearInterval(watchSessionStorageInterval);
+  sessionStorage.removeItem("activeBus");
+  sessionStorage.removeItem("seatingList");
+});

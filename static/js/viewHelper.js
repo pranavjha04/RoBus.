@@ -97,9 +97,10 @@ export class ViewHelper {
   static getBusTableRow(bus) {
     const { busId, manufacturer, busNumber, status } = bus;
     const { name: statusName } = status;
+    console.log;
     return `<tr
                 class="text-center border-bottom"
-                data-id=""
+                data-id="${busId}"
               >
                 <td class="p-3">${busNumber}</td>
                 <td class="p-3">${
@@ -141,13 +142,13 @@ export class ViewHelper {
                     </button>
                     <ul class="dropdown-menu">
                       <li class="border-bottom">
-                        <a class="dropdown-item" href="#">Edit</a>
+                        <a class="dropdown-item option-link" href="#">Edit</a>
                       </li>
                       <li class="border-bottom">
-                        <a class="dropdown-item" href="bus_seating_configuration.do?bus_id=${busId}&back_url=operator_buses.do">Seating</a>
+                        <a class="dropdown-item option-link" href="bus_seating_configuration.do?bus_id=${busId}&back_url=operator_buses.do">Seating</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="#">Schedule</a>
+                        <a class="dropdown-item option-link" href="#">Schedule</a>
                       </li>
                     </ul>
                   </div>

@@ -19,6 +19,7 @@ import { ViewHelper } from "./viewHelper.js";
 const basicBusForm = document.querySelector("#basic_form");
 const busNumber = document.querySelector("#bus_number");
 const manufacturer = document.querySelector("#manufacturer");
+const doubleDecker = document.querySelector("#double_decker");
 const fareList = document.querySelector("#feature_list");
 const busImages = document.querySelector("#bus_images");
 
@@ -26,7 +27,6 @@ const addBusModal = document.querySelector("#centeredModal");
 
 const allFields = Array.from(document.querySelectorAll(".bfld"));
 const prevImagesContainer = document.querySelector("#preview_img_container");
-
 const busTable = document.querySelector("#bus_table");
 
 const setFareLoader = () => {
@@ -42,7 +42,6 @@ const reset = () => {
   manufacturer.classList.remove("border-danger", "border-success");
   busImages.classList.remove("border-danger", "border-success");
   prevImagesContainer.innerHTML = "";
-  sessionStorage.removeItem("activeBus");
 };
 
 addBusModal.addEventListener("show.bs.modal", async () => {
@@ -147,6 +146,7 @@ const handleBusRecords = async () => {
       }
       if (response.startsWith("[")) {
         const busList = JSON.parse(response);
+        sessionStorage.setItem("busList", JSON.stringify(busList));
         handleBusListDisplay(busList);
       }
     } catch (err) {
@@ -189,11 +189,13 @@ basicBusForm.addEventListener("submit", async (e) => {
     return;
   }
 
-  console.log(Object.fromEntries(new FormData(basicBusForm)));
+  const formData = new FormData(basicBusForm);
+  formData.append("double_decker", doubleDecker.value === "on");
+
   try {
     const response = await fetch("add_bus.do", {
       method: "POST",
-      body: new FormData(basicBusForm),
+      body: formData,
     });
     if (!response.ok) throw new Error("Internal server error");
 
@@ -222,10 +224,31 @@ basicBusForm.addEventListener("submit", async (e) => {
   }
 });
 
+busTable.addEventListener("click", (e) => {
+  const target = e.target.closest(".option-link");
+  if (!target || !target.closest("tr")) return;
+
+  const busId = +target.closest("tr").dataset.id;
+  if (isNaN(busId) || !busId) return;
+  const activeBus = JSON.parse(sessionStorage.getItem("busList")).find(
+    (bus) => bus.busId == busId
+  );
+
+  if (!activeBus || !Object.entries(activeBus).length) return;
+
+  sessionStorage.setItem("activeBus", JSON.stringify(activeBus));
+});
+
 const init = async () => {
   await handleBusRecords();
 };
 
-sessionStorage.setItem("activeBus", 1);
+window.addEventListener("DOMContentLoaded", () => {
+  sessionStorage.removeItem("activeBus");
+});
+
+window.addEventListener("beforeunload", () => {
+  sessionStorage.removeItem("busList");
+});
 
 await init();
