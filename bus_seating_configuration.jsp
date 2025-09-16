@@ -57,48 +57,13 @@
     class="toast-container position-fixed top-0 end-0 p-3"
     style="z-index: 1080"
   ></div>
-  <body
-    class="m-0"
-    style="display: grid; grid-template-rows: auto 1fr; height: 100dvh"
-  >
-    <c:import url="operator_navbar.jsp" />
-    <div class="d-flex">
-      <main
-        class="flex-grow-1 border bg-light gap-4 p-3 justify-content-center d-flex align-items-center"
-      >
-        <!-- Main content -->
-
-        <div>
-          <h5 class="text-center">Single Decker</h5>
-          <div class="border rounded border-primary">
-            <div
-              class="d-flex align-items-center justify-content-between py-2 px-2 border-bottom border-primary"
-            >
-              <div class="d-flex flex-column align-items-center">
-                <img
-                  src="static/media/images/conductor.svg"
-                  style="width: 30px; height: 30px"
-                />
-                <span>Conductor</span>
-              </div>
-              <div class="d-flex flex-column align-items-center">
-                <img
-                  src="static/media/images/steering_wheel.svg"
-                  style="width: 30px; height: 30px"
-                />
-                <span>Driver</span>
-              </div>
-            </div>
-            <div class="bus"></div>
-          </div>
-        </div>
-      </main>
-
-      <aside class="border bg-white p-3" style="width: 320px">
+  <body>
+    <div class="dashContainer">
+      <aside class="border bg-white p-3" style="overflow: auto">
         <form class="d-flex flex-column gap-4" id="bus_config_form">
-          <!-- Bus Type -->
+          <!-- DECK Type -->
           <div class="d-flex flex-column gap-2">
-            <h4 class="fs-5 mb-1">Bus Type</h4>
+            <h4 class="fs-5 mb-1">Deck Type</h4>
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -194,7 +159,14 @@
             </div>
           </div>
 
-          <div class="d-flex gap-2 justify-content-between">
+          <div>
+            <button class="btn btn-primary">
+              Copy Settings from Upper Deck
+            </button>
+          </div>
+          <div
+            class="d-flex align-items-center justify-content-between mt-auto"
+          >
             <input type="reset" class="btn btn-secondary px-4" value="Reset" />
             <input
               type="submit"
@@ -204,6 +176,38 @@
           </div>
         </form>
       </aside>
+      <main
+        class="flex-grow-1 d-flex flex-column bg-light"
+        style="overflow: auto"
+      >
+        <!-- Main content -->
+        <c:import url="operator_navbar.jsp" />
+
+        <div class="p-4 d-flex flex-column gap-3 overflow-scroll align-items-center justify-content-center">
+          <h5 class="text-center">Single Decker</h5>
+          <div class="border rounded border-primary">
+            <div
+              class="d-flex align-items-center justify-content-between py-2 px-2 border-bottom border-primary"
+            >
+              <div class="d-flex flex-column align-items-center">
+                <img
+                  src="static/media/images/conductor.svg"
+                  style="width: 30px; height: 30px"
+                />
+                <span>Conductor</span>
+              </div>
+              <div class="d-flex flex-column align-items-center">
+                <img
+                  src="static/media/images/steering_wheel.svg"
+                  style="width: 30px; height: 30px"
+                />
+                <span>Driver</span>
+              </div>
+            </div>
+            <div class="bus"></div>
+          </div>
+        </div>
+      </main>
     </div>
     <script type="module" src="static/js/bus_config.js"></script>
   </body>

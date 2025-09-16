@@ -15,7 +15,7 @@ import models.Bus;
 public class BusSeatingConfiguration extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String backURL = request.getParameter("back_url");
-        if(backURL == null) {
+        if(backURL == null || backURL.isEmpty()) {
             backURL = "/";
         }
         
@@ -23,6 +23,7 @@ public class BusSeatingConfiguration extends HttpServlet {
         if(
             session.getAttribute("operator") == null ||
             request.getParameter("bus_id") == null ||
+            request.getParameter("bus_id").isEmpty() ||
             !Bus.checkRecordExist(Integer.parseInt(request.getParameter("bus_id")))
         ) {
             response.sendRedirect(backURL);

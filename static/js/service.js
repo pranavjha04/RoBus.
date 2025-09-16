@@ -92,9 +92,9 @@ export const collectSeatingRecordRequest = async (busId) => {
   const queryParams = createURLParams({
     bus_id: busId,
   });
-  const res = await fetch("get_seating.do", {
+  console.log(queryParams.toString());
+  const res = await fetch(`get_seating.do?${queryParams.toString()}`, {
     method: "GET",
-    body: queryParams.toString(),
   });
 
   if (!res.ok) throw new Error("Internal server error");

@@ -117,10 +117,28 @@ buses.forEach(
                 </div>`)
 );
 
-window.addEventListener("DOMContentLoaded", async () => {
-  const busId = new URLSearchParams(window.location.search).get("bus_id");
-  if (!busId) return;
+const handleLoadingSeatingData = async () => {
+  const busId = +new URLSearchParams(window.location.search).get("bus_id");
 
-  const response = await collectSeatingRecordRequest(busId);
+  if (!busId) history.back();
+
+  try {
+    const response = await collectSeatingRecordRequest(busId);
+    if (response === "invalid" || response === "internal") {
+      throw new Error();
+    }
+    if (response.startsWith("[")) {
+      sessionStorage.setItem(
+        "seatingList",
+        JSON.stringify(JSON.parse(response))
+      );
+    }
+  } catch (err) {
+    history.back();
+  }
+};
+
+window.addEventListener("DOMContentLoaded", () => {
+  handleLoadingSeatingData();
 });
 (async () => {})();
