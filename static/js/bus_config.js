@@ -35,7 +35,7 @@ const updateBusView = (obj) => {
   const bus = document.querySelector(".bus");
   console.log(busSetting);
 
-  bus.innerHTML = `${Array.from({ length: row_count })
+  bus.innerHTML = `${Array.from({ length: sleeper ? row_count : row_count - 1 })
     .map((_) => {
       return `<div class="d-flex align-items-center gap-5 justify-content-between">
                 <div class="d-flex gap-1">
@@ -63,6 +63,8 @@ const updateBusView = (obj) => {
     .join("")}`;
 
   // Back Seats
+
+  if (sleeper) return;
 
   bus.innerHTML += `<div class="d-flex align-items-center gap-4 ">
                     <div class="d-flex w-100 gap-1 justify-content-between">
@@ -149,11 +151,15 @@ const handleLoadingSeatingData = async () => {
 };
 
 const fillAlreadyExistFormDetails = (obj) => {
-  lsCount.value = obj.lsCount;
-  rsCount.value = obj.rsCount;
+  lsCount.value = obj.ls_count;
+  rsCount.value = obj.rs_count;
   sleeper.checked = obj.sleeper;
-  rowCount.value = obj.rowCount;
-  totalSeats.value = (lsCount.value + rsCount.value) * rowCount.value;
+  rowCount.value = obj.row_count;
+  if (obj.sleeper) {
+    totalSeats.value = (obj.ls_count + obj.rs_count) * obj.row_count;
+  } else {
+    totalSeats.value = (obj.ls_count + obj.rs_count) * (obj.row_count - 1) + 5;
+  }
 };
 
 deckContainer.addEventListener("click", (e) => {
@@ -200,7 +206,12 @@ busConfigForm.addEventListener("submit", async (e) => {
     isSeatCountValid(rsCount) &&
     isRowsCountValid(rowCount)
   ) {
-    totalSeats.value = (+lsCount.value + +rsCount.value) * +rowCount.value;
+    if (sleeper.checked) {
+      totalSeats.value = (+lsCount.value + +rsCount.value) * +rowCount.value;
+    } else {
+      totalSeats.value =
+        (+lsCount.value + +rsCount.value) * (+rowCount.value - 1) + 5;
+    }
     const formData = new FormData(busConfigForm);
     formData.append("sleeper", sleeper.checked);
     updateBusView(formData);
@@ -208,6 +219,14 @@ busConfigForm.addEventListener("submit", async (e) => {
     toast.error("Please input valid values");
     return;
   }
+
+  const [lowerSeat, upperSeat] = JSON.parse(
+    sessionStorage.getItem("seatingList")
+  );
+
+  const formData = new FormData(busConfigForm);
+  formData.append("deck", upperBtn.checked);
+  
 });
 
 window.addEventListener("DOMContentLoaded", () => {

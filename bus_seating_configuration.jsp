@@ -12,7 +12,7 @@
       grid-template-columns: 1fr;
       gap: 10px;
       padding: 12px;
-      min-width: 200px;
+      min-width: 220px;
       max-width: fit-content;
     }
 
@@ -35,7 +35,6 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: 0.3s;
     }
 
     .seat:hover {
@@ -232,8 +231,8 @@
         <div
           class="p-4 d-flex flex-column gap-3 align-items-center overflow-scroll"
         >
-          <h5 class="text-center">Single Decker</h5>
-          <div class="border rounded border-primary">
+          <h5 class="text-center">Lower Decker</h5>
+          <div class="border rounded-5 border-primary">
             <div
               class="d-flex align-items-center justify-content-between py-2 px-2 border-bottom border-primary"
             >

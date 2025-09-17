@@ -256,3 +256,29 @@ export const handleAddFareFactor = async (charge, fareFactorId) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const addSeatingRequest = async (obj) => {
+  const queryParams = createURLParams(obj);
+  const res = await fetch("add_seating.do", {
+    method: "POST",
+    body: queryParams.toString(),
+  });
+
+  if (!res.ok) throw new Error("Internal server error");
+
+  const data = await res.text();
+  return data.trim();
+};
+
+export const updateSeatingRequest = async (obj) => {
+  const queryParams = createURLParams(obj);
+  const res = await fetch("update_seating.do", {
+    method: "POST",
+    body: queryParams.toString(),
+  });
+
+  if (!res.ok) throw new Error("Internal server error");
+
+  const data = await res.text();
+  return data.trim();
+};
