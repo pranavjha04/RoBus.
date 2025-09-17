@@ -18,6 +18,66 @@ const deckContainer = document.querySelector("#deck_cont");
 const lowerBtn = document.querySelector("#lower");
 const upperBtn = document.querySelector("#upper");
 
+const modifiedObject = (obj) => {
+  obj = Object.fromEntries(obj);
+  return {
+    ls_count: +obj.ls_count,
+    rs_count: +obj.rs_count,
+    row_count: +obj.row_count,
+    sleeper: obj.sleeper === "true",
+    seats: +obj.seats,
+  };
+};
+const updateBusView = (obj) => {
+  const busSetting = modifiedObject(obj);
+  const { ls_count, rs_count, row_count, sleeper, seats } = busSetting;
+  let count = 1;
+  const bus = document.querySelector(".bus");
+  console.log(busSetting);
+
+  bus.innerHTML = `${Array.from({ length: row_count })
+    .map((_) => {
+      return `<div class="d-flex align-items-center gap-5 justify-content-between">
+                <div class="d-flex gap-1">
+                   ${Array.from({ length: ls_count })
+                     .map(
+                       (_) =>
+                         `<button class="${
+                           sleeper ? "sleeper_seat" : "seater_seat"
+                         } seat btn">${count++}</button>`
+                     )
+                     .join("")}
+                </div>
+                <div class="d-flex gap-1">
+                     ${Array.from({ length: rs_count })
+                       .map(
+                         (_) =>
+                           `<button class="${
+                             sleeper ? "sleeper_seat" : "seater_seat"
+                           } seat btn">${count++}</button>`
+                       )
+                       .join("")}
+                </div>
+            </div>`;
+    })
+    .join("")}`;
+
+  // Back Seats
+
+  bus.innerHTML += `<div class="d-flex align-items-center gap-4 ">
+                    <div class="d-flex w-100 gap-1 justify-content-between">
+                        ${Array.from({ length: 5 })
+                          .map(
+                            (_) =>
+                              `<button class="seater_seat btn seat w-100">
+                              ${count++}
+                            </button>`
+                          )
+                          .join("")}
+                    </div>
+                </div>`;
+};
+
 const isRowsCountValid = (inputEl) => {
   const val = +inputEl.value;
   if (!isNaN(val) && val >= 5 && val <= 14) {
@@ -66,58 +126,6 @@ seater.addEventListener("change", () => {});
 
 lsCount.addEventListener("change", handleRowCountRange);
 rsCount.addEventListener("change", handleRowCountRange);
-
-busConfigForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  if (
-    isSeatCountValid(lsCount) &&
-    isSeatCountValid(rsCount) &&
-    isRowsCountValid(rowCount)
-  ) {
-    totalSeats.value = (+lsCount.value + +rsCount.value) * +rowCount.value;
-    const formData = new FormData(busConfigForm);
-    formData.append("sleeper", sleeper.checked);
-  } else {
-    toast.error("Please input valid values");
-  }
-});
-
-let count = 1;
-
-const buses = document.querySelectorAll(".bus");
-buses.forEach(
-  (bus) =>
-    (bus.innerHTML = `${Array.from({ length: 10 })
-      .map((_) => {
-        return `<div class="d-flex align-items-center gap-5 justify-content-between">
-                <div class="d-flex gap-1">
-                    <button class="seater_seat seat btn ">${count++}</button>
-                    <button class="seater_seat seat btn ">${count++}</button>
-                    <button class="seater_seat seat btn ">${count++}</button>
-                </div>
-                <div class="d-flex gap-1">
-                    <button class="seater_seat seat btn ">${count++}</button>
-                    <button class="seater_seat seat btn ">${count++}</button>
-                    <button class="seater_seat seat btn ">${count++}</button>
-                </div>
-            </div>`;
-      })
-      .join("")}`)
-);
-
-// Back Seats
-buses.forEach(
-  (bus) =>
-    (bus.innerHTML += `<div class="d-flex align-items-center gap-4 ">
-                    <div class="d-flex w-100 gap-1 justify-content-between">
-                        <div class="seat w-100">${count++}</div>
-                        <div class="seat w-100">${count++}</div>
-                        <div class="seat w-100">${count++}</div>
-                        <div class="seat w-100">${count++}</div>
-                        <div class="seat w-100">${count++}</div>
-                    </div>
-                </div>`)
-);
 
 const handleLoadingSeatingData = async () => {
   const busId = +new URLSearchParams(window.location.search).get("bus_id");
@@ -184,6 +192,23 @@ let watchSessionStorageInterval = setInterval(() => {
     upperBtn.disabled = true;
   }
 }, 500);
+
+busConfigForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (
+    isSeatCountValid(lsCount) &&
+    isSeatCountValid(rsCount) &&
+    isRowsCountValid(rowCount)
+  ) {
+    totalSeats.value = (+lsCount.value + +rsCount.value) * +rowCount.value;
+    const formData = new FormData(busConfigForm);
+    formData.append("sleeper", sleeper.checked);
+    updateBusView(formData);
+  } else {
+    toast.error("Please input valid values");
+    return;
+  }
+});
 
 window.addEventListener("DOMContentLoaded", () => {
   handleLoadingSeatingData();

@@ -20,8 +20,8 @@
     }
 
     .seater_seat {
-      width: 35px;
-      aspect-ratio: 1 / 1;
+      width: 30px;
+      aspect-ratio: 2 / 1;
     }
 
     .sleeper_seat {
@@ -211,26 +211,26 @@
           </div>
 
           <div
-            class="d-flex align-items-center justify-content-between mt-auto"
+            class="d-flex align-items-center justify-content-between mt-auto gap-2"
           >
-            <input type="reset" class="btn btn-secondary px-4" value="Reset" />
+            <input
+              type="reset"
+              class="btn btn-secondary px-4 w-100"
+              value="Reset"
+            />
             <input
               type="submit"
-              class="btn btn-primary px-4"
+              class="btn btn-primary px-4 w-100"
               value="Save Changes"
             />
           </div>
         </form>
       </aside>
-      <main
-        class="flex-grow-1 d-flex flex-column bg-light"
-        style="overflow: auto"
-      >
+      <main class="flex-grow-1 d-flex flex-column bg-light overflow-auto">
         <!-- Main content -->
         <c:import url="operator_navbar.jsp" />
-
         <div
-          class="p-4 d-flex flex-column gap-3 align-items-center justify-content-center overflow-scroll"
+          class="p-4 d-flex flex-column gap-3 align-items-center overflow-scroll"
         >
           <h5 class="text-center">Single Decker</h5>
           <div class="border rounded border-primary">

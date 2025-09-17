@@ -44,6 +44,7 @@ const reset = () => {
   prevImagesContainer.innerHTML = "";
 };
 
+
 addBusModal.addEventListener("show.bs.modal", async () => {
   setFareLoader();
   setTimeout(async () => {
@@ -230,8 +231,9 @@ busTable.addEventListener("click", (e) => {
 
   const busId = +target.closest("tr").dataset.id;
   if (isNaN(busId) || !busId) return;
+  console.log(busId);
   const activeBus = JSON.parse(sessionStorage.getItem("busList")).find(
-    (bus) => bus.busId == busId
+    (bus) => bus.busId === busId
   );
 
   if (!activeBus || !Object.entries(activeBus).length) return;
