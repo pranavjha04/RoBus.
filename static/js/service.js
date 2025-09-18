@@ -92,7 +92,6 @@ export const collectSeatingRecordRequest = async (busId) => {
   const queryParams = createURLParams({
     bus_id: busId,
   });
-  console.log(queryParams.toString());
   const res = await fetch(`get_seating.do?${queryParams.toString()}`, {
     method: "GET",
   });
@@ -259,9 +258,9 @@ export const handleAddFareFactor = async (charge, fareFactorId) => {
 
 export const addSeatingRequest = async (obj) => {
   const queryParams = createURLParams(obj);
-  const res = await fetch("add_seating.do", {
+  console.log(queryParams.toString());
+  const res = await fetch(`add_seating.do?${queryParams.toString()}`, {
     method: "POST",
-    body: queryParams.toString(),
   });
 
   if (!res.ok) throw new Error("Internal server error");

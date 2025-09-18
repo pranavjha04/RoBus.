@@ -86,7 +86,7 @@ public class Operator implements Cloneable {
             ps.setInt(11, 2); 
             ps.setInt(12, user.getUserId());
 
-            if(ps.executeUpdate() != 1) {
+            if(ps.executeUpdate() == 0) {
                 generatedId = -1;
             } 
 

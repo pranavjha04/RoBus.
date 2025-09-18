@@ -81,4 +81,11 @@ public final class FieldManager {
         return charge > 0 && charge <= 100;
     }
 
+    public static final boolean validateSeatCount(int count, int maxLimit) {
+        return count >= 1 && count <= maxLimit;
+    }
+
+    public static final boolean validateRowCount(int rowCount) {
+        return rowCount >= 5 && rowCount <= 14;
+    }
 }

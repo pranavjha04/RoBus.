@@ -33,6 +33,29 @@ public class GetSeatingServlet extends HttpServlet {
             return;
         } 
 
+        switch(seatingList.size()) {
+            case 1 : {
+                Seating firstSeating = seatingList.get(0);
+                if(firstSeating.getDeck()) {
+                    seatingList.set(0, null);
+                    seatingList.add(firstSeating);
+                }
+                break;
+            }
+            case 2 : {
+                Seating firstSeating = seatingList.get(0);
+                Seating secondSeating = seatingList.get(1);
+
+                if(firstSeating.getDeck()) {
+                    seatingList.set(0, secondSeating);
+                    seatingList.set(1, firstSeating);
+                }
+                break;
+            }
+            default : 
+                break;
+        }
+
         response.getWriter().println(new Gson().toJson(seatingList));
     }
 }

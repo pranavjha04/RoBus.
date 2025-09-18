@@ -41,8 +41,8 @@ public class UpdateSeatingServlet extends HttpServlet {
         Boolean deck = request.getParameter("deck").equals("true"); // true means upper else lower
         Integer seatingId = Integer.parseInt(request.getParameter("seating_id"));
 
-        boolean success = Seating.updateRecord(seatingId, lsCount, rsCount, rowCount, deck, sleeper);
+        // boolean success = Seating.updateRecord(seatingId, lsCount, rsCount, rowCount, deck, sleeper);
 
-        response.getWriter().println(success ? "success" : "internal");
+        // response.getWriter().println(success ? "success" : "internal");
     }
 }

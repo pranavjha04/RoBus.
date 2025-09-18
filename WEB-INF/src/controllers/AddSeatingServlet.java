@@ -1,16 +1,16 @@
 package controllers;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 
 
 import java.util.Enumeration;
 import java.io.IOException;
+import com.google.gson.Gson;
 
 import models.Seating;
 
@@ -26,24 +26,34 @@ public class AddSeatingServlet extends HttpServlet {
 
         Enumeration<String> params = request.getParameterNames();
 
-        while(params.hasMoreElements()) {
+        Seating seating = new Seating();
+        while (params.hasMoreElements()) {
             String currParam = params.nextElement();
-            if(request.getParameter(currParam) == null || request.getParameter(currParam).isEmpty()) {
+            String value = request.getParameter(currParam);
+            if (value == null || value.trim().isEmpty()) {
                 response.getWriter().println("invalid");
                 return;
             }
+            else {
+                boolean success = seating.setField(currParam, value);
+                if(!success) {
+                    System.out.println(currParam);
+                    response.getWriter().println("invalid");
+                    return;
+                }
+            }
+            
         }
 
-        Integer lsCount = Integer.parseInt(request.getParameter("ls_count"));
-        Integer rsCount = Integer.parseInt(request.getParameter("rs_count"));
-        Integer rowCount = Integer.parseInt(request.getParameter("row_count"));
-        Boolean sleeper = request.getParameter("sleeper").equals("true");
-        Boolean deck = request.getParameter("deck").equals("true"); // true means upper else lower
-        Integer busId = Integer.parseInt(request.getParameter("bus_id"));
+        int busId = Integer.parseInt(request.getParameter("bus_id"));
+        int generatedId = seating.addRecord(busId);
+        if(generatedId == -1) {
+            response.getWriter().println("internal");
+            return;
+        }
 
-        boolean success = Seating.addRecord(lsCount, rsCount, rowCount, deck, sleeper, busId);
-
-        response.getWriter().println(success ? "success" : "internal");
+        seating.setSeatingId(generatedId);
+        response.getWriter().println(new Gson().toJson(seating));
 
     } 
 }

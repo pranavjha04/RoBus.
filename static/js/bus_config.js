@@ -1,4 +1,4 @@
-import { collectSeatingRecordRequest } from "./service.js";
+import { addSeatingRequest, collectSeatingRecordRequest } from "./service.js";
 import { toast } from "./toast.js";
 import { displayInputError, displayInputSuccess } from "./util.js";
 
@@ -140,10 +140,10 @@ const handleLoadingSeatingData = async () => {
       throw new Error();
     }
     if (response.startsWith("[")) {
-      sessionStorage.setItem(
-        "seatingList",
-        JSON.stringify(JSON.parse(response))
-      );
+      const seatingList = JSON.parse(response);
+      const [firstIndex] = seatingList;
+      console.log(firstIndex);
+      sessionStorage.setItem("seatingList", JSON.stringify(seatingList));
     }
   } catch (err) {
     history.back();
@@ -155,10 +155,12 @@ const fillAlreadyExistFormDetails = (obj) => {
   rsCount.value = obj.rs_count;
   sleeper.checked = obj.sleeper;
   rowCount.value = obj.row_count;
+
   if (obj.sleeper) {
-    totalSeats.value = (obj.ls_count + obj.rs_count) * obj.row_count;
+    totalSeats.value = (+obj.ls_count + +obj.rs_count) * +obj.row_count;
   } else {
-    totalSeats.value = (obj.ls_count + obj.rs_count) * (obj.row_count - 1) + 5;
+    totalSeats.value =
+      (+obj.ls_count + +obj.rs_count) * (+obj.row_count - 1) + 5;
   }
 };
 
@@ -199,6 +201,39 @@ let watchSessionStorageInterval = setInterval(() => {
   }
 }, 500);
 
+const handleAddSeating = async (formData) => {
+  if (!formData || Object.fromEntries(formData).length === 0) return;
+
+  const activeIndex = upperBtn.checked ? 1 : 0;
+  const seatingList = JSON.parse(sessionStorage.getItem("seatingList"));
+  if (seatingList[activeIndex]) {
+    return;
+  }
+
+  try {
+    formData?.append(
+      "bus_id",
+      JSON.parse(sessionStorage.getItem("activeBus")).busId
+    );
+    const response = await addSeatingRequest(Object.fromEntries(formData));
+
+    if (response === "internal" || response.length === 0) {
+      throw new Error("Internal Server error");
+    }
+    if (response === "invalid") {
+      throw new Error("Invalid request");
+    }
+    if (response.startsWith("{")) {
+      toast.success("Seating added successfully");
+      console.log(response);
+      const seating = JSON.parse(response);
+      sessionStorage.setItem("seatingList", JSON.stringify(seatingList));
+    }
+  } catch (err) {
+    toast.error(err.message);
+  }
+};
+
 busConfigForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   if (
@@ -215,18 +250,17 @@ busConfigForm.addEventListener("submit", async (e) => {
     const formData = new FormData(busConfigForm);
     formData.append("sleeper", sleeper.checked);
     updateBusView(formData);
+
+    handleAddSeating();
   } else {
     toast.error("Please input valid values");
     return;
   }
 
-  const [lowerSeat, upperSeat] = JSON.parse(
-    sessionStorage.getItem("seatingList")
-  );
-
   const formData = new FormData(busConfigForm);
   formData.append("deck", upperBtn.checked);
-  
+  formData.set("sleeper", sleeper.checked);
+  handleAddSeating(formData);
 });
 
 window.addEventListener("DOMContentLoaded", () => {
