@@ -150,7 +150,7 @@
                   max="3"
                   step="1"
                   required
-                  class="form-control"
+                  class="form-control fld"
                   placeholder="Left side seats"
                   id="lsCount"
                   name="lsCount"
@@ -165,7 +165,7 @@
                   max="3"
                   step="1"
                   required
-                  class="form-control"
+                  class="form-control fld"
                   id="rsCount"
                   name="rsCount"
                   placeholder="Right side seats"
@@ -184,7 +184,7 @@
                 <label for="rowCount" class="form-label">Total Rows</label>
                 <input
                   type="number"
-                  class="form-control"
+                  class="form-control fld"
                   id="rowCount"
                   step="1"
                   required

@@ -1,6 +1,15 @@
-import { addSeatingRequest, collectSeatingRecordRequest } from "./service.js";
+import {
+  addSeatingRequest,
+  collectSeatingRecordRequest,
+  updateSeatingRequest,
+} from "./service.js";
 import { toast } from "./toast.js";
-import { displayInputError, displayInputSuccess } from "./util.js";
+import {
+  displayInputError,
+  displayInputSuccess,
+  removeInputError,
+  removeInputSuccess,
+} from "./util.js";
 
 // SEATING FORM
 const busConfigForm = document.querySelector("#bus_config_form");
@@ -18,6 +27,44 @@ const deckContainer = document.querySelector("#deck_cont");
 const lowerBtn = document.querySelector("#lower");
 const upperBtn = document.querySelector("#upper");
 
+const allFields = document.querySelectorAll(".fld");
+
+const resetForm = () => {
+  const activeIndex = upperBtn.checked ? 1 : 0;
+  const seatingList = JSON.parse(sessionStorage.getItem("seatingList") || "[]");
+  const currentSeating = seatingList[activeIndex];
+
+  if (currentSeating) {
+    const {
+      sleeper: isSleeper,
+      lsCount: leftSideCount,
+      rsCount: rightSideCount,
+      rowCount: rowCountValue,
+      seats,
+    } = currentSeating;
+
+    seater.checked = !isSleeper;
+    sleeper.checked = isSleeper;
+
+    lsCount.value = leftSideCount;
+    rsCount.value = rightSideCount;
+    rowCount.value = rowCountValue;
+    totalSeats.value = seats;
+
+    allFields.forEach((field) => displayInputSuccess(field));
+  } else {
+    allFields.forEach((field) => {
+      removeInputError(field);
+      removeInputSuccess(field);
+      field.value = "";
+    });
+    totalSeats.value = "";
+
+    seater.checked = true;
+    sleeper.checked = false;
+  }
+};
+
 const modifiedObject = (obj) => {
   obj = Object.fromEntries(obj);
   return {
@@ -32,7 +79,6 @@ const updateBusView = (busSetting) => {
   const { lsCount, rsCount, rowCount, sleeper, seats } = busSetting;
   let count = 1;
   const bus = document.querySelector(".bus");
-  console.log(busSetting);
 
   bus.innerHTML = `${Array.from({ length: sleeper ? rowCount : rowCount - 1 })
     .map((_) => {
@@ -82,19 +128,17 @@ const updateBusView = (busSetting) => {
 const fillAlreadyExistFormDetails = (obj) => {
   lsCount.value = obj.lsCount;
   rsCount.value = obj.rsCount;
+
+  seater.checked = !obj.sleeper;
   sleeper.checked = obj.sleeper;
+
   rowCount.value = obj.rowCount;
 
   displayInputSuccess(lsCount);
   displayInputSuccess(rsCount);
   displayInputSuccess(rowCount);
 
-  if (obj.sleeper) {
-    totalSeats.value = (+lsCount.value + +rsCount.value) * +rowCount.value;
-  } else {
-    totalSeats.value =
-      (+rsCount.value + +rsCount.value) * (+rowCount.value - 1) + 5;
-  }
+  totalSeats.value = obj.seats;
 
   updateBusView(obj);
 };
@@ -181,12 +225,17 @@ deckContainer.addEventListener("click", (e) => {
   const [lowerSeat, upperSeat] = seatingList;
   switch (deck) {
     case "lower": {
-      if (!lowerSeat) return;
+      if (!lowerSeat) {
+        resetForm();
+      }
       fillAlreadyExistFormDetails(lowerSeat);
       break;
     }
     case "upper": {
-      if (!upperSeat) return;
+      if (!upperSeat) {
+        resetForm();
+        return;
+      }
       fillAlreadyExistFormDetails(upperSeat);
       break;
     }
@@ -226,7 +275,6 @@ const handleAddSeating = async (formData) => {
       JSON.parse(sessionStorage.getItem("activeBus")).busId
     );
     const response = await addSeatingRequest(Object.fromEntries(formData));
-    console.log(response);
 
     if (response === "internal" || response.length === 0) {
       throw new Error("Internal Server error");
@@ -245,7 +293,42 @@ const handleAddSeating = async (formData) => {
   }
 };
 
-const handleUpdateSeating = async (formData) => {};
+const handleUpdateSeating = async (formData) => {
+  if (!formData || Object.fromEntries(formData).length === 0) return;
+
+  const activeIndex = upperBtn.checked ? 1 : 0;
+  const seatingList = JSON.parse(sessionStorage.getItem("seatingList"));
+  const activeSeating = seatingList[activeIndex];
+
+  if (!activeSeating) {
+    return;
+  }
+
+  try {
+    formData?.append("seating_id", activeSeating.seatingId);
+    formData?.append(
+      "bus_id",
+      JSON.parse(sessionStorage.getItem("activeBus")).busId
+    );
+
+    const response = await updateSeatingRequest(Object.fromEntries(formData));
+
+    if (response === "internal" || response.length === 0) {
+      throw new Error("Internal Server error");
+    }
+    if (response === "invalid") {
+      throw new Error("Invalid request");
+    }
+    if (response.startsWith("{")) {
+      toast.success("Seating updated successfully");
+      const seating = JSON.parse(response);
+      seatingList[activeIndex] = seating;
+      sessionStorage.setItem("seatingList", JSON.stringify(seatingList));
+    }
+  } catch (err) {
+    toast.error(err.message);
+  }
+};
 
 busConfigForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -263,8 +346,6 @@ busConfigForm.addEventListener("submit", async (e) => {
     const formData = new FormData(busConfigForm);
     formData.append("sleeper", sleeper.checked);
     updateBusView(modifiedObject(formData));
-
-    handleAddSeating(formData);
   } else {
     toast.error("Please input valid values");
     return;
@@ -277,10 +358,15 @@ busConfigForm.addEventListener("submit", async (e) => {
   const activeIndex = upperBtn.checked ? 1 : 0;
   const seatingList = JSON.parse(sessionStorage.getItem("seatingList"));
   if (seatingList[activeIndex]) {
-    await handleUpdateSeating(formData);
+    handleUpdateSeating(formData);
   } else {
-    await handleAddSeating(formData);
+    handleAddSeating(formData);
   }
+});
+
+busConfigForm.addEventListener("reset", (e) => {
+  e.preventDefault();
+  resetForm();
 });
 
 window.addEventListener("DOMContentLoaded", () => {

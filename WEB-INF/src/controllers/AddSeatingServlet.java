@@ -13,6 +13,7 @@ import java.io.IOException;
 import com.google.gson.Gson;
 
 import models.Seating;
+import models.Bus;
 
 @WebServlet("/add_seating.do")
 public class AddSeatingServlet extends HttpServlet {
@@ -25,6 +26,21 @@ public class AddSeatingServlet extends HttpServlet {
         }
 
         Enumeration<String> params = request.getParameterNames();
+        if(request.getParameter("bus_id") != null && request.getParameter("deck") != null) {
+            Integer busId = Integer.parseInt(request.getParameter("bus_id"));
+            Boolean deck = Boolean.parseBoolean(request.getParameter("deck"));
+
+            boolean isExist = Seating.checkSeatingExist(busId, deck);
+            if(isExist) {
+                response.getWriter().println("invalid");
+                return;
+            }
+        }   
+        else {
+            response.getWriter().println("invalid");
+            return;
+        }
+
 
         Seating seating = new Seating();
         while (params.hasMoreElements()) {
@@ -35,7 +51,7 @@ public class AddSeatingServlet extends HttpServlet {
                 return;
             }
             else {
-                boolean success = seating.setField(currParam, value);
+                Boolean success = seating.setField(currParam, value);
                 if(!success) {
                     response.getWriter().println("invalid");
                     return;
@@ -44,14 +60,18 @@ public class AddSeatingServlet extends HttpServlet {
             
         }
 
-        int busId = Integer.parseInt(request.getParameter("bus_id"));
-        int generatedId = seating.addRecord(busId);
+        Integer busId = Integer.parseInt(request.getParameter("bus_id"));
+        Integer generatedId = seating.addRecord(busId);
         if(generatedId == -1) {
             response.getWriter().println("internal");
             return;
         }
 
+        Boolean isDoubleDecker = 
+        ArrayList<Seating> seating = Seating.collectRecords(busId);
+
         seating.setSeatingId(generatedId);
+
         response.getWriter().println(new Gson().toJson(seating));
 
     } 

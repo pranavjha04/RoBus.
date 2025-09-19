@@ -35,6 +35,30 @@ public class Bus implements Cloneable {
     public Bus() {
         
     }
+
+    public static Boolean updateStatus(Integer busId, Integer statusId) {
+        Boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+
+            String query = 
+                        "UPDATE buses " +
+                        "SET status_id=? " +
+                        "WHERE bus_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, statusId);
+            ps.setInt(2, busId);
+
+            flag = ps.executeUpdate() == 1;
+
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return flag;
+    }
     
     public static ArrayList<Bus> collectRecords(int operatorId, boolean allData) {
         ArrayList<Bus> busList = new ArrayList<>();

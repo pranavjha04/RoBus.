@@ -271,9 +271,9 @@ export const addSeatingRequest = async (obj) => {
 
 export const updateSeatingRequest = async (obj) => {
   const queryParams = createURLParams(obj);
-  const res = await fetch("update_seating.do", {
+  console.log(queryParams.toString());
+  const res = await fetch(`update_seating.do?${queryParams.toString()}`, {
     method: "POST",
-    body: queryParams.toString(),
   });
 
   if (!res.ok) throw new Error("Internal server error");

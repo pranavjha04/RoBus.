@@ -41,15 +41,15 @@ public class Seating {
 
     }      
 
-    public static boolean updateRecord(Integer seatingId, Integer lsCount, Integer rsCount, Integer seats, Integer rowCount, Boolean deck, Boolean sleeper) {
-        boolean flag = false;
+    public Boolean updateRecord(Integer busId) {
+        Boolean flag = false;
 
         try {
             Connection con = DBManager.getConnection();
             String query = 
                     "UPDATE SEATINGS " +
                     "SET ls_count=?, rs_count=?, seats=?, row_count=?, deck=?, sleeper=? " +
-                    "WHERE seating_id=?";
+                    "WHERE seating_id=? and bus_id=?";
             PreparedStatement ps = con.prepareStatement(query);
 
             ps.setInt(1, lsCount);
@@ -59,6 +59,7 @@ public class Seating {
             ps.setBoolean(5, deck);
             ps.setBoolean(6, sleeper);
             ps.setInt(7, seatingId);
+            ps.setInt(8, busId);
 
             flag = ps.executeUpdate() == 1;
 
@@ -71,8 +72,8 @@ public class Seating {
         return flag;
     }
 
-    public int addRecord(Integer busId) {
-        int generatedId = -1;
+    public Integer addRecord(Integer busId) {
+        Integer generatedId = -1;
         try {
             Connection con = DBManager.getConnection();
             String query = 
@@ -90,7 +91,7 @@ public class Seating {
             ps.setBoolean(6, sleeper);
             ps.setInt(7, busId);
 
-            int rows = ps.executeUpdate();
+            Integer rows = ps.executeUpdate();
             if(rows == 1) {
                 ResultSet rs = ps.getGeneratedKeys();
                 if(rs.next()) {
@@ -107,7 +108,7 @@ public class Seating {
         return generatedId;
     } 
 
-    public static ArrayList<Seating> collectRecords(int busId) {
+    public static ArrayList<Seating> collectRecords(Integer busId) {
         ArrayList<Seating> seatingList = new ArrayList<>();
 
         try {
@@ -142,10 +143,36 @@ public class Seating {
         return seatingList;
     }
 
-   public boolean setField(String param, String value) {
+    public static Boolean checkSeatingExist(Integer busId, Boolean deck) {
+        Boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "SELECT * FROM seatings " +
+                        "WHERE bus_id=? and deck=?";
+            
+            PreparedStatement ps = con.prepareStatement(query);
+            
+            ps.setInt(1, busId);
+            ps.setBoolean(2, deck);
+
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        return flag;
+    }
+
+    public Boolean setField(String param, String value) {
         switch (param) {
             case "lsCount": {
-                int count = Integer.parseInt(value);
+                Integer count = Integer.parseInt(value);
                 if (FieldManager.validateSeatCount(count, 3)) {
                     setLsCount(count);
                     return true;
@@ -153,7 +180,7 @@ public class Seating {
                 break;
             }
             case "rsCount": {
-                int count = Integer.parseInt(value);
+                Integer count = Integer.parseInt(value);
                 if (FieldManager.validateSeatCount(count, 3)) {
                     setRsCount(count);
                     return true;
@@ -165,7 +192,7 @@ public class Seating {
                 return true;
             }
             case "rowCount": {
-                int rowCount = Integer.parseInt(value);
+                Integer rowCount = Integer.parseInt(value);
                 if (FieldManager.validateRowCount(rowCount)) {
                     setRowCount(rowCount);
                     return true;
@@ -183,10 +210,13 @@ public class Seating {
             case "bus_id": {
                 return true;
             }
+            case "seating_id": {
+                setSeatingId(Integer.parseInt(value));
+                return true;
+            }
         }
         return false;  
     }
-
 
     public void setBus(Bus bus) {
         this.bus = bus;
