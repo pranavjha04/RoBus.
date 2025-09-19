@@ -91,7 +91,6 @@ public class Seating {
             ps.setInt(7, busId);
 
             int rows = ps.executeUpdate();
-            System.out.println(rows);
             if(rows == 1) {
                 ResultSet rs = ps.getGeneratedKeys();
                 if(rs.next()) {
@@ -145,7 +144,7 @@ public class Seating {
 
    public boolean setField(String param, String value) {
         switch (param) {
-            case "ls_count": {
+            case "lsCount": {
                 int count = Integer.parseInt(value);
                 if (FieldManager.validateSeatCount(count, 3)) {
                     setLsCount(count);
@@ -153,7 +152,7 @@ public class Seating {
                 }
                 break;
             }
-            case "rs_count": {
+            case "rsCount": {
                 int count = Integer.parseInt(value);
                 if (FieldManager.validateSeatCount(count, 3)) {
                     setRsCount(count);
@@ -165,7 +164,7 @@ public class Seating {
                 setSeats(Integer.parseInt(value));
                 return true;
             }
-            case "row_count": {
+            case "rowCount": {
                 int rowCount = Integer.parseInt(value);
                 if (FieldManager.validateRowCount(rowCount)) {
                     setRowCount(rowCount);
@@ -185,7 +184,7 @@ public class Seating {
                 return true;
             }
         }
-        return false;  // default fallback
+        return false;  
     }
 
 

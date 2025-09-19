@@ -152,8 +152,8 @@
                   required
                   class="form-control"
                   placeholder="Left side seats"
-                  id="ls_count"
-                  name="ls_count"
+                  id="lsCount"
+                  name="lsCount"
                   aria-label="Left seats per row"
                 />
               </div>
@@ -166,8 +166,8 @@
                   step="1"
                   required
                   class="form-control"
-                  id="rs_count"
-                  name="rs_count"
+                  id="rsCount"
+                  name="rsCount"
                   placeholder="Right side seats"
                   aria-label="Right seats per row"
                 />
@@ -181,14 +181,14 @@
             <h4 class="fs-5 mb-1">Rows & Total Seats</h4>
             <div class="row g-2 align-items-center">
               <div class="col">
-                <label for="rows_count" class="form-label">Total Rows</label>
+                <label for="rowCount" class="form-label">Total Rows</label>
                 <input
                   type="number"
                   class="form-control"
-                  id="rows_count"
+                  id="rowCount"
                   step="1"
                   required
-                  name="row_count"
+                  name="rowCount"
                   placeholder="e.g. 10"
                   aria-label="Rows count"
                   min="1"

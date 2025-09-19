@@ -7,10 +7,10 @@ const busConfigForm = document.querySelector("#bus_config_form");
 const seater = document.querySelector("#bus_seater");
 const sleeper = document.querySelector("#bus_sleeper");
 
-const lsCount = document.querySelector("#ls_count");
-const rsCount = document.querySelector("#rs_count");
+const lsCount = document.querySelector("#lsCount");
+const rsCount = document.querySelector("#rsCount");
 
-const rowCount = document.querySelector("#rows_count");
+const rowCount = document.querySelector("#rowCount");
 const totalSeats = document.querySelector("#total_seats");
 
 // UI/UX
@@ -21,25 +21,24 @@ const upperBtn = document.querySelector("#upper");
 const modifiedObject = (obj) => {
   obj = Object.fromEntries(obj);
   return {
-    ls_count: +obj.ls_count,
-    rs_count: +obj.rs_count,
-    row_count: +obj.row_count,
+    lsCount: +obj.lsCount,
+    rsCount: +obj.rsCount,
+    rowCount: +obj.rowCount,
     sleeper: obj.sleeper === "true",
     seats: +obj.seats,
   };
 };
-const updateBusView = (obj) => {
-  const busSetting = modifiedObject(obj);
-  const { ls_count, rs_count, row_count, sleeper, seats } = busSetting;
+const updateBusView = (busSetting) => {
+  const { lsCount, rsCount, rowCount, sleeper, seats } = busSetting;
   let count = 1;
   const bus = document.querySelector(".bus");
   console.log(busSetting);
 
-  bus.innerHTML = `${Array.from({ length: sleeper ? row_count : row_count - 1 })
+  bus.innerHTML = `${Array.from({ length: sleeper ? rowCount : rowCount - 1 })
     .map((_) => {
       return `<div class="d-flex align-items-center gap-5 justify-content-between">
                 <div class="d-flex gap-1">
-                   ${Array.from({ length: ls_count })
+                   ${Array.from({ length: lsCount })
                      .map(
                        (_) =>
                          `<button class="${
@@ -49,7 +48,7 @@ const updateBusView = (obj) => {
                      .join("")}
                 </div>
                 <div class="d-flex gap-1">
-                     ${Array.from({ length: rs_count })
+                     ${Array.from({ length: rsCount })
                        .map(
                          (_) =>
                            `<button class="${
@@ -78,6 +77,26 @@ const updateBusView = (obj) => {
                           .join("")}
                     </div>
                 </div>`;
+};
+
+const fillAlreadyExistFormDetails = (obj) => {
+  lsCount.value = obj.lsCount;
+  rsCount.value = obj.rsCount;
+  sleeper.checked = obj.sleeper;
+  rowCount.value = obj.rowCount;
+
+  displayInputSuccess(lsCount);
+  displayInputSuccess(rsCount);
+  displayInputSuccess(rowCount);
+
+  if (obj.sleeper) {
+    totalSeats.value = (+lsCount.value + +rsCount.value) * +rowCount.value;
+  } else {
+    totalSeats.value =
+      (+rsCount.value + +rsCount.value) * (+rowCount.value - 1) + 5;
+  }
+
+  updateBusView(obj);
 };
 
 const isRowsCountValid = (inputEl) => {
@@ -132,7 +151,9 @@ rsCount.addEventListener("change", handleRowCountRange);
 const handleLoadingSeatingData = async () => {
   const busId = +new URLSearchParams(window.location.search).get("bus_id");
 
-  if (!busId) history.back();
+  if (!busId) {
+    history.back();
+  }
 
   try {
     const response = await collectSeatingRecordRequest(busId);
@@ -142,25 +163,13 @@ const handleLoadingSeatingData = async () => {
     if (response.startsWith("[")) {
       const seatingList = JSON.parse(response);
       const [firstIndex] = seatingList;
-      console.log(firstIndex);
+      if (firstIndex) {
+        fillAlreadyExistFormDetails(firstIndex);
+      }
       sessionStorage.setItem("seatingList", JSON.stringify(seatingList));
     }
   } catch (err) {
-    history.back();
-  }
-};
-
-const fillAlreadyExistFormDetails = (obj) => {
-  lsCount.value = obj.ls_count;
-  rsCount.value = obj.rs_count;
-  sleeper.checked = obj.sleeper;
-  rowCount.value = obj.row_count;
-
-  if (obj.sleeper) {
-    totalSeats.value = (+obj.ls_count + +obj.rs_count) * +obj.row_count;
-  } else {
-    totalSeats.value =
-      (+obj.ls_count + +obj.rs_count) * (+obj.row_count - 1) + 5;
+    toast.error(err.message);
   }
 };
 
@@ -190,7 +199,8 @@ deckContainer.addEventListener("click", (e) => {
 let watchSessionStorageInterval = setInterval(() => {
   if (
     !sessionStorage.getItem("activeBus") ||
-    !sessionStorage.getItem("seatingList")
+    !sessionStorage.getItem("seatingList") ||
+    !totalSeats.readOnly
   ) {
     history.back();
   }
@@ -216,6 +226,7 @@ const handleAddSeating = async (formData) => {
       JSON.parse(sessionStorage.getItem("activeBus")).busId
     );
     const response = await addSeatingRequest(Object.fromEntries(formData));
+    console.log(response);
 
     if (response === "internal" || response.length === 0) {
       throw new Error("Internal Server error");
@@ -225,14 +236,16 @@ const handleAddSeating = async (formData) => {
     }
     if (response.startsWith("{")) {
       toast.success("Seating added successfully");
-      console.log(response);
       const seating = JSON.parse(response);
+      seatingList[activeIndex] = seating;
       sessionStorage.setItem("seatingList", JSON.stringify(seatingList));
     }
   } catch (err) {
     toast.error(err.message);
   }
 };
+
+const handleUpdateSeating = async (formData) => {};
 
 busConfigForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -249,9 +262,9 @@ busConfigForm.addEventListener("submit", async (e) => {
     }
     const formData = new FormData(busConfigForm);
     formData.append("sleeper", sleeper.checked);
-    updateBusView(formData);
+    updateBusView(modifiedObject(formData));
 
-    handleAddSeating();
+    handleAddSeating(formData);
   } else {
     toast.error("Please input valid values");
     return;
@@ -260,7 +273,14 @@ busConfigForm.addEventListener("submit", async (e) => {
   const formData = new FormData(busConfigForm);
   formData.append("deck", upperBtn.checked);
   formData.set("sleeper", sleeper.checked);
-  handleAddSeating(formData);
+
+  const activeIndex = upperBtn.checked ? 1 : 0;
+  const seatingList = JSON.parse(sessionStorage.getItem("seatingList"));
+  if (seatingList[activeIndex]) {
+    await handleUpdateSeating(formData);
+  } else {
+    await handleAddSeating(formData);
+  }
 });
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -273,7 +293,7 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 window.addEventListener("beforeunload", () => {
-  clearInterval(watchSessionStorageInterval);
   sessionStorage.removeItem("activeBus");
   sessionStorage.removeItem("seatingList");
+  clearInterval(watchSessionStorageInterval);
 });

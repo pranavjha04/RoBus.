@@ -44,7 +44,6 @@ const reset = () => {
   prevImagesContainer.innerHTML = "";
 };
 
-
 addBusModal.addEventListener("show.bs.modal", async () => {
   setFareLoader();
   setTimeout(async () => {
@@ -136,25 +135,26 @@ const handleBusListDisplay = (busList) => {
 
 const handleBusRecords = async () => {
   busTable.innerHTML = ViewHelper.getTableLoader();
-  setTimeout(async () => {
-    try {
-      const response = await collectBusRecordRequest();
-      if (response === "internal") {
-        throw new Error("Internal server error");
-      }
-      if (response === "invalid") {
-        throw new Error("Invalid Request");
-      }
-      if (response.startsWith("[")) {
-        const busList = JSON.parse(response);
-        sessionStorage.setItem("busList", JSON.stringify(busList));
-        handleBusListDisplay(busList);
-      }
-    } catch (err) {
-      toast.error(err.message);
-    } finally {
+  console.log(sessionStorage.getItem("activeBus"));
+  try {
+    const response = await collectBusRecordRequest();
+    if (response === "internal") {
+      throw new Error("Internal server error");
     }
-  }, 500);
+    if (response === "invalid") {
+      throw new Error("Invalid Request");
+    }
+    if (response.startsWith("[")) {
+      const busList = JSON.parse(response);
+      sessionStorage.setItem("busList", JSON.stringify(busList));
+      setTimeout(() => {
+        handleBusListDisplay(busList);
+      }, 500);
+    }
+  } catch (err) {
+    toast.error(err.message);
+  } finally {
+  }
 };
 
 basicBusForm.addEventListener("submit", async (e) => {
@@ -232,9 +232,11 @@ busTable.addEventListener("click", (e) => {
   const busId = +target.closest("tr").dataset.id;
   if (isNaN(busId) || !busId) return;
   console.log(busId);
-  const activeBus = JSON.parse(sessionStorage.getItem("busList")).find(
+  const activeBus = JSON.parse(sessionStorage.getItem("busList"))?.find(
     (bus) => bus.busId === busId
   );
+
+  console.log(activeBus);
 
   if (!activeBus || !Object.entries(activeBus).length) return;
 
@@ -244,13 +246,4 @@ busTable.addEventListener("click", (e) => {
 const init = async () => {
   await handleBusRecords();
 };
-
-window.addEventListener("DOMContentLoaded", () => {
-  sessionStorage.removeItem("activeBus");
-});
-
-window.addEventListener("beforeunload", () => {
-  sessionStorage.removeItem("busList");
-});
-
 await init();

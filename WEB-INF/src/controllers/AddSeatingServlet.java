@@ -37,7 +37,6 @@ public class AddSeatingServlet extends HttpServlet {
             else {
                 boolean success = seating.setField(currParam, value);
                 if(!success) {
-                    System.out.println(currParam);
                     response.getWriter().println("invalid");
                     return;
                 }
