@@ -9,7 +9,10 @@ import javax.servlet.annotation.WebServlet;
 
 
 import java.util.Enumeration;
+import java.util.ArrayList;
+
 import java.io.IOException;
+
 import com.google.gson.Gson;
 
 import models.Seating;
@@ -67,8 +70,35 @@ public class AddSeatingServlet extends HttpServlet {
             return;
         }
 
-        Boolean isDoubleDecker = 
-        ArrayList<Seating> seating = Seating.collectRecords(busId);
+        Bus activeBus = Bus.getRecord(busId);
+        if(activeBus == null) {
+            response.getWriter().println("internal");
+            return;
+        }
+                
+        ArrayList<Seating> seatingList = Seating.collectRecords(busId);
+
+        Boolean isUpdatable = false;
+        if(activeBus.getDoubleDecker()) {
+            if(seatingList.size() == 2) {
+                isUpdatable = true;
+            }
+        }
+        else {
+            if(seatingList.size() == 1) {
+                isUpdatable = true;
+            }
+        }
+
+        if(isUpdatable) {
+            Boolean success = Bus.updateStatus(busId, 5); // 2nd column is statusId  (5) <-> Inactive
+
+            if(!success) {
+                response.getWriter().println("internal");
+                return;
+
+            }
+        }
 
         seating.setSeatingId(generatedId);
 

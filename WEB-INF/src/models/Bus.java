@@ -36,6 +36,45 @@ public class Bus implements Cloneable {
         
     }
 
+    public static Bus getRecord(Integer busId) {
+        Bus bus = null;
+        try {
+            Connection con = DBManager.getConnection();
+
+            String query = 
+                    "SELECT * FROM " +
+                    "buses JOIN status " + 
+                    "ON buses.status_id = status.status_id " +
+                    "WHERE bus_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setInt(1, busId);
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()) {
+                bus = new Bus(
+                    rs.getInt("bus_id"),
+                    rs.getString("bus_number"),
+                    rs.getString("manufacturer"),
+                    rs.getBoolean("double_decker"),
+                    new Status(
+                        rs.getInt("status_id"),
+                        rs.getString("name")
+                    )
+                );
+            }
+
+            con.close();
+        }
+        catch(SQLException e) {
+            bus = null;
+            e.printStackTrace();
+        }
+
+        return bus;
+    }
+
     public static Boolean updateStatus(Integer busId, Integer statusId) {
         Boolean flag = false;
         try {
