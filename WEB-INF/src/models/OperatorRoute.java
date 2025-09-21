@@ -13,6 +13,7 @@ public class OperatorRoute {
     private Operator operator;
     private Route route;
 
+
     public OperatorRoute() {
 
     }
@@ -42,6 +43,12 @@ public class OperatorRoute {
         }
 
         return flag;
+    }
+
+    public static ArrayList<OperatorRoute> collectRecords(Integer operatorId) {
+        ArrayList<OperatorRoute> operatorRouteList = new ArrayList<>();
+
+        return operatorRouteList;
     }
 
     public void setRoute(Route route) {

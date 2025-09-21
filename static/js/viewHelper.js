@@ -97,7 +97,6 @@ export class ViewHelper {
   static getBusTableRow(bus) {
     const { busId, manufacturer, busNumber, status } = bus;
     const { name: statusName } = status;
-    console.log;
     return `<tr
                 class="text-center border-bottom"
                 data-id="${busId}"

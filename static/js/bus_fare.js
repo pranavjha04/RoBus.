@@ -436,3 +436,7 @@ formModal.addEventListener("hidden.bs.modal", () => {
   charge.setAttribute("placeholder", "Charges");
   charge.classList.remove("border-danger", "border-success");
 });
+
+window.addEventListener("pagehide", () => {
+  sessionStorage.removeItem("fareList");
+});

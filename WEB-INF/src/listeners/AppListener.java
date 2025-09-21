@@ -17,6 +17,8 @@ import utils.DBManager;
 import utils.DBManager;
 import models.City;
 import models.State;
+import models.Route;
+import models.RouteMidCity;
 
 @WebListener
 public class AppListener implements ServletContextListener {
@@ -41,9 +43,20 @@ public class AppListener implements ServletContextListener {
     }
 
     private void setParameters(ServletContext context) {
-        ArrayList<City> cities = City.collectAllRecords();
-        ArrayList<State> states = State.collectAllRecords();
-        context.setAttribute("cities", cities);
-        context.setAttribute("states", states);
+        System.out.println("-------- City Config Starting --------");
+        ArrayList<City> cityList = City.collectAllRecords();
+        context.setAttribute("cities", cityList);
+
+        System.out.println("-------- State Config Starting --------");
+        ArrayList<State> stateList = State.collectAllRecords();
+        context.setAttribute("states", stateList);
+
+        System.out.println("-------- Route Config Starting --------");
+        ArrayList<Route> routeList = Route.collectAllRecords();
+        context.setAttribute("routes", routeList);
+
+        System.out.println("-------- Route MidCity Config Starting --------");
+        ArrayList<RouteMidCity> routeMidCityList = RouteMidCity.collectAllRecords();
+        context.setAttribute("routeMidCities", routeMidCityList);
     }
 }

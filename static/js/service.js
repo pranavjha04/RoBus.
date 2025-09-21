@@ -278,3 +278,10 @@ export const updateSeatingRequest = async (obj) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const collectOperatorRoutesRequest = async () => {
+  const res = await fetch("get_operator_routes.do");
+  if (!res.ok) throw new Error("Internal Server erorr");
+  const data = await res.text();
+  return data.trim();
+};
