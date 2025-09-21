@@ -1,5 +1,13 @@
 package models;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import utils.DBManager;
+
+import java.util.ArrayList;
+
 public class OperatorRoute {
     private Integer operatorRouteId;
     private Operator operator;
@@ -7,6 +15,33 @@ public class OperatorRoute {
 
     public OperatorRoute() {
 
+    }
+
+    public static Boolean addRecord(Integer operatorId, Integer routeId) {
+        Boolean flag = false;
+
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                    "INSERT INTO " +
+                    "operator_routes " +
+                    "(operator_id, route_id) " +
+                    "VALUES (?, ?)";
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setInt(1, operatorId);
+            ps.setInt(2, routeId);
+
+            flag = ps.executeUpdate() == 1;
+
+            con.close();
+        }
+        catch(SQLException e) {
+            flag = false;
+            e.printStackTrace();
+        }
+
+        return flag;
     }
 
     public void setRoute(Route route) {

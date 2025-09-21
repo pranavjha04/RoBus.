@@ -65,7 +65,7 @@
     <li class="w-100 border-bottom">
       <a
         href="/bts"
-        class="d-flex justify-content-center text-decoration-none align-items-center gap-2 side-bar-link w-100 py-3 px-2 "
+        class="d-flex justify-content-center text-decoration-none align-items-center gap-2 side-bar-link w-100 py-3 px-2"
       >
         <img src="static/media/images/home.svg" alt="home" class="p-0" />
         <span class="fs-4 fw-medium" style="color: oklch(26.8% 0.007 34.298)"
@@ -97,7 +97,7 @@
     </li>
     <li class="w-100 border-bottom">
       <a
-        href="operator_buses.do"
+        href="operator_drivers.do"
         class="d-flex justify-content-center text-decoration-none align-items-center gap-2 side-bar-link w-100 py-3 px-2"
       >
         <img src="static/media/images/account.svg" alt="driver" class="p-0" />

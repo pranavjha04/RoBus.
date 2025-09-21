@@ -231,7 +231,7 @@
         </p>
       </form>
     </section>
-    <!-- <script type="module" src="static/js/signup.js"></script> -->
+  
     <script type="module" src="static/js/signup2.js"></script>
   </body>
 </html>

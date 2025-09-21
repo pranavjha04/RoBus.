@@ -299,6 +299,7 @@ const handleFareFactorList = async () => {
     }
     if (typeof fareFactorList === "string" && fareFactorList.startsWith("[")) {
       fareFactorList = JSON.parse(fareFactorList);
+      removeTableLoader();
       update(fareFactorList);
       sessionStorage.setItem("fareList", JSON.stringify(fareFactorList));
       handleFareFactorsListDisplay(fareFactorList);
@@ -313,7 +314,9 @@ const init = async () => {
   filterNav.start();
   try {
     setTableLoader();
-    await handleFareFactorList();
+    setTimeout(() => {
+      handleFareFactorList();
+    }, 500);
   } catch (err) {
     toast.error(err.message);
   }

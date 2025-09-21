@@ -7,6 +7,10 @@
     <title>Document</title>
   </head>
   <body>
+    <div
+      class="toast-container position-fixed top-0 end-0 p-3"
+      style="z-index: 1080"
+    ></div>
     <div class="dashContainer">
       <!-- Sidebar -->
       <c:import url="operator_sidebar.jsp" />
