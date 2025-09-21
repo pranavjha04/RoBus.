@@ -231,7 +231,7 @@
         <div
           class="p-4 d-flex flex-column gap-3 align-items-center overflow-scroll"
         >
-          <h5 class="text-center">Lower Decker</h5>
+          <h5 class="text-center" id="curr_deck">Lower Decker</h5>
           <div class="border rounded-5 border-primary">
             <div
               class="d-flex align-items-center justify-content-between py-2 px-2 border-bottom border-primary"

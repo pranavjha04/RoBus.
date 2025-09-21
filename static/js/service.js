@@ -43,13 +43,12 @@ export const collectBusRecordRequest = async (allRecord = false) => {
   const queryParams = createURLParams({
     allRecord,
   });
-  console.log(queryParams.toString());
+
   const res = await fetch(`get_bus.do?${queryParams.toString()}`, {
     method: "GET",
   });
 
   if (!res.ok) {
-    console.log("hello");
     throw new Error("Internal server error");
   }
 
@@ -246,7 +245,6 @@ export const busNumberHandler = async (e) => {
 };
 
 export const handleAddFareFactor = async (charge, fareFactorId) => {
-  console.log(charge, fareFactorId);
   const res = await fetch(
     `add_operator_ticket_fare.do?charge=${charge}&fare_factor_id=${fareFactorId}`
   );
@@ -258,7 +256,6 @@ export const handleAddFareFactor = async (charge, fareFactorId) => {
 
 export const addSeatingRequest = async (obj) => {
   const queryParams = createURLParams(obj);
-  console.log(queryParams.toString());
   const res = await fetch(`add_seating.do?${queryParams.toString()}`, {
     method: "POST",
   });
@@ -271,7 +268,7 @@ export const addSeatingRequest = async (obj) => {
 
 export const updateSeatingRequest = async (obj) => {
   const queryParams = createURLParams(obj);
-  console.log(queryParams.toString());
+
   const res = await fetch(`update_seating.do?${queryParams.toString()}`, {
     method: "POST",
   });

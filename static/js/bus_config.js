@@ -26,7 +26,7 @@ const totalSeats = document.querySelector("#total_seats");
 const deckContainer = document.querySelector("#deck_cont");
 const lowerBtn = document.querySelector("#lower");
 const upperBtn = document.querySelector("#upper");
-
+const currDeck = document.querySelector("#curr_deck");
 const allFields = document.querySelectorAll(".fld");
 
 const resetForm = () => {
@@ -225,6 +225,7 @@ deckContainer.addEventListener("click", (e) => {
   const [lowerSeat, upperSeat] = seatingList;
   switch (deck) {
     case "lower": {
+      currDeck.textContent = "Lower Deck";
       if (!lowerSeat) {
         resetForm();
       }
@@ -232,6 +233,7 @@ deckContainer.addEventListener("click", (e) => {
       break;
     }
     case "upper": {
+      currDeck.textContent = "Upper Deck";
       if (!upperSeat) {
         resetForm();
         return;
@@ -246,9 +248,12 @@ deckContainer.addEventListener("click", (e) => {
 });
 
 let watchSessionStorageInterval = setInterval(() => {
+  const busId = +new URLSearchParams(window.location.search).get("bus_id");
+
   if (
     !sessionStorage.getItem("activeBus") ||
     !sessionStorage.getItem("seatingList") ||
+    !busId ||
     !totalSeats.readOnly
   ) {
     history.back();
@@ -376,6 +381,8 @@ window.addEventListener("DOMContentLoaded", () => {
     upperBtn.disabled = true;
     upperBtn.checked = false;
   }
+
+  currDeck.textContent = "Lower Deck";
 });
 
 window.addEventListener("beforeunload", () => {

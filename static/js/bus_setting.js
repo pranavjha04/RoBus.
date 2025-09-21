@@ -135,7 +135,6 @@ const handleBusListDisplay = (busList) => {
 
 const handleBusRecords = async () => {
   busTable.innerHTML = ViewHelper.getTableLoader();
-  console.log(sessionStorage.getItem("activeBus"));
   try {
     const response = await collectBusRecordRequest();
     if (response === "internal") {
@@ -231,12 +230,10 @@ busTable.addEventListener("click", (e) => {
 
   const busId = +target.closest("tr").dataset.id;
   if (isNaN(busId) || !busId) return;
-  console.log(busId);
+
   const activeBus = JSON.parse(sessionStorage.getItem("busList"))?.find(
     (bus) => bus.busId === busId
   );
-
-  console.log(activeBus);
 
   if (!activeBus || !Object.entries(activeBus).length) return;
 
