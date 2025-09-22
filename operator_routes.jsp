@@ -12,7 +12,7 @@
       style="z-index: 1080"
     ></div>
     <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header border-0">
             <h5 class="modal-title fw-semibold">Add Route</h5>
@@ -24,61 +24,235 @@
           </div>
 
           <div class="modal-body">
-            <form
-              id="fare_factor_form"
-              class="gap-2"
-              style="
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(2, 1fr);
-              "
-            >
-              <div class="dropdown">
-                <label
-                  for="fare_factor_select"
-                  class="form-label small fw-semibold"
-                  >Fare Factor</label
-                >
-                <button
-                  class="btn form-select border rounded w-100 d-flex justify-content-between align-items-center"
-                  type="button"
-                  id="fare_factor_select"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Select Fare Factor
-                </button>
-                <ul
-                  id="form_factor_available_list"
-                  class="dropdown-menu w-100 shadow overflow-y-scroll"
-                  style="max-height: 275px"
-                  aria-labelledby="dropdownMenuButton"
-                ></ul>
+            <form id="add_route_form" class="gap-3">
+              <!-- Source & Destination -->
+              <div class="row g-3 mb-3">
+                <!-- Source -->
+                <div class="col-md-6 position-relative">
+                  <label for="route_source" class="form-label fw-semibold small"
+                    >Source</label
+                  >
+                  <input
+                    type="search"
+                    name="source"
+                    id="route_source"
+                    placeholder="Enter Source City"
+                    class="form-control"
+                    autocomplete="off"
+                  />
+                  <ul
+                    id="source_list"
+                    class="dropdown-menu w-100 shadow d-none overflow-y-auto position-absolute"
+                    style="z-index: 1000; max-height: 200px"
+                  >
+                    <li class="dropdown-item py-2">
+                      &#128205; Jabalpur
+                      <small class="text-muted">Madhya Pradesh</small>
+                    </li>
+                    <li class="dropdown-item py-2">
+                      &#128205; Bhopal
+                      <small class="text-muted">Madhya Pradesh</small>
+                    </li>
+                    <li class="dropdown-item py-2">
+                      &#128205; Indore
+                      <small class="text-muted">Madhya Pradesh</small>
+                    </li>
+                    <li class="dropdown-item py-2">
+                      &#128205; Sagar
+                      <small class="text-muted">Madhya Pradesh</small>
+                    </li>
+                    <li class="dropdown-item py-2">
+                      &#128205; Rewa
+                      <small class="text-muted">Madhya Pradesh</small>
+                    </li>
+                    <li class="dropdown-item py-2">
+                      &#128205; Katni
+                      <small class="text-muted">Madhya Pradesh</small>
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Destination -->
+                <div class="col-md-6 position-relative">
+                  <label
+                    for="route_destination"
+                    class="form-label fw-semibold small"
+                    >Destination</label
+                  >
+                  <input
+                    type="search"
+                    name="destination"
+                    id="route_destination"
+                    placeholder="Enter Destination City"
+                    class="form-control"
+                    autocomplete="off"
+                  />
+                  <ul
+                    id="destination_list"
+                    class="dropdown-menu w-100 shadow d-none overflow-y-auto position-absolute"
+                    style="z-index: 1000; max-height: 200px"
+                  >
+                    <li class="dropdown-item py-2">
+                      &#128205; Sagar
+                      <small class="text-muted">Madhya Pradesh</small>
+                    </li>
+                    <li class="dropdown-item py-2">
+                      &#128205; Rewa
+                      <small class="text-muted">Madhya Pradesh</small>
+                    </li>
+                    <li class="dropdown-item py-2">
+                      &#128205; Katni
+                      <small class="text-muted">Madhya Pradesh</small>
+                    </li>
+                    <li class="dropdown-item py-2">
+                      &#128205; Jabalpur
+                      <small class="text-muted">Madhya Pradesh</small>
+                    </li>
+                  </ul>
+                </div>
               </div>
-              <div>
-                <label class="form-label small fw-semibold" for="charge"
-                  >Charges</label
+
+              <!-- Route Selection -->
+              <div class="mb-3">
+                <label for="route_select" class="form-label fw-semibold small"
+                  >Route</label
                 >
-                <input
-                  type="number"
-                  class="form-control"
-                  placeholder="Charges"
-                  name="charge"
-                  id="charge"
-                />
+                <div class="dropdown">
+                  <button
+                    class="btn border rounded w-100 d-flex justify-content-between align-items-center form-select"
+                    type="button"
+                    id="route_select"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <span class="text-secondary">Select Route</span>
+                  </button>
+                  <ul
+                    id="route_available_list"
+                    class="dropdown-menu w-100 shadow-sm overflow-y-scroll"
+                    style="max-height: 275px"
+                    aria-labelledby="route_select"
+                  >
+                    <li role="button" class="border-bottom cursor-pointer">
+                      <a class="dropdown-item d-flex flex-column py-2">
+                        <div class="fw-semibold">
+                          &#128205; Jabalpur &rarr; Sagar
+                        </div>
+                        <small class="text-muted"
+                          >Madhya Pradesh &rarr; Madhya Pradesh</small
+                        >
+                        <div class="d-flex gap-3 small text-muted mt-1">
+                          <div class="d-flex gap-1">
+                            &#128338; <span>4h 30m</span>
+                          </div>
+                          <div class="d-flex gap-1">
+                            &#128205; <span>240 km</span>
+                          </div>
+                        </div>
+                      </a>
+                    </li>
+                    <li role="button" class="border-bottom cursor-pointer">
+                      <a class="dropdown-item d-flex flex-column py-2">
+                        <div class="fw-semibold">
+                          &#128205; Bhopal &rarr; Indore
+                        </div>
+                        <small class="text-muted"
+                          >Madhya Pradesh &rarr; Madhya Pradesh</small
+                        >
+                        <div class="d-flex gap-3 small text-muted mt-1">
+                          <div class="d-flex gap-1">
+                            &#128338; <span>5h 15m</span>
+                          </div>
+                          <div class="d-flex gap-1">
+                            &#128205; <span>330 km</span>
+                          </div>
+                        </div>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </div>
-              <div>
-                <input
-                  type="hidden"
-                  value=""
-                  name="fare_factor_id"
-                  id="fare_factor"
-                />
+
+              <!-- Mid City & Hauling Time -->
+              <div class="row g-3 mb-3">
+                <!-- Mid City -->
+                <div class="col-md-6 position-relative">
+                  <label
+                    for="mid_city_select"
+                    class="form-label small fw-semibold"
+                    >Mid City</label
+                  >
+                  <div class="dropdown">
+                    <button
+                      class="btn form-select border rounded w-100 d-flex justify-content-between align-items-center"
+                      type="button"
+                      id="mid_city_select"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <span class="text-secondary">Select Mid City</span>
+                    </button>
+                    <ul
+                      id="mid_city_available_list"
+                      class="dropdown-menu w-100 shadow"
+                      style="max-height: 200px; overflow-y: auto"
+                    >
+                      <li
+                        class="dropdown-item py-2 d-flex justify-content-between align-items-center"
+                      >
+                        <div class="d-flex flex-column">
+                          <span>&#128205; Katangi</span>
+                          <small class="text-muted">Madhya Pradesh</small>
+                        </div>
+                        <span class="small text-muted">60 km</span>
+                      </li>
+                      <li
+                        class="dropdown-item py-2 d-flex justify-content-between align-items-center"
+                      >
+                        <div class="d-flex flex-column">
+                          <span>&#128205; Narsinghpur</span>
+                          <small class="text-muted">Madhya Pradesh</small>
+                        </div>
+                        <span class="small text-muted">80 km</span>
+                      </li>
+                      <li
+                        class="dropdown-item py-2 d-flex justify-content-between align-items-center"
+                      >
+                        <div class="d-flex flex-column">
+                          <span>&#128205; Rewa</span>
+                          <small class="text-muted">Madhya Pradesh</small>
+                        </div>
+                        <span class="small text-muted">100 km</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Hauling Time -->
+                <div class="col-md-6">
+                  <label
+                    for="haulting_time"
+                    class="form-label small fw-semibold"
+                    >Hauling Time</label
+                  >
+                  <div class="input-group">
+                    <span class="input-group-text">&#9201;</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      placeholder="Hauling Time (mins)"
+                      name="haulting_time"
+                      id="haulting_time"
+                    />
+                  </div>
+                </div>
               </div>
-              <div class="align-self-center ms-auto">
+
+              <!-- Submit Button -->
+              <div class="mt-3 row">
                 <input
                   type="submit"
-                  value="Add Factor"
+                  value="Add Route"
                   class="btn btn-primary"
                 />
               </div>
@@ -87,6 +261,7 @@
         </div>
       </div>
     </div>
+
     <div class="dashContainer">
       <!-- Sidebar -->
       <c:import url="operator_sidebar.jsp" />
@@ -230,18 +405,30 @@
             </div>
           </div>
           <div class="d-flex align-self-end gap-2">
-            <input
-              type="search"
-              id="source_search"
-              placeholder="Enter Source City"
-              class="form-control"
-            />
-            <input
-              type="search"
-              id="destination_search"
-              placeholder="Enter Destination City"
-              class="form-control"
-            />
+            <div>
+              <label class="form-label small fw-semibold" for="source_search"
+                >Source</label
+              >
+              <input
+                type="search"
+                id="source_search"
+                placeholder="Enter Source City"
+                class="form-control"
+              />
+            </div>
+            <div>
+              <label
+                class="form-label small fw-semibold"
+                for="destination_search"
+                >Destination</label
+              >
+              <input
+                type="search"
+                id="destination_search"
+                placeholder="Enter Destination City"
+                class="form-control"
+              />
+            </div>
           </div>
 
           <table

@@ -522,6 +522,12 @@ CREATE TABLE tickets (
     CONSTRAINT fk_tkt_status FOREIGN KEY(status_id) REFERENCES status(status_id)
 );
 
+ALTER TABLE operator_routes
+ADD CONSTRAINT operator_route_status
+FOREIGN KEY (status_id)
+REFERENCES status(status_id);
+
+
 SELECT
 rm.route_midcity_id, rm.distance_from_source, rm.duration_from_source,
 r.route_id, r.distance, r.duration,
@@ -535,6 +541,23 @@ FROM route_midcities rm
 JOIN routes r ON rm.route_id = r.route_id
 JOIN cities mc ON rm.midcity_id = mc.city_id
 JOIN states ms ON mc.state_id = ms.state_id
+JOIN cities s on r.source = s.city_id
+JOIN states ss on s.state_id = ss.state_id
+JOIN cities d on r.destination = d.city_id
+JOIN states ds on d.state_id = ds.state_id;
+
+
+SELECT 
+opr.operator_route_id,
+r.route_id, r.distance, r.duration,
+s.city_id AS 'source_city_id', s.name AS 'source_city_name',
+ss.state_id AS 'source_state_id', ss.name AS 'source_state_name',
+d.city_id AS 'destination_city_id', d.name AS 'destination_city_name',
+ds.state_id AS 'destination_state_id', ds.name AS 'destination_state_name',
+st.status_id, st.name AS 'status_name'
+FROM operator_routes opr
+JOIN routes r ON  opr.route_id = r.route_id
+JOIN status st ON opr.status_id = st.status_id
 JOIN cities s on r.source = s.city_id
 JOIN states ss on s.state_id = ss.state_id
 JOIN cities d on r.destination = d.city_id
