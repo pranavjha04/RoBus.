@@ -285,3 +285,23 @@ export const collectOperatorRoutesRequest = async () => {
   const data = await res.text();
   return data.trim();
 };
+
+export const collectRouteRequest = async () => {
+  const res = await fetch("get_route.do", {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Internal Server error");
+
+  const data = await res.text();
+  return data.trim();
+};
+
+export const collectOperatorRouteRequest = async () => {
+  const res = await fetch("get_operator_routes.do", {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Internal Server error");
+
+  const data = await res.text();
+  return data.trim();
+};

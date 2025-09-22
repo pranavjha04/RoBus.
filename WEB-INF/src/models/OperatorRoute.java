@@ -52,7 +52,81 @@ public class OperatorRoute {
         return flag;
     }
 
-    public static ArrayList<OperatorRoute> collectRecords(Integer operatorId) {
+    public OperatorRoute getRecord(Integer operatorId, Integer routeId) {
+        OperatorRoute operatorRoute = null;
+
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                "SELECT " +
+                "opr.operator_route_id, " +
+                "r.route_id, r.distance, r.duration, " + 
+                "s.city_id AS source_city_id, s.name AS source_city_name, " +
+                "ss.state_id AS source_state_id, ss.name AS source_state_name, " +
+                "d.city_id AS destination_city_id, d.name AS destination_city_name, " +
+                "ds.state_id AS destination_state_id, ds.name AS destination_state_name, " +
+                "st.status_id, st.name AS status_name " +
+                "FROM operator_routes opr " +
+                "JOIN routes r ON opr.route_id = r.route_id " +
+                "JOIN status st ON opr.status_id = st.status_id " +
+                "JOIN cities s ON r.source = s.city_id " +
+                "JOIN states ss ON s.state_id = ss.state_id " +
+                "JOIN cities d ON r.destination = d.city_id " +
+                "JOIN states ds ON d.state_id = ds.state_id " +
+                "WHERE opr.operator_id=? AND opr.route_id=?";
+                
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, operatorId);
+            ps.setInt(2, routeId);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Route route = new Route(
+                    rs.getInt("route_id"),
+                    new City(
+                        rs.getInt("source_city_id"),
+                        rs.getString("source_city_name"),
+                        new State(
+                            rs.getInt("source_state_id"),
+                            rs.getString("source_state_name")
+                        )
+                    ),
+                    new City(
+                        rs.getInt("destination_city_id"),
+                        rs.getString("destination_city_name"),
+                        new State(
+                            rs.getInt("destination_state_id"),
+                            rs.getString("destination_state_name")
+                        )
+                    ),
+                    rs.getInt("distance"),
+                    rs.getInt("duration")
+                );
+
+                Status status = new Status(
+                    rs.getInt("status_id"),
+                    rs.getString("status_name")
+                );
+
+                operatorRoute = new OperatorRoute(
+                    rs.getInt("operator_route_id"),
+                    route,
+                    status
+                );
+            }
+
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        return operatorRoute;
+    }
+
+
+    public static ArrayList<OperatorRoute> collectAllRecords(Integer operatorId) {
         ArrayList<OperatorRoute> operatorRouteList = new ArrayList<>();
 
         try {
@@ -133,11 +207,11 @@ public class OperatorRoute {
     }
 
     public void setRoute(Route route) {
-        this.route = route;
+        this.route = new Route(route.getRouteId(), route.getSource(), route.getDestination(), route.getDistance(), route.getDuration());
     }
     
     public Route getRoute() {
-        return route;
+        return new Route(route.getRouteId(), route.getSource(), route.getDestination(), route.getDistance(), route.getDuration());
     }
 
     public void setOperator(Operator operator) {

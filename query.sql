@@ -562,3 +562,46 @@ JOIN cities s on r.source = s.city_id
 JOIN states ss on s.state_id = ss.state_id
 JOIN cities d on r.destination = d.city_id
 JOIN states ds on d.state_id = ds.state_id;
+
+
+SELECT
+  oprm.operator_route_midcity_id,
+  oprm.halting_time,
+  opr.operator_route_id,
+
+  r.distance AS operator_route_distance,
+  r.duration AS operator_route_duration,
+
+  cs.city_id   AS operator_route_source_city_id,
+  cs.name      AS operator_route_source_city_name,
+  ss.state_id  AS operator_route_source_state_id,
+  ss.name      AS operator_route_source_state_name,
+
+  cd.city_id   AS operator_route_destination_city_id,
+  cd.name      AS operator_route_destination_city_name,
+  sd.state_id  AS operator_route_destination_state_id,
+  sd.name      AS operator_route_destination_state_name,
+
+  st.status_id AS operator_route_status_id,
+  st.name      AS operator_route_status_name,
+
+  rm.route_midcity_id,
+  cm.city_id   AS operator_route_midcity_city_id,
+  cm.name      AS operator_route_midcity_city_name,
+  sm.state_id  AS operator_route_midcity_state_id,
+  sm.name      AS operator_route_midcity_state_name,
+
+  rm.distance_from_source AS operator_route_midcity_distance_from_source,
+  rm.duration_from_source AS operator_route_midcity_duration_from_source
+
+FROM operator_route_midcities oprm
+JOIN operator_routes opr ON oprm.operator_route_id = opr.operator_route_id
+JOIN routes r               ON opr.route_id = r.route_id
+JOIN cities cs  ON r.source      = cs.city_id
+JOIN states ss  ON cs.state_id   = ss.state_id
+JOIN cities cd  ON r.destination = cd.city_id
+JOIN states sd  ON cd.state_id   = sd.state_id
+JOIN status st  ON opr.status_id = st.status_id
+JOIN route_midcities rm ON oprm.route_midcity_id = rm.route_midcity_id
+JOIN cities cm  ON rm.midcity_id = cm.city_id
+JOIN states sm  ON cm.state_id   = sm.state_id;
