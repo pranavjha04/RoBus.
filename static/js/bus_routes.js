@@ -51,9 +51,13 @@ const handleAllOperatorRoutes = async () => {
   }
 };
 
-window.addEventListener("DOMContentLoaded", () => {
-  setTimeout(() => {
-    Promise.all([handleAllRoutes(), handleAllOperatorRoutes()]);
+window.addEventListener("DOMContentLoaded", async () => {
+  setTimeout(async () => {
+    try {
+      await Promise.all([handleAllRoutes(), handleAllOperatorRoutes()]);
+    } catch {
+      window.location.reload();
+    }
   }, 1000);
 });
 
