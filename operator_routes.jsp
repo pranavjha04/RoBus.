@@ -40,36 +40,12 @@
                     class="form-control"
                     autocomplete="off"
                   />
+                  <input type="hidden" id="source_search_id" />
                   <ul
                     id="source_list"
-                    class="dropdown-menu w-100 shadow d-none overflow-y-auto position-absolute"
+                    class="dropdown-menu w-100 shadow d-none overflow-y-auto position-absolute py-0"
                     style="z-index: 1000; max-height: 200px"
-                  >
-                    <li class="dropdown-item py-2">
-                      &#128205; Jabalpur
-                      <small class="text-muted">Madhya Pradesh</small>
-                    </li>
-                    <li class="dropdown-item py-2">
-                      &#128205; Bhopal
-                      <small class="text-muted">Madhya Pradesh</small>
-                    </li>
-                    <li class="dropdown-item py-2">
-                      &#128205; Indore
-                      <small class="text-muted">Madhya Pradesh</small>
-                    </li>
-                    <li class="dropdown-item py-2">
-                      &#128205; Sagar
-                      <small class="text-muted">Madhya Pradesh</small>
-                    </li>
-                    <li class="dropdown-item py-2">
-                      &#128205; Rewa
-                      <small class="text-muted">Madhya Pradesh</small>
-                    </li>
-                    <li class="dropdown-item py-2">
-                      &#128205; Katni
-                      <small class="text-muted">Madhya Pradesh</small>
-                    </li>
-                  </ul>
+                  ></ul>
                 </div>
 
                 <!-- Destination -->
@@ -87,28 +63,12 @@
                     class="form-control"
                     autocomplete="off"
                   />
+                  <input type="hidden" id="destination_search_id" />
                   <ul
                     id="destination_list"
-                    class="dropdown-menu w-100 shadow d-none overflow-y-auto position-absolute"
+                    class="dropdown-menu w-100 shadow d-none overflow-y-auto position-absolute py-0"
                     style="z-index: 1000; max-height: 200px"
-                  >
-                    <li class="dropdown-item py-2">
-                      &#128205; Sagar
-                      <small class="text-muted">Madhya Pradesh</small>
-                    </li>
-                    <li class="dropdown-item py-2">
-                      &#128205; Rewa
-                      <small class="text-muted">Madhya Pradesh</small>
-                    </li>
-                    <li class="dropdown-item py-2">
-                      &#128205; Katni
-                      <small class="text-muted">Madhya Pradesh</small>
-                    </li>
-                    <li class="dropdown-item py-2">
-                      &#128205; Jabalpur
-                      <small class="text-muted">Madhya Pradesh</small>
-                    </li>
-                  </ul>
+                  ></ul>
                 </div>
               </div>
 
