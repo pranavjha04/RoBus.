@@ -1,5 +1,6 @@
 import { collectOperatorRouteRequest, collectRouteRequest } from "./service.js";
 import { toast } from "./toast.js";
+import { disableElements, enableElements } from "./util.js";
 
 const searchSource = document.querySelector("#route_source");
 const searchDestination = document.querySelector("#route_destination");
@@ -14,10 +15,75 @@ const searchDestinationHidden = document.querySelector(
 const searchSourceCache = {};
 const searchDestinationCache = {};
 
+const routeSelect = document.querySelector("#route_select");
+const routeAvailableList = document.querySelector("#route_available_list");
+const routeHidden = document.querySelector("#route_id");
+
+const routeMidCitySelect = document.querySelector("#route_midcity_select");
+const routeMidCityAvailableList = document.querySelector(
+  "#route_midcity_available_list"
+);
+const midCityHidden = document.querySelector("#route_midcity_id");
+
+const watchSearchSourceDestination = () => {
+  if (!searchSourceHidden.value || !searchDestinationHidden.value) {
+    disableElements(routeSelect);
+    routeAvailableList.innerHTML = "";
+    routeSelect.textContent = "Select Route";
+    routeHidden.value = "";
+    return;
+  }
+  enableElements(routeSelect);
+  const routeList = JSON.parse(sessionStorage.getItem("routeList"));
+  const filterResult = routeList.filter(
+    (route) =>
+      route.source.cityId === +searchSourceHidden.value &&
+      route.destination.cityId === +searchDestinationHidden.value
+  );
+
+  routeAvailableList.innerHTML = filterResult
+    .map((route) => {
+      const { routeId, source, destination, distance, duration } = route;
+      const { name: sourceCityName, state: sourceState } = source;
+      const { name: destinationCityName, state: destinationState } =
+        destination;
+      const { name: sourceStateName } = sourceState;
+      const { name: destinationStateName } = destinationState;
+      console.log(route);
+      return ` <li role="button" class="border-bottom cursor-pointer" data-routeId=${routeId}>
+                      <a class="dropdown-item d-flex flex-column py-2">
+                        <div class="fw-semibold route">
+                          &#128205; ${sourceCityName} &rarr; ${destinationCityName}
+                        </div>
+                        <small class="text-muted"
+                          >${sourceStateName} &rarr; ${destinationStateName}</small
+                        >
+                        <div class="d-flex gap-3 small text-muted mt-1">
+                          <div class="d-flex gap-1">
+                            &#128338; <span class='duration'>${
+                              duration / 60
+                            }h ${duration % 60}m</span>
+                          </div>
+                          <div class="d-flex gap-1">
+                            &#128205; <span class='distance'>${distance} km</span>
+                          </div>
+                        </div>
+                      </a>
+                    </li>`;
+    })
+    .join("");
+  enableElements(routeList);
+};
+
+const watchEvent = () => {
+  watchSearchSourceDestination();
+};
+
 const hideList = (...elements) => {
   elements.forEach((element) => {
     element.classList.remove("d-block");
     element.classList.add("d-none");
+    element.innerHTML = "";
   });
 };
 
@@ -25,6 +91,7 @@ const showList = (...elements) => {
   elements.forEach((element) => {
     element.classList.add("d-block");
     element.classList.remove("d-none");
+    element.innerHTML = "";
   });
 };
 
@@ -50,7 +117,7 @@ const displaySearchResult = (
 
 const getFilterSearchResult = (target, source = true) => {
   target = target.toLowerCase();
-  const routeList = JSON.parse(sessionStorage.getItem("routeList"));
+  const routeList = JSON.parse(sessionStorage.getItem("uniqueRouteList"));
 
   return routeList.filter((route) => {
     const city = source ? route.source : route.destination;
@@ -127,6 +194,7 @@ searchSource.addEventListener("input", (e) => {
   if (!value || value.length <= 2) {
     searchSourceHidden.value = "";
     hideList(searchSourceResultList);
+    watchEvent();
     return;
   }
 
@@ -143,6 +211,7 @@ searchDestination.addEventListener("input", (e) => {
   if (!value || value.length <= 2) {
     searchDestinationHidden.value = "";
     hideList(searchDestinationResultList);
+    watchEvent();
     return;
   }
 
@@ -164,7 +233,7 @@ searchSourceResultList.addEventListener("mousedown", (e) => {
   const cityName = target.querySelector("span").textContent;
   searchSourceHidden.value = cityId;
   searchSource.value = cityName;
-
+  watchEvent();
   hideList(searchSourceResultList);
 });
 
@@ -178,7 +247,24 @@ searchDestinationResultList.addEventListener("mousedown", (e) => {
   searchDestinationHidden.value = cityId;
   searchDestination.value = cityName;
 
+  watchEvent();
   hideList(searchDestinationResultList);
+});
+
+routeAvailableList.addEventListener("mousedown", (e) => {
+  enableElements(routeSelect);
+  const target = e.target.closest("li");
+  if (!target) return;
+
+  const deails =
+    target.querySelector(".route").textContent +
+    ", " +
+    target.querySelector(".distance").textContent +
+    ", " +
+    target.querySelector(".duration").textContent;
+
+  routeHidden.value = target.dataset.routeid;
+  routeSelect.textContent = deails;
 });
 
 searchSource.addEventListener("blur", () => {
@@ -188,6 +274,8 @@ searchSource.addEventListener("blur", () => {
       searchSource.value = firstChild.querySelector("span").textContent;
       searchSourceHidden.value = +firstChild.dataset.cityid;
     }
+    watchEvent();
+
     hideList(searchSourceResultList);
   }, 50);
 });
@@ -199,23 +287,38 @@ searchDestination.addEventListener("blur", () => {
       searchDestination.value = firstChild.querySelector("span").textContent;
       searchDestinationHidden.value = +firstChild.dataset.cityid;
     }
+    watchEvent();
     hideList(searchDestinationResultList);
   }, 50);
 });
 
 window.addEventListener("DOMContentLoaded", async () => {
-  setTimeout(async () => {
-    try {
-      await Promise.all([handleAllRoutes(), handleAllOperatorRoutes()]);
-    } catch {
-      window.location.reload();
-    }
-  }, 1000);
+  try {
+    await Promise.all([handleAllRoutes(), handleAllOperatorRoutes()]);
+    const routeList = JSON.parse(sessionStorage.getItem("routeList"));
+    const uniqueSet = new Set();
+    const uniqueRouteList = routeList.filter((route) => {
+      const key = `${route.source.cityId}-${route.destination.cityId}`;
+      if (uniqueSet.has(key)) {
+        return false;
+      }
+      uniqueSet.add(key);
+      return true;
+    });
+    sessionStorage.setItem("uniqueRouteList", JSON.stringify(uniqueRouteList));
+  } catch {
+    window.location.reload();
+  }
 });
 
 window.addEventListener("pagehide", () => {
-  sessionStorage.removeItem("routeList");
-  sessionStorage.removeItem("routeMidCityList");
-  sessionStorage.removeItem("operatorRouteList");
-  sessionStorage.removeItem("operatorRouteMidCityList");
+  [
+    "routeList",
+    "routeMidCityList",
+    "operatorRouteList",
+    "operatorRouteMidCityList",
+    "uniqueRouteList",
+  ].forEach((item) => {
+    sessionStorage.removeItem(item);
+  });
 });

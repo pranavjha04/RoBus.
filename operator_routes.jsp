@@ -83,53 +83,18 @@
                     type="button"
                     id="route_select"
                     data-bs-toggle="dropdown"
+                    disabled
                     aria-expanded="false"
                   >
                     <span class="text-secondary">Select Route</span>
                   </button>
+                  <input type="hidden" name="route_id" id="route_id" />
                   <ul
                     id="route_available_list"
                     class="dropdown-menu w-100 shadow-sm overflow-y-scroll"
                     style="max-height: 275px"
                     aria-labelledby="route_select"
-                  >
-                    <li role="button" class="border-bottom cursor-pointer">
-                      <a class="dropdown-item d-flex flex-column py-2">
-                        <div class="fw-semibold">
-                          &#128205; Jabalpur &rarr; Sagar
-                        </div>
-                        <small class="text-muted"
-                          >Madhya Pradesh &rarr; Madhya Pradesh</small
-                        >
-                        <div class="d-flex gap-3 small text-muted mt-1">
-                          <div class="d-flex gap-1">
-                            &#128338; <span>4h 30m</span>
-                          </div>
-                          <div class="d-flex gap-1">
-                            &#128205; <span>240 km</span>
-                          </div>
-                        </div>
-                      </a>
-                    </li>
-                    <li role="button" class="border-bottom cursor-pointer">
-                      <a class="dropdown-item d-flex flex-column py-2">
-                        <div class="fw-semibold">
-                          &#128205; Bhopal &rarr; Indore
-                        </div>
-                        <small class="text-muted"
-                          >Madhya Pradesh &rarr; Madhya Pradesh</small
-                        >
-                        <div class="d-flex gap-3 small text-muted mt-1">
-                          <div class="d-flex gap-1">
-                            &#128338; <span>5h 15m</span>
-                          </div>
-                          <div class="d-flex gap-1">
-                            &#128205; <span>330 km</span>
-                          </div>
-                        </div>
-                      </a>
-                    </li>
-                  </ul>
+                  ></ul>
                 </div>
               </div>
 
@@ -206,14 +171,78 @@
                     />
                   </div>
                 </div>
+                <!-- <div class="">
+                  <div class="">
+                    <div class="rounded">
+                      <table
+                        class="table table-responsive table-bordered text-center align-middle mb-0"
+                      >
+                        <thead class="table-light">
+                          <tr>
+                            <th class="p-2">Mid City</th>
+                            <th class="p-2">Distance</th>
+                            <th class="p-2">Duration</th>
+                            <th class="p-2">Halting Time</th>
+                            <th class="p-2">Options</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td class="p-2">Katnagi</td>
+                            <td class="p-2">240 km</td>
+                            <td class="p-2">4h 30m</td>
+                            <td class="p-2 w-25">
+                              <span
+                                ><input
+                                  class="input text-center p-0 rounded-2 focus-ring"
+                                  value="15"
+                              /></span>
+                            </td>
+                            <td class="p-2">
+                              <button
+                                type="button"
+                                class="feature-btn"
+                                data-type="edit"
+                              >
+                                <img
+                                  src="static/media/images/edit_sm_blue.svg"
+                                  class="feature-icon"
+                                />
+                              </button>
+                              <button
+                                type="button"
+                                class="feature-btn ms-2"
+                                data-type="delete"
+                              >
+                                <img
+                                  src="static/media/images/delete_sm_red.svg"
+                                  class="feature-icon"
+                                />
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div> -->
+
+                <div class="d-flex align-items-end mt-0">
+                  <input
+                    type="button"
+                    id="add_midcity_btn"
+                    value="&plus; Add Mid City"
+                    class="btn text-primary align-self-end ms-auto"
+                  />
+                </div>
               </div>
 
               <!-- Submit Button -->
-              <div class="mt-3 row">
+              <div class="d-flex align-items-end">
                 <input
                   type="submit"
                   value="Add Route"
-                  class="btn btn-primary"
+                  class="btn btn-primary align-self-end ms-auto px-4 py-2"
                 />
               </div>
             </form>
