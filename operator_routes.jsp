@@ -227,12 +227,12 @@
                   </div>
                 </div> -->
 
-                <div class="d-flex align-items-end mt-0">
+                <div class="d-flex align-items-end mt-2">
                   <input
                     type="button"
                     id="add_midcity_btn"
                     value="&plus; Add Mid City"
-                    class="btn text-primary align-self-end ms-auto"
+                    class="btn text-primary py-0 border-primary bg-primary-subtle align-self-end ms-auto"
                   />
                 </div>
               </div>
