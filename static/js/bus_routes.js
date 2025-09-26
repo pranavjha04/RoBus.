@@ -1,6 +1,7 @@
 import { collectOperatorRouteRequest, collectRouteRequest } from "./service.js";
 import { toast } from "./toast.js";
 import { disableElements, enableElements } from "./util.js";
+import { ViewHelper } from "./viewHelper.js";
 
 const searchSource = document.querySelector("#route_source");
 const searchDestination = document.querySelector("#route_destination");
@@ -23,17 +24,32 @@ const routeMidCitySelect = document.querySelector("#route_midcity_select");
 const routeMidCityAvailableList = document.querySelector(
   "#route_midcity_available_list"
 );
-const midCityHidden = document.querySelector("#route_midcity_id");
+const activeMidCity = document.querySelector("#route_midcity_id");
 
-const watchSearchSourceDestination = () => {
-  if (!searchSourceHidden.value || !searchDestinationHidden.value) {
-    disableElements(routeSelect);
-    routeAvailableList.innerHTML = "";
-    routeSelect.textContent = "Select Route";
-    routeHidden.value = "";
-    return;
-  }
-  enableElements(routeSelect);
+const haltingTime = document.querySelector("#halting_time");
+const addHaltingTimeBtn = document.querySelector("#add_midcity_btn");
+const selectedMidCityList = document.querySelector("#selected_midcity_list");
+
+const resetHaltingTime = () => {
+  haltingTime.value = "";
+  disableElements(haltingTime, addHaltingTimeBtn);
+};
+
+const resetRouteList = () => {
+  routeAvailableList.innerHTML = "";
+  routeHidden.value = "";
+  routeSelect.textContent = "Select Route";
+};
+const resetMidCityList = () => {
+  routeMidCityAvailableList.innerHTML = "";
+  activeMidCity.value = "";
+  routeMidCitySelect.textContent = "Select Mid City";
+
+  resetHaltingTime();
+};
+
+const displayRouteSelect = () => {
+  routeSelect.focus();
   const routeList = JSON.parse(sessionStorage.getItem("routeList"));
   const filterResult = routeList.filter(
     (route) =>
@@ -42,37 +58,53 @@ const watchSearchSourceDestination = () => {
   );
 
   routeAvailableList.innerHTML = filterResult
-    .map((route) => {
-      const { routeId, source, destination, distance, duration } = route;
-      const { name: sourceCityName, state: sourceState } = source;
-      const { name: destinationCityName, state: destinationState } =
-        destination;
-      const { name: sourceStateName } = sourceState;
-      const { name: destinationStateName } = destinationState;
-      console.log(route);
-      return ` <li role="button" class="border-bottom cursor-pointer" data-routeId=${routeId}>
-                      <a class="dropdown-item d-flex flex-column py-2">
-                        <div class="fw-semibold route">
-                          &#128205; ${sourceCityName} &rarr; ${destinationCityName}
-                        </div>
-                        <small class="text-muted"
-                          >${sourceStateName} &rarr; ${destinationStateName}</small
-                        >
-                        <div class="d-flex gap-3 small text-muted mt-1">
-                          <div class="d-flex gap-1">
-                            &#128338; <span class='duration'>${
-                              duration / 60
-                            }h ${duration % 60}m</span>
-                          </div>
-                          <div class="d-flex gap-1">
-                            &#128205; <span class='distance'>${distance} km</span>
-                          </div>
-                        </div>
-                      </a>
-                    </li>`;
-    })
+    .map(ViewHelper.getRoutesSelectList)
     .join("");
-  enableElements(routeList);
+};
+
+const displayRouteMidCitySelect = () => {
+  if (!routeHidden.value || isNaN(+routeHidden.value)) {
+    return;
+  }
+
+  enableElements(routeMidCitySelect);
+  routeMidCitySelect.focus();
+
+  const routeMidCityList = JSON.parse(
+    sessionStorage.getItem("routeMidCityList")
+  );
+  console.log(routeMidCityList);
+  const filterResult = routeMidCityList.filter(({ route }) => {
+    return route.routeId === +routeHidden.value;
+  });
+
+  routeMidCityAvailableList.innerHTML = filterResult
+    .map(ViewHelper.getRouteMidCitySelectList)
+    .join("");
+};
+
+const watchSearchSourceDestination = () => {
+  if (!searchSourceHidden.value || !searchDestinationHidden.value) {
+    disableElements(
+      routeSelect,
+      routeMidCitySelect,
+      haltingTime,
+      addHaltingTimeBtn
+    );
+
+    // routes
+    resetRouteList();
+
+    // midcity
+    resetMidCityList();
+
+    // haltingTime
+    resetHaltingTime();
+    return;
+  }
+  enableElements(routeSelect);
+
+  displayRouteSelect();
 };
 
 const watchEvent = () => {
@@ -256,7 +288,7 @@ routeAvailableList.addEventListener("mousedown", (e) => {
   const target = e.target.closest("li");
   if (!target) return;
 
-  const deails =
+  const otherDetails =
     target.querySelector(".route").textContent +
     ", " +
     target.querySelector(".distance").textContent +
@@ -264,7 +296,46 @@ routeAvailableList.addEventListener("mousedown", (e) => {
     target.querySelector(".duration").textContent;
 
   routeHidden.value = target.dataset.routeid;
-  routeSelect.textContent = deails;
+  routeSelect.textContent = otherDetails;
+
+  resetMidCityList();
+
+  displayRouteMidCitySelect();
+});
+
+routeMidCityAvailableList.addEventListener("mousedown", (e) => {
+  const target = e.target.closest("li");
+  if (!target) return;
+
+  const details =
+    target.querySelector(".city").textContent +
+    ", " +
+    target.querySelector(".distance").textContent +
+    ", " +
+    target.querySelector(".duration").textContent;
+  routeMidCitySelect.textContent = details;
+  activeMidCity.value = target.dataset.routemidcityid;
+
+  enableElements(haltingTime);
+});
+
+haltingTime.addEventListener("input", (e) => {
+  const value = +e.target.value;
+
+  if (!value || isNaN(value) || value < 0 || value > 120) {
+    e.target.value = "";
+    disableElements(addHaltingTimeBtn);
+  } else {
+    enableElements(addHaltingTimeBtn);
+  }
+});
+
+addHaltingTimeBtn.addEventListener("click", (e) => {
+  if (!activeMidCity.value) {
+    disableElements(addHaltingTimeBtn);
+    return;
+  }
+
 });
 
 searchSource.addEventListener("blur", () => {

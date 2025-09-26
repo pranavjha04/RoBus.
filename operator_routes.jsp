@@ -98,12 +98,13 @@
                 </div>
               </div>
 
-              <!-- Mid City & Hauling Time -->
+              <!-- Mid City & Haling Time -->
               <div class="row g-3 mb-3">
+                <input type="hidden" id="route_midcity_id" />
                 <!-- Mid City -->
                 <div class="col-md-6 position-relative">
                   <label
-                    for="mid_city_select"
+                    for="route_midcity_select"
                     class="form-label small fw-semibold"
                     >Mid City</label
                   >
@@ -111,63 +112,35 @@
                     <button
                       class="btn form-select border rounded w-100 d-flex justify-content-between align-items-center"
                       type="button"
-                      id="mid_city_select"
+                      id="route_midcity_select"
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
                       <span class="text-secondary">Select Mid City</span>
                     </button>
                     <ul
-                      id="mid_city_available_list"
+                      id="route_midcity_available_list"
                       class="dropdown-menu w-100 shadow"
                       style="max-height: 200px; overflow-y: auto"
-                    >
-                      <li
-                        class="dropdown-item py-2 d-flex justify-content-between align-items-center"
-                      >
-                        <div class="d-flex flex-column">
-                          <span>&#128205; Katangi</span>
-                          <small class="text-muted">Madhya Pradesh</small>
-                        </div>
-                        <span class="small text-muted">60 km</span>
-                      </li>
-                      <li
-                        class="dropdown-item py-2 d-flex justify-content-between align-items-center"
-                      >
-                        <div class="d-flex flex-column">
-                          <span>&#128205; Narsinghpur</span>
-                          <small class="text-muted">Madhya Pradesh</small>
-                        </div>
-                        <span class="small text-muted">80 km</span>
-                      </li>
-                      <li
-                        class="dropdown-item py-2 d-flex justify-content-between align-items-center"
-                      >
-                        <div class="d-flex flex-column">
-                          <span>&#128205; Rewa</span>
-                          <small class="text-muted">Madhya Pradesh</small>
-                        </div>
-                        <span class="small text-muted">100 km</span>
-                      </li>
-                    </ul>
+                    ></ul>
                   </div>
                 </div>
 
-                <!-- Hauling Time -->
+                <!-- Halting Time -->
                 <div class="col-md-6">
                   <label
-                    for="haulting_time"
+                    for="halting_time"
                     class="form-label small fw-semibold"
-                    >Hauling Time</label
+                    >Halting Time</label
                   >
                   <div class="input-group">
                     <span class="input-group-text">&#9201;</span>
                     <input
                       type="number"
                       class="form-control"
-                      placeholder="Hauling Time (mins)"
-                      name="haulting_time"
-                      id="haulting_time"
+                      placeholder="Halting Time (mins)"
+                      disabled
+                      id="halting_time"
                     />
                   </div>
                 </div>
@@ -228,14 +201,19 @@
                 </div> -->
 
                 <div class="d-flex align-items-end mt-2">
-                  <input
+                  <button
                     type="button"
                     id="add_midcity_btn"
-                    value="&plus; Add Mid City"
+                    disabled
                     class="btn text-primary py-0 border-primary bg-primary-subtle align-self-end ms-auto"
-                  />
+                  >
+                    &plus; Add Mid City
+                  </button>
                 </div>
               </div>
+
+              <!-- Select mid ICyt List-->
+              <div id="selected_midcity_list"></div>
 
               <!-- Submit Button -->
               <div class="d-flex align-items-end">

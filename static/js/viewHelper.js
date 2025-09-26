@@ -154,4 +154,66 @@ export class ViewHelper {
                 </td>
               </tr>`;
   }
+
+  static getRoutesSelectList(route) {
+    const { routeId, source, destination, distance, duration } = route;
+    const { name: sourceCityName, state: sourceState } = source;
+    const { name: destinationCityName, state: destinationState } = destination;
+    const { name: sourceStateName } = sourceState;
+    const { name: destinationStateName } = destinationState;
+
+    console.log(route);
+    return ` <li role="button" class="border-bottom cursor-pointer" data-routeId=${routeId}>
+                      <a class="dropdown-item d-flex flex-column py-2">
+                        <div class="fw-semibold route">
+                          &#128205; ${sourceCityName} &rarr; ${destinationCityName}
+                        </div>
+                        <small class="text-muted"
+                          >${sourceStateName} &rarr; ${destinationStateName}</small
+                        >
+                        <div class="d-flex gap-3 small text-muted mt-1">
+                          <div class="d-flex gap-1">
+                            &#128338; <span class='duration'>${Math.trunc(
+                              duration / 60
+                            )}h ${duration % 60}m</span>
+                          </div>
+                          <div class="d-flex gap-1">
+                            &#128205; <span class='distance'>${distance} km</span>
+                          </div>
+                        </div>
+                      </a>
+                    </li>`;
+  }
+
+  static getRouteMidCitySelectList(route) {
+    const {
+      routeMidCityId,
+      distanceFromSource,
+      durationFromSource,
+      midCity,
+      route: currRoute,
+    } = route;
+
+    const { name: midCityName, state: midCityState } = midCity;
+    const { name: midCityStateName } = midCityState;
+
+    console.log(durationFromSource / 60, distanceFromSource);
+
+    return `  <li role='button'
+                        class="dropdown-item py-2 d-flex justify-content-between align-items-center"
+                        data-routeMidCityId=${routeMidCityId}
+                      >
+                        <div class="d-flex flex-column">
+                          <span class='city'>&#128205; ${midCityName}</span>
+                          <small class="text-muted state">${midCityStateName}</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="small text-muted distance">${distanceFromSource} km</span>
+                            <span class='small text-muted'>|</span>
+                            <span class='small text-muted duration'>${Math.trunc(
+                              durationFromSource / 60
+                            )}h ${durationFromSource % 60}m</span> 
+                        </div>
+                      </li>`;
+  }
 }
