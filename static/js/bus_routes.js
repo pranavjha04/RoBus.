@@ -1,4 +1,8 @@
-import { collectOperatorRouteRequest, collectRouteRequest } from "./service.js";
+import {
+  collectOperatorRouteRequest,
+  collectRouteRequest,
+  deleteFareFactorRequest,
+} from "./service.js";
 import { toast } from "./toast.js";
 import { disableElements, enableElements } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
@@ -30,9 +34,19 @@ const haltingTime = document.querySelector("#halting_time");
 const addHaltingTimeBtn = document.querySelector("#add_midcity_btn");
 const selectedMidCityList = document.querySelector("#selected_midcity_list");
 
+const midCityTable = document.querySelector("#mid_city_selected_table");
+
+const resetSelectRoutes = () => {
+  selectedMidCityList.innerHTML = "";
+  midCityTable.innerHTML = "";
+  midCityTable.classList.add("d-none");
+};
+
 const resetHaltingTime = () => {
   haltingTime.value = "";
   disableElements(haltingTime, addHaltingTimeBtn);
+
+  resetSelectRoutes();
 };
 
 const resetRouteList = () => {
@@ -48,14 +62,57 @@ const resetMidCityList = () => {
   resetHaltingTime();
 };
 
+const displayMidCityTable = () => {
+  midCityTable.classList.remove("d-none");
+
+  midCityTable.innerHTML = ViewHelper.getSelectMidCityAddRouteFormHead();
+
+  const routeMidCityList = JSON.parse(
+    sessionStorage.getItem("routeMidCityList")
+  );
+
+  const filterResult = routeMidCityList.filter((midCity) => {
+    const condition = Array.from(selectedMidCityList.childNodes).some(
+      (node) => {
+        const splitValues = node.value.split("-");
+        const midCityId = +splitValues[1];
+        const haltingTime = +splitValues[2];
+        if (midCity.routeMidCityId === midCityId) {
+          midCity.haltingTime = haltingTime;
+        }
+
+        return midCity.routeMidCityId === midCityId;
+      }
+    );
+
+    return midCity.route.routeId === +routeHidden.value && condition;
+  });
+
+  if (filterResult.length === 0) {
+    return;
+  }
+
+  midCityTable.innerHTML += `<tbody>${Array.from(filterResult)
+    .map(ViewHelper.getSelectMidCityAddRouteFormBodyRow)
+    .join("")}</tbody>`;
+};
 const displayRouteSelect = () => {
   routeSelect.focus();
+
+  routeSelect.textContent = "Select Route";
+
   const routeList = JSON.parse(sessionStorage.getItem("routeList"));
   const filterResult = routeList.filter(
     (route) =>
       route.source.cityId === +searchSourceHidden.value &&
       route.destination.cityId === +searchDestinationHidden.value
   );
+
+  if (filterResult.length === 0) {
+    routeSelect.textContent = "No Routes Available";
+    disableElements(routeSelect);
+    return;
+  }
 
   routeAvailableList.innerHTML = filterResult
     .map(ViewHelper.getRoutesSelectList)
@@ -68,15 +125,30 @@ const displayRouteMidCitySelect = () => {
   }
 
   enableElements(routeMidCitySelect);
+
   routeMidCitySelect.focus();
+
+  routeMidCitySelect.textContent = "Select Mid City";
 
   const routeMidCityList = JSON.parse(
     sessionStorage.getItem("routeMidCityList")
   );
-  console.log(routeMidCityList);
-  const filterResult = routeMidCityList.filter(({ route }) => {
-    return route.routeId === +routeHidden.value;
+
+  const filterResult = routeMidCityList.filter((midCity) => {
+    const condition = Array.from(selectedMidCityList.childNodes).every(
+      (node) => {
+        const currMidCityId = +node.value.split("-")[1];
+        return midCity.routeMidCityId !== currMidCityId;
+      }
+    );
+    return midCity.route.routeId === +routeHidden.value && condition;
   });
+
+  if (filterResult.length === 0) {
+    routeMidCitySelect.textContent = "No Mid Cities Available";
+    disableElements(routeMidCitySelect, haltingTime);
+    return;
+  }
 
   routeMidCityAvailableList.innerHTML = filterResult
     .map(ViewHelper.getRouteMidCitySelectList)
@@ -273,7 +345,6 @@ searchDestinationResultList.addEventListener("mousedown", (e) => {
   const target = e.target.closest("li");
   if (!target) return;
 
-  console.log(target);
   const { cityid: cityId } = target.dataset;
   const cityName = target.querySelector("span").textContent;
   searchDestinationHidden.value = cityId;
@@ -336,6 +407,17 @@ addHaltingTimeBtn.addEventListener("click", (e) => {
     return;
   }
 
+  const hiddenValue = `<input type="hidden" value="${routeHidden.value}-${activeMidCity.value}-${haltingTime.value}" name='route_midcity_halting' />`;
+  selectedMidCityList.innerHTML += hiddenValue;
+
+  toast.success("Mid City Added Successfully");
+
+  // hide values
+  haltingTime.value = "";
+
+  displayRouteMidCitySelect();
+
+  displayMidCityTable();
 });
 
 searchSource.addEventListener("blur", () => {

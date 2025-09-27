@@ -162,7 +162,6 @@ export class ViewHelper {
     const { name: sourceStateName } = sourceState;
     const { name: destinationStateName } = destinationState;
 
-    console.log(route);
     return ` <li role="button" class="border-bottom cursor-pointer" data-routeId=${routeId}>
                       <a class="dropdown-item d-flex flex-column py-2">
                         <div class="fw-semibold route">
@@ -197,8 +196,6 @@ export class ViewHelper {
     const { name: midCityName, state: midCityState } = midCity;
     const { name: midCityStateName } = midCityState;
 
-    console.log(durationFromSource / 60, distanceFromSource);
-
     return `  <li role='button'
                         class="dropdown-item py-2 d-flex justify-content-between align-items-center"
                         data-routeMidCityId=${routeMidCityId}
@@ -215,5 +212,65 @@ export class ViewHelper {
                             )}h ${durationFromSource % 60}m</span> 
                         </div>
                       </li>`;
+  }
+
+  static getSelectMidCityAddRouteFormHead() {
+    return `<thead class="table-light">
+                          <tr>
+                            <th class="p-2">Mid City</th>
+                            <th class="p-2">Distance</th>
+                            <th class="p-2">Duration</th>
+                            <th class="p-2">Halting Time</th>
+                            <th class="p-2">Options</th>
+                          </tr>
+                        </thead>`;
+  }
+
+  static getSelectMidCityAddRouteFormBodyRow(routeMidCity) {
+    const {
+      midCity,
+      routeMidCityId,
+      distanceFromSource,
+      durationFromSource,
+      haltingTime,
+    } = routeMidCity;
+
+    const { name: midCityName } = midCity;
+    return `  <tr>
+                            <td class="p-2">${midCityName}</td>
+                            <td class="p-2">${distanceFromSource} km</td>
+                            <td class="p-2">${Math.trunc(
+                              durationFromSource / 60
+                            )}h ${durationFromSource % 60}m</td>
+                            <td class="p-2 w-25">
+                              <span
+                                ><input
+                                  class="input text-center p-0 rounded-2 focus-ring"
+                                  value="${haltingTime}"
+                              /></span>
+                            </td>
+                            <td class="p-2">
+                              <button
+                                type="button"
+                                class="feature-btn"
+                                data-type="edit"
+                              >
+                                <img
+                                  src="static/media/images/edit_sm_blue.svg"
+                                  class="feature-icon"
+                                />
+                              </button>
+                              <button
+                                type="button"
+                                class="feature-btn ms-2"
+                                data-type="delete"
+                              >
+                                <img
+                                  src="static/media/images/delete_sm_red.svg"
+                                  class="feature-icon"
+                                />
+                              </button>
+                            </td>
+                          </tr>`;
   }
 }

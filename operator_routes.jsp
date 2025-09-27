@@ -128,9 +128,7 @@
 
                 <!-- Halting Time -->
                 <div class="col-md-6">
-                  <label
-                    for="halting_time"
-                    class="form-label small fw-semibold"
+                  <label for="halting_time" class="form-label small fw-semibold"
                     >Halting Time</label
                   >
                   <div class="input-group">
@@ -144,11 +142,12 @@
                     />
                   </div>
                 </div>
-                <!-- <div class="">
+                <div class="">
                   <div class="">
                     <div class="rounded">
                       <table
                         class="table table-responsive table-bordered text-center align-middle mb-0"
+                        id="mid_city_selected_table"
                       >
                         <thead class="table-light">
                           <tr>
@@ -198,7 +197,7 @@
                       </table>
                     </div>
                   </div>
-                </div> -->
+                </div>
 
                 <div class="d-flex align-items-end mt-2">
                   <button

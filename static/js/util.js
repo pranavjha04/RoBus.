@@ -129,7 +129,6 @@ export const disableElements = (...elements) => {
 };
 
 export const enableElements = (...elements) => {
-  console.log(elements);
   elements.forEach((next) => (next.disabled = false));
 };
 
