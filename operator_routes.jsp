@@ -142,59 +142,13 @@
                     />
                   </div>
                 </div>
-                <div class="">
-                  <div class="">
+                <div>
+                  <div>
                     <div class="rounded">
                       <table
                         class="table table-responsive table-bordered text-center align-middle mb-0"
                         id="mid_city_selected_table"
-                      >
-                        <thead class="table-light">
-                          <tr>
-                            <th class="p-2">Mid City</th>
-                            <th class="p-2">Distance</th>
-                            <th class="p-2">Duration</th>
-                            <th class="p-2">Halting Time</th>
-                            <th class="p-2">Options</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td class="p-2">Katnagi</td>
-                            <td class="p-2">240 km</td>
-                            <td class="p-2">4h 30m</td>
-                            <td class="p-2 w-25">
-                              <span
-                                ><input
-                                  class="input text-center p-0 rounded-2 focus-ring"
-                                  value="15"
-                              /></span>
-                            </td>
-                            <td class="p-2">
-                              <button
-                                type="button"
-                                class="feature-btn"
-                                data-type="edit"
-                              >
-                                <img
-                                  src="static/media/images/edit_sm_blue.svg"
-                                  class="feature-icon"
-                                />
-                              </button>
-                              <button
-                                type="button"
-                                class="feature-btn ms-2"
-                                data-type="delete"
-                              >
-                                <img
-                                  src="static/media/images/delete_sm_red.svg"
-                                  class="feature-icon"
-                                />
-                              </button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      ></table>
                     </div>
                   </div>
                 </div>

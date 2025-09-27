@@ -199,6 +199,7 @@ export class ViewHelper {
     return `  <li role='button'
                         class="dropdown-item py-2 d-flex justify-content-between align-items-center"
                         data-routeMidCityId=${routeMidCityId}
+                        data-routeid=${currRoute.routeId}
                       >
                         <div class="d-flex flex-column">
                           <span class='city'>&#128205; ${midCityName}</span>
@@ -233,21 +234,30 @@ export class ViewHelper {
       distanceFromSource,
       durationFromSource,
       haltingTime,
+      route: currRoute,
     } = routeMidCity;
 
     const { name: midCityName } = midCity;
-    return `  <tr>
+    return `  <tr data-routeMidCityId=${routeMidCityId}
+                        data-routeid=${currRoute.routeId}>
                             <td class="p-2">${midCityName}</td>
                             <td class="p-2">${distanceFromSource} km</td>
                             <td class="p-2">${Math.trunc(
                               durationFromSource / 60
                             )}h ${durationFromSource % 60}m</td>
-                            <td class="p-2 w-25">
+                            <td class="p-2 w-25 halting">
                               <span
-                                ><input
-                                  class="input text-center p-0 rounded-2 focus-ring"
-                                  value="${haltingTime}"
-                              /></span>
+                                >${
+                                  haltingTime < 60 ? `${haltingTime} mins` : ""
+                                }
+                                ${
+                                  haltingTime > 60
+                                    ? `${Math.trunc(haltingTime / 60)}h ${
+                                        haltingTime % 60
+                                      }m`
+                                    : ""
+                                }
+                              </span>
                             </td>
                             <td class="p-2">
                               <button

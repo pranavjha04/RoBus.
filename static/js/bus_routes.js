@@ -63,6 +63,11 @@ const resetMidCityList = () => {
 };
 
 const displayMidCityTable = () => {
+  if (selectedMidCityList.children.length === 0) {
+    midCityTable.classList.add("d-none");
+    return;
+  }
+
   midCityTable.classList.remove("d-none");
 
   midCityTable.innerHTML = ViewHelper.getSelectMidCityAddRouteFormHead();
@@ -97,7 +102,9 @@ const displayMidCityTable = () => {
     .join("")}</tbody>`;
 };
 const displayRouteSelect = () => {
-  routeSelect.focus();
+  setTimeout(() => {
+    routeSelect.focus();
+  }, 50);
 
   routeSelect.textContent = "Select Route";
 
@@ -124,9 +131,11 @@ const displayRouteMidCitySelect = () => {
     return;
   }
 
-  enableElements(routeMidCitySelect);
+  setTimeout(() => {
+    routeMidCitySelect.focus();
+  }, 50);
 
-  routeMidCitySelect.focus();
+  enableElements(routeMidCitySelect);
 
   routeMidCitySelect.textContent = "Select Mid City";
 
@@ -407,10 +416,10 @@ addHaltingTimeBtn.addEventListener("click", (e) => {
     return;
   }
 
-  const hiddenValue = `<input type="hidden" value="${routeHidden.value}-${activeMidCity.value}-${haltingTime.value}" name='route_midcity_halting' />`;
-  selectedMidCityList.innerHTML += hiddenValue;
+  disableElements(addHaltingTimeBtn);
+  const hiddenValue = `<input type="hidden" value="${routeHidden.value}-${activeMidCity.value}-${haltingTime.value}" name='route_midcity_halting' id="${routeHidden.value}-${activeMidCity.value}" />`;
 
-  toast.success("Mid City Added Successfully");
+  selectedMidCityList.innerHTML += hiddenValue;
 
   // hide values
   haltingTime.value = "";
@@ -443,6 +452,95 @@ searchDestination.addEventListener("blur", () => {
     watchEvent();
     hideList(searchDestinationResultList);
   }, 50);
+});
+
+const handleHaltingTimeEdit = (parent) => {
+  const { routemidcityid, routeid } = parent.dataset;
+  if (!routemidcityid || !routeid) return;
+
+  const targetElement = document.getElementById(`${routeid}-${routemidcityid}`);
+  if (!targetElement) return;
+
+  const haltingDiv = parent.querySelector(".halting");
+  if (!haltingDiv) return;
+
+  const oldHaltingValue = targetElement.value.substring(
+    targetElement.value.lastIndexOf("-") + 1
+  );
+  haltingDiv.innerHTML = `<span
+                                ><input
+                                  class="input text-center p-0 rounded-2 focus-ring"
+                                  value="${oldHaltingValue}"
+                                  id=${Math.random()}
+                                  type='number'
+                              /></span>`;
+  const changeHaltingEditInput = parent.querySelector("input");
+
+  changeHaltingEditInput.addEventListener("blur", (e) => {
+    const value = +e.target.value;
+
+    if (!value || isNaN(value) || value < 0 || value > 120) {
+      e.target.value = oldHaltingValue;
+    } else {
+      targetElement.value = `${routeid}-${routemidcityid}-${e.target.value}`;
+      haltingDiv.innerHTML = `<span
+                                >${
+                                  +e.target.value < 60
+                                    ? `${+e.target.value} mins`
+                                    : ""
+                                }
+                                ${
+                                  +e.target.value > 60
+                                    ? `${Math.trunc(+e.target.value / 60)}h ${
+                                        +e.target.value % 60
+                                      }m`
+                                    : ""
+                                }
+                              </span>`;
+
+      if (+oldHaltingValue === +e.target.value) return;
+
+      toast.success("Halting Time Updated Successfully");
+    }
+  });
+};
+
+const handleHaltingTimeDelete = (parent) => {
+  const { routemidcityid, routeid } = parent.dataset;
+  if (!routemidcityid || !routeid) return;
+
+  const targetElement = document.getElementById(`${routeid}-${routemidcityid}`);
+  if (!targetElement) return;
+
+  targetElement.remove();
+  parent.remove();
+
+  displayRouteMidCitySelect();
+
+  displayMidCityTable();
+  toast.success("Mid City Delete Successfully");
+};
+
+midCityTable.addEventListener("click", (e) => {
+  const target = e.target.closest(".feature-btn");
+  if (!target) return;
+  const { type } = target.dataset;
+  const parent = target.closest("tr");
+  if (!parent) return;
+
+  switch (type) {
+    case "edit": {
+      handleHaltingTimeEdit(parent);
+      break;
+    }
+    case "delete": {
+      handleHaltingTimeDelete(parent);
+      break;
+    }
+    default: {
+      break;
+    }
+  }
 });
 
 window.addEventListener("DOMContentLoaded", async () => {
