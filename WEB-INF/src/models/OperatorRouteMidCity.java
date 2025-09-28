@@ -40,6 +40,33 @@ public class OperatorRouteMidCity {
 
     }
 
+    public static Boolean addRecord(Integer operatorRouteId, Integer routeMidCityId,Integer haltingTime) {
+        Boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "INSERT INTO operator_route_midcities " +
+                        "(operator_route_id, route_midcity_id, halting_time) " +
+                        "VALUES (?,?,?)";
+            
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setInt(1, operatorRouteId);
+            ps.setInt(2, routeMidCityId);
+            ps.setInt(3, haltingTime);
+            
+            flag = ps.executeUpdate() == 1;
+
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = true;
+        }
+
+        return flag;
+    }
+
     public static ArrayList<OperatorRouteMidCity> collectAllRecords(Integer operatorId) {
         ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = new ArrayList<>();
         try {

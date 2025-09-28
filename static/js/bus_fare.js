@@ -156,6 +156,7 @@ const handleEdit = async (e) => {
   }
 
   chargeInput.focus();
+  chargeInput.select();
 
   chargeInput.addEventListener("blur", async () => {
     const isValid = validateCharge(chargeInput);

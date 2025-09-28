@@ -245,7 +245,7 @@ export class ViewHelper {
                             <td class="p-2">${Math.trunc(
                               durationFromSource / 60
                             )}h ${durationFromSource % 60}m</td>
-                            <td class="p-2 w-25 halting">
+                            <td class="px-0 py-2 halting">
                               <span
                                 >${
                                   haltingTime < 60 ? `${haltingTime} mins` : ""

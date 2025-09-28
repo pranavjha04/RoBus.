@@ -279,6 +279,18 @@ export const updateSeatingRequest = async (obj) => {
   return data.trim();
 };
 
+export const addOperatorRouteRequest = async (obj) => {
+  const queryParams = createURLParams(obj);
+
+  const res = await fetch(`add_operator_route.do?${queryParams.toString()}`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Internal Server Error");
+
+  const data = await res.text();
+  return data.trim();
+};
+
 export const collectOperatorRoutesRequest = async () => {
   const res = await fetch("get_operator_routes.do");
   if (!res.ok) throw new Error("Internal Server erorr");

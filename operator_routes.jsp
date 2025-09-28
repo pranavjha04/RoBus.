@@ -34,7 +34,6 @@
                   >
                   <input
                     type="search"
-                    name="source"
                     id="route_source"
                     placeholder="Enter Source City"
                     class="form-control"
@@ -57,7 +56,6 @@
                   >
                   <input
                     type="search"
-                    name="destination"
                     id="route_destination"
                     placeholder="Enter Destination City"
                     class="form-control"
@@ -113,6 +111,7 @@
                       class="btn form-select border rounded w-100 d-flex justify-content-between align-items-center"
                       type="button"
                       id="route_midcity_select"
+                      disabled
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
@@ -149,6 +148,7 @@
                         class="table table-responsive table-bordered text-center align-middle mb-0"
                         id="mid_city_selected_table"
                       ></table>
+                      <tbody></tbody>
                     </div>
                   </div>
                 </div>
@@ -172,6 +172,7 @@
               <div class="d-flex align-items-end">
                 <input
                   type="submit"
+                  id="submit_add_route_btn"
                   value="Add Route"
                   class="btn btn-primary align-self-end ms-auto px-4 py-2"
                 />

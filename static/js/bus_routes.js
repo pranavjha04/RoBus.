@@ -1,10 +1,11 @@
 import {
+  addOperatorRouteRequest,
   collectOperatorRouteRequest,
   collectRouteRequest,
   deleteFareFactorRequest,
 } from "./service.js";
 import { toast } from "./toast.js";
-import { disableElements, enableElements } from "./util.js";
+import { disableElements, displayInputError, enableElements } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
 const searchSource = document.querySelector("#route_source");
@@ -35,6 +36,9 @@ const addHaltingTimeBtn = document.querySelector("#add_midcity_btn");
 const selectedMidCityList = document.querySelector("#selected_midcity_list");
 
 const midCityTable = document.querySelector("#mid_city_selected_table");
+
+const addRouteForm = document.querySelector("#add_route_form");
+const addRouteSubmitBtn = document.querySelector("#submit_add_route_btn");
 
 const resetSelectRoutes = () => {
   selectedMidCityList.innerHTML = "";
@@ -104,7 +108,7 @@ const displayMidCityTable = () => {
 const displayRouteSelect = () => {
   setTimeout(() => {
     routeSelect.focus();
-  }, 50);
+  }, 100);
 
   routeSelect.textContent = "Select Route";
 
@@ -425,7 +429,7 @@ addHaltingTimeBtn.addEventListener("click", (e) => {
   haltingTime.value = "";
 
   displayRouteMidCitySelect();
-
+  disableElements(haltingTime);
   displayMidCityTable();
 });
 
@@ -476,6 +480,9 @@ const handleHaltingTimeEdit = (parent) => {
                               /></span>`;
   const changeHaltingEditInput = parent.querySelector("input");
 
+  changeHaltingEditInput.focus();
+  changeHaltingEditInput.select();
+
   changeHaltingEditInput.addEventListener("blur", (e) => {
     const value = +e.target.value;
 
@@ -520,6 +527,40 @@ const handleHaltingTimeDelete = (parent) => {
   displayMidCityTable();
   toast.success("Mid City Delete Successfully");
 };
+
+addRouteForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!routeHidden.value) return;
+
+  disableElements(addRouteSubmitBtn);
+  addRouteSubmitBtn.value = "Submitting...";
+
+  const response = await addOperatorRouteRequest(
+    Object.fromEntries(new FormData(addRouteForm))
+  );
+
+  enableElements(addRouteSubmitBtn);
+  addRouteSubmitBtn.value = "Add Route";
+  try {
+    switch (response) {
+      case "internal": {
+        throw new Error("Internal Server error");
+      }
+      case "invalid": {
+        throw new Error("Invalid Request");
+      }
+      case "success": {
+        toast.success("Route Added Successfully");
+        break;
+      }
+      default: {
+        throw new Error("Invalid Request");
+      }
+    }
+  } catch (err) {
+    toast.error(err.message);
+  }
+});
 
 midCityTable.addEventListener("click", (e) => {
   const target = e.target.closest(".feature-btn");

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import utils.DBManager;
 
@@ -25,8 +26,8 @@ public class OperatorRoute {
 
     }
 
-    public static Boolean addRecord(Integer operatorId, Integer routeId) {
-        Boolean flag = false;
+    public static Integer addRecord(Integer operatorId, Integer routeId) {
+        Integer generatedId = -1;
 
         try {
             Connection con = DBManager.getConnection();
@@ -35,21 +36,28 @@ public class OperatorRoute {
                     "operator_routes " +
                     "(operator_id, route_id) " +
                     "VALUES (?, ?)";
-            PreparedStatement ps = con.prepareStatement(query);
-
+            PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            
             ps.setInt(1, operatorId);
             ps.setInt(2, routeId);
 
-            flag = ps.executeUpdate() == 1;
+            Integer rows = ps.executeUpdate();
+
+            if(rows == 1) {
+                ResultSet rs = ps.getGeneratedKeys();
+                if(rs.next()) {
+                    generatedId = rs.getInt(1);
+                }
+            }
 
             con.close();
         }
         catch(SQLException e) {
-            flag = false;
+            generatedId = -1;
             e.printStackTrace();
         }
 
-        return flag;
+        return generatedId;
     }
 
     public OperatorRoute getRecord(Integer operatorId, Integer routeId) {
