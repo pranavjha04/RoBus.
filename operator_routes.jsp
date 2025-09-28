@@ -221,12 +221,12 @@
               </div>
               <div>
                 <p
-                  class="mb-1 text-secondary fw-medium"
+                  class="mb-1 text-secondary fw-medium info"
                   style="font-size: small"
                 >
                   TOTAL ROUTES
                 </p>
-                <h5 class="mb-0 fs-5 fw-medium" id="total_route">0</h5>
+                <h5 class="mb-0 fs-5 fw-medium info"      data-name="total">0</h5>
               </div>
             </div>
             <div
@@ -255,7 +255,7 @@
                 >
                   ACTIVE ROUTES
                 </p>
-                <h5 class="mb-0 fs-5 fw-medium" id="total_active">0</h5>
+                <h5 class="mb-0 fs-5 fw-medium info" data-name="active">0</h5>
               </div>
             </div>
             <div
@@ -284,7 +284,7 @@
                 >
                   INACTIVE ROUTES
                 </p>
-                <h5 class="mb-0 fs-5 fw-medium" id="total_inactive">0</h5>
+                <h5 class="mb-0 fs-5 fw-medium info" data-name="inactive">0</h5>
               </div>
             </div>
           </div>
@@ -419,6 +419,6 @@
       </main>
     </div>
 
-    <script type="module" src="static/js/bus_routes.js"></script>
+    <script type="module" src="static/js/add_routes.js"></script>
   </body>
 </html>

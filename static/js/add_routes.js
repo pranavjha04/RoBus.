@@ -8,6 +8,7 @@ import { toast } from "./toast.js";
 import { disableElements, displayInputError, enableElements } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
+// add_route for
 const searchSource = document.querySelector("#route_source");
 const searchDestination = document.querySelector("#route_destination");
 const searchSourceResultList = document.querySelector("#source_list");
@@ -41,6 +42,9 @@ const addRouteForm = document.querySelector("#add_route_form");
 const addRouteSubmitBtn = document.querySelector("#submit_add_route_btn");
 
 const formModal = document.getElementById("centeredModal");
+
+// info display
+const infoList = document.querySelectorAll(".info");
 
 const resetSelectRoutes = () => {
   selectedMidCityList.innerHTML = "";
@@ -633,6 +637,58 @@ formModal.addEventListener("show.bs.modal", () => {
   resetAddRouteForm();
 });
 
+const updateInfoDisplay = async () => {
+  const operatorRouteList = JSON.parse(
+    sessionStorage.getItem("operatorRouteList")
+  );
+  console.log("hell");
+  console.log(operatorRouteList);
+
+  const total = operatorRouteList.length;
+  let active = 0;
+  let inactive = 0;
+  operatorRouteList.forEach(({ status: { name } }) => {
+    switch (name) {
+      case "Active": {
+        active++;
+        break;
+      }
+      case "Inactive": {
+        inactive++;
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  });
+
+  infoList.forEach((info) => {
+    const { name } = info.dataset;
+    switch (name) {
+      case "total": {
+        info.textContent = total;
+        break;
+      }
+      case "active": {
+        info.textContent = active;
+        break;
+      }
+      case "inactive": {
+        info.textContent = inactive;
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  });
+};
+
+const initDisplay = () => {
+  updateInfoDisplay();
+};
+
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     await Promise.all([handleAllRoutes(), handleAllOperatorRoutes()]);
@@ -647,6 +703,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       return true;
     });
     sessionStorage.setItem("uniqueRouteList", JSON.stringify(uniqueRouteList));
+    initDisplay();
   } catch {
     window.location.reload();
   }
