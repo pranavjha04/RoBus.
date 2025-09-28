@@ -172,6 +172,7 @@ const handleEdit = async (e) => {
 
     if (newValue === oldChargeValue) {
       disableChargeInput(parentTableData, oldChargeValue);
+      
       return;
     }
 

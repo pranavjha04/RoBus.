@@ -78,6 +78,7 @@
               <div class="align-self-center ms-auto">
                 <input
                   type="submit"
+                  
                   value="Add Factor"
                   class="btn btn-primary"
                 />

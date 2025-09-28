@@ -40,10 +40,16 @@ const midCityTable = document.querySelector("#mid_city_selected_table");
 const addRouteForm = document.querySelector("#add_route_form");
 const addRouteSubmitBtn = document.querySelector("#submit_add_route_btn");
 
+const formModal = document.getElementById("centeredModal");
+
 const resetSelectRoutes = () => {
   selectedMidCityList.innerHTML = "";
   midCityTable.innerHTML = "";
   midCityTable.classList.add("d-none");
+};
+
+const resetInputValues = (...elements) => {
+  elements.forEach((element) => (element.value = ""));
 };
 
 const resetHaltingTime = () => {
@@ -64,6 +70,22 @@ const resetMidCityList = () => {
   routeMidCitySelect.textContent = "Select Mid City";
 
   resetHaltingTime();
+};
+
+const resetAddRouteForm = () => {
+  addRouteForm.reset();
+  resetRouteList();
+  resetMidCityList();
+  resetSelectRoutes();
+  midCityTable.innerHTML = "";
+
+  disableElements(routeSelect, routeMidCitySelect);
+  resetInputValues(
+    searchSourceHidden,
+    searchDestinationHidden,
+    routeHidden,
+    activeMidCity
+  );
 };
 
 const displayMidCityTable = () => {
@@ -113,11 +135,23 @@ const displayRouteSelect = () => {
   routeSelect.textContent = "Select Route";
 
   const routeList = JSON.parse(sessionStorage.getItem("routeList"));
-  const filterResult = routeList.filter(
-    (route) =>
+  const operatorRouteList = JSON.parse(
+    sessionStorage.getItem("operatorRouteList")
+  );
+
+  const filterResult = routeList.filter((route) => {
+    const condition = operatorRouteList.some((operatorRoute) => {
+      const { route: currRoute } = operatorRoute;
+      console.log(currRoute, route);
+      return currRoute.routeId === route.routeId;
+    });
+
+    return (
+      !condition &&
       route.source.cityId === +searchSourceHidden.value &&
       route.destination.cityId === +searchDestinationHidden.value
-  );
+    );
+  });
 
   if (filterResult.length === 0) {
     routeSelect.textContent = "No Routes Available";
@@ -488,9 +522,13 @@ const handleHaltingTimeEdit = (parent) => {
 
     if (!value || isNaN(value) || value < 0 || value > 120) {
       e.target.value = oldHaltingValue;
+      toast.error("Invalid Operation");
     } else {
       targetElement.value = `${routeid}-${routemidcityid}-${e.target.value}`;
-      haltingDiv.innerHTML = `<span
+      if (+oldHaltingValue !== +e.target.value)
+        toast.success("Halting Time Updated Successfully");
+    }
+    haltingDiv.innerHTML = `<span
                                 >${
                                   +e.target.value < 60
                                     ? `${+e.target.value} mins`
@@ -504,11 +542,6 @@ const handleHaltingTimeEdit = (parent) => {
                                     : ""
                                 }
                               </span>`;
-
-      if (+oldHaltingValue === +e.target.value) return;
-
-      toast.success("Halting Time Updated Successfully");
-    }
   });
 };
 
@@ -530,36 +563,44 @@ const handleHaltingTimeDelete = (parent) => {
 
 addRouteForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  if (!routeHidden.value) return;
+  if (!routeHidden.value) {
+    toast.error("Add Valid Details");
+    return;
+  }
 
   disableElements(addRouteSubmitBtn);
   addRouteSubmitBtn.value = "Submitting...";
 
-  const response = await addOperatorRouteRequest(
-    Object.fromEntries(new FormData(addRouteForm))
-  );
+  const formData = new FormData(addRouteForm);
+  setTimeout(async () => {
+    const response = await addOperatorRouteRequest(formData);
 
-  enableElements(addRouteSubmitBtn);
-  addRouteSubmitBtn.value = "Add Route";
-  try {
-    switch (response) {
-      case "internal": {
-        throw new Error("Internal Server error");
+    enableElements(addRouteSubmitBtn);
+    addRouteSubmitBtn.value = "Add Route";
+    try {
+      switch (response) {
+        case "internal": {
+          throw new Error("Internal Server error");
+        }
+        case "invalid": {
+          throw new Error("Invalid Request");
+        }
+        case "success": {
+          toast.success("Route Added Successfully");
+          resetAddRouteForm();
+          const modal = bootstrap.Modal.getInstance(formModal);
+          modal.hide();
+          await Promise.all([handleAllOperatorRoutes()]);
+          break;
+        }
+        default: {
+          throw new Error("Invalid Request");
+        }
       }
-      case "invalid": {
-        throw new Error("Invalid Request");
-      }
-      case "success": {
-        toast.success("Route Added Successfully");
-        break;
-      }
-      default: {
-        throw new Error("Invalid Request");
-      }
+    } catch (err) {
+      toast.error(err.message);
     }
-  } catch (err) {
-    toast.error(err.message);
-  }
+  }, 500);
 });
 
 midCityTable.addEventListener("click", (e) => {
@@ -582,6 +623,14 @@ midCityTable.addEventListener("click", (e) => {
       break;
     }
   }
+});
+
+formModal.addEventListener("hidden.bs.modal", () => {
+  resetAddRouteForm();
+});
+
+formModal.addEventListener("show.bs.modal", () => {
+  resetAddRouteForm();
 });
 
 window.addEventListener("DOMContentLoaded", async () => {
