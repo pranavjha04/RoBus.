@@ -1,3 +1,4 @@
+import { filterNav } from "./filter_nav.js";
 import {
   addOperatorRouteRequest,
   collectOperatorRouteRequest,
@@ -45,6 +46,7 @@ const formModal = document.getElementById("centeredModal");
 
 // info display
 const infoList = document.querySelectorAll(".info");
+const allFilter = document.querySelectorAll(".filter");
 
 const resetSelectRoutes = () => {
   selectedMidCityList.innerHTML = "";
@@ -565,48 +567,6 @@ const handleHaltingTimeDelete = (parent) => {
   toast.success("Mid City Delete Successfully");
 };
 
-addRouteForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  if (!routeHidden.value) {
-    toast.error("Add Valid Details");
-    return;
-  }
-
-  disableElements(addRouteSubmitBtn);
-  addRouteSubmitBtn.value = "Submitting...";
-
-  const formData = new FormData(addRouteForm);
-  setTimeout(async () => {
-    const response = await addOperatorRouteRequest(formData);
-
-    enableElements(addRouteSubmitBtn);
-    addRouteSubmitBtn.value = "Add Route";
-    try {
-      switch (response) {
-        case "internal": {
-          throw new Error("Internal Server error");
-        }
-        case "invalid": {
-          throw new Error("Invalid Request");
-        }
-        case "success": {
-          toast.success("Route Added Successfully");
-          resetAddRouteForm();
-          const modal = bootstrap.Modal.getInstance(formModal);
-          modal.hide();
-          await Promise.all([handleAllOperatorRoutes()]);
-          break;
-        }
-        default: {
-          throw new Error("Invalid Request");
-        }
-      }
-    } catch (err) {
-      toast.error(err.message);
-    }
-  }, 500);
-});
-
 midCityTable.addEventListener("click", (e) => {
   const target = e.target.closest(".feature-btn");
   if (!target) return;
@@ -641,8 +601,6 @@ const updateInfoDisplay = async () => {
   const operatorRouteList = JSON.parse(
     sessionStorage.getItem("operatorRouteList")
   );
-  console.log("hell");
-  console.log(operatorRouteList);
 
   const total = operatorRouteList.length;
   let active = 0;
@@ -685,9 +643,72 @@ const updateInfoDisplay = async () => {
   });
 };
 
+const updateFilterDisplay = () => {
+  const operatorRouteList = JSON.parse(
+    sessionStorage.getItem("operatorRouteList")
+  );
+  if (operatorRouteList.length === 0) {
+    filterNav.disable();
+    allFilter.forEach((filter) => (filter.disabled = true));
+  } else {
+    filterNav.enable();
+    allFilter.forEach((filter) => (filter.disabled = false));
+  }
+};
+
+const updateOperatorRouteInfoTable = () => {
+  updateFilterDisplay();
+  const operatorRouteList = JSON.parse(
+    sessionStorage.getItem("operatorRouteList")
+  );
+};
+
 const initDisplay = () => {
   updateInfoDisplay();
+  updateOperatorRouteInfoTable();
 };
+
+addRouteForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!routeHidden.value) {
+    toast.error("Add Valid Details");
+    return;
+  }
+
+  disableElements(addRouteSubmitBtn);
+  addRouteSubmitBtn.value = "Submitting...";
+
+  const formData = new FormData(addRouteForm);
+  setTimeout(async () => {
+    const response = await addOperatorRouteRequest(formData);
+
+    enableElements(addRouteSubmitBtn);
+    addRouteSubmitBtn.value = "Add Route";
+    try {
+      switch (response) {
+        case "internal": {
+          throw new Error("Internal Server error");
+        }
+        case "invalid": {
+          throw new Error("Invalid Request");
+        }
+        case "success": {
+          toast.success("Route Added Successfully");
+          resetAddRouteForm();
+          const modal = bootstrap.Modal.getInstance(formModal);
+          modal.hide();
+          await Promise.all([handleAllOperatorRoutes()]);
+          break;
+        }
+        default: {
+          throw new Error("Invalid Request");
+        }
+      }
+    } catch (err) {
+      toast.error(err.message);
+    }
+  }, 500);
+});
 
 window.addEventListener("DOMContentLoaded", async () => {
   try {

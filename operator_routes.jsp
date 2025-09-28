@@ -226,7 +226,7 @@
                 >
                   TOTAL ROUTES
                 </p>
-                <h5 class="mb-0 fs-5 fw-medium info"      data-name="total">0</h5>
+                <h5 class="mb-0 fs-5 fw-medium info" data-name="total">0</h5>
               </div>
             </div>
             <div
@@ -300,7 +300,8 @@
               </div>
 
               <select
-                class="my-select focus-ring rounded border-0"
+                class="my-select focus-ring rounded border-0 filter"
+                disabled
                 id="sort_duration"
               >
                 <option value="">Sort by Duration</option>
@@ -308,7 +309,8 @@
                 <option value="high">Longest to Shortest</option>
               </select>
               <select
-                class="my-select focus-ring rounded border-0"
+                class="my-select focus-ring rounded border-0 filter"
+                disabled
                 id="sort_distance"
               >
                 <option value="">Sort by Distance</option>
@@ -334,7 +336,8 @@
                 type="search"
                 id="source_search"
                 placeholder="Enter Source City"
-                class="form-control"
+                class="form-control filter"
+                disabled
               />
             </div>
             <div>
@@ -347,7 +350,8 @@
                 type="search"
                 id="destination_search"
                 placeholder="Enter Destination City"
-                class="form-control"
+                class="form-control filter"
+                disabled
               />
             </div>
           </div>
