@@ -7,7 +7,6 @@
     margin: 0;
   }
 
-  /* Sidebar */
   .sidebar {
     width: 300px;
   }
@@ -18,14 +17,12 @@
     border-radius: 0.5rem;
   }
 
-  /* Dashboard cards responsive grid */
   .dashboard-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1rem;
   }
 
-  /* Chart container */
   .chart-container {
     display: flex;
     justify-content: center;
@@ -34,10 +31,9 @@
     overflow-x: auto;
   }
 
-  /* Responsive sidebar for small screens */
   @media (max-width: 992px) {
     .sidebar {
-      display: none; /* hide sidebar on tablets/mobiles */
+      display: none;
     }
   }
 
@@ -63,59 +59,59 @@
     class="nav flex-column w-100 p-0 justify-content-center align-items-center"
   >
     <li class="w-100 border-bottom">
-      <a
-        href="/bts"
-        class="d-flex justify-content-center text-decoration-none align-items-center gap-2 side-bar-link w-100 py-3 px-2"
+      <button
+        data-link="operator_dashboard.do"
+        class="d-flex justify-content-center text-decoration-none align-items-center gap-2 side-bar-link w-100 py-3 px-2 btn"
       >
         <img src="static/media/images/home.svg" alt="home" class="p-0" />
         <span class="fs-4 fw-medium" style="color: oklch(26.8% 0.007 34.298)"
           >Home</span
         >
-      </a>
+      </button>
     </li>
     <li class="w-100 border-bottom">
-      <a
-        href="operator_buses.do"
-        class="d-flex justify-content-center text-decoration-none align-items-center gap-2 side-bar-link w-100 py-3 px-2"
+      <button
+        data-link="operator_buses.do"
+        class="d-flex justify-content-center text-decoration-none align-items-center gap-2 side-bar-link w-100 py-3 px-2 btn"
       >
         <img src="static/media/images/bus.svg" alt="bus" class="p-0" />
         <span class="fs-4 fw-medium" style="color: oklch(26.8% 0.007 34.298)"
           >Buses</span
         >
-      </a>
+      </button>
     </li>
     <li class="w-100 border-bottom">
-      <a
-        href="operator_routes.do"
-        class="d-flex justify-content-center text-decoration-none align-items-center gap-2 side-bar-link w-100 py-3 px-2"
+      <button
+        data-link="operator_routes.do"
+        class="d-flex justify-content-center text-decoration-none align-items-center gap-2 side-bar-link w-100 py-3 px-2 btn"
       >
         <img src="static/media/images/route.svg" alt="home" class="p-0" />
         <span class="fs-4 fw-medium" style="color: oklch(26.8% 0.007 34.298)"
           >Routes</span
         >
-      </a>
+      </button>
     </li>
     <li class="w-100 border-bottom">
-      <a
-        href="operator_drivers.do"
-        class="d-flex justify-content-center text-decoration-none align-items-center gap-2 side-bar-link w-100 py-3 px-2"
+      <button
+        data-link="operator_drivers.do"
+        class="d-flex justify-content-center text-decoration-none align-items-center gap-2 side-bar-link w-100 py-3 px-2 btn"
       >
         <img src="static/media/images/account.svg" alt="driver" class="p-0" />
         <span class="fs-4 fw-medium" style="color: oklch(26.8% 0.007 34.298)"
           >Drivers</span
         >
-      </a>
+      </button>
     </li>
     <li class="w-100 border-bottom">
-      <a
-        href="operator_fare_factor.do"
-        class="d-flex justify-content-center text-decoration-none align-items-center gap-2 side-bar-link w-100 py-3 px-2"
+      <button
+        class="btn d-flex justify-content-center text-decoration-none align-items-center gap-2 side-bar-link w-100 py-3 px-2"
+        data-link="operator_fare_factor.do"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="32"
           height="32"
-          fill="currentColor"
+          fill="#0d6efd"
           class="bi bi-cash-coin"
           viewBox="0 0 16 16"
         >
@@ -136,8 +132,38 @@
         <span class="fs-4 fw-medium" style="color: oklch(26.8% 0.007 34.298)"
           >Fare Factors</span
         >
-      </a>
+      </button>
     </li>
   </ul>
   <div></div>
 </aside>
+<script>
+  const navContainer = document.querySelector(".nav");
+  const APP_URL = "http://localhost:8080/bts";
+  const currentLink = window.location.pathname.substring(
+    window.location.pathname.lastIndexOf("/") + 1
+  );
+  const allSideBarLinkButtons = document.querySelectorAll(".side-bar-link");
+
+  navContainer.addEventListener("click", (e) => {
+    const target = e.target.closest("button");
+    if (!target) return;
+    const { link } = target.dataset;
+    if (link !== currentLink) {
+      window.location.href = APP_URL + "/" + link;
+    }
+  });
+
+  window.addEventListener("DOMContentLoaded", (e) => {
+    allSideBarLinkButtons.forEach((button) => {
+      const { link } = button.dataset;
+
+      if (link !== currentLink) {
+        button.classList.remove("active-sidebar-link");
+        return;
+      }
+
+      button.classList.add("active-sidebar-link");
+    });
+  });
+</script>

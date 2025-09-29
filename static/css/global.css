@@ -81,6 +81,10 @@ button {
     background-color: oklch(97% 0.001 106.424);
   }
 }
+
+.active-sidebar-link {
+  background-color: oklch(97% 0.001 106.424);
+}
 thead tr:first-child {
   background-color: transparent !important;
 }
