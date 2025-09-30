@@ -344,8 +344,9 @@ const handleAllRoutes = async () => {
   }
 };
 
-const handleAllOperatorRoutes = async () => {
-  routeTable.innerHTML = ViewHelper.getTableLoader();
+const handleAllOperatorRoutes = async (firstTime = false) => {
+  if (!firstTime) routeTable.innerHTML = ViewHelper.getTableLoader();
+
   try {
     setTimeout(async () => {
       const response = await collectOperatorRouteRequest();
@@ -828,7 +829,7 @@ addRouteForm.addEventListener("submit", async (e) => {
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     PageLoading.startLoading();
-    await Promise.all([handleAllRoutes(), handleAllOperatorRoutes()]);
+    await Promise.all([handleAllRoutes(), handleAllOperatorRoutes(true)]);
   } catch (err) {
     console.error(err.message);
   }
