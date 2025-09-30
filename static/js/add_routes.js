@@ -1,4 +1,5 @@
 import { filterNav } from "./filter_nav.js";
+import { PageLoading } from "./pageLoading.js";
 import {
   addOperatorRouteRequest,
   collectOperatorRouteRequest,
@@ -307,61 +308,83 @@ const getFilterSearchResult = (target, source = true) => {
 
 const handleAllRoutes = async () => {
   try {
-    const response = await collectRouteRequest();
-    if (response === "invalid") {
-      throw new Error("Invalid Request");
-    }
-    if (response.startsWith("{")) {
-      const routeMap = JSON.parse(response);
-      const { routeList, routeMidCityList } = routeMap;
+    setTimeout(async () => {
+      const response = await collectRouteRequest();
+      if (response === "invalid") {
+        throw new Error("Invalid Request");
+      }
+      if (response.startsWith("{")) {
+        const routeMap = JSON.parse(response);
+        const { routeList, routeMidCityList } = routeMap;
 
-      sessionStorage.setItem("routeList", JSON.stringify(routeList));
-      sessionStorage.setItem(
-        "routeMidCityList",
-        JSON.stringify(routeMidCityList)
-      );
-    } else {
-      throw new Error("Internal Server Error");
-    }
+        sessionStorage.setItem("routeList", JSON.stringify(routeList));
+        sessionStorage.setItem(
+          "routeMidCityList",
+          JSON.stringify(routeMidCityList)
+        );
+        const uniqueSet = {};
+        const uniqueRouteList = routeList.filter((route) => {
+          const key = `${route.source.cityId}-${route.destination.cityId}`;
+          if (uniqueSet[key]) {
+            return false;
+          }
+          uniqueSet[key] = route;
+          return true;
+        });
+        sessionStorage.setItem(
+          "uniqueRouteList",
+          JSON.stringify(uniqueRouteList)
+        );
+      } else {
+        throw new Error("Internal Server Error");
+      }
+    }, 500);
   } catch (err) {
     toast.error(err.message);
   }
 };
 
 const handleAllOperatorRoutes = async () => {
+  routeTable.innerHTML = ViewHelper.getTableLoader();
   try {
-    const response = await collectOperatorRouteRequest();
-    if (response === "invalid") {
-      throw new Error("Invalid Request");
-    }
-    if (response.startsWith("{")) {
-      const routeMap = JSON.parse(response);
-      const { operatorRouteList, operatorRouteMidCityList } = routeMap;
+    setTimeout(async () => {
+      const response = await collectOperatorRouteRequest();
+      if (response === "invalid") {
+        throw new Error("Invalid Request");
+      }
+      if (response.startsWith("{")) {
+        const routeMap = JSON.parse(response);
+        const { operatorRouteList, operatorRouteMidCityList } = routeMap;
 
-      operatorRouteList.forEach((operatorRoute) => {
-        const { route } = operatorRoute;
-        const midCityList = operatorRouteMidCityList.filter(
-          (mid) =>
-            mid.operatorRoute.route.routeId === operatorRoute.route.routeId
+        operatorRouteList.forEach((operatorRoute) => {
+          const { route } = operatorRoute;
+          const midCityList = operatorRouteMidCityList.filter(
+            (mid) =>
+              mid.operatorRoute.route.routeId === operatorRoute.route.routeId
+          );
+          route.duration = midCityList.reduce((curr, { haltingTime }) => {
+            return curr + haltingTime;
+          }, route.duration);
+        });
+
+        sessionStorage.setItem(
+          "operatorRouteList",
+          JSON.stringify(operatorRouteList)
         );
-        route.duration = midCityList.reduce((curr, { haltingTime }) => {
-          return curr + haltingTime;
-        }, route.duration);
-      });
-
-      sessionStorage.setItem(
-        "operatorRouteList",
-        JSON.stringify(operatorRouteList)
-      );
-      sessionStorage.setItem(
-        "operatorRouteMidCityList",
-        JSON.stringify(operatorRouteMidCityList)
-      );
-    } else {
-      throw new Error("Internal Server Error");
-    }
+        sessionStorage.setItem(
+          "operatorRouteMidCityList",
+          JSON.stringify(operatorRouteMidCityList)
+        );
+        PageLoading.stopLoading();
+        initDisplay();
+      } else {
+        throw new Error("Internal Server Error");
+      }
+    }, 500);
   } catch (err) {
+    PageLoading.stopLoading();
     toast.error(err.message);
+    routeTable.innerHTML = ViewHelper.getTableEmptyMessage(err.message);
   }
 };
 
@@ -714,44 +737,21 @@ const updateInfoDisplay = async () => {
     sessionStorage.getItem("operatorRouteList")
   );
 
-  const total = operatorRouteList.length;
-  let active = 0;
-  let inactive = 0;
-  operatorRouteList.forEach(({ status: { name } }) => {
-    switch (name) {
-      case "Active": {
-        active++;
-        break;
-      }
-      case "Inactive": {
-        inactive++;
-        break;
-      }
-      default: {
-        break;
-      }
+  const infoData = operatorRouteList.reduce(
+    (acc, { status }) => {
+      return status.name === "Active"
+        ? { ...acc, total: acc.total + 1, active: acc.active + 1 }
+        : { ...acc, total: acc.total + 1, inActive: acc.inActive + 1 };
+    },
+    {
+      total: 0,
+      active: 0,
+      inActive: 0,
     }
-  });
-
-  infoList.forEach((info) => {
-    const { name } = info.dataset;
-    switch (name) {
-      case "total": {
-        info.textContent = total;
-        break;
-      }
-      case "active": {
-        info.textContent = active;
-        break;
-      }
-      case "inactive": {
-        info.textContent = inactive;
-        break;
-      }
-      default: {
-        break;
-      }
-    }
+  );
+  Object.keys(infoData).forEach((key) => {
+    document.querySelector(`[data-info-name="${key}"]`).textContent =
+      infoData[key];
   });
 };
 
@@ -811,6 +811,7 @@ addRouteForm.addEventListener("submit", async (e) => {
           resetAddRouteForm();
           const modal = bootstrap.Modal.getInstance(formModal);
           modal.hide();
+
           await Promise.all([handleAllOperatorRoutes()]);
           break;
         }
@@ -826,19 +827,8 @@ addRouteForm.addEventListener("submit", async (e) => {
 
 window.addEventListener("DOMContentLoaded", async () => {
   try {
+    PageLoading.startLoading();
     await Promise.all([handleAllRoutes(), handleAllOperatorRoutes()]);
-    const routeList = JSON.parse(sessionStorage.getItem("routeList"));
-    const uniqueSet = {};
-    const uniqueRouteList = routeList.filter((route) => {
-      const key = `${route.source.cityId}-${route.destination.cityId}`;
-      if (uniqueSet[key]) {
-        return false;
-      }
-      uniqueSet[key] = route;
-      return true;
-    });
-    sessionStorage.setItem("uniqueRouteList", JSON.stringify(uniqueRouteList));
-    initDisplay();
   } catch (err) {
     console.error(err.message);
   }

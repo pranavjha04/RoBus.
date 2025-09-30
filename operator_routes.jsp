@@ -6,7 +6,13 @@
     <c:import url="essential_page_import.jsp" />
     <title>Document</title>
   </head>
-  <body>
+  <body class="position-relative">
+    <div
+      class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center loader-overlay"
+      id="page_loader"
+    >
+      <div class="loader"></div>
+    </div>
     <div
       class="toast-container position-fixed top-0 end-0 p-3"
       style="z-index: 1080"
@@ -226,7 +232,9 @@
                 >
                   TOTAL ROUTES
                 </p>
-                <h5 class="mb-0 fs-5 fw-medium info" data-name="total">0</h5>
+                <h5 class="mb-0 fs-5 fw-medium info" data-info-name="total">
+                  0
+                </h5>
               </div>
             </div>
             <div
@@ -255,7 +263,9 @@
                 >
                   ACTIVE ROUTES
                 </p>
-                <h5 class="mb-0 fs-5 fw-medium info" data-name="active">0</h5>
+                <h5 class="mb-0 fs-5 fw-medium info" data-info-name="active">
+                  0
+                </h5>
               </div>
             </div>
             <div
@@ -284,7 +294,9 @@
                 >
                   INACTIVE ROUTES
                 </p>
-                <h5 class="mb-0 fs-5 fw-medium info" data-name="inactive">0</h5>
+                <h5 class="mb-0 fs-5 fw-medium info" data-info-name="inActive">
+                  0
+                </h5>
               </div>
             </div>
           </div>

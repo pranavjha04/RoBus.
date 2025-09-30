@@ -116,11 +116,11 @@ export class ViewHelper {
                     }
                     ${
                       statusName === "Inactive" &&
-                      "text-warning bg-warning-subtle border-warning"
+                      "text-danger bg-danger-subtle border-danger"
                     }
                     ${
                       statusName === "Incomplete" &&
-                      "text-danger bg-danger-subtle border-danger"
+                      "text-warning bg-warning-subtle border-warning"
                     }
                     "
                     >${statusName.toUpperCase()}</span
@@ -210,7 +210,11 @@ export class ViewHelper {
                             <span class='small text-muted'>|</span>
                             <span class='small text-muted duration'>${Math.trunc(
                               durationFromSource / 60
-                            )}h ${durationFromSource % 60}m</span> 
+                            )
+                              .toString()
+                              .padStart(2, "0")}h ${(durationFromSource % 60)
+      .toString()
+      .padStart(2, "0")}m</span> 
                         </div>
                       </li>`;
   }
@@ -252,9 +256,11 @@ export class ViewHelper {
                                 }
                                 ${
                                   haltingTime > 60
-                                    ? `${Math.trunc(haltingTime / 60)}h ${
-                                        haltingTime % 60
-                                      }m`
+                                    ? `${Math.trunc(haltingTime / 60)
+                                        .toString()
+                                        .padStart(2, "0")}h ${(haltingTime % 60)
+                                        .toString()
+                                        .padStart(2, "0")}m`
                                     : ""
                                 }
                               </span>
