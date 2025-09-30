@@ -283,4 +283,88 @@ export class ViewHelper {
                             </td>
                           </tr>`;
   }
+
+  static getRouteInfoTableHeading() {
+    return `<thead class="border border-bottom text-center">
+              <th class="p-3">Source</th>
+              <th class="p-3">Destination</th>
+              <th class="p-3">Distance</th>
+              <th class="p-3">Duration</th>
+              <th class="p-3">Status</th>
+              <th class="p-3">Options</th>
+            </thead>`;
+  }
+
+  static getRouteInfoTableBody(operatorRoute) {
+    const { operatorRouteId, route, status } = operatorRoute;
+    const { destination, source, routeId, distance, duration } = route;
+    const { name: destinationCityName } = destination;
+    const { name: sourceCityName } = source;
+    const { name: statusName } = status;
+
+    return `    <tr class="text-center border-bottom" data-oprid=${operatorRouteId}>
+                <td class="p-3">${sourceCityName}</td>
+                <td class="p-3">${destinationCityName}</td>
+                <td class="p-3">${distance}<small class="small">km</small></td>
+                <td class="p-3">
+                  ${Math.trunc(duration / 60)
+                    .toString()
+                    .padStart(2, "0")}<small class="small">h</small> ${(
+      duration % 60
+    )
+      .toString()
+      .padStart(2, "0")}<small class="small"
+                    >mins</small
+                  >
+                </td>
+                <td class="p-3">
+                  <span
+                    class="badge border
+                    
+                    ${
+                      statusName === "Active" &&
+                      "text-success bg-success-subtle border-success"
+                    }
+                    ${
+                      statusName === "Inactive" &&
+                      "text-danger bg-danger-subtle border-danger"
+                    }
+                    "
+                    >${statusName.toUpperCase()}</span
+                  >
+                </td>
+                <td class="p-3">
+                  <div class="dropdown">
+                    <button
+                      class="btn bg-transparent option-btn"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <img
+                        src="static/media/images/options_sm.svg"
+                        alt="option"
+                      />
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li class="border-bottom">
+                        <a class="dropdown-item option-link" href="#">Edit</a>
+                      </li>
+                      <li class="border-bottom">
+                        <a
+                          class="dropdown-item option-link"
+                          href="bus_seating_configuration.do?bus_id=$34&back_url=operator_buses.do"
+                          >Seating</a
+                        >
+                      </li>
+                      <li>
+                        <a class="dropdown-item option-link" href="#"
+                          >Schedule</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>`;
+  }
 }

@@ -148,6 +148,7 @@
   navContainer.addEventListener("click", (e) => {
     const target = e.target.closest("button");
     if (!target) return;
+    
     const { link } = target.dataset;
     if (link !== currentLink) {
       window.location.href = APP_URL + "/" + link;

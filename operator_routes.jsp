@@ -302,6 +302,7 @@
               <select
                 class="my-select focus-ring rounded border-0 filter"
                 disabled
+                data-type="duration"
                 id="sort_duration"
               >
                 <option value="">Sort by Duration</option>
@@ -311,6 +312,7 @@
               <select
                 class="my-select focus-ring rounded border-0 filter"
                 disabled
+                data-type="distance"
                 id="sort_distance"
               >
                 <option value="">Sort by Distance</option>
@@ -329,12 +331,14 @@
           </div>
           <div class="d-flex align-self-end gap-2">
             <div>
-              <label class="form-label small fw-semibold" for="source_search"
+              <label
+                class="form-label small fw-semibold"
+                for="filter_source_search"
                 >Source</label
               >
               <input
                 type="search"
-                id="source_search"
+                id="filter_source_search"
                 placeholder="Enter Source City"
                 class="form-control filter"
                 disabled
@@ -343,12 +347,12 @@
             <div>
               <label
                 class="form-label small fw-semibold"
-                for="destination_search"
+                for="filter_destination_search"
                 >Destination</label
               >
               <input
                 type="search"
-                id="destination_search"
+                id="filter_destination_search"
                 placeholder="Enter Destination City"
                 class="form-control filter"
                 disabled
@@ -359,66 +363,7 @@
           <table
             class="border rounded table-responsive border-bottom-0"
             id="route_table"
-          >
-            <thead class="border border-bottom text-center">
-              <th class="p-3">Source</th>
-              <th class="p-3">Destination</th>
-              <th class="p-3">Distance</th>
-              <th class="p-3">Duration</th>
-              <th class="p-3">Status</th>
-              <th class="p-3">Options</th>
-            </thead>
-            <tbody>
-              <tr class="text-center border-bottom">
-                <td class="p-3">Jabalpur</td>
-                <td class="p-3">Sagar</td>
-                <td class="p-3">180<small class="small">km</small></td>
-                <td class="p-3">
-                  4<small class="small">h</small> 30<small class="small"
-                    >mins</small
-                  >
-                </td>
-                <td class="p-3">
-                  <span
-                    class="badge border text-success bg-success-subtle border-success"
-                    >ACTIVE</span
-                  >
-                </td>
-                <td class="p-3">
-                  <div class="dropdown">
-                    <button
-                      class="btn bg-transparent option-btn"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <img
-                        src="static/media/images/options_sm.svg"
-                        alt="option"
-                      />
-                    </button>
-                    <ul class="dropdown-menu">
-                      <li class="border-bottom">
-                        <a class="dropdown-item option-link" href="#">Edit</a>
-                      </li>
-                      <li class="border-bottom">
-                        <a
-                          class="dropdown-item option-link"
-                          href="bus_seating_configuration.do?bus_id=${busId}&back_url=operator_buses.do"
-                          >Seating</a
-                        >
-                      </li>
-                      <li>
-                        <a class="dropdown-item option-link" href="#"
-                          >Schedule</a
-                        >
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          ></table>
         </div>
       </main>
     </div>
