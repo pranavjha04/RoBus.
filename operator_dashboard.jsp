@@ -14,7 +14,6 @@
   </head>
   <body>
     <c:import url="essential_page_display.jsp" />
-
     <div class="dashContainer">
       <!-- Sidebar -->
       <c:import url="operator_sidebar.jsp" />
@@ -29,7 +28,7 @@
 
         <!-- Dashboard Content -->
         <div class="p-4 d-flex flex-column gap-3 overflow-scroll">
-          <h2>Dashboard</h2>
+          <h2>Welcome, <c:out value="${sessionScope.operator.fullName}" /></h2>
           <div class="businfo justify-content-between align-items-center gap-2">
             <div
               class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"

@@ -1,4 +1,8 @@
+import { PageLoading } from "./pageLoading.js";
+
 const ctx = document.getElementById("bookingsChart");
+
+PageLoading.stopLoading();
 
 const init = async () => {};
 

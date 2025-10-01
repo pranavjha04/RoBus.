@@ -54,12 +54,15 @@ const searchFilterSource = document.querySelector("#filter_source_search");
 const searchFilterDestination = document.querySelector(
   "#filter_destination_search"
 );
+const searchRoutesBtn = document.querySelector("#search_routes_btn");
+let filerApplied = false;
 
 // info display
 const infoList = document.querySelectorAll(".info");
 const routeTable = document.querySelector("#route_table");
 
 const pageWrapper = document.querySelector("#pageWrapper");
+const removeFilter = document.querySelector("#remove_filter_btn");
 
 const resetSelectRoutes = () => {
   selectedMidCityList.innerHTML = "";
@@ -430,6 +433,30 @@ searchDestination.addEventListener("input", (e) => {
   );
 });
 
+searchRoutesBtn.addEventListener("click", () => {
+  const sourceValue = searchFilterSource.value.trim().toLowerCase();
+  const destinationValue = searchFilterDestination.value.trim().toLowerCase();
+
+  if (!sourceValue && !destinationValue) return;
+
+  const operatorRouteList =
+    JSON.parse(sessionStorage.getItem("operatorRouteList")) || [];
+
+  const filterResult = operatorRouteList.filter(({ route }) => {
+    const sourceName = route.source.name.toLowerCase();
+    const destinationName = route.destination.name.toLowerCase();
+
+    const sourceMatch = sourceValue ? sourceName.includes(sourceValue) : true;
+    const destinationMatch = destinationValue
+      ? destinationName.includes(destinationValue)
+      : true;
+
+    return sourceMatch && destinationMatch;
+  });
+
+  displayRouteInfo(filterResult);
+});
+
 searchSourceResultList.addEventListener("mousedown", (e) => {
   const target = e.target.closest("li");
   if (!target) return;
@@ -649,6 +676,26 @@ const enableFilter = (all = false) => {
   }
 };
 
+const resetFilter = () => {
+  filterNav.start();
+  searchFilterSource.value = searchFilterDestination.value = "";
+  sortDistance.value = sortDuration.value = "";
+
+  const operatorRouteList = JSON.parse(
+    sessionStorage.getItem("operatorRouteList")
+  );
+
+  displayRouteInfo(operatorRouteList);
+};
+
+removeFilter.addEventListener("click", () => {
+  if (removeFilter.disabled) {
+    disableElements(removeFilter);
+    return;
+  }
+  resetFilter();
+});
+
 formModal.addEventListener("hidden.bs.modal", () => {
   resetAddRouteForm();
 });
@@ -674,7 +721,7 @@ const filterSortResult = (type, value) => {
   const operatorRouteList = JSON.parse(
     sessionStorage.getItem("operatorRouteList")
   );
-  console.log(operatorRouteList);
+  filerApplied = true;
   switch (value) {
     case "low": {
       const filterResult = operatorRouteList.sort(
@@ -700,6 +747,8 @@ const filterSortResult = (type, value) => {
 const handleFilterEvent = (e) => {
   const value = e.target.value;
   const { type } = e.target.dataset;
+
+  e.target.value = value;
   filterSortResult(type, value);
 };
 
@@ -813,9 +862,9 @@ addRouteForm.addEventListener("submit", async (e) => {
         case "success": {
           toast.success("Route Added Successfully");
           resetAddRouteForm();
+          resetFilter();
           const modal = bootstrap.Modal.getInstance(formModal);
           modal.hide();
-
           await Promise.all([handleAllOperatorRoutes()]);
           break;
         }
@@ -829,6 +878,20 @@ addRouteForm.addEventListener("submit", async (e) => {
   }, 500);
 });
 
+const filteAppliedInterval = setInterval(() => {
+  if (
+    searchFilterSource.value ||
+    searchFilterDestination.value ||
+    sortDistance.value ||
+    sortDuration.value ||
+    !filterNavContainer.firstElementChild.classList.contains("btn-primary")
+  ) {
+    enableElements(removeFilter);
+  } else {
+    disableElements(removeFilter);
+  }
+}, 100);
+
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     PageLoading.startLoading();
@@ -836,6 +899,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   } catch (err) {
     toast.error(err.message);
     pageWrapper.innerHTML = PageError.showOperatorError();
+    clearInterval(filteAppliedInterval);
   }
 });
 
@@ -849,4 +913,5 @@ window.addEventListener("pagehide", () => {
   ].forEach((item) => {
     sessionStorage.removeItem(item);
   });
+  clearInterval(filteAppliedInterval);
 });
