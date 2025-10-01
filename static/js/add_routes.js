@@ -688,6 +688,14 @@ const resetFilter = () => {
   displayRouteInfo(operatorRouteList);
 };
 
+const filterEvent = () => {
+  const tableBody = [...routeTable.querySelector("tbody").children];
+
+  tableBody.forEach((row) => {
+    const { source, destination, distance, duration, status } = row.dataset;
+  });
+};
+
 removeFilter.addEventListener("click", () => {
   if (removeFilter.disabled) {
     disableElements(removeFilter);
@@ -722,6 +730,7 @@ const filterSortResult = (type, value) => {
     sessionStorage.getItem("operatorRouteList")
   );
   filerApplied = true;
+  filterEvent();
   switch (value) {
     case "low": {
       const filterResult = operatorRouteList.sort(
