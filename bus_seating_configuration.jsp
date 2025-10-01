@@ -64,10 +64,7 @@
       }
     }
   </style>
-  <div
-    class="toast-container position-fixed top-0 end-0 p-3"
-    style="z-index: 1080"
-  ></div>
+  <c:import url="essential_page_display.jsp" />
   <body>
     <div class="dashContainer">
       <aside

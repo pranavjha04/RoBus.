@@ -6,17 +6,8 @@
     <c:import url="essential_page_import.jsp" />
     <title>Document</title>
   </head>
-  <body class="position-relative">
-    <div
-      class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center loader-overlay"
-      id="page_loader"
-    >
-      <div class="loader"></div>
-    </div>
-    <div
-      class="toast-container position-fixed top-0 end-0 p-3"
-      style="z-index: 1080"
-    ></div>
+  <body>
+    <c:import url="essential_page_display.jsp" />
     <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -203,7 +194,10 @@
 
         <!-- Dashboard Content -->
 
-        <div class="p-4 d-flex flex-column gap-3 overflow-scroll">
+        <div
+          class="p-4 d-flex flex-column gap-3 overflow-scroll"
+          id="pageWrapper"
+        >
           <h2>All Routes</h2>
           <div class="businfo justify-content-between align-items-center gap-2">
             <div

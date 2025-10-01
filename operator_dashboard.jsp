@@ -13,10 +13,7 @@
     <title>${sessionScope.operator.fullName} Dashboard</title>
   </head>
   <body>
-    <div
-      class="toast-container position-fixed top-0 end-0 p-3"
-      style="z-index: 1080"
-    ></div>
+    <c:import url="essential_page_display.jsp" />
 
     <div class="dashContainer">
       <!-- Sidebar -->

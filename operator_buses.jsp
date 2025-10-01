@@ -7,12 +7,7 @@
     <title>Bus Management</title>
   </head>
   <body>
-    <!-- Toasts -->
-    <div
-      class="toast-container position-fixed top-0 end-0 p-3"
-      style="z-index: 1080"
-    ></div>
-
+    <c:import url="essential_page_display.jsp" />
     <!-- Modal -->
     <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -155,7 +150,10 @@
         <c:import url="operator_navbar.jsp" />
 
         <!-- Page Header -->
-        <div class="p-4 d-flex flex-column gap-3 overflow-scroll">
+        <div
+          class="p-4 d-flex flex-column gap-3 overflow-scroll"
+          id="pageWrapper"
+        >
           <h2>All Buses</h2>
           <div class="businfo gap-2 align-items-center justify-content-between">
             <div
@@ -319,58 +317,7 @@
           <table
             class="border rounded table-responsive border-bottom-0"
             id="bus_table"
-          >
-            <thead>
-              <tr class="border border-bottom text-center">
-                <th class="p-3">Bus Number</th>
-                <th class="p-3">Manufacturer</th>
-                <th class="p-3">Status</th>
-                <th class="p-3">Options</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                class="text-center border-bottom"
-                data-id="${operatorTicketFareId}"
-              >
-                <td class="p-3">MP20 KM 3767</td>
-                <td class="p-3">Tata Moters</td>
-
-                <td class="p-3 charge">
-                  <span
-                    class="badge border text-danger bg-danger-subtle border-danger"
-                    >ACTIVE</span
-                  >
-                </td>
-                <td class="p-3">
-                  <div class="dropdown">
-                    <button
-                      class="btn bg-transparent"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <img
-                        src="static/media/images/options_sm.svg"
-                        alt="option"
-                      />
-                    </button>
-                    <ul class="dropdown-menu">
-                      <li class="border-bottom">
-                        <a class="dropdown-item" href="#">Edit</a>
-                      </li>
-                      <li class="border-bottom">
-                        <a class="dropdown-item" href="#">Seating</a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="#">Schedule</a>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          ></table>
         </div>
       </main>
     </div>

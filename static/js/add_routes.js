@@ -1,4 +1,5 @@
 import { filterNav } from "./filter_nav.js";
+import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import {
   addOperatorRouteRequest,
@@ -57,6 +58,8 @@ const searchFilterDestination = document.querySelector(
 // info display
 const infoList = document.querySelectorAll(".info");
 const routeTable = document.querySelector("#route_table");
+
+const pageWrapper = document.querySelector("#pageWrapper");
 
 const resetSelectRoutes = () => {
   selectedMidCityList.innerHTML = "";
@@ -831,7 +834,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     PageLoading.startLoading();
     await Promise.all([handleAllRoutes(), handleAllOperatorRoutes(true)]);
   } catch (err) {
-    console.error(err.message);
+    toast.error(err.message);
+    pageWrapper.innerHTML = PageError.showOperatorError();
   }
 });
 

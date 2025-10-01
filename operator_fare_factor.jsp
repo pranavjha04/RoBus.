@@ -7,10 +7,7 @@
     <title>Document</title>
   </head>
   <body>
-    <div
-      class="toast-container position-fixed top-0 end-0 p-3"
-      style="z-index: 1080"
-    ></div>
+    <c:import url="essential_page_display.jsp" />
     <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -78,7 +75,6 @@
               <div class="align-self-center ms-auto">
                 <input
                   type="submit"
-                  
                   value="Add Factor"
                   class="btn btn-primary"
                 />
@@ -102,7 +98,10 @@
 
         <!-- Dashboard Content -->
 
-        <div class="p-4 d-flex flex-column gap-3 overflow-scroll">
+        <div
+          class="p-4 d-flex flex-column gap-3 overflow-scroll"
+          id="pageWrapper"
+        >
           <h2>All Fare Factors</h2>
           <div class="businfo justify-content-between align-items-center gap-2">
             <div

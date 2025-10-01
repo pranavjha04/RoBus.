@@ -8,6 +8,8 @@ import {
 import { ViewHelper } from "./viewHelper.js";
 import { toast } from "./toast.js";
 import { displayInputError, validateCharge } from "./util.js";
+import { PageLoading } from "./pageLoading.js";
+import { PageError } from "./pageError.js";
 
 const fareFactorSelectBtn = document.querySelector("#fare_factor_select");
 const fareFactorSelectList = document.querySelector(
@@ -24,6 +26,8 @@ const filterNavContainer = document.querySelector("#filter_nav");
 
 const totalFare = document.querySelector("#total_fare");
 const totalCharges = document.querySelector("#total_charges");
+
+const pageWrapper = document.querySelector("#pageWrapper");
 
 const collectFareCharge = (acc, curr) => {
   return acc + curr?.charge;
@@ -172,7 +176,7 @@ const handleEdit = async (e) => {
 
     if (newValue === oldChargeValue) {
       disableChargeInput(parentTableData, oldChargeValue);
-      
+
       return;
     }
 
@@ -304,29 +308,28 @@ const handleFareFactorList = async () => {
       removeTableLoader();
       update(fareFactorList);
       sessionStorage.setItem("fareList", JSON.stringify(fareFactorList));
+      PageLoading.stopLoading();
       handleFareFactorsListDisplay(fareFactorList);
     }
   } catch (err) {
     toast.error(err.message);
     removeTableLoader();
+    PageLoading.stopLoading();
   }
 };
 
-const init = async () => {
+const init = async (firstTime) => {
   filterNav.start();
   try {
-    setTableLoader();
+    if (!firstTime) setTableLoader();
     setTimeout(() => {
       handleFareFactorList();
     }, 500);
   } catch (err) {
     toast.error(err.message);
+    pageWrapper.innerHTML = PageError.showOperatorError();
   }
 };
-
-await init();
-
-const reset = () => {};
 
 fareFactorForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -437,6 +440,11 @@ formModal.addEventListener("hidden.bs.modal", () => {
   fareFactorForm.reset();
   charge.setAttribute("placeholder", "Charges");
   charge.classList.remove("border-danger", "border-success");
+});
+
+window.addEventListener("DOMContentLoaded", async () => {
+  PageLoading.startLoading();
+  await init(true);
 });
 
 window.addEventListener("pagehide", () => {

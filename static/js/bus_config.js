@@ -1,3 +1,4 @@
+import { PageLoading } from "./pageLoading.js";
 import {
   addSeatingRequest,
   collectSeatingRecordRequest,
@@ -207,6 +208,7 @@ const handleLoadingSeatingData = async () => {
     if (response.startsWith("[")) {
       const seatingList = JSON.parse(response);
       const [firstIndex] = seatingList;
+      PageLoading.stopLoading();
       if (firstIndex) {
         fillAlreadyExistFormDetails(firstIndex);
       }
@@ -214,6 +216,7 @@ const handleLoadingSeatingData = async () => {
     }
   } catch (err) {
     toast.error(err.message);
+    PageLoading.stopLoading();
   }
 };
 
@@ -263,7 +266,7 @@ let watchSessionStorageInterval = setInterval(() => {
   if (!activeBus.doubleDecker) {
     upperBtn.disabled = true;
   }
-}, 500);
+}, 1000);
 
 const handleAddSeating = async (formData) => {
   if (!formData || Object.fromEntries(formData).length === 0) return;
@@ -375,14 +378,16 @@ busConfigForm.addEventListener("reset", (e) => {
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-  handleLoadingSeatingData();
-  const activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
-  if (!activeBus.doubleDecker) {
-    upperBtn.disabled = true;
-    upperBtn.checked = false;
-  }
-
-  currDeck.textContent = "Lower Deck";
+  PageLoading.startLoading();
+  setTimeout(() => {
+    handleLoadingSeatingData();
+    const activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
+    if (!activeBus.doubleDecker) {
+      upperBtn.disabled = true;
+      upperBtn.checked = false;
+    }
+    currDeck.textContent = "Lower Deck";
+  }, 100);
 });
 
 window.addEventListener("beforeunload", () => {

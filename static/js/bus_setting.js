@@ -1,4 +1,6 @@
 import { filterNav } from "./filter_nav.js";
+import { PageError } from "./pageError.js";
+import { PageLoading } from "./pageLoading.js";
 import {
   busNumberHandler,
   checkBusNumberExistRequest,
@@ -28,6 +30,8 @@ const addBusModal = document.querySelector("#centeredModal");
 const allFields = Array.from(document.querySelectorAll(".bfld"));
 const prevImagesContainer = document.querySelector("#preview_img_container");
 const busTable = document.querySelector("#bus_table");
+
+const pageWrapper = document.querySelector("#pageWrapper");
 
 const setFareLoader = () => {
   fareList.innerHTML = '<div class="loader sm-loader"></div>';
@@ -133,26 +137,28 @@ const handleBusListDisplay = (busList) => {
   }
 };
 
-const handleBusRecords = async () => {
-  busTable.innerHTML = ViewHelper.getTableLoader();
+const handleBusRecords = async (firstTime = false) => {
+  if (!firstTime) busTable.innerHTML = ViewHelper.getTableLoader();
   try {
     const response = await collectBusRecordRequest();
     if (response === "internal") {
       throw new Error("Internal server error");
-    }
-    if (response === "invalid") {
+    } else if (response === "invalid") {
       throw new Error("Invalid Request");
-    }
-    if (response.startsWith("[")) {
+    } else if (response.startsWith("[")) {
       const busList = JSON.parse(response);
       sessionStorage.setItem("busList", JSON.stringify(busList));
       setTimeout(() => {
+        PageLoading.stopLoading();
         handleBusListDisplay(busList);
       }, 500);
+    } else {
+      throw new Error("Invalid Request");
     }
   } catch (err) {
     toast.error(err.message);
-  } finally {
+    PageLoading.stopLoading();
+    pageWrapper.innerHTML = PageError.showOperatorError();
   }
 };
 
@@ -241,6 +247,7 @@ busTable.addEventListener("click", (e) => {
 });
 
 const init = async () => {
-  await handleBusRecords();
+  PageLoading.startLoading();
+  await handleBusRecords(true);
 };
 await init();

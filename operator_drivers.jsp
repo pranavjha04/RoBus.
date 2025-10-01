@@ -7,18 +7,20 @@
     <title>Document</title>
   </head>
   <body>
-    
     <div class="dashContainer">
       <!-- Sidebar -->
       <c:import url="operator_sidebar.jsp" />
 
       <!-- Main content -->
-      <main class="flex-grow-1 d-flex flex-column bg-light">
+      <main
+        class="flex-grow-1 d-flex flex-column bg-light"
+        style="overflow: auto"
+      >
         <!-- Top Navbar -->
         <c:import url="operator_navbar.jsp" />
 
         <!-- Dashboard Content -->
-        <div class="p-4 d-flex flex-column"></div>
+        <div class="p-4 d-flex flex-column overflow-scroll"></div>
       </main>
     </div>
   </body>
