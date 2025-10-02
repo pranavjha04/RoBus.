@@ -663,7 +663,12 @@ midCityTable.addEventListener("click", (e) => {
   }
 });
 const disableFilter = (all = false) => {
-  disableElements(sortDistance, sortDuration);
+  disableElements(
+    sortDistance,
+    sortDuration,
+    searchFilterSource,
+    searchFilterDestination
+  );
   if (all) {
     filterNav.disable();
   }
@@ -672,7 +677,12 @@ const disableFilter = (all = false) => {
 const enableFilter = (all = false) => {
   filterNav.enable();
   if (all) {
-    enableElements(sortDistance, sortDuration);
+    enableElements(
+      sortDistance,
+      sortDuration,
+      searchFilterSource,
+      searchFilterDestination
+    );
   }
 };
 
@@ -686,14 +696,6 @@ const resetFilter = () => {
   );
 
   displayRouteInfo(operatorRouteList);
-};
-
-const filterEvent = () => {
-  const tableBody = [...routeTable.querySelector("tbody").children];
-
-  tableBody.forEach((row) => {
-    const { source, destination, distance, duration, status } = row.dataset;
-  });
 };
 
 removeFilter.addEventListener("click", () => {
@@ -729,8 +731,7 @@ const filterSortResult = (type, value) => {
   const operatorRouteList = JSON.parse(
     sessionStorage.getItem("operatorRouteList")
   );
-  filerApplied = true;
-  filterEvent();
+
   switch (value) {
     case "low": {
       const filterResult = operatorRouteList.sort(
@@ -753,16 +754,16 @@ const filterSortResult = (type, value) => {
   }
 };
 
-const handleFilterEvent = (e) => {
+const handleSortFilterEvent = (e) => {
   const value = e.target.value;
   const { type } = e.target.dataset;
-
+  resetFilter();
   e.target.value = value;
   filterSortResult(type, value);
 };
 
-sortDistance.addEventListener("change", handleFilterEvent);
-sortDuration.addEventListener("change", handleFilterEvent);
+sortDistance.addEventListener("change", handleSortFilterEvent);
+sortDuration.addEventListener("change", handleSortFilterEvent);
 
 filterNavContainer.addEventListener("click", (e) => {
   const target = e.target.closest(".btn");
@@ -821,6 +822,7 @@ const updateFilterDisplay = () => {
   const operatorRouteList = JSON.parse(
     sessionStorage.getItem("operatorRouteList")
   );
+
   if (operatorRouteList.length === 0) {
     filterNav.disable();
     allFilter.forEach((filter) => (filter.disabled = true));

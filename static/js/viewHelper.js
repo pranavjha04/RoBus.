@@ -309,7 +309,7 @@ export class ViewHelper {
     const { name: statusName } = status;
 
     return `    <tr class="text-center border-bottom" data-oprid=${operatorRouteId} data-source=${sourceCityName} data-destination=${destinationCityName} data-distance=${distance} data-duration=${duration} data-status=${statusName}>
-                <td class="p-3" </td>
+                <td class="p-3">${sourceCityName}</td>
                 <td class="p-3">${destinationCityName}</td>
                 <td class="p-3">${distance}<small class="small">km</small></td>
                 <td class="p-3">
