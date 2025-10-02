@@ -19,6 +19,7 @@ import models.City;
 import models.State;
 import models.Route;
 import models.RouteMidCity;
+import models.Manufacturer;
 
 @WebListener
 public class AppListener implements ServletContextListener {
@@ -58,5 +59,9 @@ public class AppListener implements ServletContextListener {
         System.out.println("-------- Route MidCity Config Starting --------");
         ArrayList<RouteMidCity> routeMidCityList = RouteMidCity.collectAllRecords();
         context.setAttribute("routeMidCities", routeMidCityList);
+
+        System.out.println("-------- Manufacturer Config Starting --------");
+        ArrayList<Manufacturer> manufacturerList = Manufacturer.collectAllRecords();
+        context.setAttribute("manufacturerList", manufacturerList);
     }
 }

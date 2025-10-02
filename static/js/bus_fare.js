@@ -46,6 +46,11 @@ const removeTableLoader = () => {
   fareTable.innerHTML = "";
 };
 
+const resetFilter = () => {
+  filterNav.start();
+  sortCharges.value = "";
+};
+
 const handleNav = (type, fareFactorList = []) => {
   switch (type) {
     case "All": {
@@ -59,7 +64,7 @@ const handleNav = (type, fareFactorList = []) => {
       if (filterResult.length === 0) {
         document.querySelector("tbody").innerHTML =
           ViewHelper.getTableEmptyMessage("No such records.");
-        filterNav.init();
+        resetFilter();
         break;
       }
       handleFareFactorsListDisplay(filterResult);
@@ -145,69 +150,65 @@ const updateFactorAfterDelete = (operatorTicketFareId) => {
 const handleEdit = async (e) => {
   const parentTableRow = e.target.closest("tr");
   const parentTableData = parentTableRow.querySelector(".charge");
+  const oldChargeValue = +parentTableData.textContent.replace("₹", "").trim();
 
-  const oldChargeValue = +parentTableData.textContent.substring(
-    parentTableData.textContent.indexOf("₹") + 1
-  );
+  // Prevent multiple inputs being created
+  if (parentTableRow.querySelector("input")) return;
 
   enableChargeInput(parentTableData, oldChargeValue);
 
   const chargeInput = parentTableRow.querySelector("input");
 
-  if (!chargeInput) {
-    parentTableData.innerHTML = `&#x20B9;${oldChargeValue}`;
-    return;
-  }
+  // Delay focus to avoid instant blur from Bootstrap dropdown
+  setTimeout(() => {
+    chargeInput.focus();
+    chargeInput.select();
+  }, 0);
 
-  chargeInput.focus();
-  chargeInput.select();
+  chargeInput.addEventListener(
+    "blur",
+    async () => {
+      const newValue = +chargeInput.value;
+      const isValid = validateCharge(chargeInput);
 
-  chargeInput.addEventListener("blur", async () => {
-    const isValid = validateCharge(chargeInput);
-    const newValue = +chargeInput.value;
-
-    if (!isValid) {
-      disableChargeInput(parentTableData, oldChargeValue);
-      toast.error(
-        "Invalid value: must be greater than 0 and less than or equal to 100"
-      );
-      return;
-    }
-
-    if (newValue === oldChargeValue) {
-      disableChargeInput(parentTableData, oldChargeValue);
-
-      return;
-    }
-
-    try {
-      const response = await updateFareFactorChargeRequest(
-        newValue,
-        +parentTableRow.dataset.id
-      );
-      switch (response) {
-        case "internal": {
-          throw new Error("Internal server error");
-        }
-        case "invalid": {
-          throw new Error("Invalid value");
-        }
-        case "success": {
-          disableChargeInput(parentTableData, newValue);
-          updateFactorAfterEdit(+parentTableRow.dataset.id, newValue);
-          toast.success("Charges were updated successfully");
-          break;
-        }
-        default: {
-          disableChargeInput(parentTableData, oldChargeValue);
-          break;
-        }
+      if (!isValid) {
+        disableChargeInput(parentTableData, oldChargeValue);
+        toast.error(
+          "Invalid value: must be greater than 0 and less than or equal to 100"
+        );
+        return;
       }
-    } catch (err) {
-      disableChargeInput(parentTableData, oldChargeValue);
-      toast.error(err.message);
-    }
-  });
+
+      if (newValue === oldChargeValue) {
+        disableChargeInput(parentTableData, oldChargeValue);
+        return;
+      }
+
+      try {
+        const response = await updateFareFactorChargeRequest(
+          newValue,
+          +parentTableRow.dataset.id
+        );
+        switch (response) {
+          case "success":
+            disableChargeInput(parentTableData, newValue);
+            updateFactorAfterEdit(+parentTableRow.dataset.id, newValue);
+            toast.success("Charges were updated successfully");
+            break;
+          case "internal":
+            throw new Error("Internal server error");
+          case "invalid":
+            throw new Error("Invalid value");
+          default:
+            disableChargeInput(parentTableData, oldChargeValue);
+        }
+      } catch (err) {
+        disableChargeInput(parentTableData, oldChargeValue);
+        toast.error(err.message);
+      }
+    },
+    { once: true }
+  );
 };
 
 const handleDelete = async (e) => {
@@ -240,15 +241,17 @@ const handleDelete = async (e) => {
 };
 
 fareTable.addEventListener("click", async (e) => {
-  const optionBtn = e.target.closest(".feature-btn");
+  const optionBtn = e.target.closest("[data-type]");
   if (!optionBtn) return;
-
-  switch (optionBtn.dataset.type) {
+  console.log(optionBtn);
+  const { type } = optionBtn.dataset;
+  switch (type) {
     case "edit": {
       await handleEdit(e);
       break;
     }
     case "delete": {
+      console.log("delete");
       await handleDelete(e);
       break;
     }
@@ -260,9 +263,11 @@ fareTable.addEventListener("click", async (e) => {
 
 sortCharges.addEventListener("change", (e) => {
   if (!sessionStorage.getItem("fareList")) {
+    resetFilter();
     handleFareFactorList();
     return;
   }
+  const value = e.target.value;
   const fareFactorList = JSON.parse(sessionStorage.getItem("fareList"));
   switch (sortCharges.value) {
     case "low": {
@@ -282,19 +287,21 @@ sortCharges.addEventListener("change", (e) => {
       break;
     }
   }
-
-  filterNav.init();
+  resetFilter();
+  e.target.value = value;
 });
 
 filterNavContainer.addEventListener("click", (e) => {
   if (!e.target.classList.contains("btn")) return;
   if (!sessionStorage.getItem("fareList")) {
+    resetFilter();
     handleFareFactorsListDisplay();
     return;
   }
   const element = e.target;
   const fareFactorList = JSON.parse(sessionStorage.getItem("fareList"));
   handleNav(element.textContent, fareFactorList);
+  resetFilter();
 });
 
 const handleFareFactorList = async () => {

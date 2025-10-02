@@ -687,7 +687,7 @@ const enableFilter = (all = false) => {
 };
 
 const resetFilter = () => {
-  filterNav.start();
+  filterNav.init();
   searchFilterSource.value = searchFilterDestination.value = "";
   sortDistance.value = sortDuration.value = "";
 

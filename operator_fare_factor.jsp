@@ -177,7 +177,7 @@
               </div>
 
               <select
-                class="my-select focus-ring rounded border-0"
+                class="my-select focus-ring rounded border-0 filter"
                 id="sort_charges"
               >
                 <option value="">Sort by Charges</option>

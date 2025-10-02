@@ -10,12 +10,31 @@ export class ViewHelper {
           
           <td class="p-3 charge">&#x20B9;${charge}</td>
           <td class="p-3">
-            <button class="feature-btn" data-type='edit'>
-              <img src="static/media/images/edit_sm_blue.svg" class="feature-icon"/>
-            </button>
-            <button class="feature-btn ms-2" data-type='delete'>
-              <img src="static/media/images/delete_sm_red.svg" class="feature-icon"/>
-            </button>
+            <div class="dropdown" data-bs-auto-close="outside">
+                    <button
+                      class="btn bg-transparent option-btn"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <img
+                        src="static/media/images/options_sm.svg"
+                        alt="option"
+                      />
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li role="button" class="border-bottom">
+                       <a class="dropdown-item option-link" data-type="edit" data-bs-toggle="dropdown" >Edit</a>
+
+                      </li>
+                      <li role="button" class="border-bottom">
+                        <a class="dropdown-item option-link" data-type="delete">Delete</a>
+                      </li>
+                      <li role="button">
+                        <a class="dropdown-item option-link" href="">Manage</a>
+                      </li>
+                    </ul>
+                  </div>
           </td>
         </tr>`;
   }

@@ -15,19 +15,19 @@ public class Bus implements Cloneable {
     private Integer busId;
     private String busNumber;
     private Integer seats;
-    private String manufacturer;
+    private Manufacturer manufacturer;
     private Boolean doubleDecker;
     private Status status;
     private Operator operator;
 
-    public Bus(String busNumber, String manufacturer, Boolean doubleDecker, Status status) {
+    public Bus(String busNumber, Manufacturer manufacturer, Boolean doubleDecker, Status status) {
         this.busNumber = busNumber;
-        this.manufacturer = manufacturer;
+        this.manufacturer = new Manufacturer(manufacturer.getManufacturerId(), manufacturer.getName());
         this.doubleDecker = doubleDecker;
         this.status = new Status(status.getStatusId(), status.getName());
     }
 
-    public Bus(Integer busId, String busNumber, String manufacturer, Boolean doubleDecker, Status status) {
+    public Bus(Integer busId, String busNumber, Manufacturer manufacturer, Boolean doubleDecker, Status status) {
         this(busNumber, manufacturer, doubleDecker, status);
         this.busId = busId;
     }
@@ -43,8 +43,9 @@ public class Bus implements Cloneable {
 
             String query = 
                     "SELECT * FROM " +
-                    "buses JOIN status " + 
-                    "ON buses.status_id = status.status_id " +
+                    "buses b JOIN status s" + 
+                    "ON b.status_id = s.status_id " +
+                    +
                     "WHERE bus_id=?";
             PreparedStatement ps = con.prepareStatement(query);
 
