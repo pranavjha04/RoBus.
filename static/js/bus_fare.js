@@ -119,146 +119,32 @@ const disableChargeInput = (parentTableData, oldChargeValue) => {
   parentTableData.innerHTML = `<span>&#x20B9;${oldChargeValue}</span>`;
 };
 
-const updateFactorAfterEdit = (operatorTicketFareId, newValue) => {
-  const factorList = JSON.parse(sessionStorage.getItem("fareList"));
-  const target = factorList.find(
-    (factor) => factor.operatorTicketFareId === operatorTicketFareId
-  );
-
-  target.charge = newValue;
-  update(factorList);
-  sessionStorage.setItem("fareList", JSON.stringify(factorList));
-};
-
-const updateFactorAfterDelete = (operatorTicketFareId) => {
-  const factorList = JSON.parse(sessionStorage.getItem("fareList"));
-  const filterList = factorList.filter(
-    (factor) => factor.operatorTicketFareId !== operatorTicketFareId
-  );
-
-  if (filterList.length === 0) {
-    filterNav.init();
-  }
-
-  sessionStorage.setItem("fareList", JSON.stringify(filterList));
-  update(filterList);
-  if (filterList.length === 0) {
-    handleFareFactorsListDisplay();
-  }
-};
-
-const handleEdit = async (e) => {
-  const parentTableRow = e.target.closest("tr");
-  const parentTableData = parentTableRow.querySelector(".charge");
-  const oldChargeValue = +parentTableData.textContent.replace("₹", "").trim();
-
-  // Prevent multiple inputs being created
-  if (parentTableRow.querySelector("input")) return;
-
-  enableChargeInput(parentTableData, oldChargeValue);
-
-  const chargeInput = parentTableRow.querySelector("input");
-
-  // Delay focus to avoid instant blur from Bootstrap dropdown
-  setTimeout(() => {
-    chargeInput.focus();
-    chargeInput.select();
-  }, 0);
-
-  chargeInput.addEventListener(
-    "blur",
-    async () => {
-      const newValue = +chargeInput.value;
-      const isValid = validateCharge(chargeInput);
-
-      if (!isValid) {
-        disableChargeInput(parentTableData, oldChargeValue);
-        toast.error(
-          "Invalid value: must be greater than 0 and less than or equal to 100"
-        );
-        return;
-      }
-
-      if (newValue === oldChargeValue) {
-        disableChargeInput(parentTableData, oldChargeValue);
-        return;
-      }
-
-      try {
-        const response = await updateFareFactorChargeRequest(
-          newValue,
-          +parentTableRow.dataset.id
-        );
-        switch (response) {
-          case "success":
-            disableChargeInput(parentTableData, newValue);
-            updateFactorAfterEdit(+parentTableRow.dataset.id, newValue);
-            toast.success("Charges were updated successfully");
-            break;
-          case "internal":
-            throw new Error("Internal server error");
-          case "invalid":
-            throw new Error("Invalid value");
-          default:
-            disableChargeInput(parentTableData, oldChargeValue);
-        }
-      } catch (err) {
-        disableChargeInput(parentTableData, oldChargeValue);
-        toast.error(err.message);
-      }
-    },
-    { once: true }
-  );
-};
-
-const handleDelete = async (e) => {
-  const parentTableRow = e.target.closest("tr");
-  const operatorTicketFareId = +parentTableRow.dataset.id;
-
-  try {
-    const response = await deleteFareFactorRequest(operatorTicketFareId);
-
-    switch (response) {
-      case "invalid": {
-        throw new Error("Invalid request");
-      }
-      case "internal": {
-        throw new Error("Internal server error");
-      }
-      case "success": {
-        parentTableRow.remove();
-        toast.success("Fare factor deleted successfully");
-        updateFactorAfterDelete(operatorTicketFareId);
-        break;
-      }
-      default: {
-        throw new Error("Internal server error");
-      }
-    }
-  } catch (err) {
-    toast.error(err.message);
-  }
-};
-
 fareTable.addEventListener("click", async (e) => {
-  const optionBtn = e.target.closest("[data-type]");
-  if (!optionBtn) return;
-  console.log(optionBtn);
-  const { type } = optionBtn.dataset;
-  switch (type) {
-    case "edit": {
-      await handleEdit(e);
-      break;
-    }
-    case "delete": {
-      console.log("delete");
-      await handleDelete(e);
-      break;
-    }
-    default: {
-      break;
-    }
+  const element = e.target.closest("button");
+  if (!element) return;
+
+  const parent = element.closest("tr");
+  const { operatorTicketFareId } = parent.dataset;
+  if (!operatorTicketFareId) {
+    toast.error("Invalid Request");
+    return;
   }
+
+  const activeFare = JSON.parse(sessionStorage.getItem("fareList")).find(
+    (data) => data.operatorTicketFareId === +operatorTicketFareId
+  );
+
+  if (!activeFare) {
+    toast.error("Invalid Request");
+    return;
+  }
+
+  sessionStorage.setItem("activeFare", JSON.stringify(activeFare));
+  const APP_URL = window.location.href.substring(
+    0,
+    window.location.href.lastIndexOf("/")
+  );
+  window.location.href = `${APP_URL}/manage_fare_factor.do`;
 });
 
 sortCharges.addEventListener("change", (e) => {
@@ -454,6 +340,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   await init(true);
 });
 
-window.addEventListener("pagehide", () => {
+window.addEventListener("", () => {
   sessionStorage.removeItem("fareList");
 });

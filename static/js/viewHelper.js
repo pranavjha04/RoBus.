@@ -4,37 +4,22 @@ export class ViewHelper {
 
     const { fareFactorId, name, fixedCharge } = fareFactor;
 
-    return `<tr class="text-center border-bottom" data-id=${operatorTicketFareId}>
+    return `<tr class="text-center border-bottom" data-operator-ticket-fare-id=${operatorTicketFareId}>
           <td class="p-3">${name}</td>
           <td class="p-3" >${fixedCharge ? "Fixed Charge" : "Person / km"}</td>
           
           <td class="p-3 charge">&#x20B9;${charge}</td>
           <td class="p-3">
-            <div class="dropdown" data-bs-auto-close="outside">
-                    <button
-                      class="btn bg-transparent option-btn"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <img
-                        src="static/media/images/options_sm.svg"
-                        alt="option"
-                      />
-                    </button>
-                    <ul class="dropdown-menu">
-                      <li role="button" class="border-bottom">
-                       <a class="dropdown-item option-link" data-type="edit" data-bs-toggle="dropdown" >Edit</a>
-
-                      </li>
-                      <li role="button" class="border-bottom">
-                        <a class="dropdown-item option-link" data-type="delete">Delete</a>
-                      </li>
-                      <li role="button">
-                        <a class="dropdown-item option-link" href="">Manage</a>
-                      </li>
-                    </ul>
-                  </div>
+            <button
+              class="btn manage-icon border-primary-subtle py-2 px-2"
+            >
+              <img
+                src="static/media/images/edit_sm_blue.svg"
+                width="18"
+                height="18"
+              />
+              <span class="text-primary">Manage</span>
+            </button>
           </td>
         </tr>`;
   }
