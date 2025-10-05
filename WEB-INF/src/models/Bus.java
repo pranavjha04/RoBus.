@@ -42,10 +42,14 @@ public class Bus implements Cloneable {
             Connection con = DBManager.getConnection();
 
             String query = 
-                    "SELECT * FROM " +
-                    "buses b JOIN status s" + 
+                    "SELECT " +
+                    "b.bus_id, b.bus_number, b.double_decker, " +
+                    "m.manufacturer_id, m.name AS manufacturer_name, " +
+                    "s.status_id, s.name AS status_name " + 
+                    "FROM " +
+                    "buses b JOIN status s " + 
                     "ON b.status_id = s.status_id " +
-                    +
+                    "JOIN manufacturers m ON b.manufacturer_id = m.manufacturer_id " +
                     "WHERE bus_id=?";
             PreparedStatement ps = con.prepareStatement(query);
 
@@ -57,11 +61,14 @@ public class Bus implements Cloneable {
                 bus = new Bus(
                     rs.getInt("bus_id"),
                     rs.getString("bus_number"),
-                    rs.getString("manufacturer"),
+                    new Manufacturer(
+                        rs.getInt("manufacturer_id"),
+                        rs.getString("manufacturer_name")
+                    ),
                     rs.getBoolean("double_decker"),
                     new Status(
                         rs.getInt("status_id"),
-                        rs.getString("name")
+                        rs.getString("status_name")
                     )
                 );
             }
@@ -106,12 +113,19 @@ public class Bus implements Cloneable {
         try {
             Connection con = DBManager.getConnection();
             String query = "";
-            if(allData) {}
+            if(allData) {
+
+            }
             else {
                 query = 
-                    "SELECT * FROM " +
-                    "buses JOIN status " + 
-                    "ON buses.status_id = status.status_id " +
+                    "SELECT " +
+                    "b.bus_id, b.bus_number, b.double_decker, " +
+                    "m.manufacturer_id, m.name AS manufacturer_name, " +
+                    "s.status_id, s.name AS status_name " + 
+                    "FROM " +
+                    "buses b JOIN status s " + 
+                    "ON b.status_id = s.status_id " +
+                    "JOIN manufacturers m ON b.manufacturer_id = m.manufacturer_id " +
                     "WHERE operator_id=?";
             }
 
@@ -126,11 +140,14 @@ public class Bus implements Cloneable {
                     Bus bus = new Bus(
                         rs.getInt("bus_id"),
                         rs.getString("bus_number"),
-                        rs.getString("manufacturer"),
+                        new Manufacturer(
+                            rs.getInt("manufacturer_id"),
+                            rs.getString("manufacturer_name")
+                        ),
                         rs.getBoolean("double_decker"),
                         new Status(
                             rs.getInt("status_id"),
-                            rs.getString("name")
+                            rs.getString("status_name")
                         )
                     );
 
@@ -170,19 +187,19 @@ public class Bus implements Cloneable {
         return flag;   
     }
 
-    public int addRecord() {
+    public int addRecord(Integer manufacturerId) {
         int generatedId = -1;
         try {
             Connection con = DBManager.getConnection();
             String query = 
                     "INSERT INTO buses " + 
-                    "(bus_number, manufacturer, double_decker, operator_id, status_id) " + 
+                    "(bus_number, manufacturer_id, double_decker, operator_id, status_id) " + 
                     "VALUES (?,?,?,?,10)";
             
             PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
             ps.setString(1, busNumber);
-            ps.setString(2, manufacturer);
+            ps.setInt(2, manufacturerId);
             ps.setBoolean(3, doubleDecker);
             ps.setInt(4, operator.getOperatorId());
 
@@ -236,12 +253,6 @@ public class Bus implements Cloneable {
                 }
                 setBusNumber(value);
                 break;
-            case "manufacturer":
-                if(value == null || value.isEmpty()) {
-                    return "2";
-                }
-                setManufacturer(value);
-                break;
             case "double_decker":
                 setDoubleDecker(Boolean.parseBoolean(value));
             default:
@@ -279,12 +290,12 @@ public class Bus implements Cloneable {
         this.doubleDecker = doubleDecker;
     }
     
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
+    public void setManufacturer(Manufacturer manufacturer) {
+        this.manufacturer = new Manufacturer(manufacturer.getManufacturerId(), manufacturer.getName());
     }
 
-    public String getManufacturer() {
-        return manufacturer;
+    public Manufacturer getManufacturer() {
+        return new Manufacturer(manufacturer.getManufacturerId(), manufacturer.getName());
     }
 
     public void setBusNumber(String busNumber) {

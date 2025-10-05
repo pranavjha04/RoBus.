@@ -116,14 +116,13 @@ export class ViewHelper {
   static getBusTableRow(bus) {
     const { busId, manufacturer, busNumber, status } = bus;
     const { name: statusName } = status;
+    const { name: manufacturerName } = manufacturer;
     return `<tr
                 class="text-center border-bottom"
                 data-id="${busId}"
               >
                 <td class="p-3">${busNumber}</td>
-                <td class="p-3">${
-                  manufacturer.charAt(0).toUpperCase() + manufacturer.slice(1)
-                }</td>
+                <td class="p-3">${manufacturerName}</td>
 
                 <td class="p-3 charge">
                   <span

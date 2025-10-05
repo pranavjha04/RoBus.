@@ -47,21 +47,24 @@
 
                   <div>
                     <label
-                      for="manufacturer"
+                      for="manufacturer_id"
                       class="form-label small fw-semibold"
                       >Manufacturer</label
                     >
                     <select
                       class="form-select"
-                      id="manufacturer"
-                      name="manufacturer"
+                      id="manufacturer_id"
+                      name="manufacturer_id"
                     >
                       <option value="">Select Manufacturer</option>
-                      <option value="tata">Tata Motors</option>
-                      <option value="ashok-leyland">Ashok Leyland</option>
-                      <option value="eicher">Eicher Motors</option>
-                      <option value="volvo">Volvo Buses</option>
-                      <option value="mahindra">Mahindra & Mahindra</option>
+                      <c:forEach
+                        var="manufacturer"
+                        items="${applicationScope.manufacturerList}"
+                      >
+                        <option value="${manufacturer.manufacturerId}">
+                          ${manufacturer.name}
+                        </option>
+                      </c:forEach>
                     </select>
                   </div>
                   <div>

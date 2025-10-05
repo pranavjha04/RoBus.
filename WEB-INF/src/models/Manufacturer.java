@@ -22,7 +22,7 @@ public class Manufacturer {
 
     }
 
-    public ArrayList<Manufacturer> collectRecords() {
+    public static ArrayList<Manufacturer> collectAllRecords() {
         ArrayList<Manufacturer> manufacturerList = new ArrayList<>();
 
         try {
@@ -53,7 +53,7 @@ public class Manufacturer {
         this.name = name;
     }
     
-    public void getName() {
+    public String getName() {
         return name;
     }
 
@@ -61,7 +61,7 @@ public class Manufacturer {
         this.manufacturerId = manufacturerId;
     }
 
-    public void getManufacturerId() {
+    public Integer getManufacturerId() {
         return manufacturerId;
     }
 }

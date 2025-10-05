@@ -55,6 +55,7 @@ public class AddBusServlet extends HttpServlet {
 
             List<FileItem> validFiles = new ArrayList<>();
             List<FileItem> fareFactors = new ArrayList<>();
+            Integer manufacturerId = -1;
             
             Operator operator = (Operator) session.getAttribute("operator");
 
@@ -71,8 +72,14 @@ public class AddBusServlet extends HttpServlet {
                         fareFactors.add(item);
                         continue;
                     }
-                    System.out.println(fieldName);
                     String value = item.getString().trim();
+
+                    // enum values
+                    if(fieldName.equals("manufacturer_id")) {
+                        manufacturerId = Integer.parseInt(value);
+                        continue;
+                    }
+
                     errorMessage.append(bus.setField(fieldName, value));
                 } else {
                     boolean isFileValid = FileManager.validateFileSize(item.getSize())
@@ -100,7 +107,12 @@ public class AddBusServlet extends HttpServlet {
                 return;
             }
 
-            int generatedId = bus.addRecord();
+            if(manufacturerId <= 0) {
+                response.getWriter().println("Invalid");
+                return;
+            }
+
+            int generatedId = bus.addRecord(manufacturerId); // passing enums
             if (generatedId == -1) {
                 response.getWriter().println("Internal server error");
                 return;

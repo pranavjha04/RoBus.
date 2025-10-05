@@ -20,7 +20,7 @@ import { ViewHelper } from "./viewHelper.js";
 // BASIC BUS FORM
 const basicBusForm = document.querySelector("#basic_form");
 const busNumber = document.querySelector("#bus_number");
-const manufacturer = document.querySelector("#manufacturer");
+const manufacturer = document.querySelector("#manufacturer_id");
 const doubleDecker = document.querySelector("#double_decker");
 const fareList = document.querySelector("#feature_list");
 const busImages = document.querySelector("#bus_images");

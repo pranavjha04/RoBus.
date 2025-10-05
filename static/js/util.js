@@ -160,7 +160,7 @@ export const manufacturerHandler = (e) => {
   const manufacturer = e.target.value;
   const element = e.target;
 
-  if (!manufacturer) {
+  if (!manufacturer || manufacturer <= 0) {
     displayInputError(element);
   } else {
     displayInputSuccess(element);
