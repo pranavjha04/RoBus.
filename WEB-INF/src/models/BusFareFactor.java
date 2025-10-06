@@ -28,6 +28,34 @@ public class BusFareFactor {
 
     }
 
+    public static Boolean deleteRecord(Integer busId, Integer busFareFactorId, Integer operatorTicketFareId) {
+        Boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "DELETE FROM bus_fare_factor " +
+                        "WHERE bus_id=? AND bus_fare_factor_id=? AND operator_ticket_fare_id=?";
+
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, busId);
+            ps.setInt(2, busFareFactorId);
+            ps.setInt(3, operatorTicketFareId);
+
+            int rows = ps.executeUpdate();
+
+            if(rows == 1) {
+                flag = true;
+            } 
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+
+        return flag;
+    }
+
     public static boolean addRecord(int busId, int operatorTicketFareId) {
         boolean flag = false;
         try {

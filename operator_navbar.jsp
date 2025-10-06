@@ -3,7 +3,7 @@
     class="ms-auto d-flex align-items-center gap-2 focus-ring-info p-1 rounded-5"
   >
     <img
-      src="static/media/images/WhatsApp Image 2025-08-31 at 22.26.31_d0474dbd.jpg"
+      src="https://avatar.iran.liara.run/username?username=${sessionScope.operator.fullName}"
       class="rounded-circle border border"
       style="width: 50px; height: 50px; object-fit: contain"
       alt="User"

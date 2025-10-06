@@ -114,9 +114,6 @@
                 </td>
               </tr>
             </tbody>
-            <tbody>
-              <tr></tr>
-            </tbody>
           </table>
         </div>
       </main>

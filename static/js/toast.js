@@ -40,7 +40,7 @@ class Toast {
   }
 
   #displayToast() {
-    const toast = new bootstrap.Toast(this.#toastEl, { delay: 3000 });
+    const toast = new bootstrap.Toast(this.#toastEl, { delay: this.delay });
     toast.show();
     this.#removeToast();
   }

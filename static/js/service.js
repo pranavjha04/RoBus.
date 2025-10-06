@@ -332,3 +332,16 @@ export const collectAllRecordsWithOperatorTicketFareRequest = async (obj) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const deleteBusFareFactor = async (obj) => {
+  const queryParams = createURLParams(obj);
+  const res = await fetch(
+    `delete_bus_fare_factor.do?${queryParams.toString()}`,
+    {
+      method: "POST",
+    }
+  );
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data;
+};

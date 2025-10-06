@@ -389,7 +389,47 @@ export class ViewHelper {
             </thead>`;
   }
 
-  static getOperatorTicketFareManageBody() {
-    return;
+  static getOperatorTicketFareManageBody(busFareFactor) {
+    const { busFareFactorId, bus } = busFareFactor;
+    const { busNumber, busId, manufacturer, status } = bus;
+    const { name: manufacturerName } = manufacturer;
+    const { name: statusName } = status;
+    return ` <tr class="text-center border-bottom" data-bus-id=${busId} data-bus-fare-factor-id=${busFareFactorId}>
+                <td class="p-3">${busNumber}</td>
+                <td class="p-3">${manufacturerName}</td>
+
+                <td class="p-3 charge">
+                  <span
+                    class="badge border
+                    ${
+                      statusName === "Active" &&
+                      "text-success bg-success-subtle border-success"
+                    }
+                    ${
+                      statusName === "Inactive" &&
+                      "text-danger bg-danger-subtle border-danger"
+                    }
+                    ${
+                      statusName === "Incomplete" &&
+                      "text-warning bg-warning-subtle border-warning"
+                    }
+                    "
+                    >${statusName.toUpperCase()}</span
+                  >
+                </td>
+                <td class="p-3">
+                  <button
+                    class="btn  delete-icon border-danger-subtle py-2 px-2"
+                    ${statusName === "Active" && "disabled"}
+                  >
+                    <img
+                      src="static/media/images/delete_sm_red.svg"
+                      width="18"
+                      height="18"
+                    />
+                    <span class="text-danger">Remove</span>
+                  </button>
+                </td>
+              </tr>`;
   }
 }

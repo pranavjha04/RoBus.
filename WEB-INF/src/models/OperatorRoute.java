@@ -151,13 +151,14 @@ public class OperatorRoute {
                         "FROM operator_routes opr " +
                         "JOIN routes r ON  opr.route_id = r.route_id " +
                         "JOIN status st ON opr.status_id = st.status_id " +
-                        "JOIN cities s on r.source = s.city_id " +
-                        "JOIN states ss on s.state_id = ss.state_id " +
-                        "JOIN cities d on r.destination = d.city_id " +
-                        "JOIN states ds on d.state_id = ds.state_id";
+                        "JOIN cities s ON r.source = s.city_id " +
+                        "JOIN states ss ON s.state_id = ss.state_id " +
+                        "JOIN cities d ON r.destination = d.city_id " +
+                        "JOIN states ds ON d.state_id = ds.state_id " +
+                        "WHERE opr.operator_id=?";
             
             PreparedStatement ps = con.prepareStatement(query);
-
+            ps.setInt(1, operatorId);
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()) {

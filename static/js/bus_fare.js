@@ -1,10 +1,5 @@
 import { filterNav } from "./filter_nav.js";
-import {
-  collectFareFactorRequest,
-  deleteFareFactorRequest,
-  handleAddFareFactor,
-  updateFareFactorChargeRequest,
-} from "./service.js";
+import { collectFareFactorRequest, handleAddFareFactor } from "./service.js";
 import { ViewHelper } from "./viewHelper.js";
 import { toast } from "./toast.js";
 import { displayInputError, validateCharge } from "./util.js";
