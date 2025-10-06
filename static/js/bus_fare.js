@@ -335,11 +335,11 @@ formModal.addEventListener("hidden.bs.modal", () => {
   charge.classList.remove("border-danger", "border-success");
 });
 
-window.addEventListener("DOMContentLoaded", async () => {
+window.addEventListener("pageshow", async () => {
   PageLoading.startLoading();
   await init(true);
 });
 
-window.addEventListener("", () => {
+window.addEventListener("pagehide", () => {
   sessionStorage.removeItem("fareList");
 });

@@ -65,7 +65,7 @@ public class BusFareFactor {
                         "m.manufacturer_id, m.name AS 'manufacturer_name', " +
                         "s.status_id, s.name AS 'status_name' " +
                         "FROM bus_fare_factor bff " +
-                        "JOIN buses ON bff.bus_id = b.bus_id " +
+                        "JOIN buses b ON bff.bus_id = b.bus_id " +
                         "JOIN manufacturers m ON b.manufacturer_id = m.manufacturer_id " +
                         "JOIN status s ON b.status_id = s.status_id " +
                         "WHERE bff.operator_ticket_fare_id=?";

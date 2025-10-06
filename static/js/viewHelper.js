@@ -377,4 +377,19 @@ export class ViewHelper {
                 </td>
               </tr>`;
   }
+
+  static getOperatorTicketFareManageHeading() {
+    return `<thead>
+              <tr class="border border-bottom text-center">
+                <th class="p-3">Bus Number</th>
+                <th class="p-3">Manufacturer</th>
+                <th class="p-3">Status</th>
+                <th class="p-3">Action</th>
+              </tr>
+            </thead>`;
+  }
+
+  static getOperatorTicketFareManageBody() {
+    return;
+  }
 }

@@ -29,33 +29,4 @@ public class ManageOperatorFareFactorServlet extends HttpServlet {
 
         request.getRequestDispatcher("manage_fare_factor.jsp").forward(request, response);
     }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        HttpSession session = request.getSession();
-
-        if(
-            session.getAttribute("operator") == null ||
-            request.getParameter("operator_fare_factor_id") == null) {
-            response.sendRedirect("/bts");
-            return;
-        }   
-
-        try {
-            Integer operatorTicketFareId = Integer.parseInt("operator_ticket_fare_id");
-            ArrayList<BusFareFactor> busList = BusFareFactor.collectAllRecordsWithOperatorTicketFare(operatorTicketFareId); 
-
-            if(busList == null) {
-                response.getWriter().println("internal");
-                return;
-            }
-
-            response.getWriter().println(new Gson().toJson(busList));
-            return;
-        }
-        catch(NumberFormatException e) {
-            e.printStackTrace();
-            response.sendRedirect("/bts");
-            return;
-        }
-    }
 }

@@ -39,7 +39,7 @@
                   <span class="fs-6 fw-semibold text-secondary text-uppercase"
                     >Fare Factor Name</span
                   >
-                  <h4 class="fw-bold text-dark mt-1 mb-0">Air Conditioning</h4>
+                  <h4 class="fw-bold text-dark mt-1 mb-0" id="factor_name"></h4>
                 </div>
               </div>
 
@@ -50,7 +50,7 @@
                   <span class="fs-6 fw-semibold text-secondary text-uppercase"
                     >Type</span
                   >
-                  <h4 class="fw-bold text-dark mt-1 mb-0">Person / km</h4>
+                  <h4 class="fw-bold text-dark mt-1 mb-0" id="charge_type"></h4>
                 </div>
               </div>
             </div>
@@ -66,17 +66,20 @@
                 type="number"
                 class="form-control fs-5"
                 placeholder="Charges"
-                name="charge"
+                name="charges"
                 id="charges"
+                readonly
               />
-              <button class="btn btn-primary px-4">Edit</button>
-              <button class="btn btn-danger px-4">Delete</button>
+              <button class="btn btn-primary px-4" id="edit_btn">Edit</button>
+              <button class="btn btn-danger px-4" id="delete_btn">
+                Delete
+              </button>
             </div>
           </div>
 
           <table
             class="border rounded table-responsive border-bottom-0 mt-2"
-            id="fare_factor_table"
+            id="operator_ticket_fare_bus_table"
           >
             <thead>
               <tr class="border border-bottom text-center">

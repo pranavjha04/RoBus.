@@ -317,3 +317,18 @@ export const collectOperatorRouteRequest = async () => {
   const data = await res.text();
   return data.trim();
 };
+
+export const collectAllRecordsWithOperatorTicketFareRequest = async (obj) => {
+  const queryParams = createURLParams(obj);
+  console.log(queryParams.toString());
+  const res = await fetch(
+    `get_operator_ticket_fare_bus.do?${queryParams.toString()}`,
+    {
+      method: "POST",
+    }
+  );
+  if (!res.ok) throw new Error("Internal Server Error");
+
+  const data = await res.text();
+  return data.trim();
+};
