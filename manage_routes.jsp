@@ -79,7 +79,7 @@
 
           <table
             class="border rounded table-responsive border-bottom-0 mt-2"
-            id="operator_ticket_fare_bus_table"
+            id="operator_routes_fare_bus_table"
           ></table>
         </div>
       </main>

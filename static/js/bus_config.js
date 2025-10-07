@@ -1,3 +1,4 @@
+import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import {
   addSeatingRequest,
@@ -217,6 +218,7 @@ const handleLoadingSeatingData = async () => {
   } catch (err) {
     toast.error(err.message);
     PageLoading.stopLoading();
+    PageError.showOperatorError();
   }
 };
 

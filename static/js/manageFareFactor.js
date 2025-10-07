@@ -1,3 +1,4 @@
+import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import {
   collectAllRecordsWithOperatorTicketFareRequest,
@@ -159,30 +160,28 @@ chargeEditBtn.addEventListener("click", async () => {
 });
 
 const handleDeleteBusFareFactorRequest = async (busId, busFareFactorId) => {
-  const { opeoperatorTicketFareId } = modal.activeFare;
+  const { operatorTicketFareId } = modal.activeFare;
   const { operatorTicketFareBusList } = modal;
+  const prepareObj = {
+    bus_id: busId,
+    bus_fare_factor_id: +busFareFactorId,
+    operator_ticket_fare_id: +operatorTicketFareId,
+  };
 
   try {
-    const prepareObj = {
-      bus_id: busId,
-      bus_fare_factor_id: busFareFactorId,
-      operator_ticket_fare_id: opeoperatorTicketFareId,
-    };
-
     const response = await deleteBusFareFactor(prepareObj);
-
+    console.log(response);
     switch (response) {
       case "internal": {
         throw new Error("Internal Server Error");
       }
       case "invalid": {
-        throw new Error("Invalid Reques");
+        throw new Error("Invalid Request");
       }
       case "success": {
         const newList = operatorTicketFareBusList.filter((fare) => {
           +fare.busFareFactorId !== +busFareFactorId;
         });
-
         modal.operatorTicketFareBusList = newList;
         sessionStorage.setItem(
           "operatorTicketFareBusList",
@@ -191,8 +190,8 @@ const handleDeleteBusFareFactorRequest = async (busId, busFareFactorId) => {
         const tableRow = busTable.querySelector(
           `[data-bus-fare-factor-id="${busFareFactorId}"]`
         );
-        tableRow.remove();
 
+        displayBusTableInfo(newList);
         toast.success("Bus fare factor deleted successfully");
         break;
       }
@@ -212,7 +211,7 @@ busTable.addEventListener("click", (e) => {
   const tableRow = element.closest("tr");
   const { busId, busFareFactorId } = tableRow.dataset;
 
-  handleDeleteBusFareFactorRequest(busId, busFareFactorId);
+  handleDeleteBusFareFactorRequest(+busId, +busFareFactorId);
 });
 
 const updateInfo = () => {
@@ -289,6 +288,7 @@ window.addEventListener("pageshow", (e) => {
     PageLoading.stopLoading();
   } catch (err) {
     toast.error(err.message);
+    PageError.showOperatorError();
   }
 });
 

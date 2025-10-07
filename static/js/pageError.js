@@ -1,5 +1,10 @@
 export class PageError {
   static showOperatorError() {
+    const parent = document.querySelector("#pageWrapper");
+    if (!parent) throw new Error("Page Wrapper Not Present");
+    parent.innerHTML = this.#getOperatorErrorHTML();
+  }
+  static #getOperatorErrorHTML() {
     return ` <div
             class="d-flex flex-column align-items-center justify-content-center h-100"
           >

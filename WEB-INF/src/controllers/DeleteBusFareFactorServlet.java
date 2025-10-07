@@ -39,8 +39,9 @@ public class DeleteBusFareFactorServlet extends HttpServlet {
             response.getWriter().println(success ? "success" : "internal");
         } 
         catch(NumberFormatException e) {
-            e.printStackTrace();
             response.getWriter().println("invalid");
+            e.printStackTrace();
+            return;
         }
     }
 }

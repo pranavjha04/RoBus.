@@ -31,8 +31,6 @@ const allFields = Array.from(document.querySelectorAll(".bfld"));
 const prevImagesContainer = document.querySelector("#preview_img_container");
 const busTable = document.querySelector("#bus_table");
 
-const pageWrapper = document.querySelector("#pageWrapper");
-
 const setFareLoader = () => {
   fareList.innerHTML = '<div class="loader sm-loader"></div>';
 };
@@ -158,7 +156,7 @@ const handleBusRecords = async (firstTime = false) => {
   } catch (err) {
     toast.error(err.message);
     PageLoading.stopLoading();
-    pageWrapper.innerHTML = PageError.showOperatorError();
+    PageError.showOperatorError();
   }
 };
 

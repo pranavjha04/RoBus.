@@ -208,6 +208,7 @@
 
           <div
             class="d-flex align-items-center justify-content-between mt-auto gap-2"
+            id="pageWrapper"
           >
             <input
               type="reset"

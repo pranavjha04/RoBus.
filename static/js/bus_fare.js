@@ -22,8 +22,6 @@ const filterNavContainer = document.querySelector("#filter_nav");
 const totalFare = document.querySelector("#total_fare");
 const totalCharges = document.querySelector("#total_charges");
 
-const pageWrapper = document.querySelector("#pageWrapper");
-
 const collectFareCharge = (acc, curr) => {
   return acc + curr?.charge;
 };
@@ -215,7 +213,7 @@ const init = async (firstTime) => {
     }, 500);
   } catch (err) {
     toast.error(err.message);
-    pageWrapper.innerHTML = PageError.showOperatorError();
+    PageError.showOperatorError();
   }
 };
 

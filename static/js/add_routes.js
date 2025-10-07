@@ -60,8 +60,6 @@ let filerApplied = false;
 // info display
 const infoList = document.querySelectorAll(".info");
 const routeTable = document.querySelector("#route_table");
-
-const pageWrapper = document.querySelector("#pageWrapper");
 const removeFilter = document.querySelector("#remove_filter_btn");
 
 const resetSelectRoutes = () => {
@@ -909,7 +907,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     await Promise.all([handleAllRoutes(), handleAllOperatorRoutes(true)]);
   } catch (err) {
     toast.error(err.message);
-    pageWrapper.innerHTML = PageError.showOperatorError();
+    PageError.showOperatorError();
     clearInterval(filteAppliedInterval);
   }
 });

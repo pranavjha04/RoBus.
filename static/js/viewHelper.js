@@ -328,9 +328,7 @@ export class ViewHelper {
                 </td>
                 <td class="p-3">
                   <span
-                    class="badge border
-                   
-                    
+                    class="badge border 
                     ${
                       statusName === "Active" &&
                       "text-success bg-success-subtle border-success"
@@ -344,36 +342,16 @@ export class ViewHelper {
                   >
                 </td>
                 <td class="p-3">
-                  <div class="dropdown">
-                    <button
-                      class="btn bg-transparent option-btn"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <img
-                        src="static/media/images/options_sm.svg"
-                        alt="option"
-                      />
-                    </button>
-                    <ul class="dropdown-menu">
-                      <li class="border-bottom">
-                        <a class="dropdown-item option-link" href="#">Edit</a>
-                      </li>
-                      <li class="border-bottom">
-                        <a
-                          class="dropdown-item option-link"
-                          href="bus_seating_configuration.do?bus_id=$34&back_url=operator_buses.do"
-                          >Seating</a
-                        >
-                      </li>
-                      <li>
-                        <a class="dropdown-item option-link" href="#"
-                          >Schedule</a
-                        >
-                      </li>
-                    </ul>
-                  </div>
+                  <button
+                    class="btn manage-icon border-primary-subtle py-2 px-2"
+                  >
+                    <img
+                      src="static/media/images/edit_sm_blue.svg"
+                      width="18"
+                      height="18"
+                    />
+                    <span class="text-primary">Manage</span>
+                  </button>
                 </td>
               </tr>`;
   }
