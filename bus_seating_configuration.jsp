@@ -208,7 +208,6 @@
 
           <div
             class="d-flex align-items-center justify-content-between mt-auto gap-2"
-            id="pageWrapper"
           >
             <input
               type="reset"
@@ -228,6 +227,7 @@
         <c:import url="operator_navbar.jsp" />
         <div
           class="p-4 d-flex flex-column gap-3 align-items-center overflow-scroll"
+          id="pageWrapper"
         >
           <h5 class="text-center" id="curr_deck">Lower Decker</h5>
           <div class="border rounded-5 border-primary">
@@ -254,6 +254,6 @@
         </div>
       </main>
     </div>
-    <script type="module" src="static/js/bus_config.js"></script>
+    <script type="module" src="static/js/operatorBusSeatingConfig.js"></script>
   </body>
 </html>

@@ -172,6 +172,6 @@
         </div>
       </main>
     </div>
-    <script type="module" src="static/js/operator_dashboard.js"></script>
+    <script type="module" src="static/js/operatorDashboard.js"></script>
   </body>
 </html>

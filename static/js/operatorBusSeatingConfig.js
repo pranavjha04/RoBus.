@@ -31,6 +31,55 @@ const upperBtn = document.querySelector("#upper");
 const currDeck = document.querySelector("#curr_deck");
 const allFields = document.querySelectorAll(".fld");
 
+const resetFormFields = ({ disabledField = false }) => {
+  allFields.forEach((field) => {
+    removeInputError(field);
+    removeInputSuccess(field);
+    field.disabled = disabledField;
+    field.value = "";
+  });
+  totalSeats.value = "";
+  seater.checked = true;
+  sleeper.checked = false;
+};
+
+const deckContainerEvent = (e) => {
+  const target = e.target.closest("input[name='deck']");
+  if (!target) return;
+  const deck = target.getAttribute("id");
+  const seatingList = JSON.parse(sessionStorage.getItem("seatingList"));
+  const [lowerSeat, upperSeat] = seatingList;
+  switch (deck) {
+    case "lower": {
+      currDeck.textContent = "Lower Deck";
+      if (!lowerSeat) {
+        resetForm();
+      }
+      fillAlreadyExistFormDetails(lowerSeat);
+      break;
+    }
+    case "upper": {
+      currDeck.textContent = "Upper Deck";
+      if (!upperSeat) {
+        resetForm();
+        return;
+      }
+      fillAlreadyExistFormDetails(upperSeat);
+      break;
+    }
+    default: {
+      history.back();
+    }
+  }
+};
+
+const disableApp = () => {
+  resetFormFields({ disabledField: true });
+  document.querySelector('input[type="submit"]').disabled = true;
+  document.querySelector('input[type="reset"]').disabled = true;
+  deckContainer.removeEventListener("click", deckContainerEvent);
+};
+
 const resetForm = () => {
   const activeIndex = upperBtn.checked ? 1 : 0;
   const seatingList = JSON.parse(sessionStorage.getItem("seatingList") || "[]");
@@ -55,18 +104,9 @@ const resetForm = () => {
 
     allFields.forEach((field) => displayInputSuccess(field));
   } else {
-    allFields.forEach((field) => {
-      removeInputError(field);
-      removeInputSuccess(field);
-      field.value = "";
-    });
-    totalSeats.value = "";
-
-    seater.checked = true;
-    sleeper.checked = false;
+    resetFormFields();
   }
 };
-
 const modifiedObject = (obj) => {
   obj = Object.fromEntries(obj);
   return {
@@ -78,10 +118,14 @@ const modifiedObject = (obj) => {
   };
 };
 const updateBusView = (busSetting) => {
+  if (!busSetting) {
+    bus.innerHTML = "";
+    return;
+  }
   const { lsCount, rsCount, rowCount, sleeper, seats } = busSetting;
   let count = 1;
   const bus = document.querySelector(".bus");
-
+  console.log(lsCount);
   bus.innerHTML = `${Array.from({ length: sleeper ? rowCount : rowCount - 1 })
     .map((_) => {
       return `<div class="d-flex align-items-center gap-5 justify-content-between">
@@ -128,6 +172,7 @@ const updateBusView = (busSetting) => {
 };
 
 const fillAlreadyExistFormDetails = (obj) => {
+  if (!obj) return;
   lsCount.value = obj.lsCount;
   rsCount.value = obj.rsCount;
 
@@ -198,7 +243,9 @@ const handleLoadingSeatingData = async () => {
   const busId = +new URLSearchParams(window.location.search).get("bus_id");
 
   if (!busId) {
-    history.back();
+    PageError.showOperatorError();
+    disableApp();
+    return;
   }
 
   try {
@@ -219,38 +266,11 @@ const handleLoadingSeatingData = async () => {
     toast.error(err.message);
     PageLoading.stopLoading();
     PageError.showOperatorError();
+    disableApp();
   }
 };
 
-deckContainer.addEventListener("click", (e) => {
-  const target = e.target.closest("input[name='deck']");
-  if (!target) return;
-  const deck = target.getAttribute("id");
-  const seatingList = JSON.parse(sessionStorage.getItem("seatingList"));
-  const [lowerSeat, upperSeat] = seatingList;
-  switch (deck) {
-    case "lower": {
-      currDeck.textContent = "Lower Deck";
-      if (!lowerSeat) {
-        resetForm();
-      }
-      fillAlreadyExistFormDetails(lowerSeat);
-      break;
-    }
-    case "upper": {
-      currDeck.textContent = "Upper Deck";
-      if (!upperSeat) {
-        resetForm();
-        return;
-      }
-      fillAlreadyExistFormDetails(upperSeat);
-      break;
-    }
-    default: {
-      history.back();
-    }
-  }
-});
+deckContainer.addEventListener("click", deckContainerEvent);
 
 let watchSessionStorageInterval = setInterval(() => {
   const busId = +new URLSearchParams(window.location.search).get("bus_id");
@@ -261,7 +281,9 @@ let watchSessionStorageInterval = setInterval(() => {
     !busId ||
     !totalSeats.readOnly
   ) {
-    history.back();
+    PageError.showOperatorError();
+    disableApp();
+    return;
   }
 
   const activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
@@ -380,16 +402,21 @@ busConfigForm.addEventListener("reset", (e) => {
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-  PageLoading.startLoading();
-  setTimeout(() => {
-    handleLoadingSeatingData();
-    const activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
-    if (!activeBus.doubleDecker) {
-      upperBtn.disabled = true;
-      upperBtn.checked = false;
-    }
-    currDeck.textContent = "Lower Deck";
-  }, 100);
+  try {
+    PageLoading.startLoading();
+    setTimeout(() => {
+      handleLoadingSeatingData();
+      const activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
+      if (!activeBus.doubleDecker) {
+        upperBtn.disabled = true;
+        upperBtn.checked = false;
+      }
+      currDeck.textContent = "Lower Deck";
+    }, 100);
+  } catch (err) {
+    PageError.showOperatorError();
+    disableApp();
+  }
 });
 
 window.addEventListener("beforeunload", () => {

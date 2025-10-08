@@ -66,7 +66,7 @@ public class UpdateSeatingServlet extends HttpServlet {
             response.getWriter().println("internal");
             return;
         }
-
+        
         response.getWriter().println(new Gson().toJson(seating));
 
 

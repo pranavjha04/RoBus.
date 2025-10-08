@@ -96,8 +96,10 @@ public class AddSeatingServlet extends HttpServlet {
             if(!success) {
                 response.getWriter().println("internal");
                 return;
-
             }
+            // clear busList
+            session.removeAttribute("busList");
+            session.removeAttribute("allBusList");
         }
 
         seating.setSeatingId(generatedId);

@@ -1,27 +1,15 @@
 import { Pagination } from "./pagination.js";
+import { signupEmailHandler } from "./service.js";
 import {
-  checkContactValid,
-  sendOtpHandler,
-  checkOTP,
-  signupEmailHandler,
-} from "./service.js";
-import {
-  disableElements,
   displayInputError,
-  displayInputSuccess,
-  enableElements,
-  hideElement,
-  readOnlyElements,
-  removeInputError,
-  removeInputSuccess,
-  removeReadOnlyElements,
-  showElement,
-  validateName,
-  validatePassword,
-  validateUserAge,
+  dobHandler,
+  genderHandler,
+  nameHandler,
+  passwordHandler,
 } from "./util.js";
 
 import { toast } from "./toast.js";
+import { OTPHandler } from "./otpHandler.js";
 
 const fullName = document.querySelector("#full_name");
 const email = document.querySelector("#email");
@@ -87,155 +75,19 @@ signUpForm.addEventListener("submit", async (e) => {
   }
 });
 
-gender.addEventListener("change", (e) => {
-  const value = e.target.value;
-  const isValid = !isNaN(value) && value > 0 && value < 3;
-  if (isValid) {
-    displayInputSuccess(gender);
-  } else {
-    toast.error(invalidFieldMessages[5]);
-    displayInputError(gender);
-  }
-});
+gender.addEventListener("change", genderHandler);
+dob.addEventListener("blur", dobHandler);
 
-dob.addEventListener("blur", () => {
-  const isValid = validateUserAge(dob.value);
-  if (isValid) {
-    displayInputSuccess(dob);
-  } else {
-    toast.error(invalidFieldMessages[4]);
-    displayInputError(dob);
-  }
-});
+new OTPHandler(
+  contact,
+  sendOtpBtn,
+  loadingOtpBtn,
+  verifyOtpBtn,
+  editContactBtn,
+  otpContainer,
+  otpFields
+);
 
-verifyOtpBtn?.addEventListener("click", async () => {
-  const otpValue = otpFields.map((otp) => otp.value).join("");
-  if (otpValue.trim().length < 6) return;
-
-  try {
-    const serverResponse = await checkOTP(otpValue);
-    if (serverResponse === "1") {
-      toast.error("Invalid OTP");
-      document.querySelector("#otp-1").focus();
-    } else if (serverResponse === "2") {
-      throw new Error("Session Expired");
-    } else if (serverResponse === "3") {
-      otpContainer.remove();
-      verifyOtpBtn.remove();
-      sendOtpBtn.remove();
-      editContactBtn.remove();
-      loadingOtpBtn.remove();
-      displayInputSuccess(contact);
-      toast.success("Number verified successfully");
-    } else {
-      toast.warning(serverResponse);
-    }
-  } catch (err) {
-    toast.error(err.message);
-    hideElement(otpContainer);
-    hideElement(editContactBtn);
-    hideElement(verifyOtpBtn);
-    showElement(sendOtpBtn);
-  }
-});
-
-otpFields?.forEach((otp) => {
-  otp.addEventListener("input", (e) => {
-    const allFilled = otpFields.every((next) => next.value !== "");
-    if (allFilled) showElement(verifyOtpBtn);
-    else hideElement(verifyOtpBtn);
-    const currId = +e.target.getAttribute("id").slice(-1);
-    const nextTarget = document.querySelector(
-      `#otp-${Math.min(currId + 1, 6)}`
-    );
-
-    if (currId === 6 && e.target.value !== "") verifyOtpBtn.focus();
-
-    if (currId < 6 && nextTarget && e.target.value !== "") nextTarget.focus();
-  });
-});
-
-editContactBtn?.addEventListener("click", () => {
-  removeReadOnlyElements(contact);
-  hideElement(otpContainer);
-  hideElement(editContactBtn);
-  showElement(sendOtpBtn);
-  hideElement(verifyOtpBtn);
-});
-
-sendOtpBtn?.addEventListener("click", async () => {
-  const response = await checkContactValid(contact.value);
-  contactInvalid(response);
-  if (!response || response === "Invalid Contact") return;
-  hideElement(sendOtpBtn);
-  showElement(loadingOtpBtn);
-  setTimeout(async () => {
-    try {
-      const otpResponse = await sendOtpHandler(contact.value);
-      if (otpResponse === true) {
-        toast.success(`OTP sent to ${contact.value}`);
-        hideElement(sendOtpBtn);
-        hideElement(loadingOtpBtn);
-        showElement(editContactBtn);
-        showElement(otpContainer);
-        otpFields.forEach((otp) => (otp.value = ""));
-        readOnlyElements(contact);
-      } else {
-        throw new Error("An error occured");
-      }
-    } catch (err) {
-      enableElements(sendOtpBtn);
-      removeReadOnlyElements(contact);
-      hideElement(loadingOtpBtn);
-      showElement(sendOtpBtn);
-      toast.error(err.message);
-    }
-  }, 500);
-});
-
-const contactInvalid = (response) => {
-  if (response === "Invalid Contact") {
-    toast.error(invalidFieldMessages[4]);
-    displayInputError(contact);
-    disableElements(sendOtpBtn);
-  } else if (response === true) {
-    enableElements(sendOtpBtn);
-    removeInputError(contact);
-  } else {
-    toast.error("Contact number already in use");
-    disableElements(sendOtpBtn);
-  }
-};
-
-contact.addEventListener("blur", async () => {
-  if (contact.readOnly) return;
-  removeInputSuccess(contact);
-  try {
-    const response = await checkContactValid(contact.value);
-    contactInvalid(response);
-  } catch (err) {
-    toast.error(err.message);
-  }
-});
-
-password.addEventListener("blur", () => {
-  const isValid = validatePassword(password.value);
-  if (isValid) {
-    displayInputSuccess(password);
-  } else {
-    toast.error(invalidFieldMessages[3]);
-    displayInputError(password);
-  }
-});
-
+password.addEventListener("blur", passwordHandler);
 email.addEventListener("blur", signupEmailHandler);
-
-fullName.addEventListener("blur", () => {
-  const response = validateName(fullName.value);
-  if (response) {
-    displayInputSuccess(fullName);
-  } else {
-    toast.error(invalidFieldMessages[1]);
-    displayInputError(fullName);
-  }
-});
+fullName.addEventListener("blur", nameHandler);

@@ -325,6 +325,6 @@
       </main>
     </div>
 
-    <script type="module" src="static/js/bus_setting.js"></script>
+    <script type="module" src="static/js/operatorBuses.js"></script>
   </body>
 </html>

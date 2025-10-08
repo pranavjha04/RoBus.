@@ -406,6 +406,6 @@
       </main>
     </div>
 
-    <script type="module" src="static/js/add_routes.js"></script>
+    <script type="module" src="static/js/operaterRoutes.js"></script>
   </body>
 </html>

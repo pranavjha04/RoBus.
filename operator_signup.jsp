@@ -4,13 +4,12 @@ prefix="e" uri="bts" %>
 <!-- user bina login kuch ni kr payega -->
 
 <c:if
-    test="${empty sessionScope.user 
+  test="${empty sessionScope.user 
             or sessionScope.user.status.statusId == 2 
             or sessionScope.user.userType.userTypeId > 2}"
-  >
-    <c:redirect url="/" />
+>
+  <c:redirect url="/" />
 </c:if>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -358,6 +357,6 @@ ${empty param.address ? '' : param.address}</textarea
         </p>
       </form>
     </section>
-    <script type="module" src="static/js/operator_signup.js"></script>
+    <script type="module" src="static/js/operatorSignup.js"></script>
   </body>
 </html>

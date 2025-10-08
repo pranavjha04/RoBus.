@@ -171,7 +171,7 @@
                 class="d-flex align-items-center bg-white rounded p-1"
                 id="filter_nav"
               >
-                <button  class="btn btn-primary">All</button>
+                <button class="btn btn-primary">All</button>
                 <button class="btn">Fixed charge</button>
                 <button class="btn">Person / km</button>
               </div>
@@ -203,6 +203,6 @@
       </main>
     </div>
 
-    <script type="module" src="static/js/bus_fare.js"></script>
+    <script type="module" src="static/js/operatorFareFactors.js"></script>
   </body>
 </html>
