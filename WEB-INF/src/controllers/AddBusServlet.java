@@ -143,10 +143,14 @@ public class AddBusServlet extends HttpServlet {
                     response.getWriter().println("Invalid");
                     return;
                 }
-
                 File currFile = new File(uploadDir, fileName);
                 item.write(currFile);
             }
+
+
+            // clear cache
+            session.removeAttribute("busList");
+            session.removeAttribute("allBusList");
 
             response.getWriter().println(new Gson().toJson(bus));
 

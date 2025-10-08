@@ -40,6 +40,14 @@ public class AddOperatorTicketFareServlet extends HttpServlet {
         Operator operator = (Operator) session.getAttribute("operator");
 
         boolean success = OperatorTicketFare.addRecord(fareFactorId, charge, operator.getOperatorId());
+
+        // clear cache
+        if(success) {
+            session.removeAttribute("allFareFactorList");
+            session.removeAttribute("onlyFareFactorList");
+            session.removeAttribute("allOperatorTicketFareList");
+        }
+        
         response.getWriter().println(success ? "success" : "internal");
     }
 }

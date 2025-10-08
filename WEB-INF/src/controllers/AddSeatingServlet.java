@@ -65,6 +65,7 @@ public class AddSeatingServlet extends HttpServlet {
 
         Integer busId = Integer.parseInt(request.getParameter("bus_id"));
         Integer generatedId = seating.addRecord(busId);
+
         if(generatedId == -1) {
             response.getWriter().println("internal");
             return;
@@ -77,7 +78,6 @@ public class AddSeatingServlet extends HttpServlet {
         }
                 
         ArrayList<Seating> seatingList = Seating.collectRecords(busId);
-
         Boolean isUpdatable = false;
         if(activeBus.getDoubleDecker()) {
             if(seatingList.size() == 2) {
@@ -102,6 +102,9 @@ public class AddSeatingServlet extends HttpServlet {
 
         seating.setSeatingId(generatedId);
 
+        // clear cache
+        session.removeAttribute(busId + "seatingList");
+        
         response.getWriter().println(new Gson().toJson(seating));
 
     } 

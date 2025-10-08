@@ -28,17 +28,26 @@ public class GetOperatorRouteServlet extends HttpServlet {
             return;
         }
 
+        // cache it
+        if(session.getAttribute("routeMap") != null) {
+            @SuppressWarnings("unchecked")
+            HashMap<String, ArrayList> routeMap = (HashMap<String, ArrayList>) session.getAttribute("routeMap");
+            response.getWriter().println(new Gson().toJson(routeMap));
+            return;
+        }
+
         Operator operator = (Operator) session.getAttribute("operator");
-        HashMap<String, ArrayList> map = new HashMap<>();
+        HashMap<String, ArrayList> routeMap = new HashMap<>();
 
         Integer operatorId = operator.getOperatorId();
-
         ArrayList<OperatorRoute> operatorRouteList = OperatorRoute.collectAllRecords(operatorId);
         ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = OperatorRouteMidCity.collectAllRecords(operatorId);
         
-        map.put("operatorRouteList", operatorRouteList);
-        map.put("operatorRouteMidCityList", operatorRouteMidCityList);
+        routeMap.put("operatorRouteList", operatorRouteList);
+        routeMap.put("operatorRouteMidCityList", operatorRouteMidCityList);
 
-        response.getWriter().println(new Gson().toJson(map));
+        session.setAttribute("routeMap", routeMap);
+
+        response.getWriter().println(new Gson().toJson(routeMap));
     }
 }

@@ -32,7 +32,7 @@ public class GetRouteServlet extends HttpServlet {
 
         @SuppressWarnings("unchecked")
         ArrayList<Route> routeList = (ArrayList<Route>) context.getAttribute("routes");
-
+        
         @SuppressWarnings("unchecked")
         ArrayList<RouteMidCity> routeMidCityList = (ArrayList<RouteMidCity>) context.getAttribute("routeMidCities");
 

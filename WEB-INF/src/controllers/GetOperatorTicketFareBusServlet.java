@@ -23,32 +23,32 @@ public class GetOperatorTicketFareBusServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
 
-        if(
-            session.getAttribute("operator") == null) {
-            System.out.println("Hello"+28);
+        if(session.getAttribute("operator") == null) {
             response.sendRedirect("/bts");
             return;
         }   
 
+        if(session.getAttribute("allOperatorTicketFareList") != null) {
+            @SuppressWarnings("unchecked")
+            ArrayList<BusFareFactor> list = (ArrayList<BusFareFactor>) session.getAttribute("allOperatorTicketFareList");
+            response.getWriter().println(new Gson().toJson(list));
+            return;
+        }
+
         try {
             Integer operatorTicketFareId = Integer.parseInt(request.getParameter("operator_ticket_fare_id"));
             ArrayList<BusFareFactor> busList = BusFareFactor.collectAllRecordsWithOperatorTicketFare(operatorTicketFareId); 
-            System.out.println("Hello"+28);
-
             if(busList == null) {
                 response.getWriter().println("internal");
-                System.out.println("Hello"+28);
                 return;
             }
-
+            session.setAttribute("allOperatorTicketFareList", busList);
             response.getWriter().println(new Gson().toJson(busList));
-            System.out.println("Hello"+28);
             return;
         }
         catch(NumberFormatException e) {
             e.printStackTrace();
             response.getWriter().println("invalid");
-            System.out.println("Hello"+28);
             return;
         }
     }

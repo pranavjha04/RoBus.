@@ -27,14 +27,40 @@ public class GetBusServlet extends HttpServlet {
         }
 
         Boolean allRecord = Boolean.parseBoolean(request.getParameter("allRecord"));
+        Gson gson = new Gson();
+        Boolean isCached = false;
+
+        /**
+         * caching the data
+         */
+        if (allRecord && session.getAttribute("allBusList") != null) {
+            isCached = true;
+            @SuppressWarnings("unchecked")
+            ArrayList<Bus> list = (ArrayList<Bus>) session.getAttribute("allBusList");
+            response.getWriter().println(gson.toJson(list));
+        }
+
+        if (!allRecord && session.getAttribute("busList") != null) {
+            isCached = true;
+            @SuppressWarnings("unchecked")
+            ArrayList<Bus> list = (ArrayList<Bus>) session.getAttribute("busList");
+            response.getWriter().println(gson.toJson(list));
+        }
+
+        if(isCached) {
+            return;
+        }
+
         Operator operator = (Operator) session.getAttribute("operator");
-        
         ArrayList<Bus> busList = Bus.collectRecords(operator.getOperatorId(), allRecord);
+        
         if(busList == null) {
             response.getWriter().println("internal");
             return;
         }
-
-        response.getWriter().println(new Gson().toJson(busList));
+        
+        // store in cache
+        session.setAttribute(allRecord ? "allBusList" : "busList", busList);
+        response.getWriter().println(gson.toJson(busList));
     }
 }

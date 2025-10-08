@@ -29,12 +29,41 @@ public class GetFareFactorServlet extends HttpServlet {
             response.getWriter().println("invalid");
             return;
         }
-
+        Gson gson = new Gson();
         boolean onlyFactors = request.getParameter("onlyFactors").equals("true") ? true : false;
-        Operator operator = (Operator) session.getAttribute("operator");
+        boolean isCached = false;
 
+        // cache
+        if(onlyFactors && session.getAttribute("onlyFareFactorList") != null) {
+            isCached = true;
+            System.out.println("39");
+            @SuppressWarnings("unchecked")
+            ArrayList<OperatorTicketFare> list = (ArrayList<OperatorTicketFare>) session.getAttribute("onlyFareFactorList");
+            response.getWriter().println(gson.toJson(list));   
+        }
+
+        if(!onlyFactors && session.getAttribute("allFareFactorList") != null) {
+            isCached = true;
+            System.out.println("47");
+            @SuppressWarnings("unchecked")
+            ArrayList<OperatorTicketFare> list = (ArrayList<OperatorTicketFare>) session.getAttribute("allFareFactorList");
+            response.getWriter().println(gson.toJson(list));    
+        }
+
+        if(isCached) {
+            System.out.println("51");
+            return;
+        }
+
+        Operator operator = (Operator) session.getAttribute("operator");
         ArrayList<OperatorTicketFare> factors = OperatorTicketFare.getAvailableFareFactors(operator.getOperatorId(), onlyFactors);
 
-        response.getWriter().println(new Gson().toJson(factors));        
+        if(factors == null) {
+            response.getWriter().println("internal");
+            return;
+        }
+        session.setAttribute(onlyFactors ? "onlyFareFactorList" : "allFareFactorList", factors);
+        System.out.println("63");
+        response.getWriter().println(gson.toJson(factors));        
     }
 }

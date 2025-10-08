@@ -53,7 +53,6 @@ public class AddOperatorRouteServlet extends HttpServlet {
                         response.getWriter().println("invalid");
                         return;
                     }
-
                     Boolean success = OperatorRouteMidCity.addRecord(generatedOperatorRouteId, routeMidCityId, haltingTime);
 
                     if(!success) {
@@ -68,6 +67,8 @@ public class AddOperatorRouteServlet extends HttpServlet {
             response.getWriter().println("invalid");
             return;
         }
+
+        session.removeAttribute("routeMap");
         response.getWriter().println("success");
     }
 }

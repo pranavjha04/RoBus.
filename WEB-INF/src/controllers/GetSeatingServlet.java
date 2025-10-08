@@ -26,8 +26,15 @@ public class GetSeatingServlet extends HttpServlet {
         }
 
         int busId = Integer.parseInt(request.getParameter("bus_id"));
+        // cached seating else get from DB
+        if(session.getAttribute(busId + "seatingList") != null) {
+            @SuppressWarnings("unchecked")
+            ArrayList<Seating> list = (ArrayList<Seating>) session.getAttribute(busId + "seatingList");  
+            response.getWriter().println(new Gson().toJson(list));
+            return;
+        }
+        
         ArrayList<Seating> seatingList = Seating.collectRecords(busId);
-
         if(seatingList == null) {
             response.getWriter().println("internal");
             return;
@@ -55,6 +62,9 @@ public class GetSeatingServlet extends HttpServlet {
             default : 
                 break;
         }
+        
+        // caching
+        session.setAttribute(busId + "seatingList", seatingList);
 
         response.getWriter().println(new Gson().toJson(seatingList));
     }
