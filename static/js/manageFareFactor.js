@@ -179,18 +179,15 @@ const handleDeleteBusFareFactorRequest = async (busId, busFareFactorId) => {
         throw new Error("Invalid Request");
       }
       case "success": {
-        const newList = operatorTicketFareBusList.filter((fare) => {
-          +fare.busFareFactorId !== +busFareFactorId;
-        });
+        const newList = operatorTicketFareBusList.filter(
+          (fare) => fare.busFareFactorId !== busFareFactorId
+        );
         modal.operatorTicketFareBusList = newList;
         sessionStorage.setItem(
           "operatorTicketFareBusList",
           JSON.stringify(newList)
         );
-        const tableRow = busTable.querySelector(
-          `[data-bus-fare-factor-id="${busFareFactorId}"]`
-        );
-        tableRow.remove();
+        displayBusTableInfo(newList);
         toast.success("Bus fare factor deleted successfully");
         break;
       }
