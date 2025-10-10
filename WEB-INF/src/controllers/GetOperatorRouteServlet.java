@@ -28,14 +28,6 @@ public class GetOperatorRouteServlet extends HttpServlet {
             return;
         }
 
-        // cache it
-        if(session.getAttribute("routeMap") != null) {
-            @SuppressWarnings("unchecked")
-            HashMap<String, ArrayList> routeMap = (HashMap<String, ArrayList>) session.getAttribute("routeMap");
-            response.getWriter().println(new Gson().toJson(routeMap));
-            return;
-        }
-
         Operator operator = (Operator) session.getAttribute("operator");
         HashMap<String, ArrayList> routeMap = new HashMap<>();
 
@@ -45,8 +37,6 @@ public class GetOperatorRouteServlet extends HttpServlet {
         
         routeMap.put("operatorRouteList", operatorRouteList);
         routeMap.put("operatorRouteMidCityList", operatorRouteMidCityList);
-
-        session.setAttribute("routeMap", routeMap);
 
         response.getWriter().println(new Gson().toJson(routeMap));
     }

@@ -97,16 +97,10 @@ public class AddSeatingServlet extends HttpServlet {
                 response.getWriter().println("internal");
                 return;
             }
-            // clear busList
-            session.removeAttribute("busList");
-            session.removeAttribute("allBusList");
         }
 
         seating.setSeatingId(generatedId);
-
-        // clear cache
-        session.removeAttribute(busId + "seatingList");
-        
+            
         response.getWriter().println(new Gson().toJson(seating));
 
     } 

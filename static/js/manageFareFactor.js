@@ -190,8 +190,7 @@ const handleDeleteBusFareFactorRequest = async (busId, busFareFactorId) => {
         const tableRow = busTable.querySelector(
           `[data-bus-fare-factor-id="${busFareFactorId}"]`
         );
-
-        displayBusTableInfo(newList);
+        tableRow.remove();
         toast.success("Bus fare factor deleted successfully");
         break;
       }

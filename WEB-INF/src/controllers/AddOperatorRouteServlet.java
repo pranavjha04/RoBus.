@@ -68,7 +68,6 @@ public class AddOperatorRouteServlet extends HttpServlet {
             return;
         }
 
-        session.removeAttribute("routeMap");
         response.getWriter().println("success");
     }
 }

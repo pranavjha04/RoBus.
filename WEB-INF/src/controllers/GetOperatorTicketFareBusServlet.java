@@ -28,13 +28,6 @@ public class GetOperatorTicketFareBusServlet extends HttpServlet {
             return;
         }   
 
-        if(session.getAttribute("allOperatorTicketFareList") != null) {
-            @SuppressWarnings("unchecked")
-            ArrayList<BusFareFactor> list = (ArrayList<BusFareFactor>) session.getAttribute("allOperatorTicketFareList");
-            response.getWriter().println(new Gson().toJson(list));
-            return;
-        }
-
         try {
             Integer operatorTicketFareId = Integer.parseInt(request.getParameter("operator_ticket_fare_id"));
             ArrayList<BusFareFactor> busList = BusFareFactor.collectAllRecordsWithOperatorTicketFare(operatorTicketFareId); 
@@ -42,7 +35,7 @@ public class GetOperatorTicketFareBusServlet extends HttpServlet {
                 response.getWriter().println("internal");
                 return;
             }
-            session.setAttribute("allOperatorTicketFareList", busList);
+            
             response.getWriter().println(new Gson().toJson(busList));
             return;
         }

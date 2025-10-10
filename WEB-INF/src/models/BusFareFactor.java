@@ -40,6 +40,7 @@ public class BusFareFactor {
             ps.setInt(1, busId);
             ps.setInt(2, busFareFactorId);
             ps.setInt(3, operatorTicketFareId);
+            System.out.println("hell");
 
             int rows = ps.executeUpdate();
 
