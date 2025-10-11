@@ -36,6 +36,79 @@ public class Bus implements Cloneable {
         
     }
 
+    public static ArrayList<Bus> collectAvailableTicketFareBusRecords(Integer operatorTicketFareId, String[] busIdList, Integer operatorId) {
+        ArrayList<Bus> busList = new ArrayList<>();
+        try {
+            Connection con = DBManager.getConnection();
+            StringBuilder builder = new StringBuilder();
+            builder.append("(");
+            for(int i = 0; i < busIdList.length; i++) {
+                try {
+                    int busId = Integer.parseInt(busIdList[i]);
+                    builder.append("?");
+                }
+                catch(NumberFormatException e) {
+                    return null;
+                }
+                if(i != busIdList.length - 1) builder.append(",");
+            }
+            builder.append(")");
+
+            System.out.println(builder.toString());
+
+            String query = 
+                        "SELECT " + 
+                        "b.bus_id, b.bus_number, b.double_decker, " +
+                        "m.manufacturer_id, m.name AS 'manufacturer_name', " +
+                        "s.status_id, s.name AS 'status_name' " +
+                        "FROM buses b  " +
+                        "LEFT JOIN bus_fare_factor bff ON b.bus_id = bff.bus_id " +
+                        "AND bff.operator_ticket_fare_id!=? " + 
+                        "JOIN manufacturers m ON b.manufacturer_id = m.manufacturer_id " +
+                        "JOIN status s ON b.status_id = s.status_id " +
+                        "WHERE b.operator_id=? " + "AND s.status_id!=4 " +
+                        "AND b.bus_id NOT IN " + builder.toString();
+            
+            PreparedStatement ps = con.prepareStatement(query);
+
+            int count = 1;
+            ps.setInt(count++, operatorTicketFareId);
+            ps.setInt(count++, operatorId);          
+
+            for (String busIdStr : busIdList) {
+                ps.setInt(count++, Integer.parseInt(busIdStr));
+            }
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()) {
+                Bus bus = new Bus(
+                    rs.getInt("bus_id"),
+                    rs.getString("bus_number"),
+                    new Manufacturer(
+                        rs.getInt("manufacturer_id"),
+                        rs.getString("manufacturer_name")
+                    ),
+                    rs.getBoolean("double_decker"),
+                    new Status(
+                        rs.getInt("status_id"),
+                        rs.getString("status_name")
+                    )
+                );
+
+                busList.add(bus);
+            }
+
+            System.out.println(busList);
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            busList = null;
+        }
+
+        return busList;
+    }
+
     public static Bus getRecord(Integer busId) {
         Bus bus = null;
         try {

@@ -83,7 +83,7 @@ public class BusFareFactor {
         return flag;
     }
 
-    public static ArrayList<BusFareFactor> collectAllRecordsWithOperatorTicketFare(Integer operatorTicketFareId) {
+    public static ArrayList<BusFareFactor> collectAllRecordsWithOperatorTicketFare(Integer operatorTicketFareId, Integer operatorId) {
         ArrayList<BusFareFactor> busFareFactorList = new ArrayList<>();
         try {
             Connection con = DBManager.getConnection();
@@ -97,11 +97,12 @@ public class BusFareFactor {
                         "JOIN buses b ON bff.bus_id = b.bus_id " +
                         "JOIN manufacturers m ON b.manufacturer_id = m.manufacturer_id " +
                         "JOIN status s ON b.status_id = s.status_id " +
-                        "WHERE bff.operator_ticket_fare_id=?";
+                        "WHERE bff.operator_ticket_fare_id=? and b.operator_id=?";
             
             PreparedStatement ps = con.prepareStatement(query);
 
             ps.setInt(1, operatorTicketFareId);
+            ps.setInt(2, operatorId);
 
             ResultSet rs = ps.executeQuery();
 

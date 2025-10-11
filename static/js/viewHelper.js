@@ -410,4 +410,47 @@ export class ViewHelper {
                 </td>
               </tr>`;
   }
+
+  static getAvailableFareFactorBus(bus) {
+    const { busNumber, busId, manufacturer, status } = bus;
+    const { name: manufacturerName } = manufacturer;
+    const { name: statusName } = status;
+    console.log(bus);
+    return `  <li class="px-2 mb-1" data-bus-id=${busId}>
+                    <div
+                      class="form-check d-flex align-items-center justify-content-between"
+                    >
+                      <div class="d-flex align-items-center">
+                        <input
+                          class="form-check-input me-3 bus-checkbox"
+                          type="checkbox"
+                          value="${busNumber}"
+                        />
+                        <div>
+                          <div class="bus-number fw-semibold">MP10 GK 4958</div>
+                          <div class="bus-meta small text-secondary">
+                            ${manufacturerName}
+                          </div>
+                        </div>
+                      </div>
+                      <span
+                      class="badge border
+                      ${
+                        statusName === "Active" &&
+                        "text-success bg-success-subtle border-success"
+                      }
+                      ${
+                        statusName === "Inactive" &&
+                        "text-danger bg-danger-subtle border-danger"
+                      }
+                      ${
+                        statusName === "Incomplete" &&
+                        "text-warning bg-warning-subtle border-warning"
+                      }
+                      "
+                      >${statusName.toUpperCase()}</span
+                    >
+                    </div>
+                  </li>`;
+  }
 }

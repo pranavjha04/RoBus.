@@ -5,9 +5,151 @@
   <head>
     <c:import url="essential_page_import.jsp" />
     <title>Document</title>
+    <style>
+      .dropdown-menu {
+        width: 350px;
+        max-height: 320px;
+        overflow-y: auto;
+      }
+      .form-check {
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        transition: background-color 0.15s ease;
+      }
+      .form-check:hover {
+        background-color: var(--bs-light);
+      }
+      .bus-number {
+        font-weight: 600;
+        font-size: 1rem;
+      }
+      .bus-meta {
+        font-size: 0.875rem;
+        color: var(--bs-secondary-color);
+      }
+    </style>
   </head>
   <body>
     <c:import url="essential_page_display.jsp" />
+    <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-semibold">Add Fare Factor</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <form
+              id="fare_factor_form"
+              class="gap-3"
+              style="display: grid; grid-template-columns: 1fr; row-gap: 1rem"
+            >
+              <!-- Dropdown -->
+              <div class="dropdown">
+                <p class="form-label small fw-semibold mb-2">Available Buses</p>
+
+                <button
+                  class="btn btn-outline-primary dropdown-toggle rounded-pill px-4 me-5"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Select Buses
+                </button>
+
+                <ul
+                  class="dropdown-menu shadow-lg border-0 rounded-4 p-2 w-100 mt-2"
+                  id="fare_factor_select"
+                ></ul>
+              </div>
+
+              <!-- Selected Buses -->
+              <div>
+                <label class="form-label small fw-semibold"
+                  >Selected Buses</label
+                >
+                <div
+                  id="selectedBusesContainer"
+                  class="d-flex flex-wrap gap-2 p-3 rounded-4 border bg-light-subtle"
+                  style="max-height: 150px; overflow-y: auto"
+                >
+                  <!-- Dummy selected buses -->
+                  <span
+                    class="badge rounded-pill bg-primary-subtle text-primary d-flex align-items-center gap-2 px-3 py-2"
+                  >
+                    MP10 GK 4958
+                    <button
+                      type="button"
+                      class="btn-close btn-close-sm"
+                      aria-label="Remove"
+                    ></button>
+                  </span>
+
+                  <span
+                    class="badge rounded-pill bg-warning-subtle text-warning d-flex align-items-center gap-2 px-3 py-2"
+                  >
+                    MP20 AH 3214
+                    <button
+                      type="button"
+                      class="btn-close btn-close-sm"
+                      aria-label="Remove"
+                    ></button>
+                  </span>
+
+                  <span
+                    class="badge rounded-pill bg-danger-subtle text-danger d-flex align-items-center gap-2 px-3 py-2"
+                  >
+                    MP09 FK 8821
+                    <button
+                      type="button"
+                      class="btn-close btn-close-sm"
+                      aria-label="Remove"
+                    ></button>
+                  </span>
+
+                  <!-- Add more dummy pills -->
+                  <span
+                    class="badge rounded-pill bg-primary-subtle text-primary d-flex align-items-center gap-2 px-3 py-2"
+                  >
+                    MP11 BB 1023
+                    <button
+                      type="button"
+                      class="btn-close btn-close-sm"
+                      aria-label="Remove"
+                    ></button>
+                  </span>
+
+                  <span
+                    class="badge rounded-pill bg-warning-subtle text-warning d-flex align-items-center gap-2 px-3 py-2"
+                  >
+                    MP07 AJ 7541
+                    <button
+                      type="button"
+                      class="btn-close btn-close-sm"
+                      aria-label="Remove"
+                    ></button>
+                  </span>
+                </div>
+              </div>
+
+              <div class="text-end">
+                <input
+                  type="submit"
+                  value="Add Buses"
+                  class="btn btn-primary rounded-pill px-4"
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="dashContainer">
       <!-- Sidebar -->
       <c:import url="operator_sidebar.jsp" />
@@ -87,10 +229,15 @@
                 />
                 <div class="d-flex align-items-center gap-2">
                   <button class="btn btn-primary" id="edit_btn">Edit</button>
-                  <button class="btn btn-success" id="add_bus_btn">
+                  <button class="btn btn-danger" id="delete_btn">Delete</button>
+                  <button
+                    class="btn btn-success"
+                    id="add_bus_btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#centeredModal"
+                  >
                     + Add Bus
                   </button>
-                  <button class="btn btn-danger" id="delete_btn">Delete</button>
                 </div>
               </div>
             </div>

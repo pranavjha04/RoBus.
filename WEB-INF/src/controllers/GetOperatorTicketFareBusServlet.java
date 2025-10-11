@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import models.BusFareFactor;
 import models.OperatorTicketFare;
 import models.Bus;
+import models.Operator;
 
 @WebServlet("/get_operator_ticket_fare_bus.do")
 public class GetOperatorTicketFareBusServlet extends HttpServlet {
@@ -28,9 +29,10 @@ public class GetOperatorTicketFareBusServlet extends HttpServlet {
             return;
         }   
 
+        Operator operator = (Operator) session.getAttribute("operator");
         try {
             Integer operatorTicketFareId = Integer.parseInt(request.getParameter("operator_ticket_fare_id"));
-            ArrayList<BusFareFactor> busList = BusFareFactor.collectAllRecordsWithOperatorTicketFare(operatorTicketFareId); 
+            ArrayList<BusFareFactor> busList = BusFareFactor.collectAllRecordsWithOperatorTicketFare(operatorTicketFareId, operator.getOperatorId()); 
             if(busList == null) {
                 response.getWriter().println("internal");
                 return;

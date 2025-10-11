@@ -346,3 +346,15 @@ export const deleteBusFareFactor = async (obj) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const collectAvailableTicketFareBusRecordsRequest = async (queryParams) => {
+  const res = await fetch(
+    `get_available_ticket_fare_bus.do?${queryParams.toString()}`,
+    {
+      method: "POST",
+    }
+  );
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data;
+};

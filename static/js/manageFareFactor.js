@@ -2,20 +2,23 @@ import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import {
   collectAllRecordsWithOperatorTicketFareRequest,
+  collectAvailableTicketFareBusRecordsRequest,
   deleteBusFareFactor,
   deleteFareFactorRequest,
   updateFareFactorChargeRequest,
 } from "./service.js";
 import { toast } from "./toast.js";
-import { validateCharge } from "./util.js";
+import { createURLParams, validateCharge } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
 const chargeInput = document.querySelector("#charges");
 const chargeEditBtn = document.querySelector("#edit_btn");
 const chargeDeleteBtn = document.querySelector("#delete_btn");
-
 const factorName = document.querySelector("#factor_name");
 const chargeType = document.querySelector("#charge_type");
+const formModal = document.querySelector("#centeredModal");
+
+const fareSelect = document.querySelector("#fare_factor_select");
 
 const busTable = document.querySelector("#operator_ticket_fare_bus_table");
 
@@ -24,6 +27,7 @@ let watchSessionInternal = null;
 const modal = {
   activeFare: null,
   operatorTicketFareBusList: [],
+  availableAddToBus: [],
   limit: 5,
   offset: 0,
 };
@@ -200,6 +204,8 @@ const handleDeleteBusFareFactorRequest = async (busId, busFareFactorId) => {
   }
 };
 
+const handleShowAvailableBusRequest = async () => {};
+
 busTable.addEventListener("click", (e) => {
   const element = e.target.closest("button");
   if (!element) return;
@@ -276,6 +282,46 @@ function startWatchingSession() {
     }
   }, 100);
 }
+
+formModal.addEventListener("show.bs.modal", async () => {
+  const busIdList = modal.operatorTicketFareBusList.map(
+    ({ bus }) => bus?.busId
+  );
+  const queryParams = new URLSearchParams();
+  busIdList.unshift(0);
+  busIdList.forEach((val) => {
+    queryParams.append("bus_id", val);
+  });
+  queryParams.append(
+    "operator_ticket_fare_id",
+    modal.activeFare.operatorTicketFareId
+  );
+  try {
+    fareSelect.innerHTML = `<div class="loader sm-loader"></div>`;
+    const response = await collectAvailableTicketFareBusRecordsRequest(
+      queryParams
+    );
+    if (response === "invalid") {
+      throw new Error("Invalid Request");
+    } else if (response === "internal") {
+      throw new Error("Internal Server Error");
+    } else if (response.startsWith("[")) {
+      const busList = JSON.parse(response);
+      if (busList.length === 0) {
+        fareSelect.innerHTML = "No buses available";
+      } else {
+        fareSelect.innerHTML = busList
+          .map(ViewHelper.getAvailableFareFactorBus)
+          .join("");
+      }
+    } else {
+      throw new Error("Invalid Request");
+    }
+  } catch (err) {
+    fareSelect.innerHTML = `<p>${err.message}</p>`;
+    toast.error(err.message);
+  }
+});
 
 window.addEventListener("pageshow", (e) => {
   try {

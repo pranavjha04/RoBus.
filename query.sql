@@ -605,3 +605,13 @@ JOIN status st  ON opr.status_id = st.status_id
 JOIN route_midcities rm ON oprm.route_midcity_id = rm.route_midcity_id
 JOIN cities cm  ON rm.midcity_id = cm.city_id
 JOIN states sm  ON cm.state_id   = sm.state_id;
+
+
+
+SELECT b.*
+FROM buses b
+LEFT JOIN bus_fare_factor bff 
+  ON b.bus_id = bff.bus_id 
+  AND bff.operator_ticket_fare_id != 83
+WHERE bff.bus_id IS NULL
+AND b.operator_id = ;
