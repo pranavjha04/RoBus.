@@ -29,53 +29,72 @@
             <span>&larr;</span>
             <span>Back</span>
           </a>
-          <div class="align-self-start mt-2">
-            <div
-              class="p-4 rounded-4 shadow-sm border-start border-4 border-primary d-flex flex-column gap-3"
-              style="max-width: 420px"
-            >
-              <div class="d-flex align-items-center justify-content-between">
-                <div>
-                  <span class="fs-6 fw-semibold text-secondary text-uppercase"
-                    >Fare Factor Name</span
-                  >
-                  <h4 class="fw-bold text-dark mt-1 mb-0" id="factor_name"></h4>
-                </div>
-              </div>
 
+          <footer class="container mt-2 mb-4">
+            <div class="align-self-start mt-2">
               <div
-                class="d-flex justify-content-between align-items-center border-top pt-3"
+                class="p-4 rounded-4 shadow-sm border-start border-4 border-primary d-flex flex-column gap-3"
+                style="max-width: 420px"
               >
-                <div>
-                  <span class="fs-6 fw-semibold text-secondary text-uppercase"
-                    >Type</span
-                  >
-                  <h4 class="fw-bold text-dark mt-1 mb-0" id="charge_type"></h4>
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <span
+                      class="fs-6 fw-semibold text-secondary text-uppercase"
+                    >
+                      Fare Factor Name
+                    </span>
+                    <h4
+                      class="fw-bold text-dark mt-1 mb-0"
+                      id="factor_name"
+                    ></h4>
+                  </div>
+                </div>
+
+                <div
+                  class="d-flex justify-content-between align-items-center border-top pt-3"
+                >
+                  <div>
+                    <span
+                      class="fs-6 fw-semibold text-secondary text-uppercase"
+                    >
+                      Type
+                    </span>
+                    <h4
+                      class="fw-bold text-dark mt-1 mb-0"
+                      id="charge_type"
+                    ></h4>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="align-self-start mt-2">
-            <label class="form-label small fw-semibold fs-6" for="charges"
-              >Charges</label
-            >
-          </div>
-          <div class="align-self-start">
-            <div class="d-flex align-items-center gap-2">
-              <input
-                type="number"
-                class="form-control fs-5"
-                placeholder="Charges"
-                name="charges"
-                id="charges"
-                readonly
-              />
-              <button class="btn btn-primary px-4" id="edit_btn">Edit</button>
-              <button class="btn btn-danger px-4" id="delete_btn">
-                Delete
-              </button>
+
+            <div class="align-self-start mt-4">
+              <label class="form-label small fw-semibold fs-6" for="charges">
+                Charges
+              </label>
             </div>
-          </div>
+
+            <div class="align-self-start">
+              <div class="d-flex align-items-center gap-3 flex-wrap">
+                <input
+                  type="number"
+                  class="form-control fs-5"
+                  placeholder="Charges"
+                  name="charges"
+                  id="charges"
+                  readonly
+                  style="max-width: 200px"
+                />
+                <div class="d-flex align-items-center gap-2">
+                  <button class="btn btn-primary" id="edit_btn">Edit</button>
+                  <button class="btn btn-success" id="add_bus_btn">
+                    + Add Bus
+                  </button>
+                  <button class="btn btn-danger" id="delete_btn">Delete</button>
+                </div>
+              </div>
+            </div>
+          </footer>
 
           <table
             class="border rounded table-responsive border-bottom-0 mt-2"
