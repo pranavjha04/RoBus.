@@ -49,7 +49,7 @@
               style="display: grid; grid-template-columns: 1fr; row-gap: 1rem"
             >
               <!-- Dropdown -->
-               <input type="hidden" name="operator_ticket_fare_id" value="" />
+              <input type="hidden" name="operator_ticket_fare_id" value="" />
               <div class="dropdown" data-bs-auto-close="outside">
                 <p class="form-label small fw-semibold mb-2">Available Buses</p>
 
@@ -66,6 +66,7 @@
                   class="dropdown-menu shadow-lg border-0 py-0 rounded-4 w-100 mt-2"
                   data-bs-auto-close="outside"
                   id="bus_select"
+                  style="max-height: 250px; overflow-y: auto"
                 ></ul>
               </div>
 
