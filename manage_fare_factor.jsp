@@ -12,7 +12,6 @@
         overflow-y: auto;
       }
       .form-check {
-        padding: 0.75rem 1rem;
         border-radius: 0.75rem;
         transition: background-color 0.15s ease;
       }
@@ -45,12 +44,13 @@
 
           <div class="modal-body">
             <form
-              id="fare_factor_form"
+              id="add_bus_fare_factor_form"
               class="gap-3"
               style="display: grid; grid-template-columns: 1fr; row-gap: 1rem"
             >
               <!-- Dropdown -->
-              <div class="dropdown">
+               <input type="hidden" name="operator_ticket_fare_id" value="" />
+              <div class="dropdown" data-bs-auto-close="outside">
                 <p class="form-label small fw-semibold mb-2">Available Buses</p>
 
                 <button
@@ -63,8 +63,9 @@
                 </button>
 
                 <ul
-                  class="dropdown-menu shadow-lg border-0 rounded-4 p-2 w-100 mt-2"
-                  id="fare_factor_select"
+                  class="dropdown-menu shadow-lg border-0 py-0 rounded-4 w-100 mt-2"
+                  data-bs-auto-close="outside"
+                  id="bus_select"
                 ></ul>
               </div>
 
@@ -74,66 +75,12 @@
                   >Selected Buses</label
                 >
                 <div
-                  id="selectedBusesContainer"
-                  class="d-flex flex-wrap gap-2 p-3 rounded-4 border bg-light-subtle"
-                  style="max-height: 150px; overflow-y: auto"
+                  id="selected_bus"
+                  class="d-flex flex-wrap align-items-center gap-2 p-2 rounded-4 border border-secondary-subtle bg-body-tertiary shadow-sm"
                 >
-                  <!-- Dummy selected buses -->
-                  <span
-                    class="badge rounded-pill bg-primary-subtle text-primary d-flex align-items-center gap-2 px-3 py-2"
+                  <span class="text-muted p-0 small" data-empty="true"
+                    >No Bus Selected</span
                   >
-                    MP10 GK 4958
-                    <button
-                      type="button"
-                      class="btn-close btn-close-sm"
-                      aria-label="Remove"
-                    ></button>
-                  </span>
-
-                  <span
-                    class="badge rounded-pill bg-warning-subtle text-warning d-flex align-items-center gap-2 px-3 py-2"
-                  >
-                    MP20 AH 3214
-                    <button
-                      type="button"
-                      class="btn-close btn-close-sm"
-                      aria-label="Remove"
-                    ></button>
-                  </span>
-
-                  <span
-                    class="badge rounded-pill bg-danger-subtle text-danger d-flex align-items-center gap-2 px-3 py-2"
-                  >
-                    MP09 FK 8821
-                    <button
-                      type="button"
-                      class="btn-close btn-close-sm"
-                      aria-label="Remove"
-                    ></button>
-                  </span>
-
-                  <!-- Add more dummy pills -->
-                  <span
-                    class="badge rounded-pill bg-primary-subtle text-primary d-flex align-items-center gap-2 px-3 py-2"
-                  >
-                    MP11 BB 1023
-                    <button
-                      type="button"
-                      class="btn-close btn-close-sm"
-                      aria-label="Remove"
-                    ></button>
-                  </span>
-
-                  <span
-                    class="badge rounded-pill bg-warning-subtle text-warning d-flex align-items-center gap-2 px-3 py-2"
-                  >
-                    MP07 AJ 7541
-                    <button
-                      type="button"
-                      class="btn-close btn-close-sm"
-                      aria-label="Remove"
-                    ></button>
-                  </span>
                 </div>
               </div>
 

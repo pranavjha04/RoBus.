@@ -25,7 +25,6 @@ public class DeleteFareFactorServlet extends HttpServlet {
         }
 
         int operatorTicketFareId = Integer.parseInt(request.getParameter("operator_ticket_fare_id"));
-        System.out.println(operatorTicketFareId);
         boolean success = OperatorTicketFare.deleteRecord(operatorTicketFareId);
 
         response.getWriter().println(success == true ? "success" : "internal");

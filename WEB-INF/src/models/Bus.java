@@ -54,8 +54,6 @@ public class Bus implements Cloneable {
             }
             builder.append(")");
 
-            System.out.println(builder.toString());
-
             String query = 
                         "SELECT " + 
                         "b.bus_id, b.bus_number, b.double_decker, " +
@@ -97,8 +95,6 @@ public class Bus implements Cloneable {
 
                 busList.add(bus);
             }
-
-            System.out.println(busList);
             con.close();
         }
         catch(SQLException e) {

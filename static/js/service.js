@@ -347,7 +347,9 @@ export const deleteBusFareFactor = async (obj) => {
   return data.trim();
 };
 
-export const collectAvailableTicketFareBusRecordsRequest = async (queryParams) => {
+export const collectAvailableTicketFareBusRecordsRequest = async (
+  queryParams
+) => {
   const res = await fetch(
     `get_available_ticket_fare_bus.do?${queryParams.toString()}`,
     {
@@ -357,4 +359,14 @@ export const collectAvailableTicketFareBusRecordsRequest = async (queryParams) =
   if (!res.ok) throw new Error("Internal Server Error");
   const data = await res.text();
   return data;
+};
+
+export const addBusFareFactorRequest = async (params) => {
+  const res = await fetch(`add_bus_fare_factor.do?${params.toString()}`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Internal Server Error");
+
+  const data = await res.text();
+  return data.trim();
 };

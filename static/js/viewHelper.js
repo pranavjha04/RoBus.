@@ -415,42 +415,54 @@ export class ViewHelper {
     const { busNumber, busId, manufacturer, status } = bus;
     const { name: manufacturerName } = manufacturer;
     const { name: statusName } = status;
-    console.log(bus);
-    return `  <li class="px-2 mb-1" data-bus-id=${busId}>
-                    <div
-                      class="form-check d-flex align-items-center justify-content-between"
-                    >
-                      <div class="d-flex align-items-center">
-                        <input
-                          class="form-check-input me-3 bus-checkbox"
-                          type="checkbox"
-                          value="${busNumber}"
-                        />
-                        <div>
-                          <div class="bus-number fw-semibold">MP10 GK 4958</div>
-                          <div class="bus-meta small text-secondary">
-                            ${manufacturerName}
-                          </div>
-                        </div>
-                      </div>
-                      <span
-                      class="badge border
-                      ${
-                        statusName === "Active" &&
-                        "text-success bg-success-subtle border-success"
-                      }
-                      ${
-                        statusName === "Inactive" &&
-                        "text-danger bg-danger-subtle border-danger"
-                      }
-                      ${
-                        statusName === "Incomplete" &&
-                        "text-warning bg-warning-subtle border-warning"
-                      }
-                      "
-                      >${statusName.toUpperCase()}</span
-                    >
-                    </div>
-                  </li>`;
+
+    return `<li
+  class="border-bottom py-2 px-3 hover-bg-light"
+  role="button"
+  data-bus-id="${busId}"
+  style="transition: background-color 0.2s ease;"
+>
+  <div class="d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+      <input
+        class="form-check-input me-3 bus-checkbox"
+        type="checkbox"
+        value="${busNumber}"
+      />
+      <div>
+        <div class="fw-semibold">${busNumber}</div>
+        <div class="small text-secondary">${manufacturerName}</div>
+      </div>
+    </div>
+
+    <span
+      class="badge border
+      ${
+        statusName === "Active"
+          ? "text-success bg-success-subtle border-success"
+          : statusName === "Inactive"
+          ? "text-danger bg-danger-subtle border-danger"
+          : "text-warning bg-warning-subtle border-warning"
+      }"
+    >
+      ${statusName.toUpperCase()}
+    </span>
+  </div>
+</li>
+`;
+  }
+
+  static getSelectedBusFareHTML(busId, busNumber) {
+    return `<span
+                    class="badge rounded-pill bg-primary-subtle text-primary d-flex align-items-center gap-2 px-3 py-2"
+                  >
+                    ${busNumber}
+                    <button
+                      type="button"
+                      class="btn-close btn-close-sm"
+                      aria-label="Remove"
+                    ></button>
+                    <input type="hidden" name="bus_id" value=${busId} />
+                  </span>`;
   }
 }

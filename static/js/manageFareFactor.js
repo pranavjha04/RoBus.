@@ -1,6 +1,8 @@
+import { ModalHandler } from "./modalHandler.js";
 import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import {
+  addBusFareFactorRequest,
   collectAllRecordsWithOperatorTicketFareRequest,
   collectAvailableTicketFareBusRecordsRequest,
   deleteBusFareFactor,
@@ -18,7 +20,11 @@ const factorName = document.querySelector("#factor_name");
 const chargeType = document.querySelector("#charge_type");
 const formModal = document.querySelector("#centeredModal");
 
-const fareSelect = document.querySelector("#fare_factor_select");
+const busSelect = document.querySelector("#bus_select");
+const selectedBusContainer = document.querySelector("#selected_bus");
+const addBusFareFactorForm = document.querySelector(
+  "#add_bus_fare_factor_form"
+);
 
 const busTable = document.querySelector("#operator_ticket_fare_bus_table");
 
@@ -174,7 +180,6 @@ const handleDeleteBusFareFactorRequest = async (busId, busFareFactorId) => {
 
   try {
     const response = await deleteBusFareFactor(prepareObj);
-    console.log(response);
     switch (response) {
       case "internal": {
         throw new Error("Internal Server Error");
@@ -204,7 +209,48 @@ const handleDeleteBusFareFactorRequest = async (busId, busFareFactorId) => {
   }
 };
 
-const handleShowAvailableBusRequest = async () => {};
+const handleShowAvailableBusRequest = async () => {
+  const busIdList = modal.operatorTicketFareBusList.map(
+    ({ bus }) => bus?.busId
+  );
+  const queryParams = new URLSearchParams();
+  busIdList.unshift(0);
+  busIdList.forEach((val) => {
+    queryParams.append("bus_id", val);
+  });
+  queryParams.append(
+    "operator_ticket_fare_id",
+    modal.activeFare.operatorTicketFareId
+  );
+  addBusFareFactorForm.querySelector(
+    'input[name="operator_ticket_fare_id"]'
+  ).value = modal.activeFare.operatorTicketFareId;
+  try {
+    busSelect.innerHTML = `<div class="loader sm-loader"></div>`;
+    const response = await collectAvailableTicketFareBusRecordsRequest(
+      queryParams
+    );
+    if (response === "invalid") {
+      throw new Error("Invalid Request");
+    } else if (response === "internal") {
+      throw new Error("Internal Server Error");
+    } else if (response.startsWith("[")) {
+      const busList = JSON.parse(response);
+      if (busList.length === 0) {
+        busSelect.innerHTML = `<p class="mt-2 px-4 fw-semibold text-muted">No buses available</p>`;
+      } else {
+        busSelect.innerHTML = busList
+          .map(ViewHelper.getAvailableFareFactorBus)
+          .join("");
+      }
+    } else {
+      throw new Error("Invalid Request");
+    }
+  } catch (err) {
+    busSelect.innerHTML = `<p>${err.message}</p>`;
+    toast.error(err.message);
+  }
+};
 
 busTable.addEventListener("click", (e) => {
   const element = e.target.closest("button");
@@ -283,44 +329,116 @@ function startWatchingSession() {
   }, 100);
 }
 
-formModal.addEventListener("show.bs.modal", async () => {
-  const busIdList = modal.operatorTicketFareBusList.map(
-    ({ bus }) => bus?.busId
-  );
-  const queryParams = new URLSearchParams();
-  busIdList.unshift(0);
-  busIdList.forEach((val) => {
-    queryParams.append("bus_id", val);
-  });
-  queryParams.append(
-    "operator_ticket_fare_id",
-    modal.activeFare.operatorTicketFareId
-  );
-  try {
-    fareSelect.innerHTML = `<div class="loader sm-loader"></div>`;
-    const response = await collectAvailableTicketFareBusRecordsRequest(
-      queryParams
+busSelect.addEventListener("click", (e) => {
+  e.stopPropagation();
+  const target = e.target.closest("li");
+  if (!target) return;
+  const busId = +target.dataset.busId;
+  const busNumber = target.querySelector("input").value;
+  const checkBox = target.querySelector('input[type="checkbox"]');
+
+  checkBox.checked = !checkBox.checked;
+
+  if (checkBox.checked) {
+    if (selectedBusContainer.querySelector("[data-empty]")) {
+      selectedBusContainer.innerHTML = "";
+    }
+
+    selectedBusContainer.innerHTML += ViewHelper.getSelectedBusFareHTML(
+      busId,
+      busNumber
     );
-    if (response === "invalid") {
-      throw new Error("Invalid Request");
-    } else if (response === "internal") {
-      throw new Error("Internal Server Error");
-    } else if (response.startsWith("[")) {
-      const busList = JSON.parse(response);
-      if (busList.length === 0) {
-        fareSelect.innerHTML = "No buses available";
-      } else {
-        fareSelect.innerHTML = busList
-          .map(ViewHelper.getAvailableFareFactorBus)
-          .join("");
+  } else {
+    const target = selectedBusContainer.querySelector(
+      `input[value="${+busId}"]`
+    );
+    target.closest("span")?.remove();
+    if (selectedBusContainer.children.length === 0)
+      selectedBusContainer.innerHTML =
+        "<span class='small' data-empty='true'>No Bus Selected</span>";
+  }
+});
+
+selectedBusContainer.addEventListener("click", (e) => {
+  const target = e.target.closest("span");
+  if (!target) return;
+  let isCloseBtn = false;
+
+  if (e.target.classList.contains("btn-close")) {
+    isCloseBtn = true;
+  }
+
+  if (!isCloseBtn) return;
+
+  const busId = target.querySelector('input[type="hidden"]').value;
+  busSelect
+    .querySelector(`[data-bus-id="${busId}"]`)
+    .querySelector('input[type="checkbox"]').checked = false;
+
+  target.remove();
+  if (selectedBusContainer.children.length === 0)
+    selectedBusContainer.innerHTML =
+      "<span class='small' data-empty='true'>No Bus Selected</span>";
+});
+
+addBusFareFactorForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const busIdList = Array.from(
+    addBusFareFactorForm.querySelectorAll('input[name="bus_id"]')
+  )?.map((input) => +input.value);
+
+  if (!busIdList) {
+    toast.error("Empty Request");
+    return;
+  }
+
+  const operatorTicketFareId = +addBusFareFactorForm.querySelector(
+    'input[name="operator_ticket_fare_id"]'
+  )?.value;
+  if (!operatorTicketFareId || isNaN(operatorTicketFareId)) {
+    toast.error("Invalid Request");
+  }
+
+  const queryParams = new URLSearchParams();
+  busIdList.forEach((id) => {
+    queryParams.append("bus_id", id);
+  });
+  queryParams.append("operator_ticket_fare_id", operatorTicketFareId);
+
+  try {
+    const response = await addBusFareFactorRequest(queryParams);
+
+    switch (response) {
+      case "internal": {
+        throw new Error("Internal Server Error");
       }
-    } else {
-      throw new Error("Invalid Request");
+      case "invalid": {
+        throw new Error("Invalid Request");
+      }
+      case "success": {
+        toast.success("Fare factors added successfully");
+        ModalHandler.hide(formModal);
+        await handleBusRecords();
+      }
     }
   } catch (err) {
-    fareSelect.innerHTML = `<p>${err.message}</p>`;
     toast.error(err.message);
   }
+});
+
+formModal.addEventListener("show.bs.modal", async () => {
+  try {
+    await handleShowAvailableBusRequest();
+  } catch (err) {
+    toast.error(err.message);
+  }
+});
+
+formModal.addEventListener("hide.bs.modal", () => {
+  busSelect.innerHTML = "";
+  selectedBusContainer.innerHTML = ` <span class="text-muted p-0 small" data-empty="true"
+                    >No Bus Selected</span
+                  >`;
 });
 
 window.addEventListener("pageshow", (e) => {

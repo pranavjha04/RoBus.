@@ -40,8 +40,6 @@ public class BusFareFactor {
             ps.setInt(1, busId);
             ps.setInt(2, busFareFactorId);
             ps.setInt(3, operatorTicketFareId);
-            System.out.println("hell");
-
             int rows = ps.executeUpdate();
 
             if(rows == 1) {
@@ -54,6 +52,47 @@ public class BusFareFactor {
             flag = false;
         }
 
+        return flag;
+    }
+
+    public static boolean addMultipleRecords(String[] busIdList, int operatorTicketFareId) {
+        boolean flag = false;
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < busIdList.length; i++) {
+            builder.append("(?,?)");
+            if(i != busIdList.length - 1) builder.append(",");
+        }
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "INSERT INTO " +  
+                        "bus_fare_factor (bus_id, operator_ticket_fare_id) " + 
+                        "VALUES " + builder.toString();
+            
+            PreparedStatement ps = con.prepareStatement(query);
+
+            int count = 1;
+            for(String next: busIdList) {
+                try {
+                    int busId = Integer.parseInt(next);
+                    ps.setInt(count++, busId);
+                    ps.setInt(count++, operatorTicketFareId);
+                }
+                catch(NumberFormatException e) {
+                    throw new SQLException();
+                }
+            }
+
+            int rows = ps.executeUpdate();
+            if(rows > 0) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            flag = true;
+            e.printStackTrace();
+        }
         return flag;
     }
 
