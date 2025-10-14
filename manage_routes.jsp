@@ -166,9 +166,66 @@
           </div>
           <div class="bg-white p-4 rounded shadow-sm" id="route_time_line">
             <h2 class="fs-3">Route TimeLine & Mid Cities</h2>
-            <ul class="d-flex flex-column">
-              
-            </ul>
+            <div
+              class="d-flex flex-column align-items-start gap-3 border-start border-black"
+            >
+              <div
+                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4"
+              >
+                <div
+                  style="
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    left: -5px;
+                  "
+                  class="position-absolute top-0 bg-danger"
+                ></div>
+
+                <h4 class="fs-5 align-self-start">Katni</h4>
+                <div class="d-flex align-items-center mb-0 gap-2">
+                  <p
+                    class="small rounded-pill bg-light px-2 py-1 fw-medium border text-primary"
+                  >
+                    <span>60</span>km from source
+                  </p>
+                  <p
+                    class="small rounded-pill bg-light px-2 py-1 fw-medium border"
+                    style="color: orange"
+                  >
+                    <span>10</span>mins Halting time
+                  </p>
+                </div>
+              </div>
+              <div
+                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4"
+              >
+                <div
+                  style="
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    left: -5px;
+                  "
+                  class="position-absolute top-0 bg-danger"
+                ></div>
+
+                <h4 class="fs-5 align-self-start">Katni</h4>
+                <div class="d-flex align-items-center mb-0 gap-2">
+                  <p
+                    class="small rounded-pill bg-light px-2 py-1 fw-medium border text-primary"
+                  >
+                    <span>60</span>km from source
+                  </p>
+                  <p
+                    class="small rounded-pill bg-light px-2 py-1 fw-medium border"
+                    style="color: orange"
+                  >
+                    <span>10</span>mins Halting time
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Rest of your existing content -->
