@@ -26,6 +26,88 @@
         font-size: 0.875rem;
         color: var(--bs-secondary-color);
       }
+
+      .fare-factor-card {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        transition: all 0.2s ease;
+        overflow: hidden;
+        max-width: 100%;
+      }
+
+      .fare-factor-card:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
+      }
+
+      .card-border-accent {
+        border-left: 4px solid #0d6efd;
+      }
+
+      .section-title {
+        color: #6c757d;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+      }
+
+      .section-content {
+        color: #212529;
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 0;
+      }
+
+      .divider {
+        border-right: 1px solid rgba(0, 0, 0, 0.1);
+        padding-right: 1.5rem;
+        margin-right: 1.5rem;
+      }
+
+      .divider:last-child {
+        border-right: none;
+        padding-right: 0;
+        margin-right: 0;
+      }
+
+      .fare-factor-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem;
+      }
+
+      .fare-factor-section {
+        flex: 1;
+        padding: 0 1rem;
+      }
+
+      @media (max-width: 768px) {
+        .fare-factor-row {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1.5rem;
+        }
+
+        .fare-factor-section {
+          width: 100%;
+          padding: 0;
+        }
+
+        .divider {
+          border-right: none;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+          padding-right: 0;
+          margin-right: 0;
+          padding-bottom: 1rem;
+          margin-bottom: 1rem;
+          width: 100%;
+        }
+      }
     </style>
   </head>
   <body>
@@ -119,40 +201,33 @@
             <span>&larr;</span>
             <span>Back</span>
           </a>
-
           <footer class="container mt-2 mb-4">
-            <div class="align-self-start mt-2">
-              <div
-                class="p-4 rounded-4 shadow-sm border-start border-4 border-primary d-flex flex-column gap-3"
-                style="max-width: 420px"
-              >
-                <div class="d-flex align-items-center justify-content-between">
-                  <div>
-                    <span
-                      class="fs-6 fw-semibold text-secondary text-uppercase"
-                    >
-                      Fare Factor Name
-                    </span>
-                    <h4
-                      class="fw-bold text-dark mt-1 mb-0"
-                      id="factor_name"
-                    ></h4>
+            <!-- Row Layout Fare Factor Card -->
+            <div class="container d-flex">
+              <div class="fare-factor-card p-0 card-border-accent w-100">
+                <div class="fare-factor-row">
+                  <!-- Fare Factor Name Section -->
+                  <div class="fare-factor-section divider">
+                    <div class="section-title">Fare Factor Name</div>
+                    <div class="section-content" id="factor_name">
+                      Standard Rate
+                    </div>
                   </div>
-                </div>
 
-                <div
-                  class="d-flex justify-content-between align-items-center border-top pt-3"
-                >
-                  <div>
-                    <span
-                      class="fs-6 fw-semibold text-secondary text-uppercase"
-                    >
-                      Type
-                    </span>
-                    <h4
-                      class="fw-bold text-dark mt-1 mb-0"
-                      id="charge_type"
-                    ></h4>
+                  <!-- Type Section -->
+                  <div class="fare-factor-section divider">
+                    <div class="section-title">Type</div>
+                    <div class="section-content" id="charge_type">
+                      Fixed Amount
+                    </div>
+                  </div>
+
+                  <!-- Charges Section -->
+                  <div class="fare-factor-section">
+                    <div class="section-title">Charges</div>
+                    <div class="section-content" id="charges_display">
+                      &#8377; <span id="charge_display_text"></span>
+                    </div>
                   </div>
                 </div>
               </div>

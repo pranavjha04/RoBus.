@@ -39,9 +39,9 @@ public class GetAvailableTicketFareBusServlet extends HttpServlet {
         int operatorId = operator.getOperatorId();
         String[] busIdList = request.getParameterValues("bus_id");
         int operatorTicketFareId = Integer.parseInt(request.getParameter("operator_ticket_fare_id"));
-
-        ArrayList<Bus> busList = Bus.collectAvailableTicketFareBusRecords(operatorTicketFareId, busIdList, operatorId);
-
+        int offSet = Integer.parseInt(request.getParameter("offset"));
+        
+        ArrayList<Bus> busList = Bus.collectAvailableTicketFareBusRecords(operatorTicketFareId, busIdList, operatorId, offSet);
         if(busList == null) {
             response.getWriter().println("internal");
             return;

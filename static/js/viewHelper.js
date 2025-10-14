@@ -311,7 +311,7 @@ export class ViewHelper {
     const { name: sourceCityName } = source;
     const { name: statusName } = status;
 
-    return `    <tr class="text-center border-bottom" data-oprid=${operatorRouteId} data-source=${sourceCityName} data-destination=${destinationCityName} data-distance=${distance} data-duration=${duration} data-status=${statusName}>
+    return `    <tr class="text-center border-bottom" data-operator-route-id=${operatorRouteId} data-source=${sourceCityName} data-destination=${destinationCityName} data-distance=${distance} data-duration=${duration} data-status=${statusName}>
                 <td class="p-3">${sourceCityName}</td>
                 <td class="p-3">${destinationCityName}</td>
                 <td class="p-3">${distance}<small class="small">km</small></td>
@@ -417,39 +417,39 @@ export class ViewHelper {
     const { name: statusName } = status;
 
     return `<li
-  class="border-bottom py-2 px-3 hover-bg-light"
-  role="button"
-  data-bus-id="${busId}"
-  style="transition: background-color 0.2s ease;"
->
-  <div class="d-flex align-items-center justify-content-between">
-    <div class="d-flex align-items-center">
-      <input
-        class="form-check-input me-3 bus-checkbox"
-        type="checkbox"
-        value="${busNumber}"
-      />
-      <div>
-        <div class="fw-semibold">${busNumber}</div>
-        <div class="small text-secondary">${manufacturerName}</div>
-      </div>
-    </div>
+              class="border-bottom py-2 px-3 hover-bg-light"
+              role="button"
+              data-bus-id="${busId}"
+              style="transition: background-color 0.2s ease;"
+            >
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  <input
+                    class="form-check-input me-3 bus-checkbox"
+                    type="checkbox"
+                    value="${busNumber}"
+                  />
+                  <div>
+                    <div class="fw-semibold">${busNumber}</div>
+                    <div class="small text-secondary">${manufacturerName}</div>
+                  </div>
+                </div>
 
-    <span
-      class="badge border
-      ${
-        statusName === "Active"
-          ? "text-success bg-success-subtle border-success"
-          : statusName === "Inactive"
-          ? "text-danger bg-danger-subtle border-danger"
-          : "text-warning bg-warning-subtle border-warning"
-      }"
-    >
-      ${statusName.toUpperCase()}
-    </span>
-  </div>
-</li>
-`;
+                <span
+                  class="badge border
+                  ${
+                    statusName === "Active"
+                      ? "text-success bg-success-subtle border-success"
+                      : statusName === "Inactive"
+                      ? "text-danger bg-danger-subtle border-danger"
+                      : "text-warning bg-warning-subtle border-warning"
+                  }"
+                >
+                  ${statusName.toUpperCase()}
+                </span>
+              </div>
+            </li>
+            `;
   }
 
   static getSelectedBusFareHTML(busId, busNumber) {

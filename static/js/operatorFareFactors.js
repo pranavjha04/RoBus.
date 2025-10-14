@@ -329,8 +329,12 @@ formModal.addEventListener("hidden.bs.modal", () => {
 });
 
 window.addEventListener("pageshow", async () => {
-  PageLoading.startLoading();
-  await init(true);
+  try {
+    PageLoading.startLoading();
+    await init(true);
+  } catch {
+    PageError.showOperatorError();
+  }
 });
 
 window.addEventListener("pagehide", () => {

@@ -34,7 +34,6 @@ public class VerifyOTPServlet extends HttpServlet {
 
         if(sessionOTP.equals(otp)) {
             responseCode = 3;
-            System.out.println("YUSSSSSSSSSSSSSSSSSs");
             response.getWriter().println(responseCode);
             session.removeAttribute("otp");
             session.removeAttribute("remainingAttempts");

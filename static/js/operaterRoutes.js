@@ -712,6 +712,34 @@ formModal.addEventListener("show.bs.modal", () => {
   resetAddRouteForm();
 });
 
+routeTable.addEventListener("click", async (e) => {
+  const element = e.target.closest("button");
+  if (!element) return;
+
+  const parent = element.closest("tr");
+  const { operatorRouteId } = parent.dataset;
+  if (!operatorRouteId) {
+    toast.error("Invalid Request");
+    return;
+  }
+
+  const activeRoute = JSON.parse(
+    sessionStorage.getItem("operatorRouteList")
+  ).find((data) => data.operatorRouteId === +operatorRouteId);
+
+  if (!activeRoute) {
+    toast.error("Invalid Request");
+    return;
+  }
+
+  sessionStorage.setItem("activeRoute", JSON.stringify(activeRoute));
+  const APP_URL = window.location.href.substring(
+    0,
+    window.location.href.lastIndexOf("/")
+  );
+  window.location.href = `${APP_URL}/manage_route.do`;
+});
+
 const displayRouteInfo = (operatorRouteList = []) => {
   if (operatorRouteList.length === 0) {
     routeTable.innerHTML = ViewHelper.getTableEmptyMessage("No Records Found");
@@ -901,7 +929,7 @@ const filteAppliedInterval = setInterval(() => {
   }
 }, 100);
 
-window.addEventListener("DOMContentLoaded", async () => {
+window.addEventListener("pageshow", async () => {
   try {
     PageLoading.startLoading();
     await Promise.all([handleAllRoutes(), handleAllOperatorRoutes(true)]);

@@ -4,10 +4,89 @@
 <html lang="en">
   <head>
     <c:import url="essential_page_import.jsp" />
-    <title>Document</title>
+    <title>Route Information</title>
+    <style>
+      /* Existing styles */
+      .dropdown-menu {
+        width: 350px;
+        max-height: 320px;
+        overflow-y: auto;
+      }
+      .form-check {
+        border-radius: 0.75rem;
+        transition: background-color 0.15s ease;
+      }
+      .form-check:hover {
+        background-color: var(--bs-light);
+      }
+      .bus-number {
+        font-weight: 600;
+        font-size: 1rem;
+      }
+      .bus-meta {
+        font-size: 0.875rem;
+        color: var(--bs-secondary-color);
+      }
+
+      .route-card {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        transition: all 0.2s ease;
+        overflow: hidden;
+      }
+
+      .route-card:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
+      }
+
+      .card-border-accent {
+        border-left: 4px solid #0d6efd;
+      }
+
+      .section-title {
+        color: #6c757d;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+      }
+
+      .section-content {
+        color: #212529;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 0;
+        display: flex;
+        align-items: center;
+      }
+
+      .location-icon {
+        font-size: 1rem;
+        margin-right: 0.25rem;
+      }
+
+      .origin {
+        color: #dc3545;
+      }
+
+      .destination {
+        color: #198754;
+      }
+
+      .arrow {
+        color: #6c757d;
+        margin: 0 0.5rem;
+        font-weight: 400;
+      }
+    </style>
   </head>
   <body>
     <c:import url="essential_page_display.jsp" />
+
     <div class="dashContainer">
       <!-- Sidebar -->
       <c:import url="operator_sidebar.jsp" />
@@ -29,61 +108,76 @@
             <span>&larr;</span>
             <span>Back</span>
           </a>
-          <div class="align-self-start mt-2">
-            <div
-              class="p-4 rounded-4 shadow-sm border-start border-4 border-primary d-flex flex-column gap-3"
-              style="max-width: 420px"
-            >
-              <div class="d-flex align-items-center justify-content-between">
-                <div>
-                  <span class="fs-6 fw-semibold text-secondary text-uppercase"
-                    >Fare Factor Name</span
-                  >
-                  <h4 class="fw-bold text-dark mt-1 mb-0" id="factor_name"></h4>
-                </div>
-              </div>
 
+          <div class="container mt-2 mb-4">
+            <!-- Route Information Card -->
+            <div class="route-card p-4 card-border-accent">
               <div
-                class="d-flex justify-content-between align-items-center border-top pt-3"
+                class="d-flex flex-column flex-md-row align-items-center justify-content-between"
               >
-                <div>
-                  <span class="fs-6 fw-semibold text-secondary text-uppercase"
-                    >Type</span
-                  >
-                  <h4 class="fw-bold text-dark mt-1 mb-0" id="charge_type"></h4>
+                <!-- Route Section -->
+                <div
+                  class="route-section text-center text-md-start mb-3 mb-md-0"
+                >
+                  <div class="section-title">Route</div>
+                  <div class="section-content">
+                    <i class="bi bi-geo-alt-fill location-icon origin"></i
+                    >Jabalpur
+                    <span class="arrow">&rarr;</span>
+                    <i class="bi bi-geo-alt-fill location-icon destination"></i
+                    >Sagar
+                  </div>
+                </div>
+
+                <div class="divider d-none d-md-block"></div>
+                <div class="divider d-md-none"></div>
+
+                <!-- Journey Time Section -->
+                <div class="time-section text-center mb-3 mb-md-0">
+                  <div class="section-title">Journey Time</div>
+                  <div class="section-content">5 hrs 20 mins</div>
+                </div>
+
+                <div class="divider d-none d-md-block"></div>
+                <div class="divider d-md-none"></div>
+
+                <!-- Distance Section -->
+                <div class="distance-section text-center">
+                  <div class="section-title">Distance</div>
+                  <div class="section-content">197 km</div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="align-self-start mt-2">
-            <label class="form-label small fw-semibold fs-6" for="charges"
-              >Charges</label
-            >
-          </div>
-          <div class="align-self-start">
-            <div class="d-flex align-items-center gap-2">
-              <input
-                type="number"
-                class="form-control fs-5"
-                placeholder="Charges"
-                name="charges"
-                id="charges"
-                readonly
-              />
-              <button class="btn btn-primary px-4" id="edit_btn">Edit</button>
-              <button class="btn btn-danger px-4" id="delete_btn">
-                Delete
+            <div class="d-flex gap-2 align-items-center mt-4 mb-0">
+              <a role="button" class="btn btn-primary rounded-pill">
+                Route Timeline
+              </a>
+              <button
+                class="btn text-primary border border-primary rounded-pill"
+              >
+                Mid Cities
+              </button>
+              <button
+                class="btn text-primary border border-primary rounded-pill"
+              >
+                Buses
               </button>
             </div>
           </div>
+          <div class="bg-white p-4 rounded shadow-sm" id="route_time_line">
+            <h2 class="fs-3">Route TimeLine & Mid Cities</h2>
+            <ul class="d-flex flex-column">
+              
+            </ul>
+          </div>
 
-          <table
-            class="border rounded table-responsive border-bottom-0 mt-2"
-            id="operator_routes_fare_bus_table"
-          ></table>
+          <!-- Rest of your existing content -->
+          <footer class="container mt-4 mb-4">
+            <!-- Your existing fare factor and table content here -->
+          </footer>
         </div>
       </main>
     </div>
-    <script type="module" src="static/js/manageFareFactor.js"></script>
+    <script type="module" src="static/js/manageRoute.js"></script>
   </body>
 </html>

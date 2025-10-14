@@ -36,7 +36,7 @@ public class Bus implements Cloneable {
         
     }
 
-    public static ArrayList<Bus> collectAvailableTicketFareBusRecords(Integer operatorTicketFareId, String[] busIdList, Integer operatorId) {
+    public static ArrayList<Bus> collectAvailableTicketFareBusRecords(Integer operatorTicketFareId, String[] busIdList, Integer operatorId, int offSet) {
         ArrayList<Bus> busList = new ArrayList<>();
         try {
             Connection con = DBManager.getConnection();
@@ -65,7 +65,7 @@ public class Bus implements Cloneable {
                         "JOIN manufacturers m ON b.manufacturer_id = m.manufacturer_id " +
                         "JOIN status s ON b.status_id = s.status_id " +
                         "WHERE b.operator_id=? " + "AND s.status_id!=4 " +
-                        "AND b.bus_id NOT IN " + builder.toString();
+                        "AND b.bus_id NOT IN " + builder.toString() + "LIMIT 5 OFFSET " + offSet;
             
             PreparedStatement ps = con.prepareStatement(query);
 

@@ -10,7 +10,6 @@ import {
   updateFareFactorChargeRequest,
 } from "./service.js";
 import { toast } from "./toast.js";
-import { createURLParams, validateCharge } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
 const chargeInput = document.querySelector("#charges");
@@ -26,6 +25,8 @@ const addBusFareFactorForm = document.querySelector(
   "#add_bus_fare_factor_form"
 );
 
+const chargeDisplay = document.querySelector("#charge_display_text");
+
 const busTable = document.querySelector("#operator_ticket_fare_bus_table");
 
 let watchSessionInternal = null;
@@ -35,20 +36,23 @@ const modal = {
   operatorTicketFareBusList: [],
   availableAddToBus: [],
   limit: 5,
-  offset: 0,
+  availableOffSet: 0,
 };
 
 const updateInputValue = (value = "") => {
   if (value) {
     chargeInput.value = value;
+    chargeDisplay.textContent = value;
     return;
   }
   const { charge } = modal.activeFare;
   chargeInput.value = charge;
+  chargeDisplay.textContent = chargeInput.value;
 };
 
 const updateChargeInputEdit = () => {
   const newValue = chargeInput.value;
+  chargeDisplay.textContent = chargeInput.value;
   modal.activeFare.charge = newValue;
   sessionStorage.setItem("activeFare", JSON.stringify(modal.activeFare));
 };
@@ -222,6 +226,8 @@ const handleShowAvailableBusRequest = async () => {
     "operator_ticket_fare_id",
     modal.activeFare.operatorTicketFareId
   );
+  queryParams.append("offset", modal.availableOffSet);
+
   addBusFareFactorForm.querySelector(
     'input[name="operator_ticket_fare_id"]'
   ).value = modal.activeFare.operatorTicketFareId;
