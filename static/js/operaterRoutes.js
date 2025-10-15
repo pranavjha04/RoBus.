@@ -929,7 +929,7 @@ const filteAppliedInterval = setInterval(() => {
   }
 }, 100);
 
-window.addEventListener("pageshow", async () => {
+window.addEventListener("DOMContentLoaded", async () => {
   try {
     PageLoading.startLoading();
     await Promise.all([handleAllRoutes(), handleAllOperatorRoutes(true)]);

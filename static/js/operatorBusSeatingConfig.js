@@ -1,131 +1,44 @@
 import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
-import {
-  addSeatingRequest,
-  collectSeatingRecordRequest,
-  updateSeatingRequest,
-} from "./service.js";
+import { collectSeatingRecordRequest } from "./service.js";
 import { toast } from "./toast.js";
-import {
-  displayInputError,
-  displayInputSuccess,
-  removeInputError,
-  removeInputSuccess,
-} from "./util.js";
+import { disableElements } from "./util.js";
 
-// SEATING FORM
-const busConfigForm = document.querySelector("#bus_config_form");
-const seater = document.querySelector("#bus_seater");
-const sleeper = document.querySelector("#bus_sleeper");
+const allFormFields = document.querySelectorAll("input, button");
+const busDiagram = document.querySelector("#bus");
+const deckContainer = document.querySelector("#deck_cont");
+
+const seatingForm = document.querySelector("#bus_config_form");
 
 const lsCount = document.querySelector("#lsCount");
 const rsCount = document.querySelector("#rsCount");
-
 const rowCount = document.querySelector("#rowCount");
-const totalSeats = document.querySelector("#total_seats");
+const seats = document.querySelector("#seats");
+const seater = document.querySelector("#bus_seater");
+const sleeper = document.querySelector("#bus_sleeper");
 
-// UI/UX
-const deckContainer = document.querySelector("#deck_cont");
-const lowerBtn = document.querySelector("#lower");
-const upperBtn = document.querySelector("#upper");
-const currDeck = document.querySelector("#curr_deck");
-const allFields = document.querySelectorAll(".fld");
-
-const resetFormFields = ({ disabledField = false }) => {
-  allFields.forEach((field) => {
-    removeInputError(field);
-    removeInputSuccess(field);
-    field.disabled = disabledField;
-    field.value = "";
-  });
-  totalSeats.value = "";
-  seater.checked = true;
-  sleeper.checked = false;
+const modal = {
+  seatingList: [],
+  activeDeck: 0,
+  activeBus: null,
 };
 
-const deckContainerEvent = (e) => {
-  const target = e.target.closest("input[name='deck']");
-  if (!target) return;
-  const deck = target.getAttribute("id");
-  const seatingList = JSON.parse(sessionStorage.getItem("seatingList"));
-  const [lowerSeat, upperSeat] = seatingList;
-  switch (deck) {
-    case "lower": {
-      currDeck.textContent = "Lower Deck";
-      if (!lowerSeat) {
-        resetForm();
-      }
-      fillAlreadyExistFormDetails(lowerSeat);
-      break;
-    }
-    case "upper": {
-      currDeck.textContent = "Upper Deck";
-      if (!upperSeat) {
-        resetForm();
-        return;
-      }
-      fillAlreadyExistFormDetails(upperSeat);
-      break;
-    }
-    default: {
-      history.back();
-    }
-  }
-};
-
+// ******************** UTILS START ***************************
 const disableApp = () => {
-  resetFormFields({ disabledField: true });
-  document.querySelector('input[type="submit"]').disabled = true;
-  document.querySelector('input[type="reset"]').disabled = true;
-  deckContainer.removeEventListener("click", deckContainerEvent);
+  disableElements(allFormFields);
+  PageError.showOperatorError();
+  PageLoading.stopLoading();
 };
 
-const resetForm = () => {
-  const activeIndex = upperBtn.checked ? 1 : 0;
-  const seatingList = JSON.parse(sessionStorage.getItem("seatingList") || "[]");
-  const currentSeating = seatingList[activeIndex];
-
-  if (currentSeating) {
-    const {
-      sleeper: isSleeper,
-      lsCount: leftSideCount,
-      rsCount: rightSideCount,
-      rowCount: rowCountValue,
-      seats,
-    } = currentSeating;
-
-    seater.checked = !isSleeper;
-    sleeper.checked = isSleeper;
-
-    lsCount.value = leftSideCount;
-    rsCount.value = rightSideCount;
-    rowCount.value = rowCountValue;
-    totalSeats.value = seats;
-
-    allFields.forEach((field) => displayInputSuccess(field));
-  } else {
-    resetFormFields();
-  }
-};
-const modifiedObject = (obj) => {
-  obj = Object.fromEntries(obj);
-  return {
-    lsCount: +obj.lsCount,
-    rsCount: +obj.rsCount,
-    rowCount: +obj.rowCount,
-    sleeper: obj.sleeper === "true",
-    seats: +obj.seats,
-  };
-};
-const updateBusView = (busSetting) => {
-  if (!busSetting) {
-    bus.innerHTML = "";
+const updateBusView = (busSeating) => {
+  if (!busSeating) {
+    busDiagram.innerHTML =
+      "<p class='text-black text-center'>Seats will be displayed here</p>";
     return;
   }
-  const { lsCount, rsCount, rowCount, sleeper, seats } = busSetting;
+
+  const { lsCount, rsCount, rowCount, sleeper, seats } = busSeating;
   let count = 1;
-  const bus = document.querySelector(".bus");
-  console.log(lsCount);
   bus.innerHTML = `${Array.from({ length: sleeper ? rowCount : rowCount - 1 })
     .map((_) => {
       return `<div class="d-flex align-items-center gap-5 justify-content-between">
@@ -171,256 +84,263 @@ const updateBusView = (busSetting) => {
                 </div>`;
 };
 
-const fillAlreadyExistFormDetails = (obj) => {
-  if (!obj) return;
-  lsCount.value = obj.lsCount;
-  rsCount.value = obj.rsCount;
-
-  seater.checked = !obj.sleeper;
-  sleeper.checked = obj.sleeper;
-
-  rowCount.value = obj.rowCount;
-
-  displayInputSuccess(lsCount);
-  displayInputSuccess(rsCount);
-  displayInputSuccess(rowCount);
-
-  totalSeats.value = obj.seats;
-
-  updateBusView(obj);
-};
-
-const isRowsCountValid = (inputEl) => {
-  const val = +inputEl.value;
-  if (!isNaN(val) && val >= 5 && val <= 14) {
-    displayInputSuccess(inputEl);
-    return true;
-  } else {
-    inputEl.value = "";
-    displayInputError(inputEl);
-    toast.error("Value should be greater than 4 and less than 15");
-    return false;
-  }
-};
-
-const isSeatCountValid = (inputEl) => {
-  const val = +inputEl.value;
-  if (!isNaN(val) && val >= 1 && val <= 3) {
-    if (sleeper.checked && val > 2) {
-      inputEl.value = "";
-      displayInputError(inputEl);
-      toast.error("Value should be less than 3");
-      return false;
-    }
-    displayInputSuccess(inputEl);
-    return true;
-  } else {
-    displayInputError(inputEl);
-    inputEl.value = "";
-    toast.error(
-      `Value should be greater than 0 and less than ${sleeper.checked ? 3 : 4}`
-    );
-    return false;
-  }
-};
-
-rowCount.addEventListener("change", (e) => {
-  const isValid = isRowsCountValid(e.target);
-  if (!isValid) totalSeats.value = "";
-});
-
-const handleRowCountRange = (e) => {
-  const isValid = isSeatCountValid(e.target);
-  if (!isValid) totalSeats.value = "";
-};
-
-seater.addEventListener("change", () => {});
-
-lsCount.addEventListener("change", handleRowCountRange);
-rsCount.addEventListener("change", handleRowCountRange);
-
-const handleLoadingSeatingData = async () => {
-  const busId = +new URLSearchParams(window.location.search).get("bus_id");
-
-  if (!busId) {
-    PageError.showOperatorError();
-    disableApp();
+const updateForm = () => {
+  const { seatingList, activeDeck } = modal;
+  const currSeating = seatingList[activeDeck];
+  if (!currSeating) {
+    seatingForm.reset();
     return;
+  }
+  Object.keys(currSeating).forEach((key) => {
+    const target = document.querySelector(`input[name="${key}"]`);
+    if (target.type === "radio") return;
+    target.value = currSeating[key];
+  });
+  seater.checked = !currSeating.sleeper;
+  sleeper.checked = currSeating.sleeper;
+};
+
+const changeActiveDeck = (a, b) => {
+  a.classList.remove("inactive");
+  a.classList.add("active");
+  b.classList.remove("active");
+  b.classList.add("inactive");
+};
+
+const validateRowCount = () => {
+  const currValue = +rowCount.value;
+  const [lowerSeat, upperSeat] = modal.seatingList;
+  const activeSeat = modal.seatingList[modal.activeDeck];
+  const isCurrSleeper = sleeper.checked;
+
+  let minimum = 8;
+  let maxiumum = 16;
+
+  if (isCurrSleeper) {
+    minimum = 4;
+    maxiumum = 8;
   }
 
   try {
-    const response = await collectSeatingRecordRequest(busId);
-    if (response === "invalid" || response === "internal") {
-      throw new Error();
+    if (isNaN(currValue) || !currValue) {
+      throw new Error("Invalid Rows Count");
     }
-    if (response.startsWith("[")) {
-      const seatingList = JSON.parse(response);
-      const [firstIndex] = seatingList;
-      PageLoading.stopLoading();
-      if (firstIndex) {
-        fillAlreadyExistFormDetails(firstIndex);
+
+    if (!(currValue >= minimum && currValue <= maxiumum)) {
+      throw new Error("Invalid Rows Count");
+    }
+
+    const leftValue = currValue - (currValue % 2);
+
+    switch (modal.activeDeck) {
+      case 0: {
+        if (upperSeat) {
+          const isTargetSleeper = upperSeat.sleeper;
+          const rightValue = upperSeat.rowCount - (upperSeat.rowCount % 2);
+          let isValid = true;
+
+          if (
+            (isCurrSleeper && isTargetSleeper) ||
+            (!isCurrSleeper && !isTargetSleeper)
+          ) {
+            isValid = leftValue === rightValue;
+          } else if (isCurrSleeper && !isTargetSleeper) {
+            isValid = leftValue === rightValue / 2;
+          } else if (!isCurrSleeper && isTargetSleeper) {
+            isValid = leftValue / 2 === rightValue;
+          }
+
+          if (!isValid) throw new Error("Invalid Row Count");
+          else rowCount.classList.add("valid");
+        }
+        break;
       }
-      sessionStorage.setItem("seatingList", JSON.stringify(seatingList));
+
+      case 1: {
+        if (lowerSeat) {
+          const isTargetSleeper = lowerSeat.sleeper;
+          const rightValue = lowerSeat.rowCount - (lowerSeat.rowCount % 2);
+          let isValid = true;
+
+          if (
+            (isCurrSleeper && isTargetSleeper) ||
+            (!isCurrSleeper && !isTargetSleeper)
+          ) {
+            isValid = leftValue === rightValue;
+          } else if (isCurrSleeper && !isTargetSleeper) {
+            isValid = leftValue === rightValue / 2;
+          } else if (!isCurrSleeper && isTargetSleeper) {
+            isValid = leftValue / 2 === rightValue;
+          }
+
+          if (!isValid) throw new Error("Invalid Row Count");
+        }
+        break;
+      }
+
+      default:
+        throw new Error("Invalid Request");
     }
+
+    rowCount.classList.add("valid");
   } catch (err) {
     toast.error(err.message);
-    PageLoading.stopLoading();
-    PageError.showOperatorError();
-    disableApp();
-  }
-};
-
-deckContainer.addEventListener("click", deckContainerEvent);
-
-let watchSessionStorageInterval = setInterval(() => {
-  const busId = +new URLSearchParams(window.location.search).get("bus_id");
-
-  if (
-    !sessionStorage.getItem("activeBus") ||
-    !sessionStorage.getItem("seatingList") ||
-    !busId ||
-    !totalSeats.readOnly
-  ) {
-    PageError.showOperatorError();
-    disableApp();
-    return;
-  }
-
-  const activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
-  if (!activeBus.doubleDecker) {
-    upperBtn.disabled = true;
-  }
-}, 1000);
-
-const handleAddSeating = async (formData) => {
-  if (!formData || Object.fromEntries(formData).length === 0) return;
-
-  const activeIndex = upperBtn.checked ? 1 : 0;
-  const seatingList = JSON.parse(sessionStorage.getItem("seatingList"));
-  if (seatingList[activeIndex]) {
-    return;
-  }
-
-  try {
-    formData?.append(
-      "bus_id",
-      JSON.parse(sessionStorage.getItem("activeBus")).busId
-    );
-    const response = await addSeatingRequest(Object.fromEntries(formData));
-
-    if (response === "internal" || response.length === 0) {
-      throw new Error("Internal Server error");
-    }
-    if (response === "invalid") {
-      throw new Error("Invalid request");
-    }
-    if (response.startsWith("{")) {
-      toast.success("Seating added successfully");
-      const seating = JSON.parse(response);
-      seatingList[activeIndex] = seating;
-      sessionStorage.setItem("seatingList", JSON.stringify(seatingList));
-    }
-  } catch (err) {
-    toast.error(err.message);
-  }
-};
-
-const handleUpdateSeating = async (formData) => {
-  if (!formData || Object.fromEntries(formData).length === 0) return;
-
-  const activeIndex = upperBtn.checked ? 1 : 0;
-  const seatingList = JSON.parse(sessionStorage.getItem("seatingList"));
-  const activeSeating = seatingList[activeIndex];
-
-  if (!activeSeating) {
-    return;
-  }
-
-  try {
-    formData?.append("seating_id", activeSeating.seatingId);
-    formData?.append(
-      "bus_id",
-      JSON.parse(sessionStorage.getItem("activeBus")).busId
-    );
-
-    const response = await updateSeatingRequest(Object.fromEntries(formData));
-
-    if (response === "internal" || response.length === 0) {
-      throw new Error("Internal Server error");
-    }
-    if (response === "invalid") {
-      throw new Error("Invalid request");
-    }
-    if (response.startsWith("{")) {
-      toast.success("Seating updated successfully");
-      const seating = JSON.parse(response);
-      seatingList[activeIndex] = seating;
-      sessionStorage.setItem("seatingList", JSON.stringify(seatingList));
-    }
-  } catch (err) {
-    toast.error(err.message);
-  }
-};
-
-busConfigForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  if (
-    isSeatCountValid(lsCount) &&
-    isSeatCountValid(rsCount) &&
-    isRowsCountValid(rowCount)
-  ) {
-    if (sleeper.checked) {
-      totalSeats.value = (+lsCount.value + +rsCount.value) * +rowCount.value;
+    if (activeSeat) {
+      rowCount.value = activeSeat.rowCount;
     } else {
-      totalSeats.value =
-        (+lsCount.value + +rsCount.value) * (+rowCount.value - 1) + 5;
+      rowCount.value = "";
     }
-    const formData = new FormData(busConfigForm);
-    formData.append("sleeper", sleeper.checked);
-    updateBusView(modifiedObject(formData));
-  } else {
-    toast.error("Please input valid values");
+    rowCount.classList.remove("valid");
+    rowCount.focus();
+  }
+};
+
+// ******************** UTILS END ***************************
+
+// async request handlers
+const handleCollectSeatingRecords = async () => {
+  const busId = new URLSearchParams(window.location.search).get("bus_id");
+  if (!busId) {
+    throw new Error();
+  }
+
+  const response = await collectSeatingRecordRequest(busId);
+  if (response === "invalid") {
+    throw new Error("Invalid Request");
+  }
+  if (response === "internal") {
+    throw new Error("Internal Server Error");
+  }
+  PageLoading.stopLoading();
+
+  modal.seatingList = JSON.parse(response);
+  updateBusView(modal.seatingList[modal.activeDeck]);
+};
+
+// event listeners
+deckContainer.addEventListener("click", (e) => {
+  const targetButton = e.target.closest("[data-type]");
+  if (!targetButton) return;
+
+  const type = targetButton.dataset.type;
+  if (targetButton.classList.contains("active")) return;
+
+  const lowerBtn = document.querySelector('[data-type="lower"]');
+  const upperBtn = document.querySelector('[data-type="upper"]');
+  const { seatingList } = modal;
+  switch (type) {
+    case "lower": {
+      changeActiveDeck(lowerBtn, upperBtn);
+      modal.activeDeck = 0;
+      updateBusView(seatingList[modal.activeDeck]);
+      updateForm();
+      break;
+    }
+    case "upper": {
+      changeActiveDeck(upperBtn, lowerBtn);
+      modal.activeDeck = 1;
+      updateBusView(seatingList[modal.activeDeck]);
+      updateForm();
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+});
+
+const seatingCountEventHandler = (e) => {
+  const target = e.target;
+  const value = +target.value;
+  try {
+    if (!value || isNaN(value) || value > 3) {
+      throw new Error("Invalid Count");
+    }
+    const isSleeper = sleeper.checked;
+    let minimum = 1;
+    let maxiumum = 3;
+    if (isSleeper) {
+      maxiumum = 2;
+    }
+    if (!(value >= minimum && value <= maxiumum)) {
+      throw new Error("Invalid Count");
+    }
+    e.target.classList.add("valid");
+  } catch (err) {
+    toast.error(err.message);
+    target.focus();
+    const currSeating = modal.seatingList[modal.activeDeck];
+    if (currSeating) {
+      target.value = currSeating[target.type];
+    } else {
+      target.value = "";
+    }
+    target.classList.remove("valid");
+  }
+};
+
+lsCount.addEventListener("change", seatingCountEventHandler);
+rsCount.addEventListener("change", seatingCountEventHandler);
+
+sleeper.addEventListener("change", () => {
+  const isChecked = sleeper.checked;
+  if (!isChecked) return;
+
+  console.log("hell");
+  let wasFault = false;
+  if (!isNaN(lsCount.value) && +lsCount.value > 2) {
+    lsCount.value = 2;
+    wasFault = true;
+  }
+  if (!isNaN(rsCount.value) && +rsCount.value > 2) {
+    rsCount.value = 2;
+    wasFault = true;
+  }
+
+  if (wasFault) toast.warning("Count values were adjusted");
+
+  validateRowCount();
+});
+
+rowCount.addEventListener("change", () => {
+  validateRowCount();
+});
+
+seatingForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const areAllValid = [lsCount, rsCount, rowCount].every((field) =>
+    field.classList.contains("valid")
+  );
+
+  console.log(areAllValid);
+
+  if (areAllValid) {
+    areAllValid = sleeper.checked || seater.checked;
+  }
+
+  if (!areAllValid) {
+    toast.error("Invalid Request");
     return;
   }
 
-  const formData = new FormData(busConfigForm);
-  formData.append("deck", upperBtn.checked);
-  formData.set("sleeper", sleeper.checked);
 
-  const activeIndex = upperBtn.checked ? 1 : 0;
-  const seatingList = JSON.parse(sessionStorage.getItem("seatingList"));
-  if (seatingList[activeIndex]) {
-    handleUpdateSeating(formData);
-  } else {
-    handleAddSeating(formData);
-  }
 });
 
-busConfigForm.addEventListener("reset", (e) => {
-  e.preventDefault();
-  resetForm();
-});
-
-window.addEventListener("DOMContentLoaded", () => {
+// on page load
+window.addEventListener("DOMContentLoaded", async () => {
   try {
-    PageLoading.startLoading();
-    setTimeout(() => {
-      handleLoadingSeatingData();
-      const activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
-      if (!activeBus.doubleDecker) {
-        upperBtn.disabled = true;
-        upperBtn.checked = false;
-      }
-      currDeck.textContent = "Lower Deck";
-    }, 100);
+    modal.activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
+    await handleCollectSeatingRecords();
+    if (!modal.activeBus.doubleDecker) {
+      document.querySelector('[data-type="upper"]').disabled = true;
+    }
   } catch (err) {
-    PageError.showOperatorError();
+    toast.error(err.message);
     disableApp();
   }
 });
 
-window.addEventListener("beforeunload", () => {
-  sessionStorage.removeItem("activeBus");
-  sessionStorage.removeItem("seatingList");
-  clearInterval(watchSessionStorageInterval);
+window.removeEventListener("pagehide", () => {
+  clearInterval(watchTotalRowsSession);
 });

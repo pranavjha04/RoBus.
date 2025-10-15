@@ -1,5 +1,5 @@
-import { PageLoading } from "./pageLoading.js"
+import { PageLoading } from "./pageLoading.js";
 
-window.addEventListener('pageshow', () => {
-    PageLoading.stopLoading();
-})
+window.addEventListener("DOMContentLoaded", () => {
+  PageLoading.stopLoading();
+});

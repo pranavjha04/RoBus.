@@ -3,7 +3,7 @@
     class="ms-auto d-flex align-items-center gap-2 focus-ring-info p-1 rounded-5"
   >
     <img
-      src="https://avatar.iran.liara.run/username?username=${sessionScope.operator.fullName}"
+      src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
       class="rounded-circle border border"
       style="width: 50px; height: 50px; object-fit: contain"
       alt="User"

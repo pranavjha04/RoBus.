@@ -248,4 +248,7 @@ const init = async () => {
   PageLoading.startLoading();
   await handleBusRecords(true);
 };
-await init();
+
+window.addEventListener("DOMContentLoaded", () => {
+  init();
+});

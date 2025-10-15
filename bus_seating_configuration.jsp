@@ -63,6 +63,18 @@
         margin-left: 10px;
       }
     }
+
+    .active {
+      background-color: #0d6efd;
+      &:hover {
+        background-color: #084aae;
+      }
+    }
+
+    .inactive:hover {
+      background-color: #cfe2ff;
+      color: rgb(36, 36, 36);
+    }
   </style>
   <c:import url="essential_page_display.jsp" />
   <body>
@@ -84,24 +96,20 @@
           id="deck_cont"
           aria-label="Deck Toggle"
         >
-          <input
-            type="radio"
-            class="btn-check"
-            name="deck"
-            id="lower"
-            autocomplete="off"
-            checked
-          />
-          <label class="btn btn-outline-primary" for="lower">Lower Deck</label>
-
-          <input
-            type="radio"
-            class="btn-check"
-            name="deck"
-            id="upper"
-            autocomplete="off"
-          />
-          <label class="btn btn-outline-primary" for="upper">Upper Deck</label>
+          <button
+            role="button"
+            class="btn btn-outline-primary active"
+            data-type="lower"
+          >
+            Lower Deck
+          </button>
+          <button
+            role="button"
+            class="btn btn-outline-primary inactive"
+            data-type="upper"
+          >
+            Upper Deck
+          </button>
         </div>
 
         <form
@@ -113,7 +121,7 @@
             <h4 class="fs-5 mb-1">Deck Type</h4>
             <div class="form-check">
               <input
-                class="form-check-input"
+                class="form-check-input "
                 type="radio"
                 name="sleeper"
                 id="bus_seater"
@@ -195,7 +203,7 @@
                 <label for="total_seats" class="form-label">Total Seats</label>
                 <input
                   type="number"
-                  class="form-control"
+                  class="form-control fld"
                   id="total_seats"
                   name="seats"
                   placeholder="Auto"
@@ -249,7 +257,7 @@
                 <span>Driver</span>
               </div>
             </div>
-            <div class="bus"></div>
+            <div id="bus" class="bus"></div>
           </div>
         </div>
       </main>

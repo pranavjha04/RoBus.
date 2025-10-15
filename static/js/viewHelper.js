@@ -147,7 +147,7 @@ export class ViewHelper {
                         <a class="dropdown-item option-link" href="#">Edit</a>
                       </li>
                       <li class="border-bottom">
-                        <a class="dropdown-item option-link" href="bus_seating_configuration.do?bus_id=${busId}&back_url=operator_buses.do">Seating</a>
+                        <a class="dropdown-item option-link" href="bus_seating_configuration.do?bus_id=${busId}">Seating</a>
                       </li>
                       <li>
                         <a class="dropdown-item option-link" href="#">Schedule</a>

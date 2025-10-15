@@ -7,8 +7,6 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
-
-import java.util.Enumeration;
 import java.util.ArrayList;
 
 import java.io.IOException;
@@ -20,6 +18,7 @@ import models.Bus;
 
 @WebServlet("/add_seating.do")
 public class AddSeatingServlet extends HttpServlet {
+    static final String[] acceptedParams = {"lsCount", "rsCount", "seats", "rowCount", "deck", "sleeper", "bus_id"};
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
 
@@ -27,8 +26,6 @@ public class AddSeatingServlet extends HttpServlet {
             response.getWriter().println("invalid");
             return;
         }
-
-        Enumeration<String> params = request.getParameterNames();
         if(request.getParameter("bus_id") != null && request.getParameter("deck") != null) {
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));
             Boolean deck = Boolean.parseBoolean(request.getParameter("deck"));
@@ -46,21 +43,19 @@ public class AddSeatingServlet extends HttpServlet {
 
 
         Seating seating = new Seating();
-        while (params.hasMoreElements()) {
-            String currParam = params.nextElement();
-            String value = request.getParameter(currParam);
+        for(String param : acceptedParams) {
+            String value = request.getParameter(param);
             if (value == null || value.trim().isEmpty()) {
                 response.getWriter().println("invalid");
                 return;
             }
             else {
-                Boolean success = seating.setField(currParam, value);
+                Boolean success = seating.setField(param, value);
                 if(!success) {
                     response.getWriter().println("invalid");
                     return;
                 }
             }
-            
         }
 
         Integer busId = Integer.parseInt(request.getParameter("bus_id"));
