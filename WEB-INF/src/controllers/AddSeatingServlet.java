@@ -23,21 +23,24 @@ public class AddSeatingServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         if(session.getAttribute("operator") == null) {
+            System.out.println("Add Seating" + 26);
             response.getWriter().println("invalid");
             return;
         }
         if(request.getParameter("bus_id") != null && request.getParameter("deck") != null) {
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));
             Boolean deck = Boolean.parseBoolean(request.getParameter("deck"));
-
+            System.out.println("Add Seating" + 32);
             boolean isExist = Seating.checkSeatingExist(busId, deck);
             if(isExist) {
                 response.getWriter().println("invalid");
+                System.out.println("Add Seating" + 37);
                 return;
             }
         }   
         else {
             response.getWriter().println("invalid");
+            System.out.println("Add Seating" + 43);
             return;
         }
 
@@ -46,12 +49,14 @@ public class AddSeatingServlet extends HttpServlet {
         for(String param : acceptedParams) {
             String value = request.getParameter(param);
             if (value == null || value.trim().isEmpty()) {
+                System.out.println("Add Seating" + 52);
                 response.getWriter().println("invalid");
                 return;
             }
             else {
                 Boolean success = seating.setField(param, value);
                 if(!success) {
+                    System.out.println("Add Seating" + 59);
                     response.getWriter().println("invalid");
                     return;
                 }
