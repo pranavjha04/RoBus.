@@ -121,7 +121,7 @@
             <h4 class="fs-5 mb-1">Deck Type</h4>
             <div class="form-check">
               <input
-                class="form-check-input "
+                class="form-check-input"
                 type="radio"
                 name="sleeper"
                 id="bus_seater"
@@ -213,7 +213,13 @@
               </div>
             </div>
           </div>
-
+          <input
+            type="hidden"
+            name="bus_id"
+            id="busId"
+            value="${param.busId}"
+          />
+          <input type="hidden" name="deck" id="deck" />
           <div
             class="d-flex align-items-center justify-content-between mt-auto gap-2"
           >
