@@ -727,12 +727,23 @@ routeTable.addEventListener("click", async (e) => {
     sessionStorage.getItem("operatorRouteList")
   ).find((data) => data.operatorRouteId === +operatorRouteId);
 
+  const activeRouteMidCities = JSON.parse(
+    sessionStorage.getItem("operatorRouteMidCityList")
+  ).filter(
+    ({ operatorRoute }) =>
+      operatorRoute.operatorRouteId === activeRoute.operatorRouteId
+  );
+
   if (!activeRoute) {
     toast.error("Invalid Request");
     return;
   }
 
   sessionStorage.setItem("activeRoute", JSON.stringify(activeRoute));
+  sessionStorage.setItem(
+    "activeRouteMidCities",
+    JSON.stringify(activeRouteMidCities)
+  );
   const APP_URL = window.location.href.substring(
     0,
     window.location.href.lastIndexOf("/")

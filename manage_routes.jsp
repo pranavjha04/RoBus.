@@ -82,6 +82,11 @@
         margin: 0 0.5rem;
         font-weight: 400;
       }
+
+      .warning {
+        border: 1px solid #ff8c00;
+        color: #ff8c00;
+      }
     </style>
   </head>
   <body>
@@ -109,7 +114,7 @@
             <span>Back</span>
           </a>
 
-          <div class="container mt-2 mb-4">
+          <div class="container mt-2 mb-4" id="pageWrapper">
             <!-- Route Information Card -->
             <div class="route-card p-4 card-border-accent">
               <div
@@ -121,11 +126,21 @@
                 >
                   <div class="section-title">Route</div>
                   <div class="section-content">
-                    <i class="bi bi-geo-alt-fill location-icon origin"></i
-                    >Jabalpur
+                    <div class="d-flex flex-column gap-0">
+                      <span class="fs-4" id="source_info_city"></span>
+                      <span
+                        class="small text-muted small fs-6 fw-normal"
+                        id="source_info_state"
+                      ></span>
+                    </div>
                     <span class="arrow">&rarr;</span>
-                    <i class="bi bi-geo-alt-fill location-icon destination"></i
-                    >Sagar
+                    <div class="d-flex flex-column gap-0">
+                      <span class="fs-4" id="destination_info_city"></span>
+                      <span
+                        class="small text-muted small fs-6 fw-normal"
+                        id="destination_info_state"
+                      ></span>
+                    </div>
                   </div>
                 </div>
 
@@ -135,7 +150,9 @@
                 <!-- Journey Time Section -->
                 <div class="time-section text-center mb-3 mb-md-0">
                   <div class="section-title">Journey Time</div>
-                  <div class="section-content">5 hrs 20 mins</div>
+                  <div class="section-content fs-4" id="duration_info">
+                    5 hrs 20 mins
+                  </div>
                 </div>
 
                 <div class="divider d-none d-md-block"></div>
@@ -144,7 +161,9 @@
                 <!-- Distance Section -->
                 <div class="distance-section text-center">
                   <div class="section-title">Distance</div>
-                  <div class="section-content">197 km</div>
+                  <div class="section-content fs-4">
+                    <span id="distance_info"></span> km
+                  </div>
                 </div>
               </div>
             </div>
@@ -167,10 +186,11 @@
           <div class="bg-white p-4 rounded shadow-sm" id="route_time_line">
             <h2 class="fs-3">Route TimeLine & Mid Cities</h2>
             <div
-              class="d-flex flex-column align-items-start gap-3 border-start border-black"
+              class="d-flex flex-column align-items-start pt-4"
+              id="route_timeline_cont"
             >
               <div
-                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4"
+                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4 border-start pb-2 border-black"
               >
                 <div
                   style="
@@ -198,7 +218,7 @@
                 </div>
               </div>
               <div
-                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4"
+                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4 border-start pb-2 border-black"
               >
                 <div
                   style="
@@ -207,7 +227,63 @@
                     border-radius: 50%;
                     left: -5px;
                   "
-                  class="position-absolute top-0 bg-danger"
+                  class="position-absolute top-0 bg-primary"
+                ></div>
+
+                <h4 class="fs-5 align-self-start">Katni</h4>
+                <div class="d-flex align-items-center mb-0 gap-2">
+                  <p
+                    class="small rounded-pill bg-light px-2 py-1 fw-medium border text-primary"
+                  >
+                    <span>60</span>km from source
+                  </p>
+                  <p
+                    class="small rounded-pill bg-light px-2 py-1 fw-medium border"
+                    style="color: orange"
+                  >
+                    <span>10</span>mins Halting time
+                  </p>
+                </div>
+              </div>
+              <div
+                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4 border-start pb-2 border-black"
+              >
+                <div
+                  style="
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    left: -5px;
+                  "
+                  class="position-absolute top-0 bg-primary"
+                ></div>
+
+                <h4 class="fs-5 align-self-start">Katni</h4>
+                <div class="d-flex align-items-center mb-0 gap-2">
+                  <p
+                    class="small rounded-pill bg-light px-2 py-1 fw-medium border text-primary"
+                  >
+                    <span>60</span>km from source
+                  </p>
+                  <p
+                    class="small rounded-pill bg-light px-2 py-1 fw-medium border"
+                    style="color: orange"
+                  >
+                    <span>10</span>mins Halting time
+                  </p>
+                </div>
+              </div>
+              <div
+                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4 pb-2"
+              >
+                <div
+                  style="
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    left: -5px;
+                  "
+                  class="position-absolute top-0 bg-success"
                 ></div>
 
                 <h4 class="fs-5 align-self-start">Katni</h4>

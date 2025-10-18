@@ -176,7 +176,7 @@ export class ViewHelper {
                         <div class="d-flex gap-3 small text-muted mt-1">
                           <div class="d-flex gap-1">
                             &#128338; <span class='duration'>${Math.trunc(
-                              duration / 60
+                              Math.floor(duration / 60)
                             )}h ${duration % 60}m</span>
                           </div>
                           <div class="d-flex gap-1">
