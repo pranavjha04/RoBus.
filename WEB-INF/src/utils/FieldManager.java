@@ -86,7 +86,7 @@ public final class FieldManager {
     }
 
     public static final Boolean validateRowCount(int rowCount) {
-        return rowCount >= 5 && rowCount <= 14;
+        return rowCount >= 4 && rowCount <= 16;
     }
 
     public static final Boolean validateHaltingTime(int haltingTime) {

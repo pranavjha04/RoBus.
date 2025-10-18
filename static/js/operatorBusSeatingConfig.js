@@ -4,6 +4,7 @@ import {
   addSeatingRequest,
   collectSeatingRecordRequest,
   deleteFareFactorRequest,
+  updateSeatingRequest,
 } from "./service.js";
 import { toast } from "./toast.js";
 import { disableElements } from "./util.js";
@@ -21,6 +22,8 @@ const seats = document.querySelector("#total_seats");
 const seater = document.querySelector("#bus_seater");
 const sleeper = document.querySelector("#bus_sleeper");
 const deck = document.querySelector("#deck");
+
+const currDeck = document.querySelector("#curr_deck");
 
 const modal = {
   seatingList: [],
@@ -43,6 +46,26 @@ const disableApp = () => {
   disableElements(allFormFields);
   PageError.showOperatorError();
   PageLoading.stopLoading();
+};
+
+const switchDeck = (currActive, nextActive) => {
+  const target = deckContainer.querySelector(`[data-type="${currActive}"]`);
+  if (!target) throw new Error("Invalid Deck");
+  target.classList.remove("active");
+  target.classList.add("inactive");
+
+  nextActive.classList.add("active");
+  nextActive.classList.remove("inactive");
+
+  if (currActive === "upper") {
+    currDeck.textContent = "Lower Deck";
+  }
+  if (currActive === "lower") {
+    currDeck.textContent = "Upper Deck";
+  }
+  const activeSeating = modal.seatingList[modal.activeDeck];
+  updateBusForm(activeSeating);
+  updateBusView(activeSeating);
 };
 
 const updateBusView = (busSeating) => {
@@ -101,19 +124,22 @@ const updateBusView = (busSeating) => {
                 </div>`;
 };
 
-const updateBusForm = (busSeating = initialSeatingFormState) => {
-  lsCount.value = busSeating.lsCount;
-  rsCount.value = busSeating.rsCount;
-  rowCount.value = busSeating.rowCount;
-  seats.value = busSeating.seats;
-  sleeper.checked = !!busSeating.sleeper;
-  seater.checked = !busSeating.sleeper;
-  deck.value = !!busSeating.deck;
+const updateBusForm = (busSeating = { ...initialSeatingFormState }) => {
+  if (!busSeating) {
+    busSeating = initialSeatingFormState;
+  }
+  lsCount.value = busSeating?.lsCount;
+  rsCount.value = busSeating?.rsCount;
+  rowCount.value = busSeating?.rowCount;
+  seats.value = busSeating?.seats;
+  sleeper.checked = !!busSeating?.sleeper;
+  seater.checked = !busSeating?.sleeper;
+  deck.value = !!busSeating?.deck;
 };
 
 const handleCollectSeatingRequest = async () => {
   try {
-    const response = await collectSeatingRecordRequest(modal.busId);
+    const response = await collectSeatingRecordRequest(modal.activeBus.busId);
     if (response === "invalid") {
       console.error(response);
       throw new Error("Invalid Request");
@@ -124,8 +150,8 @@ const handleCollectSeatingRequest = async () => {
     }
     modal.seatingList = JSON.parse(response);
     const activeSeat = modal.seatingList[modal.activeDeck];
-    updateBusView(activeSeat);
-    updateBusForm(activeSeat);
+    updateBusView(activeSeat ? activeSeat : null);
+    updateBusForm(activeSeat ? activeSeat : null);
   } catch (err) {
     toast.error(err.message);
     disableApp();
@@ -153,8 +179,8 @@ const sideCountEvent = (target) => {
 
     target.value = Math.ceil(value);
   } catch (err) {
-    console.error(err.message);
     toast.error(err.message);
+    console.error(err.message);
     target.value = 0;
     seats.value = 0;
     target.focus();
@@ -182,7 +208,6 @@ const rowCountEvent = () => {
     if (oppositeDeck) {
       const { rowCount: oppositeRowCount, sleeper: isOppositeSleeper } =
         oppositeDeck;
-
       if (isOppositeSleeper) {
         const isValid = isCurrDeckSleeper
           ? value === oppositeRowCount
@@ -195,13 +220,15 @@ const rowCountEvent = () => {
           );
         }
       } else {
-        const isValid = isCurrDeckSleeper
-          ? value * 2 === oppositeRowCount
-          : value === oppositeRowCount;
+        const isValid = !isCurrDeckSleeper
+          ? value === oppositeRowCount
+          : value === Math.ceil(oppositeRowCount / 2);
         if (!isValid) {
           throw new Error(
             `Invalid row count: expected ${
-              isCurrDeckSleeper ? oppositeRowCount / 2 : oppositeRowCount
+              !isCurrDeckSleeper
+                ? oppositeRowCount
+                : Math.ceil(oppositeRowCount / 2)
             }`
           );
         }
@@ -210,12 +237,28 @@ const rowCountEvent = () => {
 
     rowCount.value = Math.ceil(value);
   } catch (err) {
-    console.error(err.message);
     toast.error(err.message);
+    console.error(err.message);
     rowCount.value = 0;
     seats.value = 0;
     rowCount.focus();
   }
+};
+
+const getTotalSeats = () => {
+  const leftCount = +lsCount.value;
+  const rightCount = +rsCount.value;
+  let rows = +rowCount.value;
+  const isSleeper = !!sleeper.checked;
+  if (!isSleeper) {
+    rows -= 1;
+  }
+  let total = (leftCount + rightCount) * rows;
+
+  if (!isSleeper) {
+    total += 5;
+  }
+  return total;
 };
 
 lsCount.addEventListener("blur", () => sideCountEvent(lsCount));
@@ -241,58 +284,145 @@ sleeper.addEventListener("change", () => {
   }
 });
 
-seatingForm.addEventListener("submit", (e) => {
+deckContainer.addEventListener("click", (e) => {
+  try {
+    const button = e.target.closest("button");
+    if (!button || button.classList.contains("active")) return;
+    const type = button.dataset.type;
+    if (type === "lower") {
+      modal.activeDeck = 0;
+      switchDeck("upper", button);
+    }
+    if (type === "upper") {
+      modal.activeDeck = 1;
+      switchDeck("lower", button);
+    }
+  } catch (err) {
+    console.error(err.message);
+    toast.error(err.message);
+  }
+});
+
+seatingForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-
-  const firstCheck = [lsCount, rsCount, rowCount, seats].every(
-    (input) => input.value !== ""
-  );
-
-  if (!firstCheck) {
-    console.error("Please fill the form to add/update seatings");
-    throw new Error("Please fill the form to add/update seatings");
-  }
-
-  const secondCheck = sleeper.checked || seater.checked;
-  if (!secondCheck) {
-    console.error("Please fill the form to add/update seatings");
-    throw new Error("Please fill the form to add/update seatings");
-  }
-  let type = "add";
-  if (modal.seatingList[modal.activeDeck]) {
-    type = "update";
-  }
-
-  const readyToGoData = {
-    lsCount: +lsCount.value,
-    rsCount: +rsCount.value,
-    rowCount: +rowCount.value,
-    seats: +seats.value,
-    sleeper: sleeper.checked,
-  };
-
-  if (type === "update") {
-    const activeSeating = modal.seatingList[modal.activeDeck];
-    const isReadyToUpdate = Object.keys(readyToGoData).some(
-      (key) => activeSeating[key] !== readyToGoData[key]
+  try {
+    const firstCheck = [lsCount, rsCount, rowCount, seats].every(
+      (input) => input.value !== ""
     );
 
-    if (!isReadyToUpdate) {
-      toast.normal("No changes needed");
-      return;
+    if (!firstCheck) {
+      console.error("Please fill the form to add/update seatings");
+      throw new Error("Please fill the form to add/update seatings");
     }
-  }
 
-  
+    const secondCheck = sleeper.checked || seater.checked;
+    if (!secondCheck) {
+      console.error("Please fill the form to add/update seatings");
+      throw new Error("Please fill the form to add/update seatings");
+    }
+    let type = "add";
+    if (modal.seatingList[modal.activeDeck]) {
+      type = "update";
+    }
+
+    seats.value = getTotalSeats();
+
+    const readyToGoData = {
+      lsCount: +lsCount.value,
+      rsCount: +rsCount.value,
+      rowCount: +rowCount.value,
+      seats: +seats.value,
+      sleeper: !!sleeper.checked,
+      bus_id: modal.activeBus.busId,
+      deck: !!modal.activeDeck,
+    };
+
+    if (type === "update") {
+      const activeSeating = modal.seatingList[modal.activeDeck];
+      let isNewChange = false;
+      for (const prop in readyToGoData) {
+        if (prop === "bus_id") continue;
+        if (readyToGoData[prop] !== activeSeating[prop]) {
+          isNewChange = true;
+          break;
+        }
+      }
+
+      if (!isNewChange) {
+        toast.normal("No changes needed");
+        return;
+      }
+    }
+
+    switch (type) {
+      case "add": {
+        const response = await addSeatingRequest(readyToGoData);
+        if (response === "invalid") {
+          throw new Error("Invalid Request");
+        }
+        if (response === "internal") {
+          throw new Error("Internal Server Error");
+        }
+
+        const seatingData = JSON.parse(response);
+        toast.success(`Seating for ${currDeck.textContent} added successfully`);
+        modal.seatingList[modal.activeDeck] = seatingData;
+        updateBusView(readyToGoData);
+        break;
+      }
+      case "update": {
+        const activeSeat = modal.seatingList[modal.activeDeck];
+        if (!activeSeat) {
+          throw new Error("Invalid Request");
+        }
+
+        const response = await updateSeatingRequest({
+          ...readyToGoData,
+          seating_id: activeSeat.seatingId,
+        });
+        if (response === "invalid") {
+          throw new Error("Invalid Request");
+        }
+        if (response === "internal") {
+          throw new Error("Internal Server Error");
+        }
+
+        const seatingData = JSON.parse(response);
+        toast.success(
+          `Seating for ${currDeck.textContent} updated successfully`
+        );
+        modal.seatingList[modal.activeDeck] = seatingData;
+        updateBusView(readyToGoData);
+        break;
+      }
+      default: {
+        throw new Error("Invalid Request");
+      }
+    }
+  } catch (err) {
+    console.error(err.message);
+    toast.error(err.message);
+  }
+});
+
+seatingForm.addEventListener("reset", (e) => {
+  e.preventDefault();
+
+  const activeSeat = modal.seatingList[modal.activeDeck];
+  updateBusForm(activeSeat);
+  updateBusView(activeSeat);
 });
 
 window.addEventListener("DOMContentLoaded", () => {
   try {
     modal.activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
+    if (!modal.activeBus.doubleDecker) {
+      deckContainer.querySelector("[data-type]").remove();
+    }
     handleCollectSeatingRequest();
     PageLoading.stopLoading();
   } catch (err) {
-    console.log(err);
+    console.error(err);
     disableApp();
   }
 });

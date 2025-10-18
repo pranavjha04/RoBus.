@@ -66,9 +66,9 @@
 
     .active {
       background-color: #0d6efd;
-      &:hover {
-        background-color: #084aae;
-      }
+    }
+    .active:hover {
+      background-color: #084aae;
     }
 
     .inactive:hover {

@@ -7,8 +7,6 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
-
-import java.util.Enumeration;
 import java.io.IOException;
 import com.google.gson.Gson;
 
@@ -17,6 +15,7 @@ import models.Seating;
 
 @WebServlet("/update_seating.do")
 public class UpdateSeatingServlet extends HttpServlet {
+    static final String[] acceptedParams = {"lsCount", "rsCount", "seats", "rowCount", "deck", "sleeper", "bus_id", "seating_id"};
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
 
@@ -25,7 +24,6 @@ public class UpdateSeatingServlet extends HttpServlet {
             return;
         }
 
-        Enumeration<String> params = request.getParameterNames();
         if(request.getParameter("bus_id") != null && request.getParameter("deck") != null) {
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));
             Boolean deck = Boolean.parseBoolean(request.getParameter("deck"));
@@ -43,8 +41,7 @@ public class UpdateSeatingServlet extends HttpServlet {
 
 
         Seating seating = new Seating();
-        while (params.hasMoreElements()) {
-            String currParam = params.nextElement();
+        for(String currParam : acceptedParams) {
             String value = request.getParameter(currParam);
             if (value == null || value.trim().isEmpty()) {
                 response.getWriter().println("invalid");
@@ -66,9 +63,6 @@ public class UpdateSeatingServlet extends HttpServlet {
             response.getWriter().println("internal");
             return;
         }
-        
         response.getWriter().println(new Gson().toJson(seating));
-
-
     }
 }
