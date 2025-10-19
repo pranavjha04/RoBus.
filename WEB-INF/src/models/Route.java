@@ -19,7 +19,7 @@ public class Route {
     public Route(Integer routeId, City source, City destination, Integer distance, Integer duration) {
         this.routeId = routeId;
         this.source = new City(source.getCityId(), source.getName(), source.getState());
-        this.destination = new City(destination.getCityId(), destination.getName(), destination.getState()); // ✅ fixed
+        this.destination = new City(destination.getCityId(), destination.getName(), destination.getState()); 
         this.distance = distance;
         this.duration = duration;
     }

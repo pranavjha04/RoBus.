@@ -107,8 +107,8 @@
         <!-- Dashboard Content -->
         <div class="p-4 d-flex flex-column overflow-scroll">
           <a
-            href="operator_fare_factor.do"
-            class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link align-self-start"
+            href="operator_routes.do"
+            class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link back-link align-self-start"
           >
             <span>&larr;</span>
             <span>Back</span>
@@ -150,9 +150,7 @@
                 <!-- Journey Time Section -->
                 <div class="time-section text-center mb-3 mb-md-0">
                   <div class="section-title">Journey Time</div>
-                  <div class="section-content fs-4" id="duration_info">
-                    5 hrs 20 mins
-                  </div>
+                  <div class="section-content fs-4" id="duration_info"></div>
                 </div>
 
                 <div class="divider d-none d-md-block"></div>
@@ -165,14 +163,24 @@
                     <span id="distance_info"></span> km
                   </div>
                 </div>
+
+                <div class="time-section text-center mb-3 mb-md-0">
+                  <div class="section-title">Status</div>
+                  <div class="section-content fs-4" id="status"></div>
+                </div>
               </div>
             </div>
-            <div class="d-flex gap-2 align-items-center mt-4 mb-0">
-              <a role="button" class="btn btn-primary rounded-pill">
+
+            <div class="d-flex gap-2 align-items-center mt-4 mb-0" id="nav">
+              <button
+                class="btn btn-primary rounded-pill"
+                data-target="route_time_line"
+              >
                 Route Timeline
-              </a>
+              </button>
               <button
                 class="btn text-primary border border-primary rounded-pill"
+                data-target="route_mid_city_cont"
               >
                 Mid Cities
               </button>
@@ -183,124 +191,74 @@
               </button>
             </div>
           </div>
-          <div class="bg-white p-4 rounded shadow-sm" id="route_time_line">
-            <h2 class="fs-3">Route TimeLine & Mid Cities</h2>
+          <div class="d-flex flex-column gap-3">
             <div
-              class="d-flex flex-column align-items-start pt-4"
-              id="route_timeline_cont"
+              class="bg-white p-4 rounded shadow-sm d-flex flex-column"
+              id="route_time_line"
             >
+              <h2 class="fs-3">Route TimeLine & Mid Cities</h2>
               <div
-                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4 border-start pb-2 border-black"
+                class="d-flex flex-column align-items-start pt-4"
+                id="route_timeline_cont"
+              ></div>
+            </div>
+            <div
+              class="bg-white p-4 rounded shadow-sm d-flex flex-column gap-3"
+              id="route_mid_city_cont"
+            >
+              <h2 class="fs-3">Route Mid Cities</h2>
+              <button class="btn btn-primary align-self-end">
+                &plus; Add Mid Cities
+              </button>
+              <table
+                class="border rounded table-responsive w-100"
+                id="route_mid_city_table"
               >
-                <div
-                  style="
-                    width: 10px;
-                    height: 10px;
-                    border-radius: 50%;
-                    left: -5px;
-                  "
-                  class="position-absolute top-0 bg-danger"
-                ></div>
-
-                <h4 class="fs-5 align-self-start">Katni</h4>
-                <div class="d-flex align-items-center mb-0 gap-2">
-                  <p
-                    class="small rounded-pill bg-light px-2 py-1 fw-medium border text-primary"
-                  >
-                    <span>60</span>km from source
-                  </p>
-                  <p
-                    class="small rounded-pill bg-light px-2 py-1 fw-medium border"
-                    style="color: orange"
-                  >
-                    <span>10</span>mins Halting time
-                  </p>
-                </div>
-              </div>
-              <div
-                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4 border-start pb-2 border-black"
-              >
-                <div
-                  style="
-                    width: 10px;
-                    height: 10px;
-                    border-radius: 50%;
-                    left: -5px;
-                  "
-                  class="position-absolute top-0 bg-primary"
-                ></div>
-
-                <h4 class="fs-5 align-self-start">Katni</h4>
-                <div class="d-flex align-items-center mb-0 gap-2">
-                  <p
-                    class="small rounded-pill bg-light px-2 py-1 fw-medium border text-primary"
-                  >
-                    <span>60</span>km from source
-                  </p>
-                  <p
-                    class="small rounded-pill bg-light px-2 py-1 fw-medium border"
-                    style="color: orange"
-                  >
-                    <span>10</span>mins Halting time
-                  </p>
-                </div>
-              </div>
-              <div
-                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4 border-start pb-2 border-black"
-              >
-                <div
-                  style="
-                    width: 10px;
-                    height: 10px;
-                    border-radius: 50%;
-                    left: -5px;
-                  "
-                  class="position-absolute top-0 bg-primary"
-                ></div>
-
-                <h4 class="fs-5 align-self-start">Katni</h4>
-                <div class="d-flex align-items-center mb-0 gap-2">
-                  <p
-                    class="small rounded-pill bg-light px-2 py-1 fw-medium border text-primary"
-                  >
-                    <span>60</span>km from source
-                  </p>
-                  <p
-                    class="small rounded-pill bg-light px-2 py-1 fw-medium border"
-                    style="color: orange"
-                  >
-                    <span>10</span>mins Halting time
-                  </p>
-                </div>
-              </div>
-              <div
-                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4 pb-2"
-              >
-                <div
-                  style="
-                    width: 10px;
-                    height: 10px;
-                    border-radius: 50%;
-                    left: -5px;
-                  "
-                  class="position-absolute top-0 bg-success"
-                ></div>
-
-                <h4 class="fs-5 align-self-start">Katni</h4>
-                <div class="d-flex align-items-center mb-0 gap-2">
-                  <p
-                    class="small rounded-pill bg-light px-2 py-1 fw-medium border text-primary"
-                  >
-                    <span>60</span>km from source
-                  </p>
-                  <p
-                    class="small rounded-pill bg-light px-2 py-1 fw-medium border"
-                    style="color: orange"
-                  >
-                    <span>10</span>mins Halting time
-                  </p>
-                </div>
-              </div>
+                <thead
+                  class="border border-bottom text-center"
+                  style="background-color: rgb(248, 249, 250)"
+                >
+                  <tr>
+                    <th class="p-3">Mid City</th>
+                    <th class="p-3">Distance</th>
+                    <th class="p-3">Duration</th>
+                    <th class="p-3">Halting Time</th>
+                    <th class="p-3">Options</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="text-center border-bottom">
+                    <td class="p-3 text-center">Katni</td>
+                    <td class="p-3 text-center">60km</td>
+                    <td class="p-3 text-center">180mins</td>
+                    <td class="p-3 text-center">24mins</td>
+                    <td
+                      class="p-3 text-center d-flex gap-2 justify-content-center align-items-center"
+                    >
+                      <button
+                        class="btn manage-icon border-primary-subtle py-2 px-2"
+                      >
+                        <img
+                          src="static/media/images/edit_sm_blue.svg"
+                          width="18"
+                          height="18"
+                        />
+                        <span class="text-primary">Edit</span>
+                      </button>
+                      <button
+                        class="btn delete-icon border-danger-subtle py-2 px-2"
+                      >
+                        <img
+                          src="static/media/images/delete_sm_red.svg"
+                          width="18"
+                          height="18"
+                        />
+                        <span class="text-danger">Remove</span>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
 

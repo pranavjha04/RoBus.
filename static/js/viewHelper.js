@@ -1,3 +1,5 @@
+import { getFormatedDuration } from "./util.js";
+
 export class ViewHelper {
   static getFareFactorBody(factor) {
     const { fareFactor, charge, operatorTicketFareId } = factor;
@@ -64,7 +66,7 @@ export class ViewHelper {
   }
 
   static getTableEmptyMessage(message) {
-    return `<td class="text-center bg-transparent mt-5 py-5" colspan="100%"><h3>${message}</h3></td>`;
+    return `<td class="text-center bg-transparent mt-5 py-5 border border-bottom" colspan="100%"><h3>${message}</h3></td>`;
   }
 
   static getSelectFareTable({ fareFactor }) {
@@ -464,5 +466,156 @@ export class ViewHelper {
                     ></button>
                     <input type="hidden" name="bus_id" value=${busId} />
                   </span>`;
+  }
+
+  static getRouteTimeLine(city, isSource = false, distance) {
+    return `<div
+                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4 ${
+                  isSource && "border-start"
+                } pb-2 border-black"
+              >
+                <div
+                  style="
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    left: -5px;
+                  "
+                  class="position-absolute top-0 ${
+                    isSource ? "bg-danger" : "bg-success"
+                  }"
+                ></div>
+
+                <h4 class="fs-5 align-self-start">
+                <div class="d-flex flex-column gap-0">
+                  <span class="fs-5">${city.name}</span>
+                  <span class="text-muted" style="font-size : 1rem">${
+                    city.state.name
+                  }</span>
+                </div>
+                </h4>
+                <div class="d-flex align-items-center mb-0 gap-2">
+                ${
+                  isSource
+                    ? `<p
+                    class="small rounded-pill bg-light px-2 py-1 fw-medium border text-primary border-primary"
+                  >
+                    Journey Begins here
+                  </p>
+                  <p
+                    class="small rounded-pill bg-danger-subtle px-2 py-1 fw-medium border border-danger text-danger"
+                  >
+                    <span>Source</span>
+                  </p>`
+                    : `<p
+                    class="small rounded-pill bg-light px-2 py-1 fw-medium border text-primary border-primary"
+                  >
+                    <span>${distance}</span>km from source
+                  </p>
+                  <p
+                    class="small rounded-pill bg-success-subtle px-2 py-1 fw-medium border border-success text-success"
+                  >
+                    <span>Destination</span>
+                  </p>`
+                }  
+                </div>
+              </div>`;
+  }
+
+  static getMidCityRouteTimeLine(city, haltingTime) {
+    return `  <div
+                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4 border-start pb-2 border-black"
+              >
+                <div
+                  style="
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    left: -5px;
+                  "
+                  class="position-absolute top-0 bg-primary"
+                ></div>
+
+                <h4 class="fs-5 align-self-start">
+                  <div class="d-flex flex-column gap-0">
+                    <span class="fs-5">${city.midCity.name}</span>
+                    <span class="text-muted" style="font-size : 1rem">${city.midCity.state.name}</span>
+                  </div>
+                </h4>
+                <div class="d-flex align-items-center mb-0 gap-2">
+                  <p
+                    class="small rounded-pill bg-light px-2 py-1 fw-medium border text-primary border-primary"
+                  >
+                    <span>${city.distanceFromSource}</span>km from source
+                  </p>
+                  <p
+                    class="small rounded-pill bg-light px-2 py-1 fw-medium warning"
+                  >
+                    <span>${haltingTime}</span>mins Halting time
+                  </p>
+                </div>
+              </div>`;
+  }
+
+  static getManageRouteMidCityTableHeading() {
+    return `<thead
+                  class="border border-bottom text-center"
+                  style="background-color: rgb(248, 249, 250)"
+                >
+                  <tr>
+                    <th class="p-3">Mid City</th>
+                    <th class="p-3">Distance</th>
+                    <th class="p-3">Duration</th>
+                    <th class="p-3">Halting Time</th>
+                    <th class="p-3">Options</th>
+                  </tr>
+                </thead>
+                `;
+  }
+
+  static getManageRouteMidCityTableRow(city) {
+    const { haltingTime, routeMidCity, operatorRouteMidCityId } = city;
+    const { distanceFromSource, durationFromSource, midCity } = routeMidCity;
+
+    return ` <tr class="text-center border-bottom" data-operator-route-mid-city-id=${operatorRouteMidCityId} data-halting-time=${haltingTime}>
+                    <td class="p-3 text-center d-flex flex-column align-items-center justify-content-center">
+                    ${midCity.name}
+                    <span class='text-muted'>${midCity.state.name}</span>
+                    </td>
+                    <td class="p-3 text-center">${distanceFromSource}km</td>
+                    <td class="p-3 text-center">${getFormatedDuration(
+                      durationFromSource
+                    )}</td>
+                    <td class="p-3 text-center">
+                    <div class="d-flex justify-content-center halting">
+                    ${haltingTime} mins
+                    </div>
+                    
+                    </td>
+                    <td class="p-3 text-center">
+                      <button
+                        class="btn manage-icon border-primary-subtle py-2 px-2 me-1"
+                        data-type='edit'
+                      >
+                        <img
+                          src="static/media/images/edit_sm_blue.svg"
+                          width="18"
+                          height="18"
+                        />
+                        <span class="text-primary">Edit</span>
+                      </button>
+                      <button
+                        class="btn delete-icon border-danger-subtle py-2 px-2"
+                        data-type='delete'
+                      >
+                        <img
+                          src="static/media/images/delete_sm_red.svg"
+                          width="18"
+                          height="18"
+                        />
+                        <span class="text-danger">Remove</span>
+                      </button>
+                    </td>
+                  </tr>`;
   }
 }

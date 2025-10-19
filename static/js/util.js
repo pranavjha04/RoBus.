@@ -251,3 +251,9 @@ export const validateCharge = (element) => {
   }
   return isValid;
 };
+
+export const getFormatedDuration = (duration) => {
+  const hours = Math.floor(duration / 60);
+  const mins = duration % 60;
+  return hours === 0 ? `${mins} mins` : `${hours}h ${mins}mins`;
+};

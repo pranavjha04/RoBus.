@@ -1,8 +1,13 @@
 import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import { toast } from "./toast.js";
+import { ViewHelper } from "./viewHelper.js";
 
 const routeTimeLineContainer = document.querySelector("#route_timeline_cont");
+const routeMidCityInfoContainer = document.querySelector(
+  "#route_mid_city_cont"
+);
+const routeMidCityInfoTable = document.querySelector("#route_mid_city_table");
 
 const modal = {
   activeRoute: null,
@@ -34,6 +39,9 @@ const updateRouteInfo = () => {
   } ${(totalDuration % 60).toString().padStart(2, "0") + " mins"}`;
 
   document.querySelector("#distance_info").textContent = distance + " ";
+
+  // status
+  document.querySelector("#status").textContent = modal.activeRoute.status.name;
 };
 
 const updateRouteTimeLine = () => {
@@ -41,112 +49,95 @@ const updateRouteTimeLine = () => {
   routeTimeLineContainer.innerHTML = "";
 
   // add source
-  routeTimeLineContainer.innerHTML = `<div
-                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4 border-start pb-2 border-black"
-              >
-                <div
-                  style="
-                    width: 10px;
-                    height: 10px;
-                    border-radius: 50%;
-                    left: -5px;
-                  "
-                  class="position-absolute top-0 bg-danger"
-                ></div>
-
-                <h4 class="fs-5 align-self-start">
-                <div class="d-flex flex-column gap-0">
-                  <span class="fs-5">${source.name}</span>
-                  <span class="text-muted" style="font-size : 1rem">${source.state.name}</span>
-                </div>
-                </h4>
-                <div class="d-flex align-items-center mb-0 gap-2">
-                  <p
-                    class="small rounded-pill bg-light px-2 py-1 fw-medium border text-primary border-primary"
-                  >
-                    Journey Begins here
-                  </p>
-                  <p
-                    class="small rounded-pill bg-danger-subtle px-2 py-1 fw-medium border border-danger text-danger"
-                  >
-                    <span>Source</span>
-                  </p>
-                </div>
-              </div>`;
+  routeTimeLineContainer.innerHTML = ViewHelper.getRouteTimeLine(source, true);
 
   // add midcities
   routeTimeLineContainer.innerHTML += modal.activeRouteMidCities
     .map((midCity) => {
       const { routeMidCity, haltingTime } = midCity;
-      return `  <div
-                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4 border-start pb-2 border-black"
-              >
-                <div
-                  style="
-                    width: 10px;
-                    height: 10px;
-                    border-radius: 50%;
-                    left: -5px;
-                  "
-                  class="position-absolute top-0 bg-primary"
-                ></div>
-
-                <h4 class="fs-5 align-self-start">
-                  <div class="d-flex flex-column gap-0">
-                    <span class="fs-5">${routeMidCity.midCity.name}</span>
-                    <span class="text-muted" style="font-size : 1rem">${routeMidCity.midCity.state.name}</span>
-                  </div>
-                </h4>
-                <div class="d-flex align-items-center mb-0 gap-2">
-                  <p
-                    class="small rounded-pill bg-light px-2 py-1 fw-medium border text-primary border-primary"
-                  >
-                    <span>${routeMidCity.distanceFromSource}</span>km from source
-                  </p>
-                  <p
-                    class="small rounded-pill bg-light px-2 py-1 fw-medium warning"
-                  >
-                    <span>${haltingTime}</span>mins Halting time
-                  </p>
-                </div>
-              </div>`;
+      return ViewHelper.getMidCityRouteTimeLine(routeMidCity, haltingTime);
     })
     .join("");
 
-  routeTimeLineContainer.innerHTML += `<div
-                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4"
-              >
-                <div
-                  style="
-                    width: 10px;
-                    height: 10px;
-                    border-radius: 50%;
-                    left: -5px;
-                  "
-                  class="position-absolute top-0 bg-success"
-                ></div>
-
-                <h4 class="fs-5 align-self-start">
-                <div class="d-flex flex-column gap-0">
-                  <span class="fs-5">${destination.name}</span>
-                  <span class="text-muted" style="font-size : 1rem">${destination.state.name}</span>
-                </div>
-                </h4>
-                <div class="d-flex align-items-center mb-0 gap-2">
-                  <p
-                    class="small rounded-pill bg-light px-2 py-1 fw-medium border text-primary border-primary"
-                  >
-                    <span>${distance}</span>km from source
-                  </p>
-                  <p
-                    class="small rounded-pill bg-success-subtle px-2 py-1 fw-medium border border-success text-success"
-                  >
-                    <span>Destination</span>
-                  </p>
-                </div>
-              </div>`;
+  routeTimeLineContainer.innerHTML += ViewHelper.getRouteTimeLine(
+    destination,
+    false,
+    distance
+  );
 };
 
+const updateRouteMidCityInfoTable = () => {
+  const { activeRouteMidCities } = modal;
+  if (activeRouteMidCities.length === 0) {
+    routeMidCityInfoTable.innerHTML = ViewHelper.getTableEmptyMessage(
+      "Add mid cities to display"
+    );
+    return;
+  }
+
+  const list = Array.from(activeRouteMidCities);
+  for (let i = 1; i < list.length; i++) {
+    list[i].routeMidCity.durationFromSource +=
+      list[i].haltingTime + list[i - 1].haltingTime;
+  }
+  routeMidCityInfoTable.innerHTML =
+    ViewHelper.getManageRouteMidCityTableHeading();
+
+  routeMidCityInfoTable.innerHTML += `<tbody>
+  ${list.map(ViewHelper.getManageRouteMidCityTableRow).join("")}</tbody>`;
+};
+
+const handleEditHaltingTime = (row) => {
+  if (!row) return;
+  console.log("hello");
+  const operatorRouteMidCityId = row.dataset.operatorRouteMidCityId;
+  if (!operatorRouteMidCityId) throw new Error("Invalid Operation");
+
+  const displayContainer = row.querySelector(".halting");
+  if (!displayContainer) throw new Error("Invalid Operation");
+
+  const element = document.createElement("input");
+  element.type = "number";
+  element.value = row.dataset.haltingTime;
+  element.classList.add("form-control", "w-25");
+  displayContainer.innerHTML = "";
+  displayContainer.append(element);
+  element.focus();
+  console.log("hell");
+};
+
+routeMidCityInfoTable.addEventListener("click", (e) => {
+  const button = e.target.closest("button");
+  if (!button) return;
+
+  const type = button.dataset.type;
+  if (!type) return;
+
+  const row = +button.closest("[data-operator-route-mid-city-id]");
+
+  switch (type) {
+    case "edit": {
+      handleEditHaltingTime(row);
+      break;
+    }
+    case "delete": {
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+});
+
+document.querySelector("#nav").addEventListener("click", (e) => {
+  const button = e.target.closest("button");
+  if (!button) return;
+
+  const target = button.dataset.target;
+  if (!target) return;
+
+  document.getElementById(target).scrollIntoView({ behavior: "smooth" });
+});
 window.addEventListener("DOMContentLoaded", () => {
   try {
     modal.activeRoute = JSON.parse(sessionStorage.getItem("activeRoute"));
@@ -159,6 +150,7 @@ window.addEventListener("DOMContentLoaded", () => {
     );
     updateRouteInfo();
     updateRouteTimeLine();
+    updateRouteMidCityInfoTable();
   } catch (err) {
     console.error(err.messsage);
     toast.error(err.messsage);
