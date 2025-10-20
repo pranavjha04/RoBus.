@@ -618,4 +618,29 @@ export class ViewHelper {
                     </td>
                   </tr>`;
   }
+
+  static getManageRouteCityActiveRow(route, totalDuration) {
+    const { source, destination, distance } = route;
+    return `<a class="route-item">
+                    <div class="route-header">
+                      <span class="route-title"
+                        >&#128205; ${source.name} &rarr; ${destination.name}</span
+                      >
+                      <small class="route-subtitle"
+                        >${source.state.name} &rarr; ${destination.state.name}</small
+                      >
+                    </div>
+
+                    <div class="route-info">
+                      <div class="info-item">
+                        &#128338;
+                        <span class="duration">${totalDuration}</span>
+                      </div>
+                      <div class="info-item">
+                        &#128205;
+                        <span class="distance">${distance} km</span>
+                      </div>
+                    </div>
+                  </a>`;
+  }
 }

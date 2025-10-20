@@ -370,3 +370,14 @@ export const addBusFareFactorRequest = async (params) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const collectAvailableRouteMidCitiesRequest = async (params) => {
+  const res = await fetch(
+    `get_available_route_mid_cities.do?${params.toString()}`
+  );
+
+  if (!res.ok) throw new Error("Invalid Request");
+
+  const data = await res.text();
+  return data.trim();
+};

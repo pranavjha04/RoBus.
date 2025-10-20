@@ -1,6 +1,8 @@
 import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
+import { collectAvailableRouteMidCitiesRequest } from "./service.js";
 import { toast } from "./toast.js";
+import { getFormatedDuration } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
 const routeTimeLineContainer = document.querySelector("#route_timeline_cont");
@@ -8,6 +10,12 @@ const routeMidCityInfoContainer = document.querySelector(
   "#route_mid_city_cont"
 );
 const routeMidCityInfoTable = document.querySelector("#route_mid_city_table");
+
+// form
+const routeId = document.querySelector("#route_id");
+const operatorRouteId = document.querySelector("#operator_route_id");
+const activeFormRoute = document.querySelector("#active_route");
+const formModal = document.getElementById("centeredModal");
 
 const modal = {
   activeRoute: null,
@@ -87,24 +95,7 @@ const updateRouteMidCityInfoTable = () => {
   ${list.map(ViewHelper.getManageRouteMidCityTableRow).join("")}</tbody>`;
 };
 
-const handleEditHaltingTime = (row) => {
-  if (!row) return;
-  console.log("hello");
-  const operatorRouteMidCityId = row.dataset.operatorRouteMidCityId;
-  if (!operatorRouteMidCityId) throw new Error("Invalid Operation");
-
-  const displayContainer = row.querySelector(".halting");
-  if (!displayContainer) throw new Error("Invalid Operation");
-
-  const element = document.createElement("input");
-  element.type = "number";
-  element.value = row.dataset.haltingTime;
-  element.classList.add("form-control", "w-25");
-  displayContainer.innerHTML = "";
-  displayContainer.append(element);
-  element.focus();
-  console.log("hell");
-};
+const handleEditHaltingTime = (row) => {};
 
 routeMidCityInfoTable.addEventListener("click", (e) => {
   const button = e.target.closest("button");
@@ -138,6 +129,63 @@ document.querySelector("#nav").addEventListener("click", (e) => {
 
   document.getElementById(target).scrollIntoView({ behavior: "smooth" });
 });
+
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      const { target, isIntersecting } = entry;
+      const navLink = document.querySelector(`[data-target="${target.id}"]`);
+
+      if (isIntersecting) {
+        navLink.classList.add("btn-primary");
+        navLink.classList.remove("text-primary", "border", "border-primary");
+      } else {
+        navLink.classList.remove("btn-primary");
+        navLink.classList.add("text-primary", "border", "border-primary");
+      }
+    });
+  },
+  {
+    threshold: [0.1],
+  }
+);
+
+observer.observe(routeMidCityInfoContainer);
+observer.observe(document.querySelector("#route_time_line"));
+
+formModal.addEventListener("show.bs.modal", async () => {
+  const { route, operatorRouteId: activeOperatorRouteId } = modal.activeRoute;
+  const { routeId: activeRouteId, duration } = route;
+  activeFormRoute.innerHTML = ViewHelper.getManageRouteCityActiveRow(
+    route,
+    getFormatedDuration(
+      modal.activeRouteMidCities.reduce(
+        (acc, curr) => acc + curr.haltingTime,
+        duration
+      )
+    )
+  );
+  routeId.value = activeRouteId;
+  operatorRouteId.value = activeOperatorRouteId;
+
+  const queryParams = new URLSearchParams();
+  queryParams.append("route_id", activeRouteId);
+  queryParams.append("mid_city", 0);
+  modal.activeRouteMidCities.forEach(({ routeMidCity }) => {
+    queryParams.append("mid_city", routeMidCity.routeMidCityId);
+  });
+  try {
+    const response = await collectAvailableRouteMidCitiesRequest(queryParams);
+    if (response === "invalid") throw new Error("Invalid Request");
+    const midCityList = JSON.parse(response);
+    
+  } catch (err) {
+    console.error(err.messsage);
+    toast.error(err.messsage);
+  }
+});
+formModal.addEventListener("hide.bs.modal", () => {});
+
 window.addEventListener("DOMContentLoaded", () => {
   try {
     modal.activeRoute = JSON.parse(sessionStorage.getItem("activeRoute"));
@@ -157,4 +205,8 @@ window.addEventListener("DOMContentLoaded", () => {
     PageError.showOperatorError();
   }
   PageLoading.stopLoading();
+});
+window.addEventListener("pagehide", () => {
+  observer.disconnect(routeMidCityInfoContainer);
+  observer.disconnect(document.querySelector("#route_time_line"));
 });

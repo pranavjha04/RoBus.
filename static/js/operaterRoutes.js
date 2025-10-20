@@ -58,7 +58,6 @@ const searchRoutesBtn = document.querySelector("#search_routes_btn");
 let filerApplied = false;
 
 // info display
-const infoList = document.querySelectorAll(".info");
 const routeTable = document.querySelector("#route_table");
 const removeFilter = document.querySelector("#remove_filter_btn");
 
