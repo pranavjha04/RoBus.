@@ -2,7 +2,11 @@ import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import { collectAvailableRouteMidCitiesRequest } from "./service.js";
 import { toast } from "./toast.js";
-import { getFormatedDuration } from "./util.js";
+import {
+  disableElements,
+  enableElements,
+  getFormatedDuration,
+} from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
 const routeTimeLineContainer = document.querySelector("#route_timeline_cont");
@@ -16,11 +20,18 @@ const routeId = document.querySelector("#route_id");
 const operatorRouteId = document.querySelector("#operator_route_id");
 const activeFormRoute = document.querySelector("#active_route");
 const formModal = document.getElementById("centeredModal");
-
+const availableMidCityListContainer = document.querySelector(
+  "#available_mid_city_list"
+);
+const routeMidCitySelect = document.querySelector("#route_midcity_select");
+const formHaltingTime = document.querySelector("#form_halting_time");
+const addMidCityBtn = document.querySelector("#add_midcity_btn");
 const modal = {
   activeRoute: null,
   activeRouteMidCities: [],
   routeBusList: [],
+  availableMidCityList: [],
+  activeMidCity: null,
 };
 
 const updateRouteInfo = () => {
@@ -47,7 +58,6 @@ const updateRouteInfo = () => {
   } ${(totalDuration % 60).toString().padStart(2, "0") + " mins"}`;
 
   document.querySelector("#distance_info").textContent = distance + " ";
-
   // status
   document.querySelector("#status").textContent = modal.activeRoute.status.name;
 };
@@ -93,6 +103,66 @@ const updateRouteMidCityInfoTable = () => {
 
   routeMidCityInfoTable.innerHTML += `<tbody>
   ${list.map(ViewHelper.getManageRouteMidCityTableRow).join("")}</tbody>`;
+};
+
+const updateForm = () => {
+  const { route, operatorRouteId: activeOperatorRouteId } = modal.activeRoute;
+  const { routeId: activeRouteId, duration } = route;
+  activeFormRoute.innerHTML = ViewHelper.getManageRouteCityActiveRow(
+    route,
+    getFormatedDuration(
+      modal.activeRouteMidCities.reduce(
+        (acc, curr) => acc + curr.haltingTime,
+        duration
+      )
+    )
+  );
+  routeId.value = activeRouteId;
+  operatorRouteId.value = activeOperatorRouteId;
+
+  const { availableMidCityList, activeRouteMidCities } = modal;
+  availableMidCityListContainer.innerHTML = "";
+
+  const newList = availableMidCityList.filter(({ routeMidCity }) => {
+    const city = activeRouteMidCities.find(
+      (midCity) => midCity?.routeMidCityId === routeMidCity?.routeMidCityId
+    );
+    return !city;
+  });
+
+  if (newList.length === 0) {
+    // disable
+    routeMidCitySelect.disabled = true;
+    routeMidCitySelect.classList.add("bg-secondary-subtle");
+    routeMidCitySelect.textContent = "No mid cities are available";
+    console.log("hell");
+    return;
+  }
+
+  //enable
+  routeMidCitySelect.disabled = false;
+  routeMidCitySelect.classList.remove("bg-secondary-subtle");
+  routeMidCitySelect.textContent = "Select Mid City";
+
+  availableMidCityListContainer.innerHTML = `${newList
+    .map(ViewHelper.getRouteMidCitySelectList)
+    .join("")}`;
+};
+
+const handleCollectAvailableRouteRequest = async () => {
+  const { routeId } = modal.activeRoute.route;
+  const queryParams = new URLSearchParams();
+  queryParams.append("route_id", routeId);
+
+  try {
+    const response = await collectAvailableRouteMidCitiesRequest(queryParams);
+    if (response === "invalid") throw new Error("Invalid Request");
+    modal.availableMidCityList = JSON.parse(response);
+    PageLoading.stopLoading();
+  } catch (err) {
+    console.error(err.messsage);
+    toast.error(err.messsage);
+  }
 };
 
 const handleEditHaltingTime = (row) => {};
@@ -153,40 +223,66 @@ const observer = new IntersectionObserver(
 observer.observe(routeMidCityInfoContainer);
 observer.observe(document.querySelector("#route_time_line"));
 
-formModal.addEventListener("show.bs.modal", async () => {
-  const { route, operatorRouteId: activeOperatorRouteId } = modal.activeRoute;
-  const { routeId: activeRouteId, duration } = route;
-  activeFormRoute.innerHTML = ViewHelper.getManageRouteCityActiveRow(
-    route,
-    getFormatedDuration(
-      modal.activeRouteMidCities.reduce(
-        (acc, curr) => acc + curr.haltingTime,
-        duration
-      )
-    )
-  );
-  routeId.value = activeRouteId;
-  operatorRouteId.value = activeOperatorRouteId;
+formModal.addEventListener("show.bs.modal", () => {
+  modal.activeMidCity = null;
+});
 
-  const queryParams = new URLSearchParams();
-  queryParams.append("route_id", activeRouteId);
-  queryParams.append("mid_city", 0);
-  modal.activeRouteMidCities.forEach(({ routeMidCity }) => {
-    queryParams.append("mid_city", routeMidCity.routeMidCityId);
-  });
-  try {
-    const response = await collectAvailableRouteMidCitiesRequest(queryParams);
-    if (response === "invalid") throw new Error("Invalid Request");
-    const midCityList = JSON.parse(response);
-    
-  } catch (err) {
-    console.error(err.messsage);
-    toast.error(err.messsage);
+formModal.addEventListener("hide.bs.modal", () => {
+  modal.activeMidCity = null;
+});
+
+availableMidCityListContainer.addEventListener("mousedown", (e) => {
+  const target = e.target.closest("li");
+  console.log(target);
+  if (!target) return;
+  const details =
+    target.querySelector(".city").textContent +
+    ", " +
+    target.querySelector(".distance").textContent +
+    ", " +
+    target.querySelector(".duration").textContent;
+  routeMidCitySelect.textContent = details;
+  modal.activeMidCity = target.dataset.routemidcityid;
+
+  enableElements(formHaltingTime);
+});
+
+formHaltingTime.addEventListener("input", (e) => {
+  const value = +e.target.value;
+
+  if (
+    !value ||
+    isNaN(value) ||
+    value < 0 ||
+    value > 120 ||
+    !modal.activeMidCity
+  ) {
+    e.target.value = "";
+    disableElements(formHaltingTime);
+  } else {
+    enableElements(formHaltingTime);
   }
 });
-formModal.addEventListener("hide.bs.modal", () => {});
 
-window.addEventListener("DOMContentLoaded", () => {
+addMidCityBtn.addEventListener("click", (e) => {
+  disableElements(addMidCityBtn);
+  if (!modal.activeMidCity) {
+    return;
+  }
+  const { activeRoute, activeMidCity } = modal;
+  const hiddenValue = `<input type="hidden" value="${activeMidCity}-${formHaltingTime.value}" name='route_midcity_halting' id="${activeRoute.route.routeId.value}-${activeMidCity}" />`;
+
+  // selectedMidCityList.innerHTML += hiddenValue;
+
+  // // hide values
+  // haltingTime.value = "";
+
+  // displayRouteMidCitySelect();
+  // disableElements(haltingTime);
+  // displayMidCityTable();
+});
+
+window.addEventListener("DOMContentLoaded", async () => {
   try {
     modal.activeRoute = JSON.parse(sessionStorage.getItem("activeRoute"));
     modal.activeRouteMidCities = JSON.parse(
@@ -199,13 +295,15 @@ window.addEventListener("DOMContentLoaded", () => {
     updateRouteInfo();
     updateRouteTimeLine();
     updateRouteMidCityInfoTable();
+    await handleCollectAvailableRouteRequest();
+    updateForm();
   } catch (err) {
     console.error(err.messsage);
     toast.error(err.messsage);
     PageError.showOperatorError();
   }
-  PageLoading.stopLoading();
 });
+
 window.addEventListener("pagehide", () => {
   observer.disconnect(routeMidCityInfoContainer);
   observer.disconnect(document.querySelector("#route_time_line"));

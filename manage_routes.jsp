@@ -182,7 +182,7 @@
                   >
                   <div class="dropdown">
                     <button
-                      class="btn form-select border rounded w-100 d-flex justify-content-between align-items-center"
+                      class="btn form-select bg-secondary-subtle border rounded w-100 d-flex justify-content-between align-items-center"
                       type="button"
                       id="route_midcity_select"
                       data-bs-toggle="dropdown"
@@ -191,33 +191,16 @@
                       <span class="text-secondary">Select Mid City</span>
                     </button>
                     <ul
-                      id="route_midcity_available_list"
+                      id="available_mid_city_list"
                       class="dropdown-menu w-100 shadow"
                       style="max-height: 200px; overflow-y: auto"
-                    >
-                      <li
-                        role="button"
-                        class="dropdown-item py-2 d-flex justify-content-between align-items-center"
-                        data-routeMidCityId="${routeMidCityId}"
-                        data-routeid="${currRoute.routeId}"
-                      >
-                        <div class="d-flex flex-column">
-                          <span class="city">&#128205; Katangi</span>
-                          <small class="text-muted state">Madhya Pradesh</small>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                          <span class="small text-muted distance">60 km</span>
-                          <span class="small text-muted">|</span>
-                          <span class="small text-muted duration">1h 37m</span>
-                        </div>
-                      </li>
-                    </ul>
+                    ></ul>
                   </div>
                 </div>
 
                 <!-- Halting Time -->
                 <div class="col-md-6">
-                  <label for="halting_time" class="form-label small fw-semibold"
+                  <label for="form_halting_time" class="form-label small fw-semibold"
                     >Halting Time</label
                   >
                   <div class="input-group">
@@ -227,7 +210,7 @@
                       class="form-control"
                       placeholder="Halting Time (mins)"
                       disabled
-                      id="halting_time"
+                      id="form_halting_time"
                     />
                   </div>
                 </div>

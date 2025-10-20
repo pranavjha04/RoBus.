@@ -28,12 +28,11 @@ public class GetAvailableRouteMidCitiesServlet extends HttpServlet {
             return;
         }
 
-        if(request.getParameter("route_id") == null || request.getParameter("mid_city") == null) {
+        if(request.getParameter("route_id") == null) {
             response.getWriter().println("invalid");
             return;
         }
 
-        String[] midCities = request.getParameterValues("mid_city");
         Integer routeId = Integer.parseInt(request.getParameter("route_id"));
 
         @SuppressWarnings("unchecked")
@@ -41,17 +40,8 @@ public class GetAvailableRouteMidCitiesServlet extends HttpServlet {
         ArrayList<RouteMidCity> availableMidCityList = new ArrayList<>();
 
         for(RouteMidCity midCity : routeMidCityList) {
-            if(midCity.getRoute().getRouteId().equals(routeId)) {
-                boolean found = false;
-                for(String next : midCities) {
-                    if(midCity.getRouteMidCityId().equals(Integer.parseInt(next))) {
-                        found = true;
-                        break;
-                    }
-                }
-                if(!found) {
-                    availableMidCityList.add(midCity);
-                }   
+            if(midCity.getRoute().getRouteId() == routeId) {
+                availableMidCityList.add(midCity);
             }
         } 
 

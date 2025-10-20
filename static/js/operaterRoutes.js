@@ -526,12 +526,11 @@ haltingTime.addEventListener("input", (e) => {
 });
 
 addHaltingTimeBtn.addEventListener("click", (e) => {
+  disableElements(addHaltingTimeBtn);
   if (!activeMidCity.value) {
-    disableElements(addHaltingTimeBtn);
     return;
   }
 
-  disableElements(addHaltingTimeBtn);
   const hiddenValue = `<input type="hidden" value="${routeHidden.value}-${activeMidCity.value}-${haltingTime.value}" name='route_midcity_halting' id="${routeHidden.value}-${activeMidCity.value}" />`;
 
   selectedMidCityList.innerHTML += hiddenValue;
@@ -951,14 +950,14 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 window.addEventListener("pagehide", () => {
-  [
-    "routeList",
-    "routeMidCityList",
-    "operatorRouteList",
-    "operatorRouteMidCityList",
-    "uniqueRouteList",
-  ].forEach((item) => {
-    sessionStorage.removeItem(item);
-  });
+  // [
+  //   "routeList",
+  //   "routeMidCityList",
+  //   "operatorRouteList",
+  //   "operatorRouteMidCityList",
+  //   "uniqueRouteList",
+  // ].forEach((item) => {
+  //   sessionStorage.removeItem(item);
+  // });
   clearInterval(filteAppliedInterval);
 });
