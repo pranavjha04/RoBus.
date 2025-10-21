@@ -381,3 +381,13 @@ export const collectAvailableRouteMidCitiesRequest = async (params) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const addOperatorRouteMidCities = async (params) => {
+  const res = await fetch(
+    `add_operator_route_mid_city.do?${params.toString()}`
+  );
+  if (!res.ok) throw new Error("Internal Server Error");
+
+  const data = await res.text();
+  return data.trim();
+};

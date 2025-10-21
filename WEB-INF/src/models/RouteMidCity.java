@@ -26,6 +26,50 @@ public class RouteMidCity {
 
     public RouteMidCity() {}
 
+    public static boolean addRecords(Integer routeId, Integer operatorRouteId, ArrayList<int[]> midCities) {
+        boolean flag = false;
+
+        StringBuilder helper = new StringBuilder();
+
+        for(int i = 0; i < midCities.size(); i++) {
+            helper.append("(?,?,?)");
+            if(i != midCities.size() - 1) helper.append(", ");
+        }
+
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "INSERT INTO operator_route_midcities " +
+                        "(route_midcity_id, operator_route_id, halting_time) " +
+                        "VALUES " + helper.toString();
+            
+            PreparedStatement ps = con.prepareStatement(query);
+            
+            int count = 1;  
+            for(int i = 0; i < midCities.size(); i++) {
+                Integer routeMidCityId = midCities.get(i)[0];
+                Integer haltingTime = midCities.get(i)[1];
+
+                ps.setInt(count++, routeMidCityId);
+                ps.setInt(count++, operatorRouteId);
+                ps.setInt(count++, haltingTime);
+            }
+
+            int rows = ps.executeUpdate();
+
+            if(rows > 0) {
+                flag = true;                
+            }
+
+            con.close();
+        }
+        catch(SQLException e) {
+            flag = false;
+            e.printStackTrace();
+        }
+        return flag;
+    }
+
     public static ArrayList<RouteMidCity> collectAllRecords() {
         ArrayList<RouteMidCity> routeMidCityList = new ArrayList<>();
 

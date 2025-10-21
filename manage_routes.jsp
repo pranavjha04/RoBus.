@@ -157,7 +157,7 @@
           </div>
 
           <div class="modal-body">
-            <form id="add_route_form" class="gap-3">
+            <form id="add_mid_city_form" class="gap-3">
               <!-- Route Selection -->
               <input type="hidden" name="route_id" id="route_id" />
               <input
@@ -200,7 +200,9 @@
 
                 <!-- Halting Time -->
                 <div class="col-md-6">
-                  <label for="form_halting_time" class="form-label small fw-semibold"
+                  <label
+                    for="form_halting_time"
+                    class="form-label small fw-semibold"
                     >Halting Time</label
                   >
                   <div class="input-group">
@@ -238,6 +240,18 @@
                 </div>
               </div>
 
+              <div class="mb-2">
+                <div>
+                  <div class="rounded">
+                    <table
+                      class="table table-responsive table-bordered text-center align-middle mb-0"
+                      id="form_mid_city_table"
+                    ></table>
+                    <tbody></tbody>
+                  </div>
+                </div>
+              </div>
+
               <!-- Select mid ICyt List-->
               <div id="selected_midcity_list"></div>
 
@@ -246,7 +260,7 @@
                 <input
                   type="submit"
                   id="submit_add_route_btn"
-                  value="Add Route"
+                  value="Add Mid Cities"
                   class="btn btn-primary align-self-end ms-auto px-4 py-2"
                 />
               </div>

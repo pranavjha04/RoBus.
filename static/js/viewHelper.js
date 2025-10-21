@@ -197,7 +197,6 @@ export class ViewHelper {
       midCity,
       route: currRoute,
     } = route;
-    console.log(route);
 
     const { name: midCityName, state: midCityState } = midCity;
     const { name: midCityStateName } = midCityState;

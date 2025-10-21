@@ -1,6 +1,10 @@
+import { ModalHandler } from "./modalHandler.js";
 import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
-import { collectAvailableRouteMidCitiesRequest } from "./service.js";
+import {
+  addOperatorRouteMidCities,
+  collectAvailableRouteMidCitiesRequest,
+} from "./service.js";
 import { toast } from "./toast.js";
 import {
   disableElements,
@@ -26,12 +30,16 @@ const availableMidCityListContainer = document.querySelector(
 const routeMidCitySelect = document.querySelector("#route_midcity_select");
 const formHaltingTime = document.querySelector("#form_halting_time");
 const addMidCityBtn = document.querySelector("#add_midcity_btn");
+const selectedMidCityTable = document.querySelector("#form_mid_city_table");
+const addMidCityForm = document.querySelector("#add_mid_city_form");
+
 const modal = {
   activeRoute: null,
   activeRouteMidCities: [],
   routeBusList: [],
   availableMidCityList: [],
   activeMidCity: null,
+  selectedMidCityList: [],
 };
 
 const updateRouteInfo = () => {
@@ -105,6 +113,36 @@ const updateRouteMidCityInfoTable = () => {
   ${list.map(ViewHelper.getManageRouteMidCityTableRow).join("")}</tbody>`;
 };
 
+const updateSelectedMidCityTable = () => {
+  const { selectedMidCityList, availableMidCityList } = modal;
+  if (selectedMidCityList.length === 0) {
+    selectedMidCityTable.classList.add("d-none");
+    return;
+  }
+
+  selectedMidCityTable.classList.remove("d-none");
+  selectedMidCityTable.innerHTML =
+    ViewHelper.getSelectMidCityAddRouteFormHead();
+
+  const filterResult = selectedMidCityList.map((next) => {
+    const spliteForm = next.split("-");
+    const routeMidCityId = +spliteForm[0];
+    const haltingTime = +spliteForm[1];
+
+    const routeMidCity = availableMidCityList.find(
+      (midCity) => midCity.routeMidCityId === routeMidCityId
+    );
+    return { ...routeMidCity, haltingTime };
+  });
+  if (filterResult.length === 0) {
+    return;
+  }
+
+  selectedMidCityTable.innerHTML += `<tbody>${Array.from(filterResult)
+    .map(ViewHelper.getSelectMidCityAddRouteFormBodyRow)
+    .join("")}</tbody>`;
+};
+
 const updateForm = () => {
   const { route, operatorRouteId: activeOperatorRouteId } = modal.activeRoute;
   const { routeId: activeRouteId, duration } = route;
@@ -120,31 +158,49 @@ const updateForm = () => {
   routeId.value = activeRouteId;
   operatorRouteId.value = activeOperatorRouteId;
 
-  const { availableMidCityList, activeRouteMidCities } = modal;
+  const { availableMidCityList, activeRouteMidCities, selectedMidCityList } =
+    modal;
   availableMidCityListContainer.innerHTML = "";
 
-  const newList = availableMidCityList.filter(({ routeMidCity }) => {
-    const city = activeRouteMidCities.find(
-      (midCity) => midCity?.routeMidCityId === routeMidCity?.routeMidCityId
-    );
-    return !city;
+  const firstCheckNewList = availableMidCityList.filter((routeMidCity) => {
+    const condition = activeRouteMidCities.some((midCity) => {
+      return (
+        midCity?.routeMidCity?.routeMidCityId === routeMidCity.routeMidCityId
+      );
+    });
+
+    return !condition;
   });
 
-  if (newList.length === 0) {
+  if (firstCheckNewList.length === 0) {
+    // disablel
+    routeMidCitySelect.disabled = true;
+    routeMidCitySelect.classList.add("bg-secondary-subtle");
+    routeMidCitySelect.textContent = "No mid cities are available";
+    return;
+  }
+
+  const finalList = availableMidCityList.filter((routeMidCity) => {
+    const condition = selectedMidCityList.some((midCity) => {
+      return +midCity?.split("-")?.[0] === routeMidCity?.routeMidCityId;
+    });
+    return !condition;
+  });
+
+  if (finalList.length === 0) {
     // disable
     routeMidCitySelect.disabled = true;
     routeMidCitySelect.classList.add("bg-secondary-subtle");
     routeMidCitySelect.textContent = "No mid cities are available";
-    console.log("hell");
+
     return;
   }
-
   //enable
   routeMidCitySelect.disabled = false;
   routeMidCitySelect.classList.remove("bg-secondary-subtle");
   routeMidCitySelect.textContent = "Select Mid City";
 
-  availableMidCityListContainer.innerHTML = `${newList
+  availableMidCityListContainer.innerHTML = `${finalList
     .map(ViewHelper.getRouteMidCitySelectList)
     .join("")}`;
 };
@@ -165,7 +221,7 @@ const handleCollectAvailableRouteRequest = async () => {
   }
 };
 
-const handleEditHaltingTime = (row) => {};
+// const handleEditHaltingTime = (row) => {};
 
 routeMidCityInfoTable.addEventListener("click", (e) => {
   const button = e.target.closest("button");
@@ -182,6 +238,94 @@ routeMidCityInfoTable.addEventListener("click", (e) => {
       break;
     }
     case "delete": {
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+});
+
+const handleFormHaltingTimeEdit = (parent) => {
+  const { selectedMidCityList } = modal;
+  const { routemidcityid, routeid } = parent.dataset;
+  if (!routemidcityid || !routeid) return;
+  const target = selectedMidCityList.findIndex(
+    (midCity) => +midCity.split("-")[0] === +routemidcityid
+  );
+  if (target === -1) return;
+  const haltingDiv = parent.querySelector(".halting");
+  if (!haltingDiv) return;
+  const oldHaltingValue = +selectedMidCityList[target].substring(
+    selectedMidCityList[target].lastIndexOf("-") + 1
+  );
+  haltingDiv.innerHTML = `<span
+                                ><input
+                                  class="input text-center p-0 rounded-2 focus-ring"
+                                  value="${oldHaltingValue}"
+                                  id=${Math.random()}
+                                  type='number'
+                              /></span>`;
+  const changeHaltingEditInput = parent.querySelector("input");
+  changeHaltingEditInput.focus();
+  changeHaltingEditInput.select();
+  changeHaltingEditInput.addEventListener("blur", (e) => {
+    const value = +e.target.value;
+    if (!value || isNaN(value) || value < 0 || value > 120) {
+      e.target.value = oldHaltingValue;
+      toast.error("Invalid Operation");
+    } else {
+      selectedMidCityList[target] = `${routemidcityid}-${e.target.value}`;
+      if (oldHaltingValue !== +e.target.value)
+        toast.success("Halting Time Updated Successfully");
+    }
+    haltingDiv.innerHTML = `<span
+                                >${
+                                  +e.target.value < 60
+                                    ? `${+e.target.value} mins`
+                                    : ""
+                                }
+                                ${
+                                  +e.target.value > 60
+                                    ? `${Math.trunc(+e.target.value / 60)}h ${
+                                        +e.target.value % 60
+                                      }m`
+                                    : ""
+                                }
+                              </span>`;
+  });
+};
+
+const handleFormHaltingTimeDelete = (parent) => {
+  const { routemidcityid, routeid } = parent.dataset;
+  if (!routemidcityid || !routeid) return;
+
+  const { selectedMidCityList } = modal;
+
+  const target = selectedMidCityList.findIndex(
+    (midCity) => +midCity.split("-")[0] === +routemidcityid
+  );
+  if (target === -1) return;
+  selectedMidCityList.splice(target, 1);
+  toast.success("Mid City Delete Successfully");
+  updateForm();
+  updateSelectedMidCityTable();
+};
+
+selectedMidCityTable.addEventListener("click", (e) => {
+  const target = e.target.closest(".feature-btn");
+  if (!target) return;
+  const { type } = target.dataset;
+  const parent = target.closest("tr");
+  if (!parent) return;
+
+  switch (type) {
+    case "edit": {
+      handleFormHaltingTimeEdit(parent);
+      break;
+    }
+    case "delete": {
+      handleFormHaltingTimeDelete(parent);
       break;
     }
     default: {
@@ -207,11 +351,11 @@ const observer = new IntersectionObserver(
       const navLink = document.querySelector(`[data-target="${target.id}"]`);
 
       if (isIntersecting) {
-        navLink.classList.add("btn-primary");
-        navLink.classList.remove("text-primary", "border", "border-primary");
+        navLink?.classList.add("btn-primary");
+        navLink?.classList.remove("text-primary", "border", "border-primary");
       } else {
-        navLink.classList.remove("btn-primary");
-        navLink.classList.add("text-primary", "border", "border-primary");
+        navLink?.classList.remove("btn-primary");
+        navLink?.classList.add("text-primary", "border", "border-primary");
       }
     });
   },
@@ -225,15 +369,16 @@ observer.observe(document.querySelector("#route_time_line"));
 
 formModal.addEventListener("show.bs.modal", () => {
   modal.activeMidCity = null;
+  modal.selectedMidCityList = [];
+  disableElements(formHaltingTime);
+  updateForm();
+  updateSelectedMidCityTable();
 });
 
-formModal.addEventListener("hide.bs.modal", () => {
-  modal.activeMidCity = null;
-});
+formModal.addEventListener("hide.bs.modal", () => {});
 
 availableMidCityListContainer.addEventListener("mousedown", (e) => {
   const target = e.target.closest("li");
-  console.log(target);
   if (!target) return;
   const details =
     target.querySelector(".city").textContent +
@@ -250,17 +395,15 @@ availableMidCityListContainer.addEventListener("mousedown", (e) => {
 formHaltingTime.addEventListener("input", (e) => {
   const value = +e.target.value;
 
-  if (
-    !value ||
-    isNaN(value) ||
-    value < 0 ||
-    value > 120 ||
-    !modal.activeMidCity
-  ) {
-    e.target.value = "";
+  if (!modal.activeMidCity) {
     disableElements(formHaltingTime);
+    return;
+  }
+
+  if (!value || isNaN(value) || value < 0 || value > 120) {
+    e.target.value = "";
   } else {
-    enableElements(formHaltingTime);
+    enableElements(addMidCityBtn);
   }
 });
 
@@ -269,17 +412,73 @@ addMidCityBtn.addEventListener("click", (e) => {
   if (!modal.activeMidCity) {
     return;
   }
-  const { activeRoute, activeMidCity } = modal;
-  const hiddenValue = `<input type="hidden" value="${activeMidCity}-${formHaltingTime.value}" name='route_midcity_halting' id="${activeRoute.route.routeId.value}-${activeMidCity}" />`;
-
-  // selectedMidCityList.innerHTML += hiddenValue;
+  const { activeRoute, activeMidCity, selectedMidCityList } = modal;
+  selectedMidCityList.push(`${activeMidCity}-${formHaltingTime.value}`);
 
   // // hide values
-  // haltingTime.value = "";
+  formHaltingTime.value = "";
 
-  // displayRouteMidCitySelect();
-  // disableElements(haltingTime);
-  // displayMidCityTable();
+  disableElements(formHaltingTime);
+  updateForm();
+  updateSelectedMidCityTable();
+});
+
+addMidCityForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const {
+    selectedMidCityList,
+    availableMidCityList,
+    activeRouteMidCities,
+    activeRoute,
+  } = modal;
+
+  if (availableMidCityList.length === 0) {
+    toast.normal("No mid cities are available for this route");
+    return;
+  }
+
+  if (availableMidCityList.length === activeRouteMidCities.length) {
+    toast.normal("No more mid cities are available");
+    return;
+  }
+
+  if (selectedMidCityList.length === 0) {
+    toast.normal("Select mid cities to add");
+  }
+
+  const { route, operatorRouteId } = activeRoute;
+
+  const queryParams = new URLSearchParams();
+  queryParams.append("route_id", route.routeId);
+  queryParams.append("operator_route_id", operatorRouteId);
+
+  selectedMidCityList.forEach((midCity) => {
+    queryParams.append("mid_city", midCity);
+  });
+
+  try {
+    const response = await addOperatorRouteMidCities(queryParams);
+
+    switch (response) {
+      case "internal": {
+        throw new Error("Internal Server Error");
+        break;
+      }
+      case "invalid": {
+        throw new Error("Invalid Request");
+        break;
+      }
+
+      case "success": {
+        await handleCollectAvailableRouteRequest();
+        toast.success("Mid Cities addedd successfully");
+        ModalHandler.hide(formModal);
+      }
+    }
+  } catch (err) {
+    console.error(err.messsage);
+    toast.error(err.messsage);
+  }
 });
 
 window.addEventListener("DOMContentLoaded", async () => {
