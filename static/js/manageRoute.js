@@ -206,12 +206,10 @@ const updateForm = () => {
 };
 
 const handleCollectAvailableRouteRequest = async () => {
-  const { routeId } = modal.activeRoute.route;
-  const queryParams = new URLSearchParams();
-  queryParams.append("route_id", routeId);
+  const routeId = +url.get("route_id");
 
   try {
-    const response = await collectAvailableRouteMidCitiesRequest(queryParams);
+    const response = await collectAvailableRouteMidCitiesRequest(routeId);
     if (response === "invalid") throw new Error("Invalid Request");
     modal.availableMidCityList = JSON.parse(response);
     PageLoading.stopLoading();
@@ -470,8 +468,8 @@ addMidCityForm.addEventListener("submit", async (e) => {
       }
 
       case "success": {
-        await handleCollectAvailableRouteRequest();
-        toast.success("Mid Cities addedd successfully");
+        toast.success("Mid City Added successfully");
+        window.location.reload();
         ModalHandler.hide(formModal);
       }
     }
@@ -481,8 +479,17 @@ addMidCityForm.addEventListener("submit", async (e) => {
   }
 });
 
+const handleEssentialDataFetching = async () => {
+  const url = new URLSearchParams(window.location.search);
+
+  const operatorRouteId = +url.get("operator_route_id");
+  await handleCollectAvailableRouteRequest();
+};
+
 window.addEventListener("DOMContentLoaded", async () => {
   try {
+    await handleCollectAvailableRouteRequest();
+    await handleCollect
     modal.activeRoute = JSON.parse(sessionStorage.getItem("activeRoute"));
     modal.activeRouteMidCities = JSON.parse(
       sessionStorage.getItem("activeRouteMidCities")
@@ -494,7 +501,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     updateRouteInfo();
     updateRouteTimeLine();
     updateRouteMidCityInfoTable();
-    await handleCollectAvailableRouteRequest();
+
     updateForm();
   } catch (err) {
     console.error(err.messsage);

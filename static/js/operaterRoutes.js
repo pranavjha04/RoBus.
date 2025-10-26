@@ -5,9 +5,10 @@ import {
   addOperatorRouteRequest,
   collectOperatorRouteRequest,
   collectRouteRequest,
+  searchCityRequest,
 } from "./service.js";
 import { toast } from "./toast.js";
-import { disableElements, displayInputError, enableElements } from "./util.js";
+import { disableElements, enableElements } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
 // add_route for
@@ -15,15 +16,8 @@ const searchSource = document.querySelector("#route_source");
 const searchDestination = document.querySelector("#route_destination");
 const searchSourceResultList = document.querySelector("#source_list");
 const searchDestinationResultList = document.querySelector("#destination_list");
-const searchSourceHidden = document.querySelector("#source_search_id");
-const searchDestinationHidden = document.querySelector(
-  "#destination_search_id"
-);
 
-// cache
-const searchSourceCache = {};
-const searchDestinationCache = {};
-
+const searchRoutes = document.querySelector("#search_route");
 const routeSelect = document.querySelector("#route_select");
 const routeAvailableList = document.querySelector("#route_available_list");
 const routeHidden = document.querySelector("#route_id");
@@ -45,17 +39,20 @@ const addRouteSubmitBtn = document.querySelector("#submit_add_route_btn");
 
 const formModal = document.getElementById("centeredModal");
 
+const modal = {
+  operatorRouteList: [],
+  routeList: [],
+  routeMidCityList: [],
+};
+
 // filter
 const allFilter = document.querySelectorAll(".filter");
 const filterNavContainer = document.querySelector("#filter_nav");
-const sortDuration = document.querySelector("#sort_duration");
-const sortDistance = document.querySelector("#sort_distance");
 const searchFilterSource = document.querySelector("#filter_source_search");
 const searchFilterDestination = document.querySelector(
   "#filter_destination_search"
 );
 const searchRoutesBtn = document.querySelector("#search_routes_btn");
-let filerApplied = false;
 
 // info display
 const routeTable = document.querySelector("#route_table");
@@ -99,12 +96,45 @@ const resetAddRouteForm = () => {
   midCityTable.innerHTML = "";
 
   disableElements(routeSelect, routeMidCitySelect);
-  resetInputValues(
-    searchSourceHidden,
-    searchDestinationHidden,
-    routeHidden,
-    activeMidCity
-  );
+  resetInputValues(routeHidden, activeMidCity);
+};
+
+const handleAllRoutes = async () => {
+  const source = searchSource.value;
+  const destination = searchDestination.value;
+
+  try {
+    if (!source || !destination) throw new Error("Invalid Input");
+
+    console.log(source, destination);
+
+    const response = await collectRouteRequest(source, destination);
+    if (response === "invalid") {
+      throw new Error("Invalid Request");
+    }
+    if (response.startsWith("{")) {
+      const routeMap = JSON.parse(response);
+      for (const prop in routeMap) {
+        modal[prop] = routeMap[prop];
+      }
+
+      modal.routeList = modal.routeList.filter((currRoute) => {
+        return !modal.operatorRouteList.some(
+          ({ route }) => route.routeId === currRoute.routeId
+        );
+      });
+
+      modal.routeMidCityList = modal.routeMidCityList.filter(({ route }) => {
+        return modal.routeList.some(
+          (currRoute) => currRoute.routeId === route.routeId
+        );
+      });
+    } else {
+      throw new Error("Internal Server Error");
+    }
+  } catch (err) {
+    toast.error(err.message);
+  }
 };
 
 const displayMidCityTable = () => {
@@ -146,39 +176,17 @@ const displayMidCityTable = () => {
     .map(ViewHelper.getSelectMidCityAddRouteFormBodyRow)
     .join("")}</tbody>`;
 };
-const displayRouteSelect = () => {
-  setTimeout(() => {
-    routeSelect.focus();
-  }, 100);
-
+const displayRouteSelect = async () => {
   routeSelect.textContent = "Select Route";
+  await handleAllRoutes();
 
-  const routeList = JSON.parse(sessionStorage.getItem("routeList"));
-  const operatorRouteList = JSON.parse(
-    sessionStorage.getItem("operatorRouteList")
-  );
-
-  const filterResult = routeList.filter((route) => {
-    const condition = operatorRouteList.some((operatorRoute) => {
-      const { route: currRoute } = operatorRoute;
-      console.log(currRoute, route);
-      return currRoute.routeId === route.routeId;
-    });
-
-    return (
-      !condition &&
-      route.source.cityId === +searchSourceHidden.value &&
-      route.destination.cityId === +searchDestinationHidden.value
-    );
-  });
-
-  if (filterResult.length === 0) {
-    routeSelect.textContent = "No Routes Available";
+  if (modal.routeList.length === 0) {
     disableElements(routeSelect);
+    routeAvailableList.innerHTML = "";
     return;
   }
-
-  routeAvailableList.innerHTML = filterResult
+  enableElements(routeSelect);
+  routeAvailableList.innerHTML = modal.routeList
     .map(ViewHelper.getRoutesSelectList)
     .join("");
 };
@@ -188,65 +196,21 @@ const displayRouteMidCitySelect = () => {
     return;
   }
 
-  setTimeout(() => {
-    routeMidCitySelect.focus();
-  }, 50);
-
   enableElements(routeMidCitySelect);
 
   routeMidCitySelect.textContent = "Select Mid City";
 
-  const routeMidCityList = JSON.parse(
-    sessionStorage.getItem("routeMidCityList")
-  );
+  const routeMidCityList = modal.routeMidCityList;
 
-  const filterResult = routeMidCityList.filter((midCity) => {
-    const condition = Array.from(selectedMidCityList.childNodes).every(
-      (node) => {
-        const currMidCityId = +node.value.split("-")[1];
-        return midCity.routeMidCityId !== currMidCityId;
-      }
-    );
-    return midCity.route.routeId === +routeHidden.value && condition;
-  });
-
-  if (filterResult.length === 0) {
+  if (routeMidCityList.length === 0) {
     routeMidCitySelect.textContent = "No Mid Cities Available";
     disableElements(routeMidCitySelect, haltingTime);
     return;
   }
 
-  routeMidCityAvailableList.innerHTML = filterResult
+  routeMidCityAvailableList.innerHTML = routeMidCityList
     .map(ViewHelper.getRouteMidCitySelectList)
     .join("");
-};
-
-const watchSearchSourceDestination = () => {
-  if (!searchSourceHidden.value || !searchDestinationHidden.value) {
-    disableElements(
-      routeSelect,
-      routeMidCitySelect,
-      haltingTime,
-      addHaltingTimeBtn
-    );
-
-    // routes
-    resetRouteList();
-
-    // midcity
-    resetMidCityList();
-
-    // haltingTime
-    resetHaltingTime();
-    return;
-  }
-  enableElements(routeSelect);
-
-  displayRouteSelect();
-};
-
-const watchEvent = () => {
-  watchSearchSourceDestination();
 };
 
 const hideList = (...elements) => {
@@ -265,16 +229,12 @@ const showList = (...elements) => {
   });
 };
 
-const displaySearchResult = (
-  searchListElement,
-  searchResult,
-  source = true
-) => {
-  if (!searchListElement || !searchResult || !searchResult.length) return;
+const displaySearchResult = (searchResult, searchListElement) => {
+  if (!searchResult?.length) return;
   showList(searchListElement);
   searchListElement.innerHTML = searchResult
-    .map((route) => {
-      const city = source ? route.source : route.destination;
+
+    .map((city) => {
       const { cityId, name: cityName, state } = city;
       const { stateId, name: stateName } = state;
       return `<li role='button' class="dropdown-item py-2 border-bottom" data-cityId=${cityId} data-statId=${stateId}>
@@ -283,68 +243,6 @@ const displaySearchResult = (
               </li>`;
     })
     .join("");
-};
-
-const getFilterSearchResult = (target, source = true) => {
-  target = target.toLowerCase();
-  const routeList = JSON.parse(sessionStorage.getItem("uniqueRouteList"));
-
-  return routeList.filter((route) => {
-    const city = source ? route.source : route.destination;
-    const { cityId, name: cityName, state } = city;
-    const { name: stateName } = state;
-    if (!source) {
-      const condition = cityId !== +searchSourceHidden.value;
-      return (
-        (condition && cityName.toLowerCase().includes(target)) ||
-        (condition && stateName.toLowerCase().includes(target))
-      );
-    } else {
-      const condition = cityId !== +searchDestinationHidden.value;
-      return (
-        (condition && cityName.toLowerCase().includes(target)) ||
-        (condition && stateName.toLowerCase().includes(target))
-      );
-    }
-  });
-};
-
-const handleAllRoutes = async () => {
-  try {
-    setTimeout(async () => {
-      const response = await collectRouteRequest();
-      if (response === "invalid") {
-        throw new Error("Invalid Request");
-      }
-      if (response.startsWith("{")) {
-        const routeMap = JSON.parse(response);
-        const { routeList, routeMidCityList } = routeMap;
-
-        sessionStorage.setItem("routeList", JSON.stringify(routeList));
-        sessionStorage.setItem(
-          "routeMidCityList",
-          JSON.stringify(routeMidCityList)
-        );
-        const uniqueSet = {};
-        const uniqueRouteList = routeList.filter((route) => {
-          const key = `${route.source.cityId}-${route.destination.cityId}`;
-          if (uniqueSet[key]) {
-            return false;
-          }
-          uniqueSet[key] = route;
-          return true;
-        });
-        sessionStorage.setItem(
-          "uniqueRouteList",
-          JSON.stringify(uniqueRouteList)
-        );
-      } else {
-        throw new Error("Internal Server Error");
-      }
-    }, 500);
-  } catch (err) {
-    toast.error(err.message);
-  }
 };
 
 const handleAllOperatorRoutes = async (firstTime = false) => {
@@ -356,29 +254,10 @@ const handleAllOperatorRoutes = async (firstTime = false) => {
       if (response === "invalid") {
         throw new Error("Invalid Request");
       }
-      if (response.startsWith("{")) {
-        const routeMap = JSON.parse(response);
-        const { operatorRouteList, operatorRouteMidCityList } = routeMap;
-
-        operatorRouteList.forEach((operatorRoute) => {
-          const { route } = operatorRoute;
-          const midCityList = operatorRouteMidCityList.filter(
-            (mid) =>
-              mid.operatorRoute.route.routeId === operatorRoute.route.routeId
-          );
-          route.duration = midCityList.reduce((curr, { haltingTime }) => {
-            return curr + haltingTime;
-          }, route.duration);
-        });
-
-        sessionStorage.setItem(
-          "operatorRouteList",
-          JSON.stringify(operatorRouteList)
-        );
-        sessionStorage.setItem(
-          "operatorRouteMidCityList",
-          JSON.stringify(operatorRouteMidCityList)
-        );
+      if (response.startsWith("[")) {
+        const operatorRouteList = JSON.parse(response);
+        modal.operatorRouteList = operatorRouteList;
+        console.log(operatorRouteList);
         PageLoading.stopLoading();
         initDisplay();
       } else {
@@ -395,39 +274,26 @@ const handleAllOperatorRoutes = async (firstTime = false) => {
 searchSource.addEventListener("input", (e) => {
   const element = e.target;
   const value = element.value;
-  if (!value || value.length <= 2) {
-    searchSourceHidden.value = "";
+  if (!value || value.length <= 1) {
     hideList(searchSourceResultList);
-    watchEvent();
     return;
   }
-
-  if (!searchSourceCache[value]) {
-    searchSourceCache[value] = getFilterSearchResult(value);
-  }
-  displaySearchResult(searchSourceResultList, searchSourceCache[value]);
+  searchCityRequest(value, (data) => {
+    displaySearchResult(JSON.parse(data), searchSourceResultList);
+  });
 });
 
 searchDestination.addEventListener("input", (e) => {
   const element = e.target;
   const value = element.value;
 
-  if (!value || value.length <= 2) {
-    searchDestinationHidden.value = "";
+  if (!value || value.length <= 1) {
     hideList(searchDestinationResultList);
-    watchEvent();
     return;
   }
-
-  if (!searchDestinationCache[value]) {
-    searchDestinationCache[value] = getFilterSearchResult(value, false);
-  }
-
-  displaySearchResult(
-    searchDestinationResultList,
-    searchDestinationCache[value],
-    false
-  );
+  searchCityRequest(value, (data) => {
+    displaySearchResult(JSON.parse(data), searchDestinationResultList);
+  });
 });
 
 searchRoutesBtn.addEventListener("click", () => {
@@ -454,28 +320,25 @@ searchRoutesBtn.addEventListener("click", () => {
   displayRouteInfo(filterResult);
 });
 
-searchSourceResultList.addEventListener("mousedown", (e) => {
+searchSourceResultList.addEventListener("click", (e) => {
   const target = e.target.closest("li");
   if (!target) return;
-  const { cityid: cityId } = target.dataset;
+
   const cityName = target.querySelector("span").textContent;
-  searchSourceHidden.value = cityId;
   searchSource.value = cityName;
-  watchEvent();
   hideList(searchSourceResultList);
+  hideList(searchDestinationResultList);
 });
 
-searchDestinationResultList.addEventListener("mousedown", (e) => {
+searchDestinationResultList.addEventListener("click", (e) => {
   const target = e.target.closest("li");
   if (!target) return;
 
-  const { cityid: cityId } = target.dataset;
   const cityName = target.querySelector("span").textContent;
-  searchDestinationHidden.value = cityId;
   searchDestination.value = cityName;
 
-  watchEvent();
   hideList(searchDestinationResultList);
+  hideList(searchSourceResultList);
 });
 
 routeAvailableList.addEventListener("mousedown", (e) => {
@@ -496,6 +359,10 @@ routeAvailableList.addEventListener("mousedown", (e) => {
   resetMidCityList();
 
   displayRouteMidCitySelect();
+});
+
+searchRoutes.addEventListener("click", () => {
+  displayRouteSelect();
 });
 
 routeMidCityAvailableList.addEventListener("mousedown", (e) => {
@@ -541,31 +408,6 @@ addHaltingTimeBtn.addEventListener("click", (e) => {
   displayRouteMidCitySelect();
   disableElements(haltingTime);
   displayMidCityTable();
-});
-
-searchSource.addEventListener("blur", () => {
-  setTimeout(() => {
-    const firstChild = searchSourceResultList.firstChild;
-    if (firstChild && !searchSourceHidden.value) {
-      searchSource.value = firstChild.querySelector("span").textContent;
-      searchSourceHidden.value = +firstChild.dataset.cityid;
-    }
-    watchEvent();
-
-    hideList(searchSourceResultList);
-  }, 50);
-});
-
-searchDestination.addEventListener("blur", () => {
-  setTimeout(() => {
-    const firstChild = searchDestinationResultList.firstChild;
-    if (firstChild && !searchDestinationHidden.value) {
-      searchDestination.value = firstChild.querySelector("span").textContent;
-      searchDestinationHidden.value = +firstChild.dataset.cityid;
-    }
-    watchEvent();
-    hideList(searchDestinationResultList);
-  }, 50);
 });
 
 const handleHaltingTimeEdit = (parent) => {
@@ -659,12 +501,7 @@ midCityTable.addEventListener("click", (e) => {
   }
 });
 const disableFilter = (all = false) => {
-  disableElements(
-    sortDistance,
-    sortDuration,
-    searchFilterSource,
-    searchFilterDestination
-  );
+  disableElements(searchFilterSource, searchFilterDestination);
   if (all) {
     filterNav.disable();
   }
@@ -673,12 +510,7 @@ const disableFilter = (all = false) => {
 const enableFilter = (all = false) => {
   filterNav.enable();
   if (all) {
-    enableElements(
-      sortDistance,
-      sortDuration,
-      searchFilterSource,
-      searchFilterDestination
-    );
+    enableElements(searchFilterSource, searchFilterDestination);
   }
 };
 
@@ -721,15 +553,8 @@ routeTable.addEventListener("click", async (e) => {
     return;
   }
 
-  const activeRoute = JSON.parse(
-    sessionStorage.getItem("operatorRouteList")
-  ).find((data) => data.operatorRouteId === +operatorRouteId);
-
-  const activeRouteMidCities = JSON.parse(
-    sessionStorage.getItem("operatorRouteMidCityList")
-  ).filter(
-    ({ operatorRoute }) =>
-      operatorRoute.operatorRouteId === activeRoute.operatorRouteId
+  const activeRoute = modal.operatorRouteList.find(
+    (data) => data.operatorRouteId === +operatorRouteId
   );
 
   if (!activeRoute) {
@@ -737,11 +562,6 @@ routeTable.addEventListener("click", async (e) => {
     return;
   }
 
-  sessionStorage.setItem("activeRoute", JSON.stringify(activeRoute));
-  sessionStorage.setItem(
-    "activeRouteMidCities",
-    JSON.stringify(activeRouteMidCities)
-  );
   const APP_URL = window.location.href.substring(
     0,
     window.location.href.lastIndexOf("/")
@@ -761,44 +581,6 @@ const displayRouteInfo = (operatorRouteList = []) => {
       .join("")}</tbody>`;
   }
 };
-
-const filterSortResult = (type, value) => {
-  const operatorRouteList = JSON.parse(
-    sessionStorage.getItem("operatorRouteList")
-  );
-
-  switch (value) {
-    case "low": {
-      const filterResult = operatorRouteList.sort(
-        (a, b) => a.route[type] - b.route[type]
-      );
-      displayRouteInfo(filterResult);
-      break;
-    }
-    case "high": {
-      const filterResult = operatorRouteList.sort(
-        (a, b) => b.route[type] - a.route[type]
-      );
-      displayRouteInfo(filterResult);
-      break;
-    }
-    default: {
-      displayRouteInfo(operatorRouteList);
-      break;
-    }
-  }
-};
-
-const handleSortFilterEvent = (e) => {
-  const value = e.target.value;
-  const { type } = e.target.dataset;
-  resetFilter();
-  e.target.value = value;
-  filterSortResult(type, value);
-};
-
-sortDistance.addEventListener("change", handleSortFilterEvent);
-sortDuration.addEventListener("change", handleSortFilterEvent);
 
 filterNavContainer.addEventListener("click", (e) => {
   const target = e.target.closest(".btn");
@@ -831,10 +613,7 @@ filterNavContainer.addEventListener("click", (e) => {
 });
 
 const updateInfoDisplay = async () => {
-  const operatorRouteList = JSON.parse(
-    sessionStorage.getItem("operatorRouteList")
-  );
-
+  const operatorRouteList = modal.operatorRouteList;
   const infoData = operatorRouteList.reduce(
     (acc, { status }) => {
       return status.name === "Active"
@@ -854,9 +633,7 @@ const updateInfoDisplay = async () => {
 };
 
 const updateFilterDisplay = () => {
-  const operatorRouteList = JSON.parse(
-    sessionStorage.getItem("operatorRouteList")
-  );
+  const operatorRouteList = modal.operatorRouteList;
 
   if (operatorRouteList.length === 0) {
     filterNav.disable();
@@ -869,14 +646,11 @@ const updateFilterDisplay = () => {
 
 const updateOperatorRouteInfoTable = () => {
   updateFilterDisplay();
-  const operatorRouteList = JSON.parse(
-    sessionStorage.getItem("operatorRouteList")
-  );
-
-  displayRouteInfo(operatorRouteList);
+  displayRouteInfo(modal.operatorRouteList);
 };
 
 const initDisplay = () => {
+  console.log(modal);
   updateInfoDisplay();
   updateOperatorRouteInfoTable();
 };
@@ -928,8 +702,6 @@ const filteAppliedInterval = setInterval(() => {
   if (
     searchFilterSource.value ||
     searchFilterDestination.value ||
-    sortDistance.value ||
-    sortDuration.value ||
     !filterNavContainer.firstElementChild.classList.contains("btn-primary")
   ) {
     enableElements(removeFilter);
@@ -941,7 +713,7 @@ const filteAppliedInterval = setInterval(() => {
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     PageLoading.startLoading();
-    await Promise.all([handleAllRoutes(), handleAllOperatorRoutes(true)]);
+    handleAllOperatorRoutes(true);
   } catch (err) {
     toast.error(err.message);
     PageError.showOperatorError();

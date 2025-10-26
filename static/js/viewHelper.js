@@ -297,10 +297,9 @@ export class ViewHelper {
 
   static getRouteInfoTableHeading() {
     return `<thead class="border border-bottom text-center">
+              <th class="p-3">ID</th>
               <th class="p-3">Source</th>
               <th class="p-3">Destination</th>
-              <th class="p-3">Distance</th>
-              <th class="p-3">Duration</th>
               <th class="p-3">Status</th>
               <th class="p-3">Options</th>
             </thead>`;
@@ -308,26 +307,15 @@ export class ViewHelper {
 
   static getRouteInfoTableBody(operatorRoute) {
     const { operatorRouteId, route, status } = operatorRoute;
-    const { destination, source, routeId, distance, duration } = route;
+    const { destination, source } = route;
     const { name: destinationCityName } = destination;
     const { name: sourceCityName } = source;
     const { name: statusName } = status;
 
-    return `    <tr class="text-center border-bottom" data-operator-route-id=${operatorRouteId} data-source=${sourceCityName} data-destination=${destinationCityName} data-distance=${distance} data-duration=${duration} data-status=${statusName}>
+    return `    <tr class="text-center border-bottom" data-operator-route-id=${operatorRouteId} data-source=${sourceCityName} data-destination=${destinationCityName} data-status=${statusName}>
+                <td clas="p-3">${operatorRouteId}</p>
                 <td class="p-3">${sourceCityName}</td>
                 <td class="p-3">${destinationCityName}</td>
-                <td class="p-3">${distance}<small class="small">km</small></td>
-                <td class="p-3">
-                  ${Math.trunc(duration / 60)
-                    .toString()
-                    .padStart(2, "0")}<small class="small">h</small> ${(
-      duration % 60
-    )
-      .toString()
-      .padStart(2, "0")}<small class="small"
-                    >mins</small
-                  >
-                </td>
                 <td class="p-3">
                   <span
                     class="badge border 

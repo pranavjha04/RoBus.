@@ -7,6 +7,7 @@ import {
   createURLParams,
 } from "./util.js";
 import { toast } from "./toast.js";
+import { debounce } from "./debounce.js";
 
 const checkEmailExistRequest = async (email) => {
   const res = await fetch(`check_email_exist.do?email=${email}`);
@@ -298,10 +299,16 @@ export const collectOperatorRoutesRequest = async () => {
   return data.trim();
 };
 
-export const collectRouteRequest = async () => {
-  const res = await fetch("get_route.do", {
+export const collectRouteRequest = async (source, destination) => {
+  const queryParams = new URLSearchParams();
+
+  queryParams.append("source", source);
+  queryParams.append("destination", destination);
+
+  const res = await fetch(`get_route.do?${queryParams.toString()}`, {
     method: "POST",
   });
+
   if (!res.ok) throw new Error("Internal Server error");
 
   const data = await res.text();
@@ -371,9 +378,10 @@ export const addBusFareFactorRequest = async (params) => {
   return data.trim();
 };
 
-export const collectAvailableRouteMidCitiesRequest = async (params) => {
+export const collectAvailableRouteMidCitiesRequest = async (route_id) => {
+  const queryParams = createURLParams(route_id);
   const res = await fetch(
-    `get_available_route_mid_cities.do?${params.toString()}`
+    `get_available_route_mid_cities.do?${queryParams.toString()}`
   );
 
   if (!res.ok) throw new Error("Invalid Request");
@@ -384,10 +392,21 @@ export const collectAvailableRouteMidCitiesRequest = async (params) => {
 
 export const addOperatorRouteMidCities = async (params) => {
   const res = await fetch(
-    `add_operator_route_mid_city.do?${params.toString()}`
+    `add_operator_route_mid_city.do?${params.toString()}`,
+    {
+      method: "POST",
+    }
   );
   if (!res.ok) throw new Error("Internal Server Error");
 
   const data = await res.text();
   return data.trim();
 };
+
+export const searchCityRequest = debounce(async (value, callback) => {
+  const res = await fetch(`get_city.do?name=${value}`);
+  if (!res.ok) throw new Error("Internal Server Error");
+
+  const data = await res.text();
+  callback(data.trim());
+});

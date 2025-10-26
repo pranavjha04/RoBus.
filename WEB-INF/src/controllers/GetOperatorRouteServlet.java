@@ -10,11 +10,9 @@ import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import models.Operator;
 import models.OperatorRoute;
-import models.OperatorRouteMidCity;
 
 import com.google.gson.Gson;
 
@@ -29,15 +27,9 @@ public class GetOperatorRouteServlet extends HttpServlet {
         }
 
         Operator operator = (Operator) session.getAttribute("operator");
-        HashMap<String, ArrayList> routeMap = new HashMap<>();
-
         Integer operatorId = operator.getOperatorId();
         ArrayList<OperatorRoute> operatorRouteList = OperatorRoute.collectAllRecords(operatorId);
-        ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = OperatorRouteMidCity.collectAllRecords(operatorId);
         
-        routeMap.put("operatorRouteList", operatorRouteList);
-        routeMap.put("operatorRouteMidCityList", operatorRouteMidCityList);
-
-        response.getWriter().println(new Gson().toJson(routeMap));
+        response.getWriter().println(new Gson().toJson(operatorRouteList));
     }
 }

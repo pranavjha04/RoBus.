@@ -23,24 +23,63 @@ public class GetRouteServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
 
-        if(session.getAttribute("operator") == null) {
+        if(session.getAttribute("operator") == null || request.getParameter("source") == null || request.getParameter("destination") == null) {
             response.getWriter().println("invalid");
             return;
         }
 
-        ServletContext context = getServletContext();
+        try {
 
-        @SuppressWarnings("unchecked")
-        ArrayList<Route> routeList = (ArrayList<Route>) context.getAttribute("routes");
-        
-        @SuppressWarnings("unchecked")
-        ArrayList<RouteMidCity> routeMidCityList = (ArrayList<RouteMidCity>) context.getAttribute("routeMidCities");
+            String source = request.getParameter("source");
+            String destination = request.getParameter("destination");
 
-        HashMap<String, ArrayList> map = new HashMap<>();
+            ServletContext context = getServletContext();
 
-        map.put("routeList", routeList);
-        map.put("routeMidCityList", routeMidCityList);
+            @SuppressWarnings("unchecked")
+            ArrayList<Route> routeList = (ArrayList<Route>) context.getAttribute("routes");
+            ArrayList<Route> preparRouteList = new ArrayList<>();
 
-        response.getWriter().println(new Gson().toJson(map));
+            for(Route route : routeList) {
+                boolean currSource = route.getSource().getName().contains(source);
+                boolean currDestination = route.getDestination().getName().contains(destination);
+
+                if((currSource && currDestination) || currSource || currDestination) {
+                    preparRouteList.add(route);
+                }
+                else {
+                    System.out.println("Route");
+                }
+            }
+
+            @SuppressWarnings("unchecked")
+            ArrayList<RouteMidCity> routeMidCityList = (ArrayList<RouteMidCity>) context.getAttribute("routeMidCities");
+            ArrayList<RouteMidCity> prepareRouteMidCityList = new ArrayList<>();
+
+            for(Route route : preparRouteList) {
+                int routeId = route.getRouteId();
+                for(RouteMidCity routeMidCity : routeMidCityList) {
+                    int currRouteId = routeMidCity.getRoute().getRouteId();
+                    if(routeId == currRouteId) {
+                        System.out.println("yo");
+                        prepareRouteMidCityList.add(routeMidCity);
+                    }
+                    else {
+                        System.out.println("yoi");
+                    }
+                }
+            }
+
+            HashMap<String, ArrayList> map = new HashMap<>();
+
+            map.put("routeList", preparRouteList);
+            map.put("routeMidCityList", prepareRouteMidCityList);
+
+            response.getWriter().println(new Gson().toJson(map));
+        }
+        catch(NumberFormatException e) {
+            e.printStackTrace();
+            response.getWriter().println("invalid");
+            return;   
+        }
     }
 }

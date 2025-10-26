@@ -36,7 +36,6 @@
                     class="form-control"
                     autocomplete="off"
                   />
-                  <input type="hidden" id="source_search_id" />
                   <ul
                     id="source_list"
                     class="dropdown-menu w-100 shadow d-none overflow-y-auto position-absolute py-0"
@@ -58,13 +57,22 @@
                     class="form-control"
                     autocomplete="off"
                   />
-                  <input type="hidden" id="destination_search_id" />
                   <ul
                     id="destination_list"
                     class="dropdown-menu w-100 shadow d-none overflow-y-auto position-absolute py-0"
                     style="z-index: 1000; max-height: 200px"
                   ></ul>
                 </div>
+              </div>
+
+              <div class="text-end">
+                <input
+                  role="button"
+                  type="button"
+                  class="btn btn-primary rounded-2"
+                  value="Search Routes"
+                  id="search_route"
+                />
               </div>
 
               <!-- Route Selection -->
@@ -305,26 +313,6 @@
                 <button class="btn">Inactive</button>
               </div>
 
-              <select
-                class="my-select focus-ring rounded border-0 filter"
-                disabled
-                data-type="duration"
-                id="sort_duration"
-              >
-                <option value="">Sort by Duration</option>
-                <option value="low">Shortest to Longest</option>
-                <option value="high">Longest to Shortest</option>
-              </select>
-              <select
-                class="my-select focus-ring rounded border-0 filter"
-                disabled
-                data-type="distance"
-                id="sort_distance"
-              >
-                <option value="">Sort by Distance</option>
-                <option value="low">Nearest to Farthest</option>
-                <option value="high">Farthest to Nearest</option>
-              </select>
               <button
                 type="button"
                 class="btn btn-primary"
