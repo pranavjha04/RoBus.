@@ -30,8 +30,8 @@ public class GetRouteServlet extends HttpServlet {
 
         try {
 
-            String source = request.getParameter("source");
-            String destination = request.getParameter("destination");
+            String source = request.getParameter("source").toLowerCase();
+            String destination = request.getParameter("destination").toLowerCase();
 
             ServletContext context = getServletContext();
 
@@ -40,10 +40,10 @@ public class GetRouteServlet extends HttpServlet {
             ArrayList<Route> preparRouteList = new ArrayList<>();
 
             for(Route route : routeList) {
-                boolean currSource = route.getSource().getName().contains(source);
-                boolean currDestination = route.getDestination().getName().contains(destination);
+                boolean currSource = route.getSource().getName().toLowerCase().contains(source);
+                boolean currDestination = route.getDestination().getName().toLowerCase().contains(destination);
 
-                if((currSource && currDestination) || currSource || currDestination) {
+                if(currSource && currDestination) {
                     preparRouteList.add(route);
                 }
                 else {

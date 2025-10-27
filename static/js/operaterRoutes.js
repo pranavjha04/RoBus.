@@ -147,9 +147,7 @@ const displayMidCityTable = () => {
 
   midCityTable.innerHTML = ViewHelper.getSelectMidCityAddRouteFormHead();
 
-  const routeMidCityList = JSON.parse(
-    sessionStorage.getItem("routeMidCityList")
-  );
+  const routeMidCityList = modal.routeMidCityList;
 
   const filterResult = routeMidCityList.filter((midCity) => {
     const condition = Array.from(selectedMidCityList.childNodes).some(
@@ -179,9 +177,10 @@ const displayMidCityTable = () => {
 const displayRouteSelect = async () => {
   routeSelect.textContent = "Select Route";
   await handleAllRoutes();
-
+  console.log(modal.routeList);
   if (modal.routeList.length === 0) {
     disableElements(routeSelect);
+    routeSelect.textContent = "No Routes are available";
     routeAvailableList.innerHTML = "";
     return;
   }
@@ -189,6 +188,8 @@ const displayRouteSelect = async () => {
   routeAvailableList.innerHTML = modal.routeList
     .map(ViewHelper.getRoutesSelectList)
     .join("");
+
+  displayRouteMidCitySelect();
 };
 
 const displayRouteMidCitySelect = () => {
@@ -302,8 +303,7 @@ searchRoutesBtn.addEventListener("click", () => {
 
   if (!sourceValue && !destinationValue) return;
 
-  const operatorRouteList =
-    JSON.parse(sessionStorage.getItem("operatorRouteList")) || [];
+  const operatorRouteList = modal.operatorRouteList;
 
   const filterResult = operatorRouteList.filter(({ route }) => {
     const sourceName = route.source.name.toLowerCase();
@@ -362,7 +362,15 @@ routeAvailableList.addEventListener("mousedown", (e) => {
 });
 
 searchRoutes.addEventListener("click", () => {
+  const sourceValue = searchSource.value;
+  const destinationValue = searchDestination.value;
+  resetAddRouteForm();
+  searchSource.value = sourceValue;
+  searchDestination.value = destinationValue;
+  routeSelect.innerHTML = "";
+  disableElements(searchSource, searchDestination);
   displayRouteSelect();
+  enableElements(searchSource, searchDestination);
 });
 
 routeMidCityAvailableList.addEventListener("mousedown", (e) => {
@@ -519,9 +527,7 @@ const resetFilter = () => {
   searchFilterSource.value = searchFilterDestination.value = "";
   sortDistance.value = sortDuration.value = "";
 
-  const operatorRouteList = JSON.parse(
-    sessionStorage.getItem("operatorRouteList")
-  );
+  const operatorRouteList = modal.operatorRouteList;
 
   displayRouteInfo(operatorRouteList);
 };
@@ -586,9 +592,7 @@ filterNavContainer.addEventListener("click", (e) => {
   const target = e.target.closest(".btn");
   if (!target) return;
 
-  const operatorRouteList = JSON.parse(
-    sessionStorage.getItem("operatorRouteList")
-  );
+  const operatorRouteList = modal.operatorRouteList;
 
   switch (target.textContent) {
     case "Active": {
