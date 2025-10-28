@@ -43,6 +43,7 @@ const modal = {
   operatorRouteList: [],
   routeList: [],
   routeMidCityList: [],
+  selectedMidCityList: [],
 };
 
 // filter
@@ -94,6 +95,9 @@ const resetAddRouteForm = () => {
   resetMidCityList();
   resetSelectRoutes();
   midCityTable.innerHTML = "";
+  modal.routeList = [];
+  modal.routeMidCityList = [];
+  modal.selectedMidCityList = [];
 
   disableElements(routeSelect, routeMidCitySelect);
   resetInputValues(routeHidden, activeMidCity);
@@ -105,8 +109,6 @@ const handleAllRoutes = async () => {
 
   try {
     if (!source || !destination) throw new Error("Invalid Input");
-
-    console.log(source, destination);
 
     const response = await collectRouteRequest(source, destination);
     if (response === "invalid") {
@@ -149,35 +151,13 @@ const displayMidCityTable = () => {
 
   const routeMidCityList = modal.routeMidCityList;
 
-  const filterResult = routeMidCityList.filter((midCity) => {
-    const condition = Array.from(selectedMidCityList.childNodes).some(
-      (node) => {
-        const splitValues = node.value.split("-");
-        const midCityId = +splitValues[1];
-        const haltingTime = +splitValues[2];
-        if (midCity.routeMidCityId === midCityId) {
-          midCity.haltingTime = haltingTime;
-        }
-
-        return midCity.routeMidCityId === midCityId;
-      }
-    );
-
-    return midCity.route.routeId === +routeHidden.value && condition;
-  });
-
-  if (filterResult.length === 0) {
-    return;
-  }
-
-  midCityTable.innerHTML += `<tbody>${Array.from(filterResult)
+  midCityTable.innerHTML += `<tbody>${Array.from(modal.selectedMidCityList)
     .map(ViewHelper.getSelectMidCityAddRouteFormBodyRow)
     .join("")}</tbody>`;
 };
 const displayRouteSelect = async () => {
   routeSelect.textContent = "Select Route";
   await handleAllRoutes();
-  console.log(modal.routeList);
   if (modal.routeList.length === 0) {
     disableElements(routeSelect);
     routeSelect.textContent = "No Routes are available";
@@ -258,7 +238,6 @@ const handleAllOperatorRoutes = async (firstTime = false) => {
       if (response.startsWith("[")) {
         const operatorRouteList = JSON.parse(response);
         modal.operatorRouteList = operatorRouteList;
-        console.log(operatorRouteList);
         PageLoading.stopLoading();
         initDisplay();
       } else {
@@ -410,6 +389,20 @@ addHaltingTimeBtn.addEventListener("click", (e) => {
 
   selectedMidCityList.innerHTML += hiddenValue;
 
+  modal.selectedMidCityList.push({
+    ...modal.routeMidCityList.find(
+      (midCity) => midCity.routeMidCityId === +activeMidCity.value
+    ),
+    haltingTime: +haltingTime.value,
+  });
+  modal.routeMidCityList = modal.routeMidCityList.filter((midCity) => {
+    return Array.from(selectedMidCityList.children).every((selectedMidCity) => {
+      const midCityId = +selectedMidCity.value.split("-")[1];
+
+      return midCityId !== midCity.routeMidCityId;
+    });
+  });
+
   // hide values
   haltingTime.value = "";
 
@@ -451,8 +444,13 @@ const handleHaltingTimeEdit = (parent) => {
       toast.error("Invalid Operation");
     } else {
       targetElement.value = `${routeid}-${routemidcityid}-${e.target.value}`;
-      if (+oldHaltingValue !== +e.target.value)
+      if (+oldHaltingValue !== +e.target.value) {
+        const targetSelectedMidCity = modal.selectedMidCityList.find(
+          (midCity) => midCity.routeMidCityId === +routemidcityid
+        );
+        targetSelectedMidCity.haltingTime = +e.target.value;
         toast.success("Halting Time Updated Successfully");
+      }
     }
     haltingDiv.innerHTML = `<span
                                 >${
@@ -481,8 +479,16 @@ const handleHaltingTimeDelete = (parent) => {
   targetElement.remove();
   parent.remove();
 
-  displayRouteMidCitySelect();
+  modal.routeMidCityList.push(
+    modal.selectedMidCityList.find(
+      (midCity) => midCity.routeMidCityId === +routemidcityid
+    )
+  );
+  modal.selectedMidCityList = modal.selectedMidCityList.filter(
+    (midCity) => midCity.routeMidCityId !== +routemidcityid
+  );
 
+  displayRouteMidCitySelect();
   displayMidCityTable();
   toast.success("Mid City Delete Successfully");
 };
@@ -525,8 +531,6 @@ const enableFilter = (all = false) => {
 const resetFilter = () => {
   filterNav.init();
   searchFilterSource.value = searchFilterDestination.value = "";
-  sortDistance.value = sortDuration.value = "";
-
   const operatorRouteList = modal.operatorRouteList;
 
   displayRouteInfo(operatorRouteList);
@@ -654,7 +658,6 @@ const updateOperatorRouteInfoTable = () => {
 };
 
 const initDisplay = () => {
-  console.log(modal);
   updateInfoDisplay();
   updateOperatorRouteInfoTable();
 };
