@@ -67,7 +67,7 @@ public class OperatorRouteMidCity {
         return flag;
     }
 
-    public static ArrayList<OperatorRouteMidCity> collectAllRecords(Integer operatorId) {
+    public static ArrayList<OperatorRouteMidCity> collectAllRecords(Integer operatorRouteId, Integer operatorId) {
         ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = new ArrayList<>();
         try {
 
@@ -106,12 +106,13 @@ public class OperatorRouteMidCity {
                 "JOIN route_midcities rm ON oprm.route_midcity_id = rm.route_midcity_id " +
                 "JOIN cities cm  ON rm.midcity_id = cm.city_id " +
                 "JOIN states sm  ON cm.state_id   = sm.state_id " +
-                "WHERE opr.operator_id=?";
+                "WHERE opr.operator_route_id=? AND opr.operator_id=?";
 
 
             PreparedStatement ps = con.prepareStatement(query);
 
-            ps.setInt(1, operatorId);
+            ps.setInt(1, operatorRouteId);
+            ps.setInt(2, operatorId);
 
             ResultSet rs = ps.executeQuery();
 

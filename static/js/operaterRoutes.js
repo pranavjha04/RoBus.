@@ -572,6 +572,8 @@ routeTable.addEventListener("click", async (e) => {
     return;
   }
 
+  sessionStorage.setItem("activeRoute", JSON.stringify(activeRoute));
+
   const APP_URL = window.location.href.substring(
     0,
     window.location.href.lastIndexOf("/")

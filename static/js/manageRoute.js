@@ -4,6 +4,7 @@ import { PageLoading } from "./pageLoading.js";
 import {
   addOperatorRouteMidCities,
   collectAvailableRouteMidCitiesRequest,
+  collectOperatorRouteMidCitiesRequest,
 } from "./service.js";
 import { toast } from "./toast.js";
 import {
@@ -78,7 +79,11 @@ const updateRouteTimeLine = () => {
   routeTimeLineContainer.innerHTML = ViewHelper.getRouteTimeLine(source, true);
 
   // add midcities
-  routeTimeLineContainer.innerHTML += modal.activeRouteMidCities
+  routeTimeLineContainer.innerHTML += [...modal.activeRouteMidCities]
+    .sort(
+      (a, b) =>
+        a.routeMidCity.distanceFromSource - b.routeMidCity.distanceFromSource
+    )
     .map((midCity) => {
       const { routeMidCity, haltingTime } = midCity;
       return ViewHelper.getMidCityRouteTimeLine(routeMidCity, haltingTime);
@@ -219,7 +224,35 @@ const handleCollectAvailableRouteRequest = async () => {
   }
 };
 
-// const handleEditHaltingTime = (row) => {};
+const handleCollectOperatorRouteMidCities = async () => {
+  try {
+    const response = await collectOperatorRouteMidCitiesRequest(
+      modal.activeRoute.operatorRouteId
+    );
+    if (response === "invalid") {
+      throw new Error("Invalid Request");
+    } else if (response.startsWith("[")) {
+      modal.activeRouteMidCities = JSON.parse(response);
+    } else {
+      throw new Error("Invalid Request");
+    }
+  } catch (err) {
+    toast.error(err.messsage);
+    PageError.showOperatorError();
+  } finally {
+    PageLoading.stopLoading();
+  }
+};
+
+const handleEditHaltingTime = (row) => {
+  console.log(row.dataset);
+  const operatorRouteMidCityId = row.dataset?.operatorRouteMidCityId;
+  const targetOperatorRouteMidCity = modal.activeRouteMidCities.find(
+    (midCity) => midCity.operatorRouteMidCityId === +operatorRouteMidCityId
+  );
+  if (!targetOperatorRouteMidCity) return;
+  console.log(targetOperatorRouteMidCity);
+};
 
 routeMidCityInfoTable.addEventListener("click", (e) => {
   const button = e.target.closest("button");
@@ -228,7 +261,8 @@ routeMidCityInfoTable.addEventListener("click", (e) => {
   const type = button.dataset.type;
   if (!type) return;
 
-  const row = +button.closest("[data-operator-route-mid-city-id]");
+  const row = button.closest("[data-operator-route-mid-city-id]");
+  if (!row) return;
 
   switch (type) {
     case "edit": {
@@ -479,30 +513,15 @@ addMidCityForm.addEventListener("submit", async (e) => {
   }
 });
 
-const handleEssentialDataFetching = async () => {
-  const url = new URLSearchParams(window.location.search);
-
-  const operatorRouteId = +url.get("operator_route_id");
-  await handleCollectAvailableRouteRequest();
-};
-
 window.addEventListener("DOMContentLoaded", async () => {
   try {
-    await handleCollectAvailableRouteRequest();
-    await handleCollect
     modal.activeRoute = JSON.parse(sessionStorage.getItem("activeRoute"));
-    modal.activeRouteMidCities = JSON.parse(
-      sessionStorage.getItem("activeRouteMidCities")
-    );
-    modal.activeRouteMidCities = modal.activeRouteMidCities.sort(
-      (a, b) =>
-        a.routeMidCity.distanceFromSource - b.routeMidCity.distanceFromSource
-    );
+    await handleCollectOperatorRouteMidCities();
     updateRouteInfo();
     updateRouteTimeLine();
     updateRouteMidCityInfoTable();
 
-    updateForm();
+    // updateForm();
   } catch (err) {
     console.error(err.messsage);
     toast.error(err.messsage);

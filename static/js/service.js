@@ -410,3 +410,20 @@ export const searchCityRequest = debounce(async (value, callback) => {
   const data = await res.text();
   callback(data.trim());
 });
+
+export const collectOperatorRouteMidCitiesRequest = async (
+  operator_route_id
+) => {
+  const queryParams = createURLParams({
+    operator_route_id,
+  });
+  const res = await fetch(
+    `get_operator_route_mid_cities.do?${queryParams.toString()}`,
+    {
+      method: "POST",
+    }
+  );
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
