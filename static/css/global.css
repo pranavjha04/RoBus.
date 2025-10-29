@@ -179,12 +179,18 @@ tbody tr {
   &:hover {
     background-color: oklch(88.5% 0.062 18.334);
   }
+  &:disabled {
+    cursor: not-allowed;
+  }
 }
 
 .manage-icon {
   background-color: oklch(93.2% 0.032 255.585);
   &:hover {
     background-color: oklch(88.2% 0.059 254.128);
+  }
+  &:disabled {
+    cursor: not-allowed;
   }
 }
 

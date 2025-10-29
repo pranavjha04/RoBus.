@@ -562,9 +562,10 @@ export class ViewHelper {
   }
 
   static getManageRouteMidCityTableRow(city) {
-    const { haltingTime, routeMidCity, operatorRouteMidCityId } = city;
+    const { haltingTime, routeMidCity, operatorRouteMidCityId, operatorRoute } =
+      city;
     const { distanceFromSource, durationFromSource, midCity } = routeMidCity;
-
+    const isActive = operatorRoute.status.name === "Active";
     return ` <tr class="text-center border-bottom" data-operator-route-mid-city-id=${operatorRouteMidCityId} data-halting-time=${haltingTime}>
                     <td class="p-3 text-center d-flex flex-column align-items-center justify-content-center">
                     ${midCity.name}
@@ -580,6 +581,7 @@ export class ViewHelper {
                     <td class="p-3 text-center">
                       <button
                         class="btn manage-icon border-primary-subtle py-2 px-2 me-1"
+                        ${isActive && "disabled"}
                         data-type='edit'
                       >
                         <img
@@ -591,6 +593,7 @@ export class ViewHelper {
                       </button>
                       <button
                         class="btn delete-icon border-danger-subtle py-2 px-2"
+                        ${isActive && "disabled"}
                         data-type='delete'
                       >
                         <img
