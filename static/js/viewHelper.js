@@ -574,11 +574,8 @@ export class ViewHelper {
                     <td class="p-3 text-center">${getFormatedDuration(
                       durationFromSource
                     )}</td>
-                    <td class="p-3 text-center">
-                    <div class="d-flex justify-content-center halting">
-                    ${haltingTime} mins
-                    </div>
-                    
+                    <td class="p-3 text-center position-relative halting">
+                      ${getFormatedDuration(haltingTime)}
                     </td>
                     <td class="p-3 text-center">
                       <button

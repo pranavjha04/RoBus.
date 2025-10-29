@@ -40,6 +40,40 @@ public class OperatorRouteMidCity {
 
     }
 
+    public static Boolean updateHaltingTime(Integer operatorRouteId, Integer operatorRouteMidCityId, Integer haltingTime, Integer operatorId) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                            "UPDATE " +
+                            "operator_route_midcities oprm " +
+                            "JOIN operator_routes opr " +
+                            "ON opr.operator_route_id = oprm.operator_route_id " +
+                            "SET oprm.halting_time=? " +
+                            "WHERE oprm.operator_route_midcity_id=? " +
+                            "AND opr.operator_route_id=? AND opr.operator_id=? " +
+                            "AND opr.status_id=5";
+
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setInt(1, haltingTime);
+            ps.setInt(2, operatorRouteMidCityId);
+            ps.setInt(3, operatorRouteId);
+            ps.setInt(4, operatorId);
+
+            int rows = ps.executeUpdate();
+            if(rows == 1) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
+    }
+
     public static Boolean addRecord(Integer operatorRouteId, Integer routeMidCityId,Integer haltingTime) {
         Boolean flag = false;
         try {

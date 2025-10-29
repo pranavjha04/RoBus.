@@ -5,6 +5,7 @@ import {
   addOperatorRouteMidCities,
   collectAvailableRouteMidCitiesRequest,
   collectOperatorRouteMidCitiesRequest,
+  updateHaltingTimeRequest,
 } from "./service.js";
 import { toast } from "./toast.js";
 import {
@@ -245,13 +246,79 @@ const handleCollectOperatorRouteMidCities = async () => {
 };
 
 const handleEditHaltingTime = (row) => {
-  console.log(row.dataset);
   const operatorRouteMidCityId = row.dataset?.operatorRouteMidCityId;
   const targetOperatorRouteMidCity = modal.activeRouteMidCities.find(
     (midCity) => midCity.operatorRouteMidCityId === +operatorRouteMidCityId
   );
-  if (!targetOperatorRouteMidCity) return;
-  console.log(targetOperatorRouteMidCity);
+  const haltingTimeContainer = row.querySelector(".halting");
+  if (!targetOperatorRouteMidCity || !haltingTimeContainer) return;
+
+  haltingTimeContainer.classList.add(
+    "d-flex",
+    "align-items-center",
+    "justify-content-center"
+  );
+  haltingTimeContainer.innerHTML = `<input type='number' value="${targetOperatorRouteMidCity.haltingTime}" class='position-absolute form-control top-50 text-center' />`;
+
+  const input = haltingTimeContainer.querySelector("input");
+  input?.focus();
+
+  input.addEventListener("blur", async (e) => {
+    const value = e.target.value;
+
+    if (!value || isNaN(value) || value < 0 || value > 120) {
+      toast.error("Value must be a positive number");
+    } else if (+value === targetOperatorRouteMidCity.haltingTime) {
+      toast.normal("No changes");
+    } else {
+      try {
+        const queryParams = new URLSearchParams();
+        queryParams.append(
+          "operator_route_id",
+          modal.activeRoute.operatorRouteId
+        );
+        queryParams.append(
+          "operator_route_mid_city_id",
+          operatorRouteMidCityId
+        );
+        queryParams.append("halting_time", Math.floor(+value));
+
+        const response = await updateHaltingTimeRequest(queryParams);
+        if (response === "invalid") {
+          throw new Error("Invalid Request");
+        }
+        if (response === "failed") {
+          throw new Error("Internal Server Error");
+        }
+        if (response === "success") {
+          toast.success("Halting Time Updated Successfully");
+          targetOperatorRouteMidCity.haltingTime = Math.floor(+value);
+          updateRouteTimeLine();
+        }
+      } catch (err) {
+        toast.error(err.messsage);
+      }
+    }
+    haltingTimeContainer.classList.remove(
+      "d-flex",
+      "align-items-center",
+      "justify-content-center"
+    );
+    input.remove();
+
+    haltingTimeContainer.innerHTML = `${getFormatedDuration(
+      targetOperatorRouteMidCity.haltingTime
+    )}`;
+  });
+};
+
+const handleDeleteRouteMidCity = (row) => {
+  const operatorRouteMidCityId = row.dataset?.operatorRouteMidCityId;
+  const targetOperatorRouteMidCity = modal.activeRouteMidCities.find(
+    (midCity) => midCity.operatorRouteMidCityId === +operatorRouteMidCityId
+  );
+
+  const res = 
 };
 
 routeMidCityInfoTable.addEventListener("click", (e) => {
@@ -270,6 +337,7 @@ routeMidCityInfoTable.addEventListener("click", (e) => {
       break;
     }
     case "delete": {
+      handleDeleteHaltingTime(row);
       break;
     }
     default: {
@@ -312,18 +380,7 @@ const handleFormHaltingTimeEdit = (parent) => {
         toast.success("Halting Time Updated Successfully");
     }
     haltingDiv.innerHTML = `<span
-                                >${
-                                  +e.target.value < 60
-                                    ? `${+e.target.value} mins`
-                                    : ""
-                                }
-                                ${
-                                  +e.target.value > 60
-                                    ? `${Math.trunc(+e.target.value / 60)}h ${
-                                        +e.target.value % 60
-                                      }m`
-                                    : ""
-                                }
+                                ${getFormatedDuration(e.target.value)}
                               </span>`;
   });
 };

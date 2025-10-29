@@ -427,3 +427,12 @@ export const collectOperatorRouteMidCitiesRequest = async (
   const data = await res.text();
   return data.trim();
 };
+
+export const updateHaltingTimeRequest = async (params) => {
+  const res = await fetch(`update_halting_time.do?${params.toString()}`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
