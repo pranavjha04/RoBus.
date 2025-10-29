@@ -40,6 +40,36 @@ public class OperatorRouteMidCity {
 
     }
 
+    public static Boolean deleteRecord(Integer operatorRouteId, Integer operatorRouteMidCityId, Integer operatorId) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                            "DELETE oprm " +
+                            "FROM operator_route_midcities oprm " +
+                            "JOIN operator_routes opr " +
+                            "ON oprm.operator_route_id = opr.operator_route_id " +
+                            "WHERE oprm.operator_route_midcity_id=? " +
+                            "AND oprm.operator_route_id=? AND opr.operator_id=? AND opr.status_id=5";
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setInt(1, operatorRouteMidCityId);
+            ps.setInt(2, operatorRouteId);
+            ps.setInt(3, operatorId);
+
+            int rows = ps.executeUpdate();
+            if(rows == 1) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
+    }
+
     public static Boolean updateHaltingTime(Integer operatorRouteId, Integer operatorRouteMidCityId, Integer haltingTime, Integer operatorId) {
         boolean flag = false;
         try {

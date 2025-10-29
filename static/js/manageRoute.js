@@ -5,6 +5,7 @@ import {
   addOperatorRouteMidCities,
   collectAvailableRouteMidCitiesRequest,
   collectOperatorRouteMidCitiesRequest,
+  deleteOperatorRouteMidCityRequest,
   updateHaltingTimeRequest,
 } from "./service.js";
 import { toast } from "./toast.js";
@@ -293,6 +294,7 @@ const handleEditHaltingTime = (row) => {
         if (response === "success") {
           toast.success("Halting Time Updated Successfully");
           targetOperatorRouteMidCity.haltingTime = Math.floor(+value);
+          updateRouteInfo();
           updateRouteTimeLine();
         }
       } catch (err) {
@@ -312,13 +314,42 @@ const handleEditHaltingTime = (row) => {
   });
 };
 
-const handleDeleteRouteMidCity = (row) => {
+const handleDeleteRouteMidCity = async (row) => {
   const operatorRouteMidCityId = row.dataset?.operatorRouteMidCityId;
   const targetOperatorRouteMidCity = modal.activeRouteMidCities.find(
     (midCity) => midCity.operatorRouteMidCityId === +operatorRouteMidCityId
   );
+  if (!targetOperatorRouteMidCity) return;
 
-  const res = 
+  try {
+    const queryParams = new URLSearchParams();
+    queryParams.append("operator_route_id", modal.activeRoute.operatorRouteId);
+    queryParams.append(
+      "operator_route_mid_city_id",
+      targetOperatorRouteMidCity.operatorRouteMidCityId
+    );
+    const response = await deleteOperatorRouteMidCityRequest(queryParams);
+
+    if (response === "invalid") {
+      throw new Error("Invalid Request");
+    }
+    if (response === "failed") {
+      throw new Error("Internal Server Error");
+    }
+    if (response === "success") {
+      toast.success("Mid City deleted successfully");
+      modal.activeRouteMidCities = modal.activeRouteMidCities.filter(
+        (midCity) =>
+          midCity.operatorRouteMidCityId !==
+          targetOperatorRouteMidCity.operatorRouteMidCityId
+      );
+      updateRouteInfo();
+      updateRouteTimeLine();
+      updateRouteMidCityInfoTable();
+    }
+  } catch (err) {
+    toast.error(err.messsage);
+  }
 };
 
 routeMidCityInfoTable.addEventListener("click", (e) => {
@@ -337,7 +368,7 @@ routeMidCityInfoTable.addEventListener("click", (e) => {
       break;
     }
     case "delete": {
-      handleDeleteHaltingTime(row);
+      handleDeleteRouteMidCity(row);
       break;
     }
     default: {

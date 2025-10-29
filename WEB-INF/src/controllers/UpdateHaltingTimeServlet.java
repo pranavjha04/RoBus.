@@ -8,7 +8,6 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
-import com.google.gson.Gson;
 
 import models.Operator;
 import models.OperatorRouteMidCity;

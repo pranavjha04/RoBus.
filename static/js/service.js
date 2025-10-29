@@ -436,3 +436,15 @@ export const updateHaltingTimeRequest = async (params) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const deleteOperatorRouteMidCityRequest = async (params) => {
+  const res = await fetch(
+    `delete_operator_route_mid_city.do?${params.toString()}`,
+    {
+      method: "POST",
+    }
+  );
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
