@@ -629,6 +629,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 window.addEventListener("pagehide", () => {
+  sessionStorage.removeItem("activeRoute");
   observer.disconnect(routeMidCityInfoContainer);
   observer.disconnect(document.querySelector("#route_time_line"));
 });
