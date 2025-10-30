@@ -8,7 +8,11 @@ import {
   searchCityRequest,
 } from "./service.js";
 import { toast } from "./toast.js";
-import { disableElements, enableElements } from "./util.js";
+import {
+  disableElements,
+  enableElements,
+  getFormatedDuration,
+} from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
 // add_route for
@@ -424,13 +428,12 @@ const handleHaltingTimeEdit = (parent) => {
   const oldHaltingValue = targetElement.value.substring(
     targetElement.value.lastIndexOf("-") + 1
   );
-  haltingDiv.innerHTML = `<span
-                                ><input
-                                  class="input text-center p-0 rounded-2 focus-ring"
+  haltingDiv.innerHTML = `<input
+                                  class='position-absolute form-control p-0 top-50 text-center'
                                   value="${oldHaltingValue}"
                                   id=${Math.random()}
                                   type='number'
-                              /></span>`;
+                              />`;
   const changeHaltingEditInput = parent.querySelector("input");
 
   changeHaltingEditInput.focus();
@@ -439,7 +442,7 @@ const handleHaltingTimeEdit = (parent) => {
   changeHaltingEditInput.addEventListener("blur", (e) => {
     const value = +e.target.value;
 
-    if (!value || isNaN(value) || value < 0 || value > 120) {
+    if (!value || isNaN(value) || value < 1 || value > 120) {
       e.target.value = oldHaltingValue;
       toast.error("Invalid Operation");
     } else {
@@ -452,20 +455,7 @@ const handleHaltingTimeEdit = (parent) => {
         toast.success("Halting Time Updated Successfully");
       }
     }
-    haltingDiv.innerHTML = `<span
-                                >${
-                                  +e.target.value < 60
-                                    ? `${+e.target.value} mins`
-                                    : ""
-                                }
-                                ${
-                                  +e.target.value > 60
-                                    ? `${Math.trunc(+e.target.value / 60)}h ${
-                                        +e.target.value % 60
-                                      }m`
-                                    : ""
-                                }
-                              </span>`;
+    haltingDiv.innerHTML = `${getFormatedDuration(+e.target.value)}`;
   });
 };
 

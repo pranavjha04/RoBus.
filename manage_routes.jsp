@@ -386,6 +386,7 @@
             >
               <h2 class="fs-3">Route Mid Cities</h2>
               <button
+                id="add_mid_city_form_trigger_btn"
                 class="btn btn-primary align-self-end"
                 data-bs-toggle="modal"
                 data-bs-target="#centeredModal"

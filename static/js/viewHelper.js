@@ -251,24 +251,11 @@ export class ViewHelper {
                         data-routeid=${currRoute.routeId}>
                             <td class="p-2">${midCityName}</td>
                             <td class="p-2">${distanceFromSource} km</td>
-                            <td class="p-2">${Math.trunc(
-                              durationFromSource / 60
-                            )}h ${durationFromSource % 60}m</td>
-                            <td class="px-0 py-2 halting">
-                              <span
-                                >${
-                                  haltingTime < 60 ? `${haltingTime} mins` : ""
-                                }
-                                ${
-                                  haltingTime > 60
-                                    ? `${Math.trunc(haltingTime / 60)
-                                        .toString()
-                                        .padStart(2, "0")}h ${(haltingTime % 60)
-                                        .toString()
-                                        .padStart(2, "0")}m`
-                                    : ""
-                                }
-                              </span>
+                            <td class="p-2">${getFormatedDuration(
+                              durationFromSource
+                            )}</td>
+                            <td class="px-0 py-2 halting position-relative d-flex align-items-center justify-content-center">
+                                ${getFormatedDuration(haltingTime)}
                             </td>
                             <td class="p-2">
                               <button

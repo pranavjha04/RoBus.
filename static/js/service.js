@@ -448,3 +448,11 @@ export const deleteOperatorRouteMidCityRequest = async (params) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const collectRouteMidCitiesRequest = async (routeId) => {
+  const queryParams = createURLParams({ route_id: routeId });
+  const res = await fetch(`get_route_mid_cities.do?${queryParams.toString()}`);
+  if (!res.ok) throw new Error("Intenal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
