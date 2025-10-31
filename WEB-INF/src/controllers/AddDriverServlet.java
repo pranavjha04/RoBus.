@@ -36,7 +36,6 @@ public class AddDriverServlet extends HttpServlet {
             return;
         }
         if(!ServletFileUpload.isMultipartContent(request)) {
-            System.out.println("helllo");
             response.getWriter().println("invalid");
             return;
         }
@@ -46,13 +45,12 @@ public class AddDriverServlet extends HttpServlet {
                 throw new Exception("invalid");
             }
             List<FileItem> validFiles = new ArrayList<>();
-
-            Operator operator = (Operator) getServletContext().getAttribute("operator");
+            Operator operator = (Operator) session.getAttribute("operator");
             Integer operatorId = operator.getOperatorId();
-
             String licenceNumber = null;
             Integer userId = null;
             Date startDate = null;
+
             for(FileItem item : items) {
                 String fieldName = item.getFieldName();
                 if(item.isFormField()) {
@@ -99,11 +97,15 @@ public class AddDriverServlet extends HttpServlet {
                         uploadDir.mkdirs();
                     }
                     else {
-                        throw new Exception();
+                        for(File oldImageFile : uploadDir.listFiles()) {
+                            oldImageFile.delete();
+                        }
                     }
                     String fileName = FileManager.generateFileName(item.getName());
                     File currFile = new File(uploadDir, fileName);
                     item.write(currFile);
+                    boolean isUpdated = User.updateProfilePic(fileName, userId);
+                    if(!isUpdated) throw new Exception();
                 }
                 else if(fieldName.equals("licence_pic")) {
                     licencePic = item;
@@ -123,6 +125,8 @@ public class AddDriverServlet extends HttpServlet {
             // change user role to driver
             boolean isUpdated = User.updateUserType(userId, 3);
             if(!isUpdated) throw new Exception();
+
+            response.getWriter().println("success");
         }
         catch(FileUploadException e) {
             e.printStackTrace();
@@ -130,6 +134,7 @@ public class AddDriverServlet extends HttpServlet {
             return;
         }
         catch(Exception e) {
+            e.printStackTrace();
             response.getWriter().println("invalid");
             return;
         }

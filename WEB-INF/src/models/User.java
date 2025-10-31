@@ -72,7 +72,8 @@ public class User implements Cloneable {
                             "WHERE user_id=?";
             
             PreparedStatement ps = con.prepareStatement(query);
-            ps.setInt(1, userId);
+            ps.setString(1, profilePic);
+            ps.setInt(2, userId);
 
             int rows = ps.executeUpdate();
             if(rows > 0) {

@@ -1,4 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib
+prefix="e" uri="bts" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -43,20 +44,39 @@
                       placeholder="pranavjha@gmail.com"
                     />
                   </div>
+
                   <div class="d-none" id="form_container_essential">
-                    <div>
-                      <label
-                        for="licence_no"
-                        class="form-label small fw-semibold"
-                        >Licence Number</label
-                      >
-                      <input
-                        id="licence_no"
-                        type="text"
-                        name="licence_no"
-                        class="form-control"
-                        placeholder="e.g. MH12 20150012345"
-                      />
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <label
+                          for="licence_no"
+                          class="form-label small fw-semibold"
+                          >Licence Number</label
+                        >
+                        <input
+                          type="date"
+                          name="start_date"
+                          id="start_date"
+                          class="form-control custome-date"
+                          min="${e:currentDate()}"
+                          value="${e:currentDate()}"
+                        />
+                      </div>
+
+                      <div>
+                        <label
+                          for="licence_no"
+                          class="form-label small fw-semibold"
+                          >Licence Number</label
+                        >
+                        <input
+                          id="licence_no"
+                          type="text"
+                          name="licence_no"
+                          class="form-control"
+                          placeholder="e.g. MH12 20150012345"
+                        />
+                      </div>
                     </div>
 
                     <div class="mt-2">

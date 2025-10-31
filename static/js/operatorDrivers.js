@@ -1,4 +1,5 @@
 import { debounce } from "./debounce.js";
+import { ModalHandler } from "./modalHandler.js";
 import { PageLoading } from "./pageLoading.js";
 import {
   addDriverRequest,
@@ -23,7 +24,6 @@ const profilePicContainer = document.querySelector("#profile_pic_container");
 let profilePic = document.querySelector("#profile_pic");
 let profilePicPreview = document.querySelector("#profile_pic_preview");
 const addDriverForm = document.querySelector("#add_driver_form");
-console.log(addDriverForm);
 
 const formModal = document.querySelector("#centeredModal");
 const formContainerEssential = document.querySelector(
@@ -48,6 +48,9 @@ const showFormFields = () => {
 
 const handleForm = () => {
   if (modal.activeUser === null) {
+    licencePic.value = "";
+    licenceNumber.value = "";
+
     hideFormFields();
     return;
   }
@@ -107,8 +110,6 @@ const handleForm = () => {
       const img = ViewHelper.getImagePreview(file, "medium");
       profilePicPreview.innerHTML = img;
     });
-
-    console.log(profilePic, profilePicPreview);
   }
   showFormFields();
 };
@@ -157,12 +158,16 @@ licenceNumber.addEventListener("blur", async (e) => {
     toast.error("Enter Valid Licence Number");
     return;
   }
-  if (cache.licence[value]) {
-    console.log(cache.licence[value]);
-    return;
+  if (!cache.licence[value]) {
+    const response = await checkLicenceNumberExist(value);
+    cache.licence[value] = response;
   }
-  const response = await checkLicenceNumberExist(value);
-  cache.licence[value] = response;
+  if (cache.licence[value] === "true") {
+    toast.error("Licence number already exists");
+    e.target.value = "";
+  } else if (cache.licence[value] == "invalid") {
+    toast.error("Invalid Request");
+  }
 });
 
 licencePic.addEventListener("input", (e) => {
@@ -191,13 +196,12 @@ licencePic.addEventListener("input", (e) => {
 
 addDriverForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  console.log("HELL");
-
   if (
     !email.value ||
     !licencePic.value ||
-    !profilePic?.value ||
-    !licenceNumber.value
+    !licenceNumber.value ||
+    (profilePicContainer.innerHTML !== "" &&
+      !document.querySelector("#profile_pic").value)
   ) {
     toast.error("Please fill all the details");
     return;
@@ -207,12 +211,25 @@ addDriverForm.addEventListener("submit", async (e) => {
     const formData = new FormData(addDriverForm);
     formData.append("user_id", modal.activeUser.userId);
     const response = await addDriverRequest(formData);
-    console.log(response);
+    if (response === "invalid") {
+      throw new Error("Invalid Request");
+    } else if (response === "success") {
+      toast.success("Driver addedd successfully");
+      ModalHandler.hide(formModal);
+      // clear caches
+      delete cache.licence[licenceNumber.value];
+      delete cache.email[email.value];
+    }
   } catch (err) {
     toast.error(err.message);
   }
 });
 
+formModal.addEventListener("show.bs.modal", () => {
+  addDriverForm.reset();
+  modal.activeUser = null;
+  handleForm();
+});
 window.addEventListener("DOMContentLoaded", () => {
   PageLoading.stopLoading();
 });
