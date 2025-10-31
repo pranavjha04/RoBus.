@@ -1,6 +1,13 @@
 package models;
 
+import utils.DBManager;
+
 import java.sql.Date;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class Driver {
     private Integer driverId;
@@ -10,9 +17,67 @@ public class Driver {
     private String licenceNumber;
     private User user;
     private Operator operator;
+    
 
     public Driver() {
 
+    }
+
+    public static int addRecord(String licenceNumber, String licencePic, Date startDate, Integer userId, Integer operatorId) {
+        int generatedKey = -1;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                            "INSERT INTO drivers " + 
+                            "(licence_no, licence_pic, start_date, user_id, operator_id) " +
+                            "VALUES (?,?,?,?,?)";
+            
+            PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, licenceNumber);
+            ps.setString(2, licencePic);
+            ps.setDate(3, startDate);
+            ps.setInt(4, userId);
+            ps.setInt(5, operatorId);
+
+            int rows = ps.executeUpdate();
+            if(rows > 0) {
+                ResultSet rs = ps.getGeneratedKeys();
+                if(rs.next()) {
+                    generatedKey = rs.getInt(1);
+                }
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            generatedKey = -1;
+        }
+
+        return generatedKey;
+    }
+
+    public static boolean checkLicenceNumberExist(String licenceNumber) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                            "SELECT licence_no FROM drivers " +
+                            "where licence_no=?";
+            
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, licenceNumber);
+
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
     }
 
     public String getLicencePic() {

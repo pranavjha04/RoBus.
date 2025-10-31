@@ -62,10 +62,72 @@ public class User implements Cloneable {
     
     public User() {}
 
-    public boolean updateUserType(int targetType) {
-        if(getUserType().getUserTypeId() == targetType) {
-            return true;
+    public static boolean updateProfilePic(String profilePic, Integer userId) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                            "UPDATE users " +
+                            "SET profile_pic=? " +
+                            "WHERE user_id=?";
+            
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, userId);
+
+            int rows = ps.executeUpdate();
+            if(rows > 0) {
+                flag = true;
+            }
+            con.close();
         }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
+    }
+    public static User getRecordByEmail(String email) {
+        User user = null;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                    "SELECT * FROM USERS " +
+                    "JOIN status ON users.status_id = status.status_id " +
+                    "JOIN user_types ON users.user_type_id = user_types.user_type_id " +
+                    "WHERE email=?";
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                user = new User(
+                        rs.getInt("user_id"), 
+                        rs.getString("full_name"),
+                        rs.getDate("dob"),
+                        rs.getString("contact"),
+                        rs.getInt("gender"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("profile_pic"),
+                        new Status(rs.getInt("status.status_id"), rs.getString("status.name")),
+                        rs.getString("verification_code"),
+                        rs.getTimestamp("created_at"),
+                        rs.getTimestamp("updated_at"),
+                        new UserType(rs.getInt("user_types.user_type_id"), rs.getString("user_types.name"))
+                );
+            }
+
+            con.close();
+        }   
+        catch(SQLException e) {
+            e.printStackTrace();
+            user = null;
+        }
+
+        return user;
+    }
+
+    public static boolean updateUserType(int userId, int targetType) {
 
         boolean flag = false;
         try {

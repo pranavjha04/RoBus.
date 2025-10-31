@@ -456,3 +456,37 @@ export const collectRouteMidCitiesRequest = async (routeId) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const getUserViaMailRequest = async (email) => {
+  const queryParams = createURLParams({
+    email,
+  });
+
+  const res = await fetch(`get_user_via_mail.do?${queryParams.toString()}`);
+  if (!res.ok) throw new Error("Internal Server Erromr");
+  const data = await res.text();
+  return data.trim();
+};
+
+export const checkLicenceNumberExist = async (licenceNumber) => {
+  const queryParams = createURLParams({
+    licence_no: licenceNumber,
+  });
+  const res = await fetch(`check_licence_no.do?${queryParams.toString()}`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
+
+export const addDriverRequest = async (formData) => {
+  const res = await fetch(`add_driver.do`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) throw new Error("Invalid Request");
+  const data = await res.text();
+  return data.trim();
+};

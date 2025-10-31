@@ -257,3 +257,8 @@ export const getFormatedDuration = (duration) => {
   const mins = duration % 60;
   return hours === 0 ? `${mins} mins` : `${hours}h ${mins}mins`;
 };
+
+export const validateLicenceNumber = (value) => {
+  const regex = /^[A-Z]{2}\d{2}[-\s]?\d{4}\d{7}$/;
+  return regex.test(value);
+};

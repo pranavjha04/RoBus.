@@ -92,4 +92,10 @@ public final class FieldManager {
     public static final Boolean validateHaltingTime(int haltingTime) {
         return haltingTime > 0 && haltingTime <= 120;
     }
+
+    public static final Boolean validateLicenceNumber(String licenceNumber) {
+        Pattern pattern = Pattern.compile("^[A-Z]{2}\\d{2}[-\\s]?\\d{4}\\d{7}$");
+        Matcher matcher = pattern.matcher(licenceNumber);
+        return matcher.matches();
+    }
 }

@@ -618,4 +618,16 @@ export class ViewHelper {
                     </div>
                   </a>`;
   }
+
+  static getImagePreview(file, type = "medium") {
+    if (!file || !(file instanceof File)) throw new Error("No File");
+    const imageType = {
+      medium: "100px; height: 100px;",
+    };
+    return `<img 
+          src="${URL.createObjectURL(file)}" 
+          class="object-fit-cover rounded-2 preview"
+          style="${imageType[type]}"
+        >`;
+  }
 }

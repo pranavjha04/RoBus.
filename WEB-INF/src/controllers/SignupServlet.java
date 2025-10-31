@@ -109,10 +109,6 @@ public class SignupServlet extends HttpServlet {
             User user = new User(fullName, contact, email, password, Date.valueOf(dob), gender);
 
             if(user.addRecord()) {
-                // folder create krlo uska personal
-                File file = new File(getServletContext().getRealPath("/WEB-INF/uploads/user"), user.getUserId() + "");
-                file.mkdir();
-
                 nextPage = "login.do?success=true";
             }
         }
