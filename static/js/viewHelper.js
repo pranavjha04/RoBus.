@@ -630,4 +630,59 @@ export class ViewHelper {
           style="${imageType[type]}"
         >`;
   }
+
+  static getDriverInfoTableHeading = () => {
+    return `<thead>
+              <tr class="border border-bottom text-center">
+                <th class="p-3">Name</th>
+                <th class="p-3">Started</th>
+                <th class="p-3">License No.</th>
+                <th class="p-3">Status</th>
+                <th class="p-3">Contact</th>
+                <th class="p-3">Options</th>
+              </tr>
+            </thead>`;
+  };
+
+  static getDriverInfoTableRow = (driver) => {
+    const { driverId, licenceNumber, startDate, user } = driver;
+    const { fullName, contact, status } = user;
+    const { name: statusName } = status;
+    console.log(contact);
+    return ` <tr class="text-center border-bottom" data-driver-id=${driverId}>
+                <td class="p-3">${fullName}</td>
+                <td class="p-3">${startDate}</td>
+                <td class="p-3">${licenceNumber}</td>
+                <td class="p-3">
+                  <span
+                    class="badge border
+                    
+                    ${
+                      statusName === "Unverified" &&
+                      "text-success bg-success-subtle border-success"
+                    }
+                    ${
+                      statusName === "Inactive" &&
+                      "text-danger bg-danger-subtle border-danger"
+                    }
+                    
+                    "
+                    >${statusName.toUpperCase()}</span
+                  >
+                </td>
+                <td class="p-3">${contact}</td>
+                <td class="p-3">
+                  <button
+                    class="btn manage-icon border-primary-subtle py-2 px-2"
+                  >
+                    <img
+                      src="static/media/images/edit_sm_blue.svg"
+                      width="18"
+                      height="18"
+                    />
+                    <span class="text-primary">Manage</span>
+                  </button>
+                </td>
+              </tr>`;
+  };
 }

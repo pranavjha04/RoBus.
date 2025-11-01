@@ -490,3 +490,10 @@ export const addDriverRequest = async (formData) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const collectAllDriverRequest = async () => {
+  const res = await fetch("get_all_drivers.do");
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};

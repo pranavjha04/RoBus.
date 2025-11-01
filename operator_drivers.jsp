@@ -40,12 +40,13 @@ prefix="e" uri="bts" %>
                       id="email"
                       type="email"
                       name="email"
+                      autocomplete="email"
                       class="form-control"
                       placeholder="pranavjha@gmail.com"
                     />
                   </div>
 
-                  <div class="d-none" id="form_container_essential">
+                  <div id="form_container_essential">
                     <div class="d-flex justify-content-between">
                       <div>
                         <label
@@ -112,8 +113,6 @@ prefix="e" uri="bts" %>
                   </div>
                 </form>
               </div>
-
-              <!-- Features -->
             </div>
           </div>
         </div>
@@ -132,7 +131,10 @@ prefix="e" uri="bts" %>
         <c:import url="operator_navbar.jsp" />
 
         <!-- Dashboard Content -->
-        <div class="p-4 d-flex flex-column overflow-scroll">
+        <div
+          class="p-4 d-flex flex-column overflow-scroll gap-3"
+          id="pageWrapper"
+        >
           <h2>All Drivers</h2>
           <div class="businfo gap-2 align-items-center justify-content-between">
             <div
@@ -163,7 +165,7 @@ prefix="e" uri="bts" %>
                 >
                   TOTAL DRIVERS
                 </p>
-                <h5 class="mb-0 fs-5 fw-medium">0</h5>
+                <h5 class="mb-0 fs-5 fw-medium" data-info-name="total">0</h5>
               </div>
             </div>
             <div
@@ -194,7 +196,7 @@ prefix="e" uri="bts" %>
                 >
                   ACTIVE DRIVERS
                 </p>
-                <h5 class="mb-0 fs-5 fw-medium">0</h5>
+                <h5 class="mb-0 fs-5 fw-medium" data-info-name="active">0</h5>
               </div>
             </div>
             <div
@@ -225,11 +227,11 @@ prefix="e" uri="bts" %>
                 >
                   INACTIVE DRIVERS
                 </p>
-                <h5 class="mb-0 fs-5 fw-medium">25</h5>
+                <h5 class="mb-0 fs-5 fw-medium" data-info-name="inActive">0</h5>
               </div>
             </div>
           </div>
-          <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex justify-content-between align-items-center gap-2">
             <div class="ms-auto d-flex align-items-center gap-2">
               <button
                 type="button"
@@ -241,6 +243,10 @@ prefix="e" uri="bts" %>
               </button>
             </div>
           </div>
+          <table
+            class="border rounded table-responsive border-bottom-0"
+            id="driver_table"
+          ></table>
         </div>
       </main>
     </div>

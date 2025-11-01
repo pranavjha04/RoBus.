@@ -15,7 +15,8 @@ import com.google.gson.Gson;
 import models.Driver;
 import models.Operator;
 
-public class GetDriverServlet extends HttpServlet {
+@WebServlet("/get_all_drivers.do")
+public class GetAllDriverServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         if(session.getAttribute("operator") == null) {
@@ -23,10 +24,12 @@ public class GetDriverServlet extends HttpServlet {
             return;
         }   
 
+        System.out.println("hello");
         Operator operator = (Operator) session.getAttribute("operator");
         Integer operatorId = operator.getOperatorId();
 
         ArrayList<Driver> driverList = Driver.collectRecords(operatorId);
+        System.out.println(driverList);
         if(driverList == null) {
             response.getWriter().println("invalid");
             return;

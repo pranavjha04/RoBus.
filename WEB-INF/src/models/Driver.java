@@ -35,48 +35,44 @@ public class Driver {
     }
 
     public static ArrayList<Driver> collectRecords(Integer operatorId) {
-        ArrayList<Driver> list = null;
+        ArrayList<Driver> list = new ArrayList<>();
         try {
             Connection con = DBManager.getConnection();
             String query = 
-                            "SELECT " +
-                            "d.driver_id, d.start_date, d.end_date, d.licence_pic, d.licence_no, " +
-                            "u.user_id, u.full_name, u.contact, u.email, u.password, u.created_at, u.updated_at, u.verification_code, u.dob, u.gender, u.profile_pic, " +
-                            "s.status_id, s.name AS 'status_name', " +
-                            "ut.user_type_id, ut.name AS 'user_type_name' " +
+                            "SELECT * " +
                             "from drivers d " +
                             "join users u on d.user_id = u.user_id " +
                             "join status s on u.status_id = s.status_id " +
                             "join user_types ut on u.user_type_id = ut.user_type_id " +
-                            "WHERE u.operator_id=?";
-
+                            "WHERE operator_id=?";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setInt(1, operatorId);
 
             ResultSet rs = ps.executeQuery();
+
             while(rs.next()) {
                  User user = new User(
-                        rs.getInt("user_id"), 
-                        rs.getString("full_name"),
-                        rs.getDate("dob"),
-                        rs.getString("contact"),
-                        rs.getInt("gender"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("profile_pic"),
+                        rs.getInt("u.user_id"), 
+                        rs.getString("u.full_name"),
+                        rs.getDate("u.dob"),
+                        rs.getString("u.contact"),
+                        rs.getInt("u.gender"),
+                        rs.getString("u.email"),
+                        rs.getString("u.password"),
+                        rs.getString("u.profile_pic"),
                         new Status(rs.getInt("s.status_id"), rs.getString("s.name")),
-                        rs.getString("verification_code"),
-                        rs.getTimestamp("created_at"),
-                        rs.getTimestamp("updated_at"),
-                        new UserType(rs.getInt("ut.user_type_id"), rs.getString("user_type_name"))
+                        rs.getString("u.verification_code"),
+                        rs.getTimestamp("u.created_at"),
+                        rs.getTimestamp("u.updated_at"),
+                        new UserType(rs.getInt("ut.user_type_id"), rs.getString("ut.name"))
                 );
 
                 Driver driver = new Driver(
-                    rs.getInt("driver_id"),
-                    rs.getDate("start_date"),
-                    rs.getDate("end_date"),
-                    rs.getString("licence_pic"),
-                    rs.getString("licence_no"),
+                    rs.getInt("d.driver_id"),
+                    rs.getDate("d.start_date"),
+                    rs.getDate("d.end_date"),
+                    rs.getString("d.licence_pic"),
+                    rs.getString("d.licence_no"),
                     user
                 );
 
@@ -86,6 +82,9 @@ public class Driver {
         }
         catch(SQLException e) {
             list = null;
+            e.printStackTrace();
+        }
+        catch(Exception e) {
             e.printStackTrace();
         }
         

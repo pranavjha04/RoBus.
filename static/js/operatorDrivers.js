@@ -1,13 +1,17 @@
 import { debounce } from "./debounce.js";
 import { ModalHandler } from "./modalHandler.js";
+import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import {
   addDriverRequest,
   checkLicenceNumberExist,
+  collectAllDriverRequest,
   getUserViaMailRequest,
 } from "./service.js";
 import { toast } from "./toast.js";
 import {
+  disableElements,
+  enableElements,
   validateEmail,
   validateFileSize,
   validateFileType,
@@ -23,12 +27,15 @@ const profilePicContainer = document.querySelector("#profile_pic_container");
 
 let profilePic = document.querySelector("#profile_pic");
 let profilePicPreview = document.querySelector("#profile_pic_preview");
+const startDate = document.querySelector("#start_date");
 const addDriverForm = document.querySelector("#add_driver_form");
 
 const formModal = document.querySelector("#centeredModal");
 const formContainerEssential = document.querySelector(
   "#form_container_essential"
 );
+
+const driverInfoTable = document.querySelector("#driver_table");
 
 const cache = {
   email: {},
@@ -37,28 +44,38 @@ const cache = {
 
 const modal = {
   activeUser: null,
+  driverList: [],
 };
 
-const hideFormFields = () => {
-  formContainerEssential.classList.add("d-none");
+const disableFormFields = (emailTo = false) => {
+  disableElements(licencePic, licenceNumber, startDate);
+  if (emailTo) email.disabled = true;
 };
-const showFormFields = () => {
-  formContainerEssential.classList.remove("d-none");
+
+const enableFormFields = () => {
+  enableElements(licencePic, licenceNumber, startDate, email);
 };
 
 const handleForm = () => {
   if (modal.activeUser === null) {
     licencePic.value = "";
+    licencePicPreview.innerHTML = "";
     licenceNumber.value = "";
-
-    hideFormFields();
+    if (profilePic) {
+      profilePic.value = "";
+      profilePicContainer.classList.add("d-none");
+    }
+    if (profilePicPreview) {
+      profilePicPreview.innerHTML = "";
+    }
+    disableFormFields();
     return;
   }
 
   const { userType } = modal.activeUser;
   if (userType.name !== "Passenger") {
     toast.error("Invalid User");
-    hideFormFields();
+    disableFormFields();
     return;
   }
 
@@ -86,6 +103,7 @@ const handleForm = () => {
 
     profilePic = document.querySelector("#profile_pic");
     profilePicPreview = document.querySelector("#profile_pic_preview");
+    profilePicContainer.classList.remove("d-none");
 
     profilePic?.addEventListener("input", (e) => {
       if (e.target.files.length > 1) {
@@ -111,7 +129,7 @@ const handleForm = () => {
       profilePicPreview.innerHTML = img;
     });
   }
-  showFormFields();
+  enableFormFields();
 };
 
 const handleCollectUser = async () => {
@@ -129,12 +147,63 @@ const handleCollectUser = async () => {
     toast.error(err.message);
   }
 };
+const displayDriverInfo = () => {
+  if (modal.driverList.length === 0) {
+    driverInfoTable.innerHTML = ViewHelper.getTableEmptyMessage(
+      "Add drivers to display"
+    );
+  } else {
+    driverInfoTable.innerHTML = ViewHelper.getDriverInfoTableHeading();
+    driverInfoTable.innerHTML += `<tbody>${modal.driverList
+      .map(ViewHelper.getDriverInfoTableRow)
+      .join("")}</tbody>`;
+  }
+};
+
+const displayDriverStatus = () => {
+  const driverList = modal.driverList;
+  const infoData = driverList.reduce(
+    (acc, { user }) => {
+      return user.status.name === "Active"
+        ? { ...acc, total: acc.total + 1, active: acc.active + 1 }
+        : { ...acc, total: acc.total + 1, inActive: acc.inActive + 1 };
+    },
+    {
+      total: 0,
+      active: 0,
+      inActive: 0,
+    }
+  );
+  console.log(infoData);
+  Object.keys(infoData).forEach((key) => {
+    document.querySelector(`[data-info-name="${key}"]`).textContent =
+      infoData[key];
+  });
+};
+
+const handleCollectAllDrivers = async (firstTime = true) => {
+  if (!firstTime) driverInfoTable.innerHTML = ViewHelper.getTableLoader();
+  try {
+    const response = await collectAllDriverRequest();
+    if (response === "invalid") {
+      throw new Error("Invalid Request");
+    }
+    modal.driverList = JSON.parse(response);
+    PageLoading.stopLoading();
+    displayDriverInfo();
+    displayDriverStatus();
+  } catch (err) {
+    toast.error(err.message);
+    PageError.showOperatorError();
+  }
+};
 
 email.addEventListener("blur", (e) => {
   const value = e.target.value.toLowerCase();
   const isValid = validateEmail(value);
   if (!isValid) {
     modal.activeUser = null;
+    profilePicContainer.classList.add("d-none");
     handleForm();
     toast.error("Enter valid email address");
     return;
@@ -210,6 +279,7 @@ addDriverForm.addEventListener("submit", async (e) => {
   try {
     const formData = new FormData(addDriverForm);
     formData.append("user_id", modal.activeUser.userId);
+    disableFormFields(true);
     const response = await addDriverRequest(formData);
     if (response === "invalid") {
       throw new Error("Invalid Request");
@@ -219,17 +289,21 @@ addDriverForm.addEventListener("submit", async (e) => {
       // clear caches
       delete cache.licence[licenceNumber.value];
       delete cache.email[email.value];
+      handleCollectAllDrivers();
     }
   } catch (err) {
     toast.error(err.message);
+    enableFormFields();
   }
 });
 
 formModal.addEventListener("show.bs.modal", () => {
   addDriverForm.reset();
   modal.activeUser = null;
+  email.disabled = false;
   handleForm();
 });
+
 window.addEventListener("DOMContentLoaded", () => {
-  PageLoading.stopLoading();
+  handleCollectAllDrivers(true);
 });
