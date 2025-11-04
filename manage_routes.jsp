@@ -271,7 +271,7 @@
     </div>
 
     <div
-      class="modal fade"
+      class="modal fade modal-sm"
       id="centeredModalB"
       tabindex="-1"
       aria-hidden="true"
@@ -293,7 +293,7 @@
               <input
                 type="hidden"
                 name="operator_route_id"
-                id="operator_route_id"
+                id="weekday_operator_route_id"
               />
               <div class="mb-3">
                 <p class="form-label fw-semibold small">Route</p>

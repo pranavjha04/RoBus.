@@ -37,11 +37,14 @@ const selectedMidCityTable = document.querySelector("#form_mid_city_table");
 const addMidCityForm = document.querySelector("#add_mid_city_form");
 const submitAddCityFormBtn = document.querySelector("#submit_add_route_btn");
 
-const busRouteFormModal = document.querySelector("#centeredModalB");
-const activeBusRouteWeekdayRoute = document.querySelector(
-  "#active_operator_route"
+const busRouteWeekdayForm = document.querySelector("#centeredModalB");
+const activeBusRouteWeekdayRouteSelect = document.querySelector(
+  "#active_operator_route_select"
 );
-
+const activeBusRouteWeekdayRoute = document.querySelector(
+  "#active_operator_route_weekday"
+);
+const weekdayContainer = document.querySelector("#weekday_cont");
 
 const modal = {
   activeRoute: null,
@@ -51,6 +54,7 @@ const modal = {
   availableMidCityList: [],
   activeMidCity: null,
   selectedMidCityList: [],
+  selectedWeekdayList: [],
 };
 
 const updateRouteInfo = () => {
@@ -167,7 +171,7 @@ const updateAvailableMidCityList = () => {
   });
 };
 
-const updateMidCityForm = () => {
+const updateForm = () => {
   routeMidCitySelect.disabled = false;
   routeMidCitySelect.classList.remove("bg-secondary-subtle");
   routeMidCitySelect.textContent = "Select Mid City";
@@ -198,13 +202,6 @@ const updateMidCityForm = () => {
   availableMidCityListContainer.innerHTML = `${midCitytoSelectList
     .map(ViewHelper.getRouteMidCitySelectList)
     .join("")}`;
-};
-
-const updateRouteWeekdayForm = () => {
-  activeBusRouteWeekdayRoute.innerHTML = ViewHelper.getManageRouteCityActiveRow(
-    route,
-    document.querySelector("#duration_info").textContent
-  );
 };
 
 const handleCollectAvailableRouteRequest = async () => {
@@ -438,7 +435,7 @@ const handleFormHaltingTimeDelete = (parent) => {
     disableElements(submitAddCityFormBtn);
   }
   toast.success("Mid City Delete Successfully");
-  updateMidCityForm();
+  updateForm();
   updateSelectedMidCityTable();
 };
 
@@ -502,11 +499,14 @@ formModal.addEventListener("show.bs.modal", () => {
   modal.selectedMidCityList = [];
   disableElements(formHaltingTime);
   disableElements(submitAddCityFormBtn);
-  updateMidCityForm();
+  updateForm();
   updateSelectedMidCityTable();
 });
 
-formModal.addEventListener("hide.bs.modal", () => {});
+busRouteWeekdayForm.addEventListener("show.bs.modal", () => {
+  modal.selectedWeekdayList = [];
+  
+});
 
 availableMidCityListContainer.addEventListener("mousedown", (e) => {
   const target = e.target.closest("li");
@@ -554,7 +554,7 @@ addMidCityBtn.addEventListener("click", (e) => {
   formHaltingTime.value = "";
 
   disableElements(formHaltingTime);
-  updateMidCityForm();
+  updateForm();
   updateSelectedMidCityTable();
 });
 
@@ -630,7 +630,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       disableElements(document.querySelector("#add_mid_city_form_trigger_btn"));
     } else {
       await handleCollectRouteMidCities();
-      updateMidCityForm();
+      updateForm();
     }
     updateRouteTimeLine();
     updateRouteMidCityInfoTable();
