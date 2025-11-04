@@ -98,6 +98,9 @@ public class BusRouteWeekday {
             e.printStackTrace();
             busRouteWeekdayList = null;
         }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
 
         return busRouteWeekdayList;
     }
