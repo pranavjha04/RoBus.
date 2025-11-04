@@ -174,7 +174,6 @@ const displayDriverStatus = () => {
       inActive: 0,
     }
   );
-  console.log(infoData);
   Object.keys(infoData).forEach((key) => {
     document.querySelector(`[data-info-name="${key}"]`).textContent =
       infoData[key];

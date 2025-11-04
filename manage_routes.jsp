@@ -270,6 +270,51 @@
       </div>
     </div>
 
+    <div
+      class="modal fade"
+      id="centeredModalB"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header border-0">
+            <h5 class="modal-title fw-semibold">Add Route Weekday</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <form id="add_bus_route_weekday_form" class="gap-3">
+              <!-- Route Selection -->
+              <input
+                type="hidden"
+                name="operator_route_id"
+                id="operator_route_id"
+              />
+              <div class="mb-3">
+                <p class="form-label fw-semibold small">Route</p>
+                <div class="route-card" id="active_operator_route"></div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="d-flex align-items-end">
+                <input
+                  type="submit"
+                  id="submit_add_route_btn"
+                  value="Add Route Weekdays"
+                  class="btn btn-primary align-self-end ms-auto px-4 py-2"
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="dashContainer">
       <!-- Sidebar -->
       <c:import url="operator_sidebar.jsp" />
@@ -364,8 +409,9 @@
               </button>
               <button
                 class="btn text-primary border border-primary rounded-pill"
+                data-target="route_weekday_cont"
               >
-                Buses
+                Route Weekdays
               </button>
             </div>
           </div>
@@ -392,6 +438,24 @@
                 data-bs-target="#centeredModal"
               >
                 &plus; Add Mid Cities
+              </button>
+              <table
+                class="border rounded table-responsive w-100"
+                id="route_mid_city_table"
+              ></table>
+            </div>
+            <div
+              class="bg-white p-4 rounded shadow-sm d-flex flex-column gap-3"
+              id="route_weekday_cont"
+            >
+              <h2 class="fs-3">Route Weekdays</h2>
+              <button
+                id="add_bus_route_weekday_form_trigger_btn"
+                class="btn btn-primary align-self-end"
+                data-bs-toggle="modal"
+                data-bs-target="#centeredModalB"
+              >
+                &plus; Route Weekdays
               </button>
               <table
                 class="border rounded table-responsive w-100"

@@ -648,7 +648,6 @@ export class ViewHelper {
     const { driverId, licenceNumber, startDate, user } = driver;
     const { fullName, contact, status } = user;
     const { name: statusName } = status;
-    console.log(contact);
     return ` <tr class="text-center border-bottom" data-driver-id=${driverId}>
                 <td class="p-3">${fullName}</td>
                 <td class="p-3">${startDate}</td>

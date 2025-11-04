@@ -37,6 +37,12 @@ const selectedMidCityTable = document.querySelector("#form_mid_city_table");
 const addMidCityForm = document.querySelector("#add_mid_city_form");
 const submitAddCityFormBtn = document.querySelector("#submit_add_route_btn");
 
+const busRouteFormModal = document.querySelector("#centeredModalB");
+const activeBusRouteWeekdayRoute = document.querySelector(
+  "#active_operator_route"
+);
+
+
 const modal = {
   activeRoute: null,
   activeRouteMidCities: [],
@@ -161,7 +167,7 @@ const updateAvailableMidCityList = () => {
   });
 };
 
-const updateForm = () => {
+const updateMidCityForm = () => {
   routeMidCitySelect.disabled = false;
   routeMidCitySelect.classList.remove("bg-secondary-subtle");
   routeMidCitySelect.textContent = "Select Mid City";
@@ -192,6 +198,13 @@ const updateForm = () => {
   availableMidCityListContainer.innerHTML = `${midCitytoSelectList
     .map(ViewHelper.getRouteMidCitySelectList)
     .join("")}`;
+};
+
+const updateRouteWeekdayForm = () => {
+  activeBusRouteWeekdayRoute.innerHTML = ViewHelper.getManageRouteCityActiveRow(
+    route,
+    document.querySelector("#duration_info").textContent
+  );
 };
 
 const handleCollectAvailableRouteRequest = async () => {
@@ -425,7 +438,7 @@ const handleFormHaltingTimeDelete = (parent) => {
     disableElements(submitAddCityFormBtn);
   }
   toast.success("Mid City Delete Successfully");
-  updateForm();
+  updateMidCityForm();
   updateSelectedMidCityTable();
 };
 
@@ -489,7 +502,7 @@ formModal.addEventListener("show.bs.modal", () => {
   modal.selectedMidCityList = [];
   disableElements(formHaltingTime);
   disableElements(submitAddCityFormBtn);
-  updateForm();
+  updateMidCityForm();
   updateSelectedMidCityTable();
 });
 
@@ -541,7 +554,7 @@ addMidCityBtn.addEventListener("click", (e) => {
   formHaltingTime.value = "";
 
   disableElements(formHaltingTime);
-  updateForm();
+  updateMidCityForm();
   updateSelectedMidCityTable();
 });
 
@@ -617,7 +630,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       disableElements(document.querySelector("#add_mid_city_form_trigger_btn"));
     } else {
       await handleCollectRouteMidCities();
-      updateForm();
+      updateMidCityForm();
     }
     updateRouteTimeLine();
     updateRouteMidCityInfoTable();
@@ -625,11 +638,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     console.error(err.messsage);
     toast.error(err.messsage);
     PageError.showOperatorError();
+    PageLoading.stopLoading();
   }
-});
-
-window.addEventListener("pagehide", () => {
-  sessionStorage.removeItem("activeRoute");
-  observer.disconnect(routeMidCityInfoContainer);
-  observer.disconnect(document.querySelector("#route_time_line"));
 });
