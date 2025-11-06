@@ -707,6 +707,7 @@ addMidCityForm.addEventListener("submit", async (e) => {
 
       case "success": {
         toast.success("Mid City Added successfully");
+        routeMidCityInfoTable.scrollIntoView({ behavior: "smooth" });
         await handleCollectOperatorRouteMidCities();
         updateAvailableMidCityList();
         updateRouteInfo();
@@ -736,6 +737,7 @@ addBusRouteWeekdayForm.addEventListener("submit", async (e) => {
       throw new Error("Invalid Request");
     }
     if (response === "success") {
+      busRouteWeekdayTable.scrollIntoView({ behavior: "smooth" });
       toast.success("Weekdays Added successfully");
       ModalHandler.hide(busRouteWeekdayFormModal);
       await handleCollectBusRouteWeekdays();
