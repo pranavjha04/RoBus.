@@ -684,4 +684,56 @@ export class ViewHelper {
                 </td>
               </tr>`;
   };
+
+  static getBusRoutWeedayFormWeekday(weekday) {
+    const { name, weekdayId } = weekday;
+    return `<div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      name="weekday"
+                      value=${weekdayId}
+                      id="${name}"
+                    />
+                    <label class="form-check-label" for="${name}">${name}</label>
+                  </div>`;
+  }
+
+  static getBusRouteWeekdayTableHead() {
+    return `<thead
+                  class="border border-bottom text-center table table-responsive"
+                  style="background-color: rgb(248, 249, 250)"
+                >
+                  <tr>
+                    <th class="p-3">Weekday</th>
+                    <th class="p-3">Options</th>
+                  </tr>
+                </thead>`;
+  }
+  static getBusRouteWeekdayTableRow(busRouteWeekday) {
+    const { busRouteWeekdayId, weekday } = busRouteWeekday;
+    return `  <tr
+                    class="text-center border-bottom"
+                    data-bus-route-weekday-id="${busRouteWeekdayId}"
+                  >
+                    <td
+                      class="p-3 text-center d-flex flex-column align-items-center justify-content-center"
+                    >
+                      ${weekday.name}
+                    </td>
+                    <td class="p-3 text-center">
+                      <button
+                        class="btn delete-icon border-danger-subtle py-2 px-2"
+                        data-type="delete"
+                      >
+                        <img
+                          src="static/media/images/delete_sm_red.svg"
+                          width="18"
+                          height="18"
+                        />
+                        <span class="text-danger">Remove</span>
+                      </button>
+                    </td>
+                  </tr>`;
+  }
 }

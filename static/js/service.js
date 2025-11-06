@@ -497,3 +497,46 @@ export const collectAllDriverRequest = async () => {
   const data = await res.text();
   return data.trim();
 };
+
+export const collectAllBusRouteWeekdayRequest = async (params) => {
+  const queryParams = createURLParams(params);
+  const res = await fetch(
+    `get_bus_route_weekday_all.do?${queryParams.toString()}`
+  );
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
+
+export const collectAllWeekdayRequest = async () => {
+  const res = await fetch("get_weekday_all.do");
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
+
+export const addBusRouteWeedayRequest = async (formData) => {
+  const queryParams = createURLParams(formData);
+  const res = await fetch(
+    `add_bus_route_weekday.do?${queryParams.toString()}`,
+    {
+      method: "POST",
+    }
+  );
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
+
+export const deleteBusRouteWeekdayRequest = async (params) => {
+  const queryParams = createURLParams(params);
+  const res = await fetch(
+    `delete_bus_route_weekday.do?${queryParams.toString()}`,
+    {
+      method: "POST",
+    }
+  );
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};

@@ -14,15 +14,91 @@ public class BusRouteWeekday {
     private Integer busRouteWeekdayId;
     private Weekday weekday;
     private OperatorRoute operatorRoute;
+    
+    public BusRouteWeekday(Integer busRouteWeekdayId, Weekday weekday, OperatorRoute operatorRoute) {
+        this.busRouteWeekdayId = busRouteWeekdayId;
+        this.weekday = weekday;
+        this.operatorRoute = operatorRoute;
+    }
 
     public BusRouteWeekday() {
 
     }
 
-    public BusRouteWeekday(Integer busRouteWeekdayId, Weekday weekday, OperatorRoute operatorRoute) {
-        this.busRouteWeekdayId = busRouteWeekdayId;
-        this.weekday = weekday;
-        this.operatorRoute = operatorRoute;
+    public static boolean deleteRecord(Integer busRouteWeekdayId, Integer operatorRouteId, Integer operatorId) {
+        boolean flag = false;
+
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "DELETE brw FROM " +
+                        "bus_route_weekdays brw " +
+                        "JOIN operator_routes opr ON brw.operator_route_id = brw.operator_route_id " +
+                        "WHERE brw.bus_route_weekday_id=? AND brw.operator_route_id=? AND opr.operator_id=?";
+
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setInt(1, busRouteWeekdayId);
+            ps.setInt(2, operatorRouteId);
+            ps.setInt(3, operatorId);
+
+            int rows = ps.executeUpdate();
+            if(rows > 0) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+
+        return flag;
+    }
+
+    public static boolean addRecord(String[] weekdays, Integer operatorRouteId) {
+        boolean flag = false;
+        StringBuilder builder = new StringBuilder();
+        if(weekdays.length == 0) return flag;
+
+        try {
+            for(String next : weekdays) {
+                builder.append("(?,?),");
+            }
+            builder.deleteCharAt(builder.length() - 1);
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "INSERT INTO bus_route_weekdays " +
+                        "(operator_route_id, weekday_id) " +
+                        "VALUES " + builder.toString();
+            
+            PreparedStatement ps = con.prepareStatement(query);
+
+            int count = 1;
+            for(String next : weekdays) {
+                ps.setInt(count++, operatorRouteId);
+                try {
+                    ps.setInt(count++, Integer.parseInt(next));
+                }
+                catch(NumberFormatException e) {
+                    e.printStackTrace();
+                    flag = false;
+                    con.close();
+                    return flag;
+                }
+            }
+
+            int rows = ps.executeUpdate();
+            if(rows > 0) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
     }
 
     public static ArrayList<BusRouteWeekday> collectAllRecords(Integer operatorRouteId, Integer operatorId) {

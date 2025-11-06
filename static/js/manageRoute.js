@@ -2,15 +2,20 @@ import { ModalHandler } from "./modalHandler.js";
 import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import {
+  addBusRouteWeedayRequest,
   addOperatorRouteMidCities,
+  collectAllBusRouteWeekdayRequest,
+  collectAllWeekdayRequest,
   collectAvailableRouteMidCitiesRequest,
   collectOperatorRouteMidCitiesRequest,
   collectRouteMidCitiesRequest,
+  deleteBusRouteWeekdayRequest,
   deleteOperatorRouteMidCityRequest,
   updateHaltingTimeRequest,
 } from "./service.js";
 import { toast } from "./toast.js";
 import {
+  createURLParams,
   disableElements,
   enableElements,
   getFormatedDuration,
@@ -37,14 +42,15 @@ const selectedMidCityTable = document.querySelector("#form_mid_city_table");
 const addMidCityForm = document.querySelector("#add_mid_city_form");
 const submitAddCityFormBtn = document.querySelector("#submit_add_route_btn");
 
-const busRouteWeekdayForm = document.querySelector("#centeredModalB");
-const activeBusRouteWeekdayRouteSelect = document.querySelector(
-  "#active_operator_route_select"
+const busRouteWeekdayFormModal = document.querySelector("#centeredModalB");
+const addBusRouteWeekdayForm = document.querySelector(
+  "#add_bus_route_weekday_form"
 );
 const activeBusRouteWeekdayRoute = document.querySelector(
   "#active_operator_route_weekday"
 );
-const weekdayContainer = document.querySelector("#weekday_cont");
+const weekdayContainer = document.querySelector("#available_weekday_container");
+const busRouteWeekdayTable = document.querySelector("#bus_route_weekday_table");
 
 const modal = {
   activeRoute: null,
@@ -55,6 +61,8 @@ const modal = {
   activeMidCity: null,
   selectedMidCityList: [],
   selectedWeekdayList: [],
+  availbleWeekdayList: [],
+  activeBusRouteWeekdayList: [],
 };
 
 const updateRouteInfo = () => {
@@ -171,6 +179,24 @@ const updateAvailableMidCityList = () => {
   });
 };
 
+const updateBusRouteWeekdayInfoTable = () => {
+  const { activeBusRouteWeekdayList } = modal;
+  if (!activeBusRouteWeekdayList.length) {
+    busRouteWeekdayTable.innerHTML = ViewHelper.getTableEmptyMessage(
+      "Add records to display"
+    );
+    return;
+  }
+
+  busRouteWeekdayTable.innerHTML = ViewHelper.getBusRouteWeekdayTableHead();
+  busRouteWeekdayTable.innerHTML += `<tbody>${activeBusRouteWeekdayList
+    .sort((a, b) => a.weekday.weekdayId - b.weekday.weekdayId)
+    .map(ViewHelper.getBusRouteWeekdayTableRow)
+    .join("")}</tbody>`;
+};
+
+const updateWeekdays = () => {};
+
 const updateForm = () => {
   routeMidCitySelect.disabled = false;
   routeMidCitySelect.classList.remove("bg-secondary-subtle");
@@ -204,17 +230,26 @@ const updateForm = () => {
     .join("")}`;
 };
 
-const handleCollectAvailableRouteRequest = async () => {
-  const routeId = +url.get("route_id");
-
-  try {
-    const response = await collectAvailableRouteMidCitiesRequest(routeId);
-    if (response === "invalid") throw new Error("Invalid Request");
-    modal.availableMidCityList = JSON.parse(response);
-    PageLoading.stopLoading();
-  } catch (err) {
-    console.error(err.messsage);
-    toast.error(err.messsage);
+const updateBusRouteWeekdayForm = () => {
+  const { operatorRouteId, route } = modal.activeRoute;
+  document.querySelector("#weekday_operator_route_id").value = operatorRouteId;
+  activeBusRouteWeekdayRoute.innerHTML = ViewHelper.getManageRouteCityActiveRow(
+    route,
+    document.querySelector("#duration_info").textContent
+  );
+  let formWeekdayList = modal.availbleWeekdayList.filter((weekday) => {
+    return !modal.activeBusRouteWeekdayList.some(
+      (busRouteWeekday) =>
+        busRouteWeekday.weekday.weekdayId === weekday.weekdayId
+    );
+  });
+  if (formWeekdayList.length) {
+    weekdayContainer.innerHTML = formWeekdayList
+      .sort((a, b) => a.weekdayId - b.weekdayId)
+      .map(ViewHelper.getBusRoutWeedayFormWeekday)
+      .join("");
+  } else {
+    weekdayContainer.innerHTML = "No weekdays are available";
   }
 };
 
@@ -231,14 +266,15 @@ const handleCollectOperatorRouteMidCities = async () => {
       throw new Error("Invalid Request");
     }
   } catch (err) {
-    toast.error(err.messsage);
+    toast.error(err.message);
     PageError.showOperatorError();
   } finally {
     PageLoading.stopLoading();
   }
 };
 
-const handleCollectRouteMidCities = async () => {
+const handleCollectRouteMidCities = async (firstTime = false) => {
+  if (!firstTime) routeMidCityInfoTable.innerHTML = ViewHelper.getTableLoader();
   try {
     const response = await collectRouteMidCitiesRequest(
       modal.activeRoute.route.routeId
@@ -247,7 +283,38 @@ const handleCollectRouteMidCities = async () => {
     modal.routeMidCityList = JSON.parse(response);
     updateAvailableMidCityList();
   } catch (err) {
-    throw new Error(err.messsage);
+    throw new Error(err.message);
+  }
+};
+
+const handleCollectBusRouteWeekdays = async (firstTime = false) => {
+  if (!firstTime) busRouteWeekdayTable.innerHTML = ViewHelper.getTableLoader();
+  try {
+    const response = await collectAllBusRouteWeekdayRequest({
+      operator_route_id: modal.activeRoute.operatorRouteId,
+    });
+    if (response === "invalid") {
+      throw new Error("Invalid Request");
+    }
+    modal.activeBusRouteWeekdayList = JSON.parse(response);
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
+
+const handleCollectWeekdayRequest = async () => {
+  try {
+    const response = await collectAllWeekdayRequest();
+    if (
+      response === "invalid" ||
+      !response.length ||
+      !response.startsWith("[")
+    ) {
+      throw new Error("Invalid Request");
+    }
+    modal.availbleWeekdayList = JSON.parse(response);
+  } catch (err) {
+    throw new Error(err.message);
   }
 };
 
@@ -303,7 +370,7 @@ const handleEditHaltingTime = (row) => {
           updateRouteTimeLine();
         }
       } catch (err) {
-        toast.error(err.messsage);
+        toast.error(err.message);
       }
     }
     haltingTimeContainer.classList.remove(
@@ -355,7 +422,30 @@ const handleDeleteRouteMidCity = async (row) => {
       updateAvailableMidCityList();
     }
   } catch (err) {
-    toast.error(err.messsage);
+    toast.error(err.message);
+  }
+};
+const handleDeleteBusRouteWeekday = async (busRouteWeekdayId) => {
+  if (!busRouteWeekdayId) return;
+
+  try {
+    const response = await deleteBusRouteWeekdayRequest({
+      operator_route_id: modal.activeRoute.operatorRouteId,
+      bus_route_weekday_id: +busRouteWeekdayId,
+    });
+    if (response === "invalid") {
+      throw new Error("Invalid Request");
+    }
+    if (response === "success") {
+      toast.success("Weekday deleted successfully");
+      modal.activeBusRouteWeekdayList = modal.activeBusRouteWeekdayList.filter(
+        (busRouteWeekday) =>
+          busRouteWeekday.busRouteWeekdayId !== +busRouteWeekdayId
+      );
+      updateBusRouteWeekdayInfoTable();
+    }
+  } catch (err) {
+    toast.error(err.message);
   }
 };
 
@@ -381,6 +471,18 @@ routeMidCityInfoTable.addEventListener("click", (e) => {
     default: {
       break;
     }
+  }
+});
+
+busRouteWeekdayTable.addEventListener("click", (e) => {
+  const button = e.target.closest("button");
+  if (!button) return;
+
+  const { busRouteWeekdayId } = button.closest("tr").dataset;
+  handleDeleteBusRouteWeekday(busRouteWeekdayId);
+  try {
+  } catch (err) {
+    toast.error(err.message);
   }
 });
 
@@ -503,9 +605,8 @@ formModal.addEventListener("show.bs.modal", () => {
   updateSelectedMidCityTable();
 });
 
-busRouteWeekdayForm.addEventListener("show.bs.modal", () => {
-  modal.selectedWeekdayList = [];
-  
+busRouteWeekdayFormModal.addEventListener("show.bs.modal", () => {
+  updateBusRouteWeekdayForm();
 });
 
 availableMidCityListContainer.addEventListener("mousedown", (e) => {
@@ -614,10 +715,34 @@ addMidCityForm.addEventListener("submit", async (e) => {
       }
     }
   } catch (err) {
-    console.error(err.messsage);
-    toast.error(err.messsage);
+    toast.error(err.message);
   } finally {
     ModalHandler.hide(formModal);
+  }
+});
+
+addBusRouteWeekdayForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try {
+    const formData = new FormData(addBusRouteWeekdayForm);
+
+    const queryParams = createURLParams(formData);
+    if (queryParams.size === 1) {
+      throw new Error("No Weekday Selected");
+    }
+
+    const response = await addBusRouteWeedayRequest(formData);
+    if (response === "invalid") {
+      throw new Error("Invalid Request");
+    }
+    if (response === "success") {
+      toast.success("Weekdays Added successfully");
+      ModalHandler.hide(busRouteWeekdayFormModal);
+      await handleCollectBusRouteWeekdays();
+      updateBusRouteWeekdayInfoTable();
+    }
+  } catch (err) {
+    toast.error(err.message);
   }
 });
 
@@ -625,18 +750,21 @@ window.addEventListener("DOMContentLoaded", async () => {
   try {
     modal.activeRoute = JSON.parse(sessionStorage.getItem("activeRoute"));
     updateRouteInfo();
-    await handleCollectOperatorRouteMidCities();
+    await handleCollectOperatorRouteMidCities(true);
+    await handleCollectBusRouteWeekdays(true);
+    await handleCollectWeekdayRequest();
     if (modal.activeRoute.status.name === "Active") {
       disableElements(document.querySelector("#add_mid_city_form_trigger_btn"));
     } else {
       await handleCollectRouteMidCities();
-      updateForm();
     }
+    updateForm();
     updateRouteTimeLine();
     updateRouteMidCityInfoTable();
+    updateBusRouteWeekdayInfoTable();
+    updateWeekdays();
   } catch (err) {
-    console.error(err.messsage);
-    toast.error(err.messsage);
+    toast.error(err.message);
     PageError.showOperatorError();
     PageLoading.stopLoading();
   }

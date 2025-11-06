@@ -276,7 +276,7 @@
       tabindex="-1"
       aria-hidden="true"
     >
-      <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-dialog modal modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header border-0">
             <h5 class="modal-title fw-semibold">Add Route Weekday</h5>
@@ -288,25 +288,42 @@
           </div>
 
           <div class="modal-body">
-            <form id="add_bus_route_weekday_form" class="gap-3">
+            <form
+              id="add_bus_route_weekday_form"
+              class="d-flex gap-4 flex-wrap"
+            >
               <!-- Route Selection -->
               <input
                 type="hidden"
                 name="operator_route_id"
                 id="weekday_operator_route_id"
               />
+
               <div class="mb-3">
                 <p class="form-label fw-semibold small">Route</p>
-                <div class="route-card" id="active_operator_route"></div>
+                <div
+                  class="route-card"
+                  id="active_operator_route_weekday"
+                ></div>
+              </div>
+
+              <!-- Weekday Selection -->
+              <div class="mb-3">
+                <p class="form-label fw-semibold small">Weekdays</p>
+
+                <div
+                  class="d-flex flex-column gap-2"
+                  id="available_weekday_container"
+                ></div>
               </div>
 
               <!-- Submit Button -->
-              <div class="d-flex align-items-end">
+              <div class="d-flex align-items-end ms-auto">
                 <input
                   type="submit"
                   id="submit_add_route_btn"
                   value="Add Route Weekdays"
-                  class="btn btn-primary align-self-end ms-auto px-4 py-2"
+                  class="btn btn-primary ms-auto px-4 py-2"
                 />
               </div>
             </form>
@@ -459,7 +476,7 @@
               </button>
               <table
                 class="border rounded table-responsive w-100"
-                id="route_mid_city_table"
+                id="bus_route_weekday_table"
               ></table>
             </div>
           </div>
