@@ -192,7 +192,7 @@ basicBusForm.addEventListener("submit", async (e) => {
   }
 
   const formData = new FormData(basicBusForm);
-  formData.append("double_decker", doubleDecker.value === "on");
+  formData.append("double_decker", doubleDecker.checked);
 
   try {
     const response = await fetch("add_bus.do", {

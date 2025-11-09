@@ -146,13 +146,13 @@ export class ViewHelper {
                     </button>
                     <ul class="dropdown-menu">
                       <li class="border-bottom">
-                        <a class="dropdown-item option-link" href="#">Edit</a>
+                        <a class="dropdown-item option-link" href='#'>Edit</a>
                       </li>
                       <li class="border-bottom">
                         <a class="dropdown-item option-link" href="bus_seating_configuration.do?bus_id=${busId}">Seating</a>
                       </li>
                       <li>
-                        <a class="dropdown-item option-link" href="#">Schedule</a>
+                        <a class="dropdown-item option-link" href="bus_schedule.do?bus_id=${busId}">Schedule</a>
                       </li>
                     </ul>
                   </div>

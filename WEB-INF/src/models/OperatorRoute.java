@@ -15,6 +15,12 @@ public class OperatorRoute {
     private Operator operator;
     private Route route;
     private Status status;
+    private ArrayList<OperatorRouteMidCity> operatorRouteMidCities;
+
+    public OperatorRoute(Integer operatorRouteId, Route route, Status status, ArrayList<OperatorRouteMidCity> operatorRouteMidCities) {
+        this(operatorRouteId, route, status);
+        this.operatorRouteMidCities = operatorRouteMidCities;
+    }
 
     public OperatorRoute(Integer operatorRouteId, Route route, Status status) {
         this.operatorRouteId = operatorRouteId;
@@ -206,6 +212,15 @@ public class OperatorRoute {
 
         return operatorRouteList;
     }
+
+    public void setOperatorRouteMidCities(ArrayList<OperatorRouteMidCity> operatorRouteMidCities) {
+        this.operatorRouteMidCities = operatorRouteMidCities;
+    } 
+
+    public ArrayList<OperatorRouteMidCity> getOperatorRouteMidCities() {
+        return operatorRouteMidCities;
+    }
+
 
     public void setStatus(Status status) {
         this.status = new Status(status.getStatusId(), status.getName());

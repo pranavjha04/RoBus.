@@ -28,6 +28,7 @@ public class GetWeekdaysServlet extends HttpServlet {
         @SuppressWarnings("unchecked")
         ArrayList<Weekday> weekdayList = (ArrayList<Weekday>) getServletContext().getAttribute("weekdayList");
 
+       
         response.getWriter().println(new Gson().toJson(weekdayList));
     }
 }

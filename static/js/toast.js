@@ -48,7 +48,7 @@ class Toast {
   #removeToast() {
     setTimeout(() => {
       this.#toastEl.remove();
-    }, 3000);
+    }, this.delay);
   }
 
   error(message, delay) {
