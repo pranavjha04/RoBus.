@@ -83,6 +83,8 @@ prefix="e" uri="bts" %>
                 />
               </div>
 
+              <input type="hidden" value="" id="bus_route_weekday_id" />
+
               <!-- Show Routes -->
               <div class="mb-3 text-end">
                 <button
@@ -112,44 +114,12 @@ prefix="e" uri="bts" %>
                     <span class="ms-2 small text-muted">&#9662;</span>
                   </button>
 
-                  <input type="hidden" name="route_id" id="route_id" />
-                  <input type="hidden" name="base_charge" id="base_charge" />
-
                   <ul
                     id="route_available_list"
                     class="dropdown-menu w-100 shadow-sm overflow-y-scroll"
                     style="max-height: 275px"
                     aria-labelledby="route_select"
-                  >
-                    <!-- Fake route data -->
-                    <li
-                      role="button"
-                      class="border-bottom"
-                      data-routeId="101"
-                      data-baseCharge="180"
-                    >
-                      <a class="dropdown-item d-flex flex-column py-2">
-                        <div class="fw-semibold">
-                          &#128205; Jabalpur → Sagar
-                        </div>
-                        <small class="text-muted">Base Charge: ₹180</small>
-                      </a>
-                    </li>
-
-                    <li
-                      role="button"
-                      class="border-bottom"
-                      data-routeId="102"
-                      data-baseCharge="260"
-                    >
-                      <a class="dropdown-item d-flex flex-column py-2">
-                        <div class="fw-semibold">
-                          &#128205; Jabalpur → Bhopal
-                        </div>
-                        <small class="text-muted">Base Charge: ₹260</small>
-                      </a>
-                    </li>
-                  </ul>
+                  ></ul>
                 </div>
               </div>
 

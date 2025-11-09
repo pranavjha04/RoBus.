@@ -3,11 +3,13 @@ import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import { collectWeekdayRoutes } from "./service.js";
 import { disableElements, enableElements } from "./util.js";
+import { ViewHelper } from "./viewHelper.js";
 
 const busScheduleModal = document.querySelector("#centeredModal");
 const journeyDate = document.querySelector("#journey_date");
 const showAvailableRouteBtn = document.querySelector("#show_available_routes");
 
+const busRoutWeekdayId = document.querySelector("#bus_route_weekday_id");
 const routeSelect = document.querySelector("#route_select");
 const routeSelectContainer = document.querySelector("#route_available_list");
 
@@ -26,7 +28,11 @@ const cache = {
 };
 
 /******************UTILS ************************************ */
-const clearForm = () => {};
+const clearForm = () => {
+  busRoutWeekdayId.value = "";
+  routeSelect.textContent = "Route Select";
+};
+
 const enableForm = () => {};
 const disableForm = () => {};
 
@@ -44,11 +50,17 @@ const updateBusInfoDisplay = () => {
 const updateRouteSelect = (routeList = []) => {
   if (!routeList.length) {
     disableElements(routeSelect);
+    routeSelectContainer.innerHTML = "";
   }
-  enableElements(routeSelect);
 
-  console.log(routeList);
+  enableElements(routeSelect);
+  routeSelect.focus();
+
+  routeSelectContainer.innerHTML = routeList
+    .map(ViewHelper.getBusRouteWeekdaySelect)
+    .join("");
 };
+
 /*************************EVENT LISTENERS *********************************** */
 journeyDate.addEventListener("blur", (e) => {
   const value = e.target.value;
@@ -95,6 +107,17 @@ showAvailableRouteBtn.addEventListener("click", async () => {
         throw new Error("Internal Server Error");
 
       cache.availableRouteCache[weekday] = JSON.parse(response);
+      cache.availableRouteCache[weekday].forEach(({ operatorRoute }) => {
+        operatorRoute.route = { ...operatorRoute.route };
+        const totalDuration = operatorRoute.operatorRouteMidCities.reduce(
+          (acc, curr) => {
+            return acc + curr.haltingTime;
+          },
+          operatorRoute.route.duration
+        );
+
+        operatorRoute.route.duration = totalDuration;
+      });
     }
     updateRouteSelect(cache.availableRouteCache[weekday]);
   } catch (err) {
@@ -103,6 +126,24 @@ showAvailableRouteBtn.addEventListener("click", async () => {
     clearForm();
     disableForm();
   }
+});
+
+routeSelectContainer.addEventListener("mousedown", (e) => {
+  const target = e.target.closest("li");
+
+  if (!target) {
+    busRoutWeekdayId.value = "";
+    return;
+  }
+
+  const targetBusRouteWeekdayId = target.dataset.busRouteWeekdayId;
+  busRoutWeekdayId.value = targetBusRouteWeekdayId;
+
+  routeSelect.textContent = [".route", ".distance", ".duration"]
+    .map((next) => {
+      return target.querySelector(next).textContent;
+    })
+    .join(", ");
 });
 
 window.addEventListener("DOMContentLoaded", () => {

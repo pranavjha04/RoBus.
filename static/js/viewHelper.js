@@ -167,7 +167,7 @@ export class ViewHelper {
     const { name: sourceStateName } = sourceState;
     const { name: destinationStateName } = destinationState;
 
-    return ` <li role="button" class="border-bottom cursor-pointer" data-routeId=${routeId}>
+    return ` <li role="button"  class="border-bottom cursor-pointer" data-routeId=${routeId}>
                       <a class="dropdown-item d-flex flex-column py-2">
                         <div class="fw-semibold route">
                           &#128205; ${sourceCityName} &rarr; ${destinationCityName}
@@ -177,9 +177,9 @@ export class ViewHelper {
                         >
                         <div class="d-flex gap-3 small text-muted mt-1">
                           <div class="d-flex gap-1">
-                            &#128338; <span class='duration'>${Math.trunc(
-                              Math.floor(duration / 60)
-                            )}h ${duration % 60}m</span>
+                            &#128338; <span class='duration'>${getFormatedDuration(
+                              duration
+                            )}</span>
                           </div>
                           <div class="d-flex gap-1">
                             &#128205; <span class='distance'>${distance} km</span>
@@ -735,5 +735,36 @@ export class ViewHelper {
                       </button>
                     </td>
                   </tr>`;
+  }
+
+  static getBusRouteWeekdaySelect(busRouteWeekday) {
+    const { busRouteWeekdayId, operatorRoute } = busRouteWeekday;
+    const { operatorRouteId, route } = operatorRoute;
+    const { routeId, source, destination, distance, duration } = route;
+    const { name: sourceCityName, state: sourceState } = source;
+    const { name: destinationCityName, state: destinationState } = destination;
+    const { name: sourceStateName } = sourceState;
+    const { name: destinationStateName } = destinationState;
+
+    return ` <li role="button"  class="border-bottom cursor-pointer" data-bus-route-weekday-id="${busRouteWeekdayId}" data-operator-route-id="${operatorRouteId}">
+                      <a class="dropdown-item d-flex flex-column py-2">
+                        <div class="fw-semibold route">
+                          &#128205; ${sourceCityName} &rarr; ${destinationCityName}
+                        </div>
+                        <small class="text-muted"
+                          >${sourceStateName} &rarr; ${destinationStateName}</small
+                        >
+                        <div class="d-flex gap-3 small text-muted mt-1">
+                          <div class="d-flex gap-1">
+                            &#128338; <span class='duration'>${getFormatedDuration(
+                              duration
+                            )}</span>
+                          </div>
+                          <div class="d-flex gap-1">
+                            &#128205; <span class='distance'>${distance} km</span>
+                          </div>
+                        </div>
+                      </a>
+                    </li>`;
   }
 }
