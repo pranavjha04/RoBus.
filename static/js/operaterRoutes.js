@@ -234,20 +234,18 @@ const handleAllOperatorRoutes = async (firstTime = false) => {
   if (!firstTime) routeTable.innerHTML = ViewHelper.getTableLoader();
 
   try {
-    setTimeout(async () => {
-      const response = await collectOperatorRouteRequest();
-      if (response === "invalid") {
-        throw new Error("Invalid Request");
-      }
-      if (response.startsWith("[")) {
-        const operatorRouteList = JSON.parse(response);
-        modal.operatorRouteList = operatorRouteList;
-        PageLoading.stopLoading();
-        initDisplay();
-      } else {
-        throw new Error("Internal Server Error");
-      }
-    }, 500);
+    const response = await collectOperatorRouteRequest();
+    if (response === "invalid") {
+      throw new Error("Invalid Request");
+    }
+    if (response.startsWith("[")) {
+      const operatorRouteList = JSON.parse(response);
+      modal.operatorRouteList = operatorRouteList;
+      PageLoading.stopLoading();
+      initDisplay();
+    } else {
+      throw new Error("Internal Server Error");
+    }
   } catch (err) {
     PageLoading.stopLoading();
     toast.error(err.message);
@@ -721,14 +719,5 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 window.addEventListener("pagehide", () => {
-  // [
-  //   "routeList",
-  //   "routeMidCityList",
-  //   "operatorRouteList",
-  //   "operatorRouteMidCityList",
-  //   "uniqueRouteList",
-  // ].forEach((item) => {
-  //   sessionStorage.removeItem(item);
-  // });
   clearInterval(filteAppliedInterval);
 });

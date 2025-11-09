@@ -146,10 +146,8 @@ const handleBusRecords = async (firstTime = false) => {
     } else if (response.startsWith("[")) {
       const busList = JSON.parse(response);
       sessionStorage.setItem("busList", JSON.stringify(busList));
-      setTimeout(() => {
-        PageLoading.stopLoading();
-        handleBusListDisplay(busList);
-      }, 500);
+      PageLoading.stopLoading();
+      handleBusListDisplay(busList);
     } else {
       throw new Error("Invalid Request");
     }

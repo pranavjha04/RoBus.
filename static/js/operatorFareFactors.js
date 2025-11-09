@@ -208,9 +208,7 @@ const init = async (firstTime) => {
   filterNav.start();
   try {
     if (!firstTime) setTableLoader();
-    setTimeout(() => {
-      handleFareFactorList();
-    }, 500);
+    handleFareFactorList();
   } catch (err) {
     toast.error(err.message);
     PageError.showOperatorError();
@@ -330,7 +328,6 @@ formModal.addEventListener("hidden.bs.modal", () => {
 
 window.addEventListener("pageshow", async () => {
   try {
-    PageLoading.startLoading();
     await init(true);
   } catch {
     PageError.showOperatorError();
