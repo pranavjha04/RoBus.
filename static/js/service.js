@@ -584,3 +584,13 @@ export const collectInactiveDriversRequest = async () => {
   const data = await res.text();
   return data.trim();
 };
+
+export const collectAllBusFareFactorRequest = async (bus_id) => {
+  const params = createURLParams({
+    bus_id,
+  });
+  const res = await fetch(`get_bus_fare_factors.do?${params.toString()}`);
+  if (!res.ok) throw new Error("Invalid Request");
+  const data = await res.text();
+  return data.trim();
+};

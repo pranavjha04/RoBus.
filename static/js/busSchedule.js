@@ -2,6 +2,7 @@ import { toast } from "./toast.js";
 import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import {
+  collectAllBusFareFactorRequest,
   collectInactiveDriversRequest,
   collectWeekdayRoutes,
   validateScheduleTimeClash,
@@ -24,8 +25,20 @@ const driverSelectContainer = document.querySelector("#driver_available_list");
 const departureTime = document.querySelector("#departure_time");
 const arrivalTime = document.querySelector("#arrival_time");
 
+const additionalCharges = document.querySelector("#additional_charges");
+const seaterFare = document.querySelector("#seater_fare");
+const sleeperFare = document.querySelector("#sleeper_fare");
+const totalCharge = document.querySelector("#total_charges");
+
+const prevValue = {
+  additionalCharges: 0,
+  seaterFare: 0,
+  sleeperFare: 0,
+};
+
 const modal = {
   activeBus: null,
+  busFareFactorList: [],
 };
 
 const cache = {
@@ -41,6 +54,21 @@ const clearForm = () => {
 
 const enableForm = () => {};
 const disableForm = () => {};
+
+const handleCollectBusFareFactors = async () => {
+  try {
+    const response = await collectAllBusFareFactorRequest(
+      modal.activeBus.busId
+    );
+    if (response === "invalid") {
+      throw new Error("Invalid Request");
+    }
+
+    modal.busFareFactorList = JSON.parse(response);
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
 
 /**********************UI UPDATES *********************************** */
 const updateBusInfoDisplay = () => {
@@ -162,6 +190,30 @@ routeSelectContainer.addEventListener("mousedown", (e) => {
       return target.querySelector(next).textContent;
     })
     .join(", ");
+  const totalDistance = parseInt(target.querySelector(".distance").textContent);
+  const { fixed, perPersonPerKm } = modal.busFareFactorList.reduce(
+    (acc, curr) => {
+      const charge = curr.operatorTicketFare.charge;
+      console.log(charge);
+      if (curr.operatorTicketFare.fareFactor.fixedCharge) {
+        return {
+          ...acc,
+          perPersonPerKm: acc.perPersonPerKm + charge,
+        };
+      } else {
+        return {
+          ...acc,
+          fixed: acc.fixed + totalDistance * charge,
+        };
+      }
+    },
+    {
+      fixed: 0,
+      perPersonPerKm: 0,
+    }
+  );
+
+  totalCharge.value = fixed + perPersonPerKm;
 });
 
 departureTime.addEventListener("blur", async (e) => {
@@ -254,11 +306,55 @@ driverSelectContainer.addEventListener("mousedown", (e) => {
   driverSelect.textContent = target.querySelector("a").textContent;
 });
 
-window.addEventListener("DOMContentLoaded", () => {
+additionalCharges.addEventListener("blur", (e) => {
+  const value = Math.floor(+e.target.value);
+  totalCharge.value = +totalCharge.value - prevValue.additionalCharges;
+  if (value < 0 || value > 200) {
+    toast.error("Please enter valid charges");
+    prevValue.additionalCharges = 0;
+    e.target.value = 0;
+    return;
+  } else {
+    additionalCharges.value = value;
+    prevValue.additionalCharges = value;
+    totalCharge.value = +totalCharge.value + value;
+  }
+});
+seaterFare.addEventListener("blur", (e) => {
+  const value = Math.floor(+e.target.value);
+  totalCharge.value = +totalCharge.value - prevValue.seaterFare;
+  if (value < 0 || value > 200) {
+    toast.error("Please enter valid charges");
+    prevValue.seaterFare = 0;
+    e.target.value = 0;
+    return;
+  } else {
+    seaterFare.value = value;
+    prevValue.seaterFare = value;
+    totalCharge.value = +totalCharge.value + value;
+  }
+});
+
+sleeperFare.addEventListener("blur", (e) => {
+  const value = Math.floor(+e.target.value);
+  totalCharge.value = +totalCharge.value - prevValue.sleeperFare;
+  if (value < 0 || value > 200) {
+    toast.error("Please enter valid charges");
+    prevValue.sleeperFare = 0;
+    e.target.value = 0;
+    return;
+  } else {
+    sleeperFare.value = value;
+    prevValue.sleeperFare = value;
+    totalCharge.value = +totalCharge.value + value;
+  }
+});
+
+window.addEventListener("DOMContentLoaded", async () => {
   try {
     modal.activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
+    await handleCollectBusFareFactors();
     updateBusInfoDisplay();
-
     PageLoading.stopLoading();
   } catch (err) {
     toast.error(err.message);

@@ -178,6 +178,69 @@ public class BusFareFactor {
         return busFareFactorList;
     }
 
+    public static ArrayList<BusFareFactor> collectAllRecords(Integer busId, Integer operatorId) {
+        ArrayList<BusFareFactor> list = new ArrayList<>();
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "SELECT * FROM bus_fare_factor bff " +
+                        // buses
+                        "JOIN buses b ON bff.bus_id = b.bus_id " +
+                        "JOIN manufacturers m ON b.manufacturer_id = m.manufacturer_id " +
+                        "JOIN status s ON b.status_id = s.status_id " +
+                        // operator_ticket_fare
+                        "JOIN operator_ticket_fare otf ON bff.operator_ticket_fare_id = otf.operator_ticket_fare_id " +
+                        "JOIN fare_factor ff ON otf.fare_factor_id = ff.fare_factor_id " +
+                        "WHERE b.operator_id=? AND b.bus_id=?";
+
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, operatorId);
+            ps.setInt(2, busId);
+
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                 Bus bus = new Bus(
+                    rs.getInt("b.bus_id"),
+                    rs.getString("b.bus_number"),
+                    new Manufacturer(
+                        rs.getInt("m.manufacturer_id"),
+                        rs.getString("m.name")
+                    ),
+                    rs.getBoolean("double_decker"),
+                    new Status(
+                        rs.getInt("s.status_id"),
+                        rs.getString("s.name")
+                    )
+                );
+
+                OperatorTicketFare operatorTicketFare = new OperatorTicketFare(
+                    rs.getInt("otf.operator_ticket_fare_id"),
+                    rs.getInt("otf.charges"),
+                    new FareFactor(
+                        rs.getInt("ff.fare_factor_id"),
+                        rs.getString("ff.name"),
+                        rs.getBoolean("ff.fixed_charge")
+                    )
+                );
+
+                BusFareFactor busFareFactor = new BusFareFactor(
+                    rs.getInt("bff.bus_fare_factor_id"),
+                    bus,
+                    operatorTicketFare
+                );
+
+                list.add(busFareFactor);
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            list = null;
+        }
+
+        return list;
+    }
+
     public void setOperatorTicketFare(OperatorTicketFare operatorTicketFare) {
         this.operatorTicketFare = operatorTicketFare;
     }
