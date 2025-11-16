@@ -767,4 +767,13 @@ export class ViewHelper {
                       </a>
                     </li>`;
   }
+
+  static getScheduleAvailableDriver(driver) {
+    const { driverId, user } = driver;
+
+    return `<li role="button" class="border-bottom" data-driver-id="${driverId}" >
+                      <a class="dropdown-item py-2">${user.fullName}</a>
+              </li>
+                    `;
+  }
 }

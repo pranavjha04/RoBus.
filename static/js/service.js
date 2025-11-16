@@ -551,3 +551,36 @@ export const collectWeekdayRoutes = async (weekday_id) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const validateScheduleTimeClash = async (
+  departure_time,
+  arrival_time,
+  bus_id,
+  journey_date
+) => {
+  const params = createURLParams({
+    arrival_time,
+    departure_time,
+    bus_id,
+    journey_date,
+  });
+
+  const res = await fetch(
+    `check_valid_schedule_timings.do?${params.toString()}`,
+    {
+      method: "POST",
+    }
+  );
+  if (!res.ok) throw new Error("Invalid Request");
+
+  const data = await res.text();
+  return data.trim();
+};
+
+export const collectInactiveDriversRequest = async () => {
+  const res = await fetch(`get_inactive_drivers.do`);
+  if (!res.ok) throw new Error("Invalid Reques");
+
+  const data = await res.text();
+  return data.trim();
+};

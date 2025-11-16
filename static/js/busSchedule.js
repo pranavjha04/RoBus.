@@ -1,7 +1,11 @@
 import { toast } from "./toast.js";
 import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
-import { collectWeekdayRoutes } from "./service.js";
+import {
+  collectInactiveDriversRequest,
+  collectWeekdayRoutes,
+  validateScheduleTimeClash,
+} from "./service.js";
 import { disableElements, enableElements } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
@@ -13,6 +17,7 @@ const busRoutWeekdayId = document.querySelector("#bus_route_weekday_id");
 const routeSelect = document.querySelector("#route_select");
 const routeSelectContainer = document.querySelector("#route_available_list");
 
+const driverId = document.querySelector("#driver_id");
 const driverSelect = document.querySelector("#driver_select");
 const driverSelectContainer = document.querySelector("#driver_available_list");
 
@@ -25,6 +30,7 @@ const modal = {
 
 const cache = {
   availableRouteCache: {},
+  driverCache: [],
 };
 
 /******************UTILS ************************************ */
@@ -59,6 +65,18 @@ const updateRouteSelect = (routeList = []) => {
   routeSelectContainer.innerHTML = routeList
     .map(ViewHelper.getBusRouteWeekdaySelect)
     .join("");
+};
+
+const updateDriverListDisplay = () => {
+  const { driverCache: driverList } = cache;
+  if (driverList.length === 0) {
+    driverSelectContainer.innerHTML =
+      "<span class='px-2'>No drivers are available</span>";
+  } else {
+    driverSelectContainer.innerHTML = driverList
+      .map(ViewHelper.getScheduleAvailableDriver)
+      .join("");
+  }
 };
 
 /*************************EVENT LISTENERS *********************************** */
@@ -144,6 +162,96 @@ routeSelectContainer.addEventListener("mousedown", (e) => {
       return target.querySelector(next).textContent;
     })
     .join(", ");
+});
+
+departureTime.addEventListener("blur", async (e) => {
+  if (!journeyDate.value) {
+    arrivalTime.value = "";
+    departureTime.value = "";
+    return;
+  }
+
+  const [hours, mins] = e.target.value.split(":");
+  const date = new Date(journeyDate.value);
+  date.setHours(hours, mins, 0, 0);
+  departureTime.value = `${(hours + "").padStart(2, "0")}:${(
+    mins + ""
+  ).padStart(2, "0")}:00`;
+
+  // get active route
+  const activeBusRouteWeekday = cache.availableRouteCache[date.getDay()]?.find(
+    (next) => next.busRouteWeekdayId === +busRoutWeekdayId.value
+  );
+  if (!activeBusRouteWeekday) return;
+
+  const duration = activeBusRouteWeekday.operatorRoute.route.duration;
+
+  const arrivalDate = new Date(date.getTime());
+  arrivalDate.setMinutes(arrivalDate.getMinutes() + duration);
+
+  const hh = arrivalDate.getHours().toString().padStart(2, "0");
+  const mm = arrivalDate.getMinutes().toString().padStart(2, "0");
+
+  arrivalTime.value = `${hh}:${mm}:00`;
+
+  try {
+    disableElements(departureTime, busRoutWeekdayId, journeyDate);
+    const response = await validateScheduleTimeClash(
+      departureTime.value,
+      arrivalTime.value,
+      modal.activeBus.busId,
+      journeyDate.value
+    );
+
+    if (response === "invalid") {
+      throw new Error("Invalid request");
+    }
+    if (response === "clash") {
+      throw new Error(
+        "The selected time conflicts with an existing schedule for this bus."
+      );
+    }
+  } catch (err) {
+    toast.error(err.message);
+  } finally {
+    enableElements(departureTime, busRoutWeekdayId, journeyDate);
+  }
+});
+
+driverSelect.addEventListener("click", async (e) => {
+  if (!busRoutWeekdayId.value) {
+    return;
+  }
+
+  try {
+    if (!cache.driverCache.length) {
+      const response = await collectInactiveDriversRequest();
+
+      if (response === "invalid") {
+        throw new Error("Invalid request");
+      }
+
+      cache.driverCache = JSON.parse(response);
+      updateDriverListDisplay();
+    } else {
+      updateDriverListDisplay();
+    }
+  } catch (err) {
+    toast.error(err.message);
+  }
+});
+
+driverSelectContainer.addEventListener("mousedown", (e) => {
+  const target = e.target.closest("li");
+  if (!target) {
+    driverSelect.textContent = "Select Driver";
+    driverId.value = "";
+    return;
+  }
+
+  if (!target.dataset.driverId) return;
+  driverId.value = target.dataset.driverId;
+  driverSelect.textContent = target.querySelector("a").textContent;
 });
 
 window.addEventListener("DOMContentLoaded", () => {

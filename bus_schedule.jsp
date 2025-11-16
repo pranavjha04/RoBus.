@@ -123,46 +123,6 @@ prefix="e" uri="bts" %>
                 </div>
               </div>
 
-              <!-- Driver Selection -->
-              <div class="mb-3">
-                <label class="form-label fw-semibold">Driver</label>
-
-                <div class="dropdown w-100">
-                  <button
-                    class="btn border rounded w-100 d-flex justify-content-between align-items-center form-select text-start"
-                    type="button"
-                    id="driver_select"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <span class="text-secondary">Select Driver</span>
-                    <span class="ms-2 small text-muted">&#9662;</span>
-                  </button>
-
-                  <input type="hidden" name="driver_id" id="driver_id" />
-
-                  <ul
-                    id="driver_available_list"
-                    class="dropdown-menu w-100 shadow-sm overflow-y-scroll"
-                    style="max-height: 250px"
-                    aria-labelledby="driver_select"
-                  >
-                    <!-- Fake drivers -->
-                    <li role="button" class="border-bottom" data-driverId="11">
-                      <a class="dropdown-item py-2">Ramesh Patel</a>
-                    </li>
-
-                    <li role="button" class="border-bottom" data-driverId="12">
-                      <a class="dropdown-item py-2">Sunil Tiwari</a>
-                    </li>
-
-                    <li role="button" class="border-bottom" data-driverId="14">
-                      <a class="dropdown-item py-2">Priya Sharma</a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
               <!-- Times -->
               <div class="row mb-3">
                 <div class="col">
@@ -190,6 +150,33 @@ prefix="e" uri="bts" %>
                     readonly
                     required
                   />
+                </div>
+              </div>
+
+              <!-- Driver Selection -->
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Driver</label>
+
+                <div class="dropdown w-100">
+                  <button
+                    class="btn border rounded w-100 d-flex justify-content-between align-items-center form-select text-start"
+                    type="button"
+                    id="driver_select"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <span class="text-secondary">Select Driver</span>
+                    <span class="ms-2 small text-muted">&#9662;</span>
+                  </button>
+
+                  <input type="hidden" name="driver_id" id="driver_id" />
+
+                  <ul
+                    id="driver_available_list"
+                    class="dropdown-menu w-100 shadow-sm overflow-y-scroll"
+                    style="max-height: 250px"
+                    aria-labelledby="driver_select"
+                  ></ul>
                 </div>
               </div>
 
