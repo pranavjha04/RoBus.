@@ -2,6 +2,7 @@ import { toast } from "./toast.js";
 import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import {
+  addBusScheduleRequest,
   collectAllBusFareFactorRequest,
   collectInactiveDriversRequest,
   collectWeekdayRoutes,
@@ -9,8 +10,11 @@ import {
 } from "./service.js";
 import { disableElements, enableElements } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
+import { ModalHandler } from "./modalHandler.js";
 
 const busScheduleModal = document.querySelector("#centeredModal");
+const scheduleBusForm = document.querySelector("#schedule_bus_form");
+
 const journeyDate = document.querySelector("#journey_date");
 const showAvailableRouteBtn = document.querySelector("#show_available_routes");
 
@@ -30,10 +34,13 @@ const seaterFare = document.querySelector("#seater_fare");
 const sleeperFare = document.querySelector("#sleeper_fare");
 const totalCharge = document.querySelector("#total_charges");
 
+const MAX_EXTRA_CHARGE = 500;
+
 const prevValue = {
   additionalCharges: 0,
   seaterFare: 0,
   sleeperFare: 0,
+  journeyDate: null,
 };
 
 const modal = {
@@ -49,11 +56,51 @@ const cache = {
 /******************UTILS ************************************ */
 const clearForm = () => {
   busRoutWeekdayId.value = "";
-  routeSelect.textContent = "Route Select";
+  routeSelect.textContent = "Select Driver";
+  routeSelectContainer.innerHTML = "";
+
+  journeyDate.value = "";
+
+  driverId.value = "";
+  driverSelect.textContent = "Select Driver";
+  driverSelectContainer.innerHTML = "";
+
+  additionalCharges.value =
+    seaterFare.value =
+    sleeperFare.value =
+    totalCharge.value =
+      0;
+
+  departureTime.value = "";
+  arrivalTime.value = "";
 };
 
-const enableForm = () => {};
-const disableForm = () => {};
+const enableForm = () => {
+  [
+    additionalCharges,
+    seaterFare,
+    sleeperFare,
+    arrivalTime,
+    departureTime,
+    driverSelect,
+    routeSelect,
+  ].forEach((next) => {
+    next.disabled = false;
+  });
+};
+const disableForm = () => {
+  [
+    additionalCharges,
+    seaterFare,
+    sleeperFare,
+    arrivalTime,
+    departureTime,
+    driverSelect,
+    routeSelect,
+  ].forEach((next) => {
+    next.disabled = true;
+  });
+};
 
 const handleCollectBusFareFactors = async () => {
   try {
@@ -67,6 +114,29 @@ const handleCollectBusFareFactors = async () => {
     modal.busFareFactorList = JSON.parse(response);
   } catch (err) {
     throw new Error(err.message);
+  }
+};
+
+const extraChargeHandler = (target, type) => {
+  if (!busRoutWeekdayId.value) {
+    target.disabled = true;
+    return;
+  }
+
+  const value = Math.floor(+target.value);
+  totalCharge.value = +totalCharge.value - prevValue[type];
+  if (isNaN(value) || value < 0 || value > MAX_EXTRA_CHARGE) {
+    toast.error(
+      `Charge should be positive and not exceed ₹${MAX_EXTRA_CHARGE}`,
+      5000
+    );
+    prevValue[type] = 0;
+    e.target.value = 0;
+    return;
+  } else {
+    target.value = value;
+    prevValue[type] = value;
+    totalCharge.value = +totalCharge.value + value;
   }
 };
 
@@ -85,7 +155,12 @@ const updateRouteSelect = (routeList = []) => {
   if (!routeList.length) {
     disableElements(routeSelect);
     routeSelectContainer.innerHTML = "";
+    routeSelect.textContent = "No Routes are available";
+    routeSelect.disabled = true;
   }
+
+  routeSelect.disabled = false;
+  routeSelect.textContent = "Select Route";
 
   enableElements(routeSelect);
   routeSelect.focus();
@@ -98,9 +173,12 @@ const updateRouteSelect = (routeList = []) => {
 const updateDriverListDisplay = () => {
   const { driverCache: driverList } = cache;
   if (driverList.length === 0) {
-    driverSelectContainer.innerHTML =
-      "<span class='px-2'>No drivers are available</span>";
+    driverSelect.textContent = `No drivers are available`;
+    driverSelect.disabled = true;
+    driverSelectContainer.innerHTML = "";
   } else {
+    driverSelect.disabled = false;
+    driverSelect.textContent = "Select Driver";
     driverSelectContainer.innerHTML = driverList
       .map(ViewHelper.getScheduleAvailableDriver)
       .join("");
@@ -110,7 +188,13 @@ const updateDriverListDisplay = () => {
 /*************************EVENT LISTENERS *********************************** */
 journeyDate.addEventListener("blur", (e) => {
   const value = e.target.value;
+  if (prevValue.journeyDate != null && value != prevValue.journeyDate) {
+    clearForm();
+    disableForm();
+    disableElements(showAvailableRouteBtn);
+  }
   try {
+    e.target.value = value;
     const todayDate = new Date();
     const inputDate = new Date(value);
     const targetDate = new Date(todayDate);
@@ -131,6 +215,7 @@ journeyDate.addEventListener("blur", (e) => {
     }
 
     enableElements(showAvailableRouteBtn);
+    prevValue.journeyDate = value;
   } catch (err) {
     e.target.value = "";
     toast.error(err.message, 5000);
@@ -169,6 +254,7 @@ showAvailableRouteBtn.addEventListener("click", async () => {
   } catch (err) {
     showAvailableRouteBtn.focus();
     toast.error(err.message);
+    journeyDate.focus();
     clearForm();
     disableForm();
   }
@@ -179,9 +265,10 @@ routeSelectContainer.addEventListener("mousedown", (e) => {
 
   if (!target) {
     busRoutWeekdayId.value = "";
+    disableForm();
     return;
   }
-
+  enableForm();
   const targetBusRouteWeekdayId = target.dataset.busRouteWeekdayId;
   busRoutWeekdayId.value = targetBusRouteWeekdayId;
 
@@ -220,6 +307,7 @@ departureTime.addEventListener("blur", async (e) => {
   if (!journeyDate.value) {
     arrivalTime.value = "";
     departureTime.value = "";
+    disableForm();
     return;
   }
 
@@ -272,6 +360,7 @@ departureTime.addEventListener("blur", async (e) => {
 
 driverSelect.addEventListener("click", async (e) => {
   if (!busRoutWeekdayId.value) {
+    disableForm();
     return;
   }
 
@@ -307,46 +396,63 @@ driverSelectContainer.addEventListener("mousedown", (e) => {
 });
 
 additionalCharges.addEventListener("blur", (e) => {
-  const value = Math.floor(+e.target.value);
-  totalCharge.value = +totalCharge.value - prevValue.additionalCharges;
-  if (value < 0 || value > 200) {
-    toast.error("Please enter valid charges");
-    prevValue.additionalCharges = 0;
-    e.target.value = 0;
-    return;
-  } else {
-    additionalCharges.value = value;
-    prevValue.additionalCharges = value;
-    totalCharge.value = +totalCharge.value + value;
-  }
+  extraChargeHandler(e.target, "additionalCharges");
 });
 seaterFare.addEventListener("blur", (e) => {
-  const value = Math.floor(+e.target.value);
-  totalCharge.value = +totalCharge.value - prevValue.seaterFare;
-  if (value < 0 || value > 200) {
-    toast.error("Please enter valid charges");
-    prevValue.seaterFare = 0;
-    e.target.value = 0;
-    return;
-  } else {
-    seaterFare.value = value;
-    prevValue.seaterFare = value;
-    totalCharge.value = +totalCharge.value + value;
-  }
+  extraChargeHandler(e.target, "seaterFare");
 });
 
 sleeperFare.addEventListener("blur", (e) => {
-  const value = Math.floor(+e.target.value);
-  totalCharge.value = +totalCharge.value - prevValue.sleeperFare;
-  if (value < 0 || value > 200) {
-    toast.error("Please enter valid charges");
-    prevValue.sleeperFare = 0;
-    e.target.value = 0;
+  extraChargeHandler(e.target, "sleeperFare");
+});
+
+busScheduleModal.addEventListener("show.bs.modal", () => {
+  disableForm();
+  clearForm();
+  disableElements(showAvailableRouteBtn);
+});
+
+scheduleBusForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!journeyDate.value) {
+    toast.error("Please Select a Journey Date");
+    disableForm();
     return;
-  } else {
-    sleeperFare.value = value;
-    prevValue.sleeperFare = value;
-    totalCharge.value = +totalCharge.value + value;
+  }
+
+  if (!busRoutWeekdayId.value) {
+    toast.error("Please select a route");
+    return;
+  }
+
+  if (!departureTime.value || !arrivalTime.value) {
+    toast.error("Please select journey timings");
+    return;
+  }
+
+  if (!driverId.value) {
+    toast.error("Please select a driver");
+    return;
+  }
+
+  try {
+    const formData = new FormData(scheduleBusForm);
+    disableForm();
+    const response = await addBusScheduleRequest(formData);
+    if (response === "invalid") {
+      throw new Error("Invalid Request");
+    } else if (response === "ok") {
+      toast.success("Bus is scheduled successfully");
+      clearForm();
+      disableForm();
+      ModalHandler.hide(busScheduleModal);
+    } else {
+      throw new Error("Invalid Request");
+    }
+  } catch (err) {
+    toast.error(err.message);
+    enableForm();
+  } finally {
   }
 });
 
@@ -356,6 +462,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     await handleCollectBusFareFactors();
     updateBusInfoDisplay();
     PageLoading.stopLoading();
+    disableForm();
   } catch (err) {
     toast.error(err.message);
     PageLoading.stopLoading();

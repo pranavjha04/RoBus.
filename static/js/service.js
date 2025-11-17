@@ -594,3 +594,13 @@ export const collectAllBusFareFactorRequest = async (bus_id) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const addBusScheduleRequest = async (formData) => {
+  const params = createURLParams(formData);
+  const res = await fetch(`add_bus_schedule.do?${params.toString()}`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Invalid Request");
+  const data = await res.text();
+  return data.trim();
+};

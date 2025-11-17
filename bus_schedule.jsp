@@ -64,11 +64,7 @@ prefix="e" uri="bts" %>
           </div>
 
           <div class="modal-body">
-            <form
-              id="add_mid_city_form"
-              class="rounded-3"
-              style="max-width: 700px; margin: auto"
-            >
+            <form id="schedule_bus_form" class="rounded-3">
               <!-- Journey Date -->
               <div class="mb-3">
                 <label for="journey_date" class="form-label fw-semibold"
@@ -192,6 +188,7 @@ prefix="e" uri="bts" %>
                     <input
                       type="number"
                       class="form-control"
+                      name="additional_charges"
                       id="additional_charges"
                       value="0"
                     />
@@ -202,6 +199,7 @@ prefix="e" uri="bts" %>
                     <input
                       type="number"
                       class="form-control"
+                      name="seater_fare"
                       id="seater_fare"
                       value="0"
                     />
@@ -212,6 +210,7 @@ prefix="e" uri="bts" %>
                     <input
                       type="number"
                       class="form-control"
+                      name="sleeper_fare"
                       id="sleeper_fare"
                       value="0"
                     />
@@ -222,6 +221,7 @@ prefix="e" uri="bts" %>
                     <input
                       type="number"
                       class="form-control bg-light"
+                      name="total_charges"
                       id="total_charges"
                       readonly
                       value="0"
