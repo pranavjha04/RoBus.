@@ -57,7 +57,8 @@ public class Schedule {
             Connection con = DBManager.getConnection();
             String query = 
                         "INSERT INTO schedules " +
-                        "(journey_date, departure_time, arrival_time, )"
+                        "(journey_date, departure_time, arrival_time, )";
+            PreparedStatement ps = con.prepareStatement(query);
         }
         catch(SQLException e) {
             e.printStackTrace();

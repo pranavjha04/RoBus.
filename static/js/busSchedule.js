@@ -14,6 +14,7 @@ import { ModalHandler } from "./modalHandler.js";
 
 const busScheduleModal = document.querySelector("#centeredModal");
 const scheduleBusForm = document.querySelector("#schedule_bus_form");
+const busId = document.querySelector("#bus_id");
 
 const journeyDate = document.querySelector("#journey_date");
 const showAvailableRouteBtn = document.querySelector("#show_available_routes");
@@ -414,6 +415,11 @@ busScheduleModal.addEventListener("show.bs.modal", () => {
 
 scheduleBusForm.addEventListener("submit", async (e) => {
   e.preventDefault();
+  if (!busId.value || +busId.value !== modal.activeBus.busId) {
+    toast.error("Invalid Bus Request");
+    disableForm();
+    return;
+  }
   if (!journeyDate.value) {
     toast.error("Please Select a Journey Date");
     disableForm();
@@ -439,6 +445,7 @@ scheduleBusForm.addEventListener("submit", async (e) => {
     const formData = new FormData(scheduleBusForm);
     disableForm();
     const response = await addBusScheduleRequest(formData);
+    console.log(response);
     if (response === "invalid") {
       throw new Error("Invalid Request");
     } else if (response === "ok") {
@@ -459,6 +466,7 @@ scheduleBusForm.addEventListener("submit", async (e) => {
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     modal.activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
+    busId.value = modal.activeBus.busId;
     await handleCollectBusFareFactors();
     updateBusInfoDisplay();
     PageLoading.stopLoading();

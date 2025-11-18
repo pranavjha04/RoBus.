@@ -24,10 +24,13 @@ public class CheckValidScheduleTimingServlet extends HttpServlet {
     private static final String[] acceptedParams = {"departure_time", "arrival_time", "journey_date", "bus_id"};
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
+        session.removeAttribute("isScheduleDateTimeValid");
         if(session.getAttribute("operator") == null) {
             response.sendRedirect("/bts");
             return;
         }
+
+        String requestURLPath = request.getServletPath().substring(1);
 
 
         try {
@@ -64,29 +67,44 @@ public class CheckValidScheduleTimingServlet extends HttpServlet {
                 throw new IllegalArgumentException("Invalid Parameter");
             }
             
+            
             for(Schedule schedule : scheduleList) {
                 if(
                     (departureTime.getTime() >= schedule.getDepartureTime().getTime() && departureTime.getTime() <= schedule.getArrivalTime().getTime()) ||
                     (arrivalTime.getTime() >= schedule.getDepartureTime().getTime() && arrivalTime.getTime() <= schedule.getArrivalTime().getTime())
                 ) {
-                    response.getWriter().println("clash");
+                    if(!requestURLPath.equals("add_bus_schedule.do")) {
+                        response.getWriter().println("clash");
+                    }
                     return;
                 }
-            }
+            };
 
-            response.getWriter().println("ok");
-            request.setAttribute("isValid", true);
+            if(!requestURLPath.equals("add_bus_schedule.do")) {
+                response.getWriter().println("ok");
+            }
+            else {
+                session.setAttribute("isScheduleDateTimeValid", true);
+            }
             return;
         }
         catch(NumberFormatException e) {
             e.printStackTrace();
-            response.getWriter().println("invalid");
-            request.removeAttribute("isValid");
+            if(requestURLPath.equals("add_bus_schedule.do")) {
+                session.removeAttribute("isScheduleDateTimeValid");
+            }
+            else {
+                response.getWriter().println("invalid");
+            }
             return;
         }
         catch(IllegalArgumentException e) {
-            response.getWriter().println("invalid");
-            request.removeAttribute("isValid");
+            if(requestURLPath.equals("add_bus_schedule.do")) {
+                session.removeAttribute("isScheduleDateTimeValid");
+            }
+            else {
+                response.getWriter().println("invalid");
+            }
             e.printStackTrace();
             return;
         }

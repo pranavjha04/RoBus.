@@ -65,6 +65,7 @@ prefix="e" uri="bts" %>
 
           <div class="modal-body">
             <form id="schedule_bus_form" class="rounded-3">
+              <input type="hidden" name="bus_id" value="" id="bus_id">
               <!-- Journey Date -->
               <div class="mb-3">
                 <label for="journey_date" class="form-label fw-semibold"
@@ -73,13 +74,19 @@ prefix="e" uri="bts" %>
                 <input
                   type="date"
                   class="form-control"
+                  name="journey_date"
                   id="journey_date"
                   min="${e:currentDate()}"
                   required
                 />
               </div>
 
-              <input type="hidden" value="" id="bus_route_weekday_id" />
+              <input
+                type="hidden"
+                value=""
+                name="bus_route_weekday_id"
+                id="bus_route_weekday_id"
+              />
 
               <!-- Show Routes -->
               <div class="mb-3 text-end">

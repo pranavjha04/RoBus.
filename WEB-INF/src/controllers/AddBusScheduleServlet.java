@@ -9,16 +9,20 @@ import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
 
-import java.util.Enumeration;
+import java.util.ArrayList;
+
+import java.sql.Date;
+import java.sql.Time;
 
 import models.Operator;
 import models.Schedule;
+import models.Driver;
 
 import utils.FieldManager;
 
 @WebServlet("/add_bus_schedule.do")
 public class AddBusScheduleServlet extends HttpServlet {
-    private static String[] acceptedParams = {"bus_id", "journey_date", "arrival_time", "departure_time", "seater_seats_booked", "sleeper_seats_booked", "additional_charges", "sleeper_fare", "seater_fare", "total_charges", "driver_id", "bus_route_weekday_id"};
+    private static String[] acceptedParams = {"bus_id", "journey_date", "arrival_time", "departure_time", "additional_charges", "sleeper_fare", "seater_fare", "total_charges", "driver_id", "bus_route_weekday_id"};
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         if(session.getAttribute("operator") == null) {
@@ -36,20 +40,19 @@ public class AddBusScheduleServlet extends HttpServlet {
             Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
             Time departureTime = Time.valueOf(request.getParameter("departure_time"));
             Time arrivalTime = Time.valueOf(request.getParameter("arrival_time"));
-            Integer seaterSeatsBooked = Integer.parseInt(request.getParameter("seater_seats_booked"));
-            Integer sleeperSeatsBooked = Integer.parseInt(request.getParameter("sleeper_seats_booked"));
-            Integer additionalCharges = Integer.parseInt(request.getAttribute("additional_charges"));
-            Integer sleeperFare = Integer.parseInt(request.getParameter("sleeper_fare"));
+            Integer additionalCharges = Integer.parseInt(request.getParameter("additional_charges"));
             Integer seaterFare = Integer.parseInt(request.getParameter("seater_fare"));
+            Integer sleeperFare = Integer.parseInt(request.getParameter("sleeper_fare"));
             Integer totalCharges = Integer.parseInt(request.getParameter("total_charges"));
             Integer driverId = Integer.parseInt(request.getParameter("driver_id"));
             Integer busRouteWeekdayId = Integer.parseInt(request.getParameter("bus_route_weekday_id"));
+            Integer seaterSeatsBooked = 0;
+            Integer sleeperSeatsBooked = 0;
 
             // date time validation
             request.getRequestDispatcher("check_valid_schedule_timings.do").include(request, response);
 
-            Boolean isScheduleDateTimeValid = (Boolean) request.getAttribute("isValid");
-            if (isScheduleDateTimeValid == null || !isScheduleDateTimeValid) {
+            if (session.getAttribute("isScheduleDateTimeValid") == null) {
                 throw new IllegalArgumentException("Invalid schedule timing");
             }
             // extra charges check
@@ -83,7 +86,7 @@ public class AddBusScheduleServlet extends HttpServlet {
                 throw new IllegalArgumentException("Illegal Driver");
             }
 
-
+            response.getWriter().println("ok");
         }
         catch(NumberFormatException e) {
             e.printStackTrace();
@@ -96,6 +99,8 @@ public class AddBusScheduleServlet extends HttpServlet {
             session.removeAttribute("driverList");
             return;
         }
-
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }
