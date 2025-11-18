@@ -14,6 +14,8 @@ import java.util.Enumeration;
 import models.Operator;
 import models.Schedule;
 
+import utils.FieldManager;
+
 @WebServlet("/add_bus_schedule.do")
 public class AddBusScheduleServlet extends HttpServlet {
     private static String[] acceptedParams = {"bus_id", "journey_date", "arrival_time", "departure_time", "seater_seats_booked", "sleeper_seats_booked", "additional_charges", "sleeper_fare", "seater_fare", "total_charges", "driver_id", "bus_route_weekday_id"};
@@ -30,7 +32,7 @@ public class AddBusScheduleServlet extends HttpServlet {
                     throw new IllegalArgumentException("Missing Parameter");
                 }
             }
-
+            Operator operator = (Operator) session.getAttribute("operator");
             Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
             Time departureTime = Time.valueOf(request.getParameter("departure_time"));
             Time arrivalTime = Time.valueOf(request.getParameter("arrival_time"));
@@ -43,7 +45,45 @@ public class AddBusScheduleServlet extends HttpServlet {
             Integer driverId = Integer.parseInt(request.getParameter("driver_id"));
             Integer busRouteWeekdayId = Integer.parseInt(request.getParameter("bus_route_weekday_id"));
 
+            // date time validation
+            request.getRequestDispatcher("check_valid_schedule_timings.do").include(request, response);
+
+            Boolean isScheduleDateTimeValid = (Boolean) request.getAttribute("isValid");
+            if (isScheduleDateTimeValid == null || !isScheduleDateTimeValid) {
+                throw new IllegalArgumentException("Invalid schedule timing");
+            }
+            // extra charges check
+            if(
+                !FieldManager.validateExtraChargeFare(seaterSeatsBooked) || 
+                !FieldManager.validateExtraChargeFare(sleeperSeatsBooked) || 
+                !FieldManager.validateExtraChargeFare(additionalCharges)
+            ) {
+                throw new IllegalArgumentException("Invalid Seating Fare");
+            }
             
+            // total Charges check
+            if(totalCharges < 0) {
+                throw new IllegalArgumentException("Invalid total Charges");
+            }
+
+            // validate check if driver exist and he is inactive
+            request.getRequestDispatcher("get_inactive_drivers.do").include(request, response);
+            
+            @SuppressWarnings("unchecked")
+            ArrayList<Driver> driverList = (ArrayList<Driver>) session.getAttribute("driverList");
+
+            boolean isDriverValid = false;
+            for(Driver next : driverList) {
+                if(next.getDriverId().equals(driverId) && next.getUser().getStatus().getName().equals("Inactive")) {
+                    isDriverValid = true;
+                    break;
+                }
+            }
+            if(!isDriverValid) {
+                throw new IllegalArgumentException("Illegal Driver");
+            }
+
+
         }
         catch(NumberFormatException e) {
             e.printStackTrace();
@@ -53,6 +93,7 @@ public class AddBusScheduleServlet extends HttpServlet {
         catch(IllegalArgumentException e) {
             e.printStackTrace();
             response.getWriter().println("invalid");
+            session.removeAttribute("driverList");
             return;
         }
 

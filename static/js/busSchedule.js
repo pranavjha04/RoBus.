@@ -300,7 +300,7 @@ routeSelectContainer.addEventListener("mousedown", (e) => {
     }
   );
 
-  totalCharge.value = fixed + perPersonPerKm;
+  totalCharge.value = 180 + fixed + perPersonPerKm;
 });
 
 departureTime.addEventListener("blur", async (e) => {

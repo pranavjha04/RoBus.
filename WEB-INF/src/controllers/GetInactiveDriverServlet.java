@@ -26,6 +26,8 @@ public class GetInactiveDriverServlet extends HttpServlet {
             return;
         }
 
+        session.removeAttribute("driverList");
+
         Operator operator = (Operator) session.getAttribute("operator");
         ArrayList<Driver> driverList = Driver.collectInactiveDrivers(operator.getOperatorId());
         if(driverList == null) {
@@ -33,8 +35,7 @@ public class GetInactiveDriverServlet extends HttpServlet {
             return;
         }
 
-        System.out.println(driverList);
-        
+        session.setAttribute("driverList", driverList);        
         response.getWriter().println(new Gson().toJson(driverList));
     }
 }

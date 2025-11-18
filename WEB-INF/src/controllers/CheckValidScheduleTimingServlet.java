@@ -17,6 +17,8 @@ import models.Schedule;
 import models.Operator;
 import models.BusRouteWeekday;
 
+import utils.FieldManager;
+
 @WebServlet("/check_valid_schedule_timings.do")
 public class CheckValidScheduleTimingServlet extends HttpServlet {
     private static final String[] acceptedParams = {"departure_time", "arrival_time", "journey_date", "bus_id"};
@@ -40,6 +42,10 @@ public class CheckValidScheduleTimingServlet extends HttpServlet {
             Time departureTime = Time.valueOf(request.getParameter("departure_time"));
             Time arrivalTime = Time.valueOf(request.getParameter("arrival_time"));
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));  
+
+            if(!FieldManager.validateScheduleDate(journeyDate.toString())) {
+                throw new IllegalArgumentException("Invalid Date");
+            }
 
             String formattedAttribute = journeyDate.toString() + operator.getOperatorId() + busId;
 
@@ -69,15 +75,18 @@ public class CheckValidScheduleTimingServlet extends HttpServlet {
             }
 
             response.getWriter().println("ok");
+            request.setAttribute("isValid", true);
             return;
         }
         catch(NumberFormatException e) {
             e.printStackTrace();
             response.getWriter().println("invalid");
+            request.removeAttribute("isValid");
             return;
         }
         catch(IllegalArgumentException e) {
             response.getWriter().println("invalid");
+            request.removeAttribute("isValid");
             e.printStackTrace();
             return;
         }

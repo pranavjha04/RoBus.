@@ -98,4 +98,19 @@ public final class FieldManager {
         Matcher matcher = pattern.matcher(licenceNumber);
         return matcher.matches();
     }
+
+    public static final Boolean validateScheduleDate(String date) {
+        LocalDate minDate = LocalDate.now();
+        LocalDate maxDate = minDate.plusMonths(2);
+
+        LocalDate inputDate = LocalDate.parse(date);
+        if(inputDate.isBefore(minDate) || inputDate.isAfter(maxDate)) {
+            return false;
+        }
+        return true;
+    }
+
+    public static final Boolean validateExtraChargeFare(int fare) {
+        return fare >= 0 && fare <= 500;
+    } 
 }

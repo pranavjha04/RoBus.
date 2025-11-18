@@ -51,6 +51,21 @@ public class Schedule {
     public Schedule() {
     }
 
+    public static Boolean addRecord(Date journeDate, Time departureTime, Time arrivalTime, Integer seaterSeatsBooked, Integer sleeperSeatsBooked, Integer additionalCharges, Integer sleeperFare, Integer seaterFare, Integer totalCharges, Integer busId, Integer driverId, Integer busRouteWeekdayId) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "INSERT INTO schedules " +
+                        "(journey_date, departure_time, arrival_time, )"
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
+    }
+
     public static ArrayList<Schedule> getRecordsForTimings(Integer operatorId, Date journeyDate, Integer busId) {
         ArrayList<Schedule> list = new ArrayList<>();
         try {
