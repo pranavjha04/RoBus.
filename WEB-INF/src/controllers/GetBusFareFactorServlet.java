@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 public class GetBusFareFactorServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
+        String requestURLPath = request.getServletPath().substring(1);
         if(session.getAttribute("operator") == null) {
             response.getWriter().println("invalid");
             return;
@@ -36,18 +37,28 @@ public class GetBusFareFactorServlet extends HttpServlet {
             if(busFareFactorList == null) {
                 throw new IllegalArgumentException("invalid");
             }
-
-            response.getWriter().println(new Gson().toJson(busFareFactorList));
-        }
-        catch(NumberFormatException e) {
-            e.printStackTrace();
-            response.getWriter().println("invalid");
-            return;
+            session.setAttribute("bus_fare_factor_list", busFareFactorList);
+            if(!requestURLPath.equals("add_bus_schedule.do")) {
+                response.getWriter().println(new Gson().toJson(busFareFactorList));
+            }
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
-            response.getWriter().println("invalid");
+            if(!requestURLPath.equals("add_bus_schedule.do")) {
+                response.getWriter().println("invalid");
+            }
             return;
         }
+    }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession();
+        String requestURLPath = request.getServletPath().substring(1);
+
+        if(session.getAttribute("operator") == null || !requestURLPath.equals("add_bus_schedule.do")) {
+            response.sendRedirect("/bts");
+        }
+        
+        doGet(request, response);
     }
 }

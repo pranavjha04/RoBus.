@@ -241,6 +241,16 @@ public class BusFareFactor {
         return list;
     }
 
+    public static int calculateTotalCharges(ArrayList<BusFareFactor> list) {
+        int total = 0;
+        if(list == null) return total;
+
+        for(BusFareFactor next : list) {
+            
+        }
+        return total;
+    }
+
     public void setOperatorTicketFare(OperatorTicketFare operatorTicketFare) {
         this.operatorTicketFare = operatorTicketFare;
     }

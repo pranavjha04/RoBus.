@@ -31,8 +31,7 @@ public class CheckValidScheduleTimingServlet extends HttpServlet {
         }
 
         String requestURLPath = request.getServletPath().substring(1);
-
-
+        
         try {
             for(String next : acceptedParams) {
                 if(request.getParameter(next) == null) {
@@ -85,16 +84,6 @@ public class CheckValidScheduleTimingServlet extends HttpServlet {
             }
             else {
                 session.setAttribute("isScheduleDateTimeValid", true);
-            }
-            return;
-        }
-        catch(NumberFormatException e) {
-            e.printStackTrace();
-            if(requestURLPath.equals("add_bus_schedule.do")) {
-                session.removeAttribute("isScheduleDateTimeValid");
-            }
-            else {
-                response.getWriter().println("invalid");
             }
             return;
         }

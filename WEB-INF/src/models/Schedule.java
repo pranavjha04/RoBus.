@@ -51,14 +51,33 @@ public class Schedule {
     public Schedule() {
     }
 
-    public static Boolean addRecord(Date journeDate, Time departureTime, Time arrivalTime, Integer seaterSeatsBooked, Integer sleeperSeatsBooked, Integer additionalCharges, Integer sleeperFare, Integer seaterFare, Integer totalCharges, Integer busId, Integer driverId, Integer busRouteWeekdayId) {
+    public static Boolean addRecord(Date journeyDate, Time departureTime, Time arrivalTime, Integer additionalCharges, Integer sleeperFare, Integer seaterFare, Integer totalCharges, Integer busId, Integer driverId, Integer busRouteWeekdayId) {
         boolean flag = false;
         try {
             Connection con = DBManager.getConnection();
             String query = 
                         "INSERT INTO schedules " +
-                        "(journey_date, departure_time, arrival_time, )";
+                        "(journey_date, departure_time, arrival_time, seater_seats_booked, sleeper_seats_booked, additional_charges, seater_fare, sleeper_fare, total_charges, bus_id, driver_id, bus_route_weekday_id)";
             PreparedStatement ps = con.prepareStatement(query);
+            
+            ps.setDate(1, journeyDate);
+            ps.setTime(2, departureTime);
+            ps.setTime(3, arrivalTime);
+            ps.setInt(4, 0); // seater seats booked
+            ps.setInt(5, 0); // sleeper seats booked
+            ps.setInt(6, additionalCharges);
+            ps.setInt(7, seaterFare); 
+            ps.setInt(8, sleeperFare); 
+            ps.setInt(9, totalCharges);
+            ps.setInt(10, busId);
+            ps.setInt(11, driverId);
+            ps.setInt(12, busRouteWeekdayId);
+
+            int rows = ps.executeUpdate();
+            if(rows > 0) {
+                flag = true;
+            }
+            con.close();
         }
         catch(SQLException e) {
             e.printStackTrace();

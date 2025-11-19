@@ -127,6 +127,9 @@ public class AddDriverServlet extends HttpServlet {
             if(!isUpdated) throw new Exception();
 
             response.getWriter().println("success");
+
+            // remove cache
+            session.removeAttribute("driverList");
         }
         catch(FileUploadException e) {
             e.printStackTrace();

@@ -26,30 +26,18 @@ public class GetInactiveDriverServlet extends HttpServlet {
             return;
         }
 
-        String requestURLPath = request.getServletPath().substring(1);
-        if(requestURLPath.equals("add_bus_schedule.do")) {
-            session.removeAttribute("driverList");
-        }
-
         Operator operator = (Operator) session.getAttribute("operator");
-        ArrayList<Driver> driverList = Driver.collectInactiveDrivers(operator.getOperatorId());
-        if(driverList == null) {
-            if(!requestURLPath.equals("add_bus_schedule.do")) {
+
+        if(session.getAttribute("driverList") == null) {
+            ArrayList<Driver> driverList = Driver.collectInactiveDrivers(operator.getOperatorId());
+            if(driverList == null) {
                 response.getWriter().println("invalid");   
+                return;
             }
-            return;
+            session.setAttribute("driverList", driverList);
         }
 
-        if(requestURLPath.equals("add_bus_schedule.do")) {
-            session.setAttribute("driverList", driverList);         
-        }
-        else  {
-            response.getWriter().println(new Gson().toJson(driverList));
-        }
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        doGet(request, response);
+        response.getWriter().println(new Gson().toJson(driverList));
     }
 
 }
