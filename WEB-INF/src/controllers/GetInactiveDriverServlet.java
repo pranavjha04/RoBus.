@@ -35,7 +35,7 @@ public class GetInactiveDriverServlet extends HttpServlet {
         ArrayList<Driver> driverList = Driver.collectInactiveDrivers(operator.getOperatorId());
         if(driverList == null) {
             if(!requestURLPath.equals("add_bus_schedule.do")) {
-                session.setAttribute("driverList", driverList);         
+                response.getWriter().println("invalid");   
             }
             return;
         }
@@ -47,4 +47,9 @@ public class GetInactiveDriverServlet extends HttpServlet {
             response.getWriter().println(new Gson().toJson(driverList));
         }
     }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        doGet(request, response);
+    }
+
 }

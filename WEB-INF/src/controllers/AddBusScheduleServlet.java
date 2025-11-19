@@ -69,7 +69,7 @@ public class AddBusScheduleServlet extends HttpServlet {
                 throw new IllegalArgumentException("Invalid total Charges");
             }
 
-            // validate check if driver exist and he is inactive
+            // validate check if driver exist and he/she/her/they/them is inactive
             request.getRequestDispatcher("get_inactive_drivers.do").include(request, response);
             
             @SuppressWarnings("unchecked")
@@ -88,19 +88,11 @@ public class AddBusScheduleServlet extends HttpServlet {
 
             response.getWriter().println("ok");
         }
-        catch(NumberFormatException e) {
-            e.printStackTrace();
-            response.getWriter().println("invalid");
-            return;
-        }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
             response.getWriter().println("invalid");
             session.removeAttribute("driverList");
             return;
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
+        }       
     }
 }
