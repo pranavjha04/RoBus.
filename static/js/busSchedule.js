@@ -22,6 +22,7 @@ const showAvailableRouteBtn = document.querySelector("#show_available_routes");
 const busRoutWeekdayId = document.querySelector("#bus_route_weekday_id");
 const routeSelect = document.querySelector("#route_select");
 const routeSelectContainer = document.querySelector("#route_available_list");
+const operatorRouteId = document.querySelector("#operator_route_id");
 
 const driverId = document.querySelector("#driver_id");
 const driverSelect = document.querySelector("#driver_select");
@@ -57,8 +58,9 @@ const cache = {
 /******************UTILS ************************************ */
 const clearForm = () => {
   busRoutWeekdayId.value = "";
-  routeSelect.textContent = "Select Driver";
+  routeSelect.textContent = "Select Route";
   routeSelectContainer.innerHTML = "";
+  operatorRouteId.value = "";
 
   journeyDate.value = "";
 
@@ -266,12 +268,14 @@ routeSelectContainer.addEventListener("mousedown", (e) => {
 
   if (!target) {
     busRoutWeekdayId.value = "";
+    operatorRouteId.value = "";
     disableForm();
     return;
   }
   enableForm();
   const targetBusRouteWeekdayId = target.dataset.busRouteWeekdayId;
   busRoutWeekdayId.value = targetBusRouteWeekdayId;
+  operatorRouteId.value = target.dataset.operatorRouteId;
 
   routeSelect.textContent = [".route", ".distance", ".duration"]
     .map((next) => {
@@ -428,6 +432,11 @@ scheduleBusForm.addEventListener("submit", async (e) => {
 
   if (!busRoutWeekdayId.value) {
     toast.error("Please select a route");
+    return;
+  }
+
+  if (!operatorRouteId.value) {
+    toast.error("Invalid Request");
     return;
   }
 

@@ -57,7 +57,8 @@ public class Schedule {
             Connection con = DBManager.getConnection();
             String query = 
                         "INSERT INTO schedules " +
-                        "(journey_date, departure_time, arrival_time, seater_seats_booked, sleeper_seats_booked, additional_charges, seater_fare, sleeper_fare, total_charges, bus_id, driver_id, bus_route_weekday_id)";
+                        "(journey_date, departure_time, arrival_time, seater_seats_booked, sleeper_seats_booked, additional_charges, seater_fare, sleeper_fare, total_charges, bus_id, driver_id, bus_route_weekday_id) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = con.prepareStatement(query);
             
             ps.setDate(1, journeyDate);

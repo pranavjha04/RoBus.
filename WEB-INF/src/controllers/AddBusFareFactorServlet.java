@@ -42,5 +42,10 @@ public class AddBusFareFactorServlet extends HttpServlet {
         boolean success = BusFareFactor.addMultipleRecords(busIdList, operatorTicketFareId);
 
         response.getWriter().println(success ? "success" : "internal");
+        if(success) {
+            for(String busId : busIdList) {
+                session.removeAttribute("bus_fare_factor_list" + busId);
+            }
+        }
     }
 }

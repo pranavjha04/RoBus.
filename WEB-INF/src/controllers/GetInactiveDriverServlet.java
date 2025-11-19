@@ -25,19 +25,39 @@ public class GetInactiveDriverServlet extends HttpServlet {
             response.getWriter().println("invalid");
             return;
         }
-
+        String requestURLPath = request.getServletPath().substring(1);
         Operator operator = (Operator) session.getAttribute("operator");
 
         if(session.getAttribute("driverList") == null) {
             ArrayList<Driver> driverList = Driver.collectInactiveDrivers(operator.getOperatorId());
             if(driverList == null) {
-                response.getWriter().println("invalid");   
-                return;
+                if(!requestURLPath.equals("add_bus_schedule.do")) {
+                    response.getWriter().println("invalid");   
+                    return;
+                }
             }
-            session.setAttribute("driverList", driverList);
+            else {
+                session.setAttribute("driverList", driverList);
+            }
         }
+        
+        @SuppressWarnings("unchecked")
+        ArrayList<Driver> list = (ArrayList<Driver>) session.getAttribute("driverList");
 
-        response.getWriter().println(new Gson().toJson(driverList));
+        if(!requestURLPath.equals("add_bus_schedule.do")) {
+            response.getWriter().println(new Gson().toJson(list));
+        }
+    }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession();
+        String requestURLPath = request.getServletPath().substring(1);
+
+        if(session.getAttribute("operator") == null || !requestURLPath.equals("add_bus_schedule.do")) {
+            response.sendRedirect("/bts");
+        }
+        
+        doGet(request, response);
     }
 
 }

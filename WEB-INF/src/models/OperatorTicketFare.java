@@ -163,11 +163,11 @@ public class OperatorTicketFare {
         return factors;
     }
 
-    public void setFareFactpr(FareFactor fareFactor) {
+    public void setFareFactor(FareFactor fareFactor) {
         this.fareFactor = fareFactor;
     }
 
-    public FareFactor getFarFactor() {
+    public FareFactor getFareFactor() {
         return fareFactor;
     }
 

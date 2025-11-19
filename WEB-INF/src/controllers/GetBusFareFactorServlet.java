@@ -20,26 +20,31 @@ public class GetBusFareFactorServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         String requestURLPath = request.getServletPath().substring(1);
-        if(session.getAttribute("operator") == null) {
-            response.getWriter().println("invalid");
-            return;
-        }
 
         try {
+            if(session.getAttribute("operator") == null) {
+                throw new IllegalArgumentException("Missing Operator");
+            }
+
             Operator operator = (Operator) session.getAttribute("operator");
             if(request.getParameter("bus_id") == null) {
                 throw new IllegalArgumentException("Missing Parameter");
             }
 
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));
-            ArrayList<BusFareFactor> busFareFactorList = BusFareFactor.collectAllRecords(busId, operator.getOperatorId());
-
-            if(busFareFactorList == null) {
-                throw new IllegalArgumentException("invalid");
+            if(session.getAttribute("bus_fare_factor_list" + busId) == null) {
+                ArrayList<BusFareFactor> busFareFactorList = BusFareFactor.collectAllRecords(busId, operator.getOperatorId());
+                if(busFareFactorList == null) {
+                    throw new IllegalArgumentException("invalid");
+                }
+                session.setAttribute("bus_fare_factor_list" + busId, busFareFactorList);
             }
-            session.setAttribute("bus_fare_factor_list", busFareFactorList);
+
+            @SuppressWarnings("unchecked")
+            ArrayList<BusFareFactor> list = (ArrayList<BusFareFactor>) session.getAttribute("bus_fare_factor_list" + busId);
+            
             if(!requestURLPath.equals("add_bus_schedule.do")) {
-                response.getWriter().println(new Gson().toJson(busFareFactorList));
+                response.getWriter().println(new Gson().toJson(list));
             }
         }
         catch(IllegalArgumentException e) {

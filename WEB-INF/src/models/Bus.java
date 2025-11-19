@@ -105,7 +105,7 @@ public class Bus implements Cloneable {
         return busList;
     }
 
-    public static Bus getRecord(Integer busId) {
+    public static Bus getRecord(Integer busId, Integer operatorId) {
         Bus bus = null;
         try {
             Connection con = DBManager.getConnection();
@@ -119,10 +119,11 @@ public class Bus implements Cloneable {
                     "buses b JOIN status s " + 
                     "ON b.status_id = s.status_id " +
                     "JOIN manufacturers m ON b.manufacturer_id = m.manufacturer_id " +
-                    "WHERE bus_id=?";
+                    "WHERE bus_id=? AND operator_id=?";
             PreparedStatement ps = con.prepareStatement(query);
 
             ps.setInt(1, busId);
+            ps.setInt(2, operatorId);
 
             ResultSet rs = ps.executeQuery();
 

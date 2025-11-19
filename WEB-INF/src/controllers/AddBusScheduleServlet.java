@@ -19,12 +19,15 @@ import models.Schedule;
 import models.Driver;
 import models.Bus;
 import models.BusFareFactor;
+import models.BusRouteWeekday;
 
 import utils.FieldManager;
 
 @WebServlet("/add_bus_schedule.do")
 public class AddBusScheduleServlet extends HttpServlet {
-    private static String[] acceptedParams = {"bus_id", "journey_date", "arrival_time", "departure_time", "additional_charges", "sleeper_fare", "seater_fare", "total_charges", "driver_id", "bus_route_weekday_id"};
+
+    private static String[] acceptedParams = {"bus_id", "journey_date", "arrival_time", "departure_time", "additional_charges", "sleeper_fare", "seater_fare", "total_charges", "driver_id", "bus_route_weekday_id", "operator_route_id"};
+
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         if(session.getAttribute("operator") == null) {
@@ -33,11 +36,14 @@ public class AddBusScheduleServlet extends HttpServlet {
         }
 
         try {
+            // validate if any missing parameter
             for(String next : acceptedParams) {
                 if(request.getParameter(next) == null) {
                     throw new IllegalArgumentException("Missing Parameter");
                 }
             }
+
+            // store all parameters
             Operator operator = (Operator) session.getAttribute("operator");
             Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
             Time departureTime = Time.valueOf(request.getParameter("departure_time"));
@@ -52,13 +58,14 @@ public class AddBusScheduleServlet extends HttpServlet {
             Integer seaterSeatsBooked = 0;
             Integer sleeperSeatsBooked = 0;
 
-            // date time validation
+            /* -------- DATE TIME START -------- */
             request.getRequestDispatcher("check_valid_schedule_timings.do").include(request, response);
-
             if (session.getAttribute("isScheduleDateTimeValid") == null) {
                 throw new IllegalArgumentException("Invalid schedule timing");
             }
-            // extra charges check
+            /* -------- DATE TIME VALIDATION END -------- */
+
+            /* -------- EXTRA FARE CHARGES  START -------- */
             if(
                 !FieldManager.validateExtraChargeFare(seaterSeatsBooked) || 
                 !FieldManager.validateExtraChargeFare(sleeperSeatsBooked) || 
@@ -66,9 +73,15 @@ public class AddBusScheduleServlet extends HttpServlet {
             ) {
                 throw new IllegalArgumentException("Invalid Seating Fare");
             }
+            /* -------- EXTRA FARE CHARGES END -------- */
 
-            // validate check if driver exist and he/she/her/they/them is inactive
-            
+            /* -------- DRIVER START -------- */
+            if(session.getAttribute("driverList") == null) {
+                request.getRequestDispatcher("get_inactive_drivers.do").include(request, response);
+                if(session.getAttribute("driverList") == null) {
+                    throw new IllegalArgumentException("Invalid Request");
+                }
+            }
             @SuppressWarnings("unchecked")
             ArrayList<Driver> driverList = (ArrayList<Driver>) session.getAttribute("driverList");
 
@@ -83,46 +96,70 @@ public class AddBusScheduleServlet extends HttpServlet {
             if(!isDriverValid) {
                 throw new IllegalArgumentException("Illegal Driver");
             }
+            /* -------- DRIVER END -------- */
 
-            // validate bus
-            Bus inputBus = Bus.getRecord(busId);
-            if(inputBus == null || !inputBus.getOperator().getOperatorId().equals(operator.getOperatorId())) {
-                response.getWriter().println("invalid");
-                return;
+            /* -------- BUS START -------- */
+            Bus inputBus = Bus.getRecord(busId, operator.getOperatorId());
+            if(inputBus == null) {
+                throw new IllegalArgumentException("Invalid Bus ID");
+            }
+            /* -------- BUS END -------- */
+
+            /* -------- TOTAL CHARGES START -------- */
+            if(session.getAttribute("bus_fare_factor_list" + busId) == null) {
+                request.getRequestDispatcher("get_bus_fare_factors.do").include(request, response);
+                if(session.getAttribute("bus_fare_factor_list" + busId) == null) {
+                    throw new IllegalArgumentException("Invalid Request");
+                }
+            }
+            if(session.getAttribute("bus_route_weekday_list") == null) {
+                request.getRequestDispatcher("get_bus_route_weekday_all.do").include(request, response);
+                if(session.getAttribute("bus_route_weekday_list") == null) {
+                    throw new IllegalArgumentException("Invalid Request");
+                }
             }
 
-            // validate TotalCharges
-            request.getRequestDispatcher("get_bus_fare_factors.do").include(request, response);
-            if(session.getAttribute("bus_fare_factor_list") == null) {
-                throw new IllegalArgumentException("Invalid Request");
+            @SuppressWarnings("unchecked")
+            ArrayList<BusFareFactor> busFareFactorList = (ArrayList<BusFareFactor>) session.getAttribute("bus_fare_factor_list"+ busId);
+
+            @SuppressWarnings("unchecked")
+            ArrayList<BusRouteWeekday> busRouteWeekdayList = (ArrayList<BusRouteWeekday>) session.getAttribute("bus_route_weekday_list");
+            
+            int distance = 0;
+            for(BusRouteWeekday next : busRouteWeekdayList) {
+                if(next.getBusRouteWeekdayId().equals(busRouteWeekdayId)) {
+                    distance = next.getOperatorRoute().getRoute().getDistance();
+                    break;
+                }
             }
-
-            // validate total Fare
-            @SuppressWarnings("unchecked");
-            ArrayList<BusFareFactor> busFareFactorList = (ArrayList<BusFareFactor>) session.getAttribute("bus_fare_factor_list");
-
-            int targetTotalFareCharges = BusFareFactor.calculateTotalFareCharges(busFareFactorList, duration);
+            if(distance == 0) {
+                throw new IllegalArgumentException("Invalid Bus Route Weekday Id");
+            }
+            
+            int targetTotalFareCharges = BusFareFactor.calculateTotalFareCharges(busFareFactorList, distance);
             int currTotalFareCharges = totalCharges - additionalCharges - seaterFare - sleeperFare;
 
-            
-            if(currTotalCharges != targetTotalCharges) {
-                throw new IllegalArgumentException("Invalid Request");
+            if(currTotalFareCharges != targetTotalFareCharges) {
+                throw new IllegalArgumentException("Invalid Total Charges");
             }
+            /* -------- TOTAL CHARGES END -------- */
 
+            /* -------- ADD QUERY -------- */
             boolean isScheduled = Schedule.addRecord(journeyDate, departureTime, arrivalTime, additionalCharges, sleeperFare, seaterFare, totalCharges, busId, driverId, busRouteWeekdayId);
 
             if(!isScheduled) throw new IllegalArgumentException("Internal Server Error");
-
+    
             response.getWriter().println("ok");
-
             // clear cache
             session.removeAttribute(journeyDate.toString() + operator.getOperatorId() + busId);
-
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
             response.getWriter().println("invalid");
             return;
         }       
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }

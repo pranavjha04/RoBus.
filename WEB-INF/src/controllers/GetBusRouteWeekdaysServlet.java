@@ -20,29 +20,47 @@ import com.google.gson.Gson;
 public class GetBusRouteWeekdaysServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
-        if(session.getAttribute("operator") == null) {
-            response.getWriter().println("invalid");
-            return;
-        }
+        String requestURLPath = request.getServletPath().substring(1);
 
         try {
+            if(session.getAttribute("operator") == null) {
+                throw new IllegalArgumentException("Invalid  Request");
+            }
             Integer operatorRouteId = Integer.parseInt(request.getParameter("operator_route_id"));
             Operator operator = (Operator) session.getAttribute("operator");
             Integer operatorId = operator.getOperatorId();
-            ArrayList<BusRouteWeekday> busRouteWeekdayList = BusRouteWeekday.collectAllRecords(operatorRouteId, operatorId);
-            if(busRouteWeekdayList == null) throw new IllegalArgumentException("Invalid");
 
-            response.getWriter().println(new Gson().toJson(busRouteWeekdayList));
-        }
-        catch(NumberFormatException e) {
-            e.printStackTrace();
-            response.getWriter().println("invalid");
-            return;
+            if(session.getAttribute("bus_route_weekday_list") == null) {
+                ArrayList<BusRouteWeekday> busRouteWeekdayList = BusRouteWeekday.collectAllRecords(operatorRouteId, operatorId);
+                
+                if(busRouteWeekdayList == null) throw new IllegalArgumentException("Invalid");
+
+                session.setAttribute("bus_route_weekday_list", busRouteWeekdayList);
+            }
+
+            if(!requestURLPath.equals("add_bus_schedule.do")) {
+                @SuppressWarnings("unchecked")
+                ArrayList<BusRouteWeekday> list = (ArrayList<BusRouteWeekday>) session.getAttribute("bus_route_weekday_list");
+                response.getWriter().println(new Gson().toJson(list));
+            }
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
-            response.getWriter().println("invalid");
+            if(!requestURLPath.equals("add_bus_schedule.do")) {
+                response.getWriter().println("invalid");
+            }
             return;
         }
+    }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession();
+        String requestURLPath = request.getServletPath().substring(1);
+
+        if(session.getAttribute("operator") == null || !requestURLPath.equals("add_bus_schedule.do")) {
+            response.sendRedirect("/bts");
+        }
+        
+        doGet(request, response);
     }
 }

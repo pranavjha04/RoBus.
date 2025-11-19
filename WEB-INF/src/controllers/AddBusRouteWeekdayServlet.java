@@ -34,15 +34,14 @@ public class AddBusRouteWeekdayServlet extends HttpServlet {
             String[] weekdays = request.getParameterValues("weekday");
 
             success = BusRouteWeekday.addRecord(weekdays, operatorRouteId);
-        }
-        catch(NumberFormatException e) {
-            success = false;
-            e.printStackTrace();
+            response.getWriter().println(success ? "success" : "invalid");
+            if(success) {
+                session.removeAttribute("bus_route_weekday_list");
+            }
         }
         catch(IllegalArgumentException e) {
             success = false;
             e.printStackTrace();
         }       
-        response.getWriter().println(success ? "success" : "invalid");
     }
 }

@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 
 import models.Seating;
 import models.Bus;
+import models.Operator;
 
 @WebServlet("/add_seating.do")
 public class AddSeatingServlet extends HttpServlet {
@@ -23,24 +24,22 @@ public class AddSeatingServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         if(session.getAttribute("operator") == null) {
-            System.out.println("Add Seating" + 26);
             response.getWriter().println("invalid");
             return;
         }
+        Operator operator = (Operator) session.getAttribute("operator");
+
         if(request.getParameter("bus_id") != null && request.getParameter("deck") != null) {
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));
             Boolean deck = Boolean.parseBoolean(request.getParameter("deck"));
-            System.out.println("Add Seating" + 32);
             boolean isExist = Seating.checkSeatingExist(busId, deck);
             if(isExist) {
                 response.getWriter().println("invalid");
-                System.out.println("Add Seating" + 37);
                 return;
             }
         }   
         else {
             response.getWriter().println("invalid");
-            System.out.println("Add Seating" + 43);
             return;
         }
 
@@ -49,14 +48,12 @@ public class AddSeatingServlet extends HttpServlet {
         for(String param : acceptedParams) {
             String value = request.getParameter(param);
             if (value == null || value.trim().isEmpty()) {
-                System.out.println("Add Seating" + 52);
                 response.getWriter().println("invalid");
                 return;
             }
             else {
                 Boolean success = seating.setField(param, value);
                 if(!success) {
-                    System.out.println("Add Seating" + value +  59);
                     response.getWriter().println("invalid");
                     return;
                 }
@@ -71,7 +68,7 @@ public class AddSeatingServlet extends HttpServlet {
             return;
         }
 
-        Bus activeBus = Bus.getRecord(busId);
+        Bus activeBus = Bus.getRecord(busId, operator.getOperatorId());
         if(activeBus == null) {
             response.getWriter().println("internal");
             return;

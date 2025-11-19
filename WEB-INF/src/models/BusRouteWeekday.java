@@ -25,37 +25,6 @@ public class BusRouteWeekday {
 
     }
 
-    public static BusRouteWeekday getRecord(int busRouteWeekdayId, int operatorId) {
-        try {
-            Connection con = DBManager.getConnection();
-            String query = 
-                        "SELECT * FROM " +
-                        "bus_route_weekdays brw " + 
-                        "JOIN operator_routes opr ON brw.operator_route_id = opr.operator_route_id " + 
-                        "JOIN cities mc ON mc.city_id = rmc.midcity_id " +
-                        "JOIN states ms ON ms.state_id = mc.state_id " +
-                        "JOIN weekdays w ON brw.weekday_id = w.weekday_id " +
-                        "JOIN routes r ON opr.route_id = r.route_id " +
-                        "JOIN cities s ON r.source = s.city_id " +
-                        "JOIN states ss ON s.state_id = ss.state_id " +
-                        "JOIN cities d ON r.destination = d.city_id " +
-                        "JOIN states ds ON d.state_id = ds.state_id " +
-                        "JOIN status st ON st.status_id = opr.status_id " +
-                        "WHERE opr.operator_id=? AND brw.bus_route_weekday_id=?";
-            PreparedStatement ps = con.prepareStatement(query);
-
-            ps.setInt(1, operatorId);
-            ps.setInt(2, busRouteWeekdayId);
-
-            if(rs.next()) {
-                
-            }
-        }
-        catch(SQLException e) {
-
-        }
-    }
-
     public static ArrayList<BusRouteWeekday> collectWeekdayAvailableRouteList(Integer weekdayId, Integer operatorId) {
         ArrayList<BusRouteWeekday> list = new ArrayList<>();
         try {

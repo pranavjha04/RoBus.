@@ -101,6 +101,7 @@ prefix="e" uri="bts" %>
               </div>
 
               <!-- Route Select -->
+               <input type="hidden" name="operator_route_id" name="operator_route_id" id="operator_route_id">
               <div class="mb-3">
                 <label class="form-label fw-semibold">Route</label>
 

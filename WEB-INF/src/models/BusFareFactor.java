@@ -241,12 +241,22 @@ public class BusFareFactor {
         return list;
     }
 
-    public static int calculateTotalCharges(ArrayList<BusFareFactor> list) {
-        int total = 0;
-        if(list == null) return total;
+    public static int calculateTotalFareCharges(ArrayList<BusFareFactor> list, int distance) throws IllegalArgumentException {
+        int total = 180;
+        if(list == null) {
+            throw new IllegalArgumentException("Invalid List");
+        }
 
         for(BusFareFactor next : list) {
-            
+            boolean isFixedCharged = next.getOperatorTicketFare().getFareFactor().getFixedCharge();
+            int charge = next.getOperatorTicketFare().getCharge();
+
+            if(isFixedCharged) {
+                total += charge;
+            }
+            else {
+                total += (charge * distance);
+            }
         }
         return total;
     }
