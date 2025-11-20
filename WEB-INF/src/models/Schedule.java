@@ -130,16 +130,16 @@ public class Schedule {
                 // busRouteWeekday
                 Weekday weekday = new Weekday(rs.getInt("w.weekday_id"), rs.getString("w.name"));
                 City source = new City(
-                    rs.getInt("sc.city_id"),
-                    rs.getString("sc.name"),
+                    rs.getInt("s.city_id"),
+                    rs.getString("s.name"),
                     new State(
                         rs.getInt("ss.state_id"),
                         rs.getString("ss.name")
                     )
                 );
                 City destination = new City(
-                    rs.getInt("dc.city_id"),
-                    rs.getString("dc.name"),
+                    rs.getInt("d.city_id"),
+                    rs.getString("d.name"),
                     new State(
                         rs.getInt("ds.state_id"),
                         rs.getString("ds.name")
@@ -188,11 +188,11 @@ public class Schedule {
                 );
 
                 Driver driver = new Driver(
-                    rs.getInt("d.driver_id"),
-                    rs.getDate("d.start_date"),
-                    rs.getDate("d.end_date"),
-                    rs.getString("d.licence_pic"),
-                    rs.getString("d.licence_no"),
+                    rs.getInt("dr.driver_id"),
+                    rs.getDate("dr.start_date"),
+                    rs.getDate("dr.end_date"),
+                    rs.getString("dr.licence_pic"),
+                    rs.getString("dr.licence_no"),
                     user
                 );
 

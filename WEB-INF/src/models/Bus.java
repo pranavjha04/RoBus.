@@ -153,7 +153,7 @@ public class Bus implements Cloneable {
         return bus;
     }
 
-    public static Boolean updateStatus(Integer busId, Integer statusId) {
+    public static Boolean updateStatus(Integer busId, Integer statusId, Integer operatorId) {
         Boolean flag = false;
         try {
             Connection con = DBManager.getConnection();
@@ -161,10 +161,11 @@ public class Bus implements Cloneable {
             String query = 
                         "UPDATE buses " +
                         "SET status_id=? " +
-                        "WHERE bus_id=?";
+                        "WHERE bus_id=? AND operator_id=?";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setInt(1, statusId);
             ps.setInt(2, busId);
+            ps.setInt(3, operatorId);
 
             flag = ps.executeUpdate() == 1;
 

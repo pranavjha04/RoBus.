@@ -149,6 +149,10 @@ public class AddBusScheduleServlet extends HttpServlet {
             boolean isScheduled = Schedule.addRecord(journeyDate, departureTime, arrivalTime, additionalCharges, sleeperFare, seaterFare, totalCharges, busId, driverId, busRouteWeekdayId);
 
             if(!isScheduled) throw new IllegalArgumentException("Internal Server Error");
+
+            boolean isUpdated = inputBus.updateStatus(inputBus.getBusId(), 4, operator.getOperatorId());
+
+            if(!isUpdated) throw new IllegalArgumentException("Internal Server Error");
     
             response.getWriter().println("ok");
             // clear cache

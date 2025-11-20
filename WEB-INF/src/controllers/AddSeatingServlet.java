@@ -88,8 +88,7 @@ public class AddSeatingServlet extends HttpServlet {
         }
 
         if(isUpdatable) {
-            Boolean success = Bus.updateStatus(busId, 5); // 2nd column is statusId  (5) <-> Inactive
-
+            Boolean success = Bus.updateStatus(busId, 5, operator.getOperatorId()); // 2nd column is statusId  (5) <-> Inactive
             if(!success) {
                 response.getWriter().println("internal");
                 return;
