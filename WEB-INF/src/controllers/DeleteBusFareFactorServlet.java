@@ -36,6 +36,9 @@ public class DeleteBusFareFactorServlet extends HttpServlet {
 
             Boolean success = BusFareFactor.deleteRecord(busId, busFareFactorId, operatorTicketFareId);
 
+            if(success) {
+                session.removeAttribute("bus_fare_factor_list" + busId);
+            }
             response.getWriter().println(success ? "success" : "internal");
         } 
         catch(NumberFormatException e) {

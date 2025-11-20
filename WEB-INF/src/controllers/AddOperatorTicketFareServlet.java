@@ -8,9 +8,13 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 import models.OperatorTicketFare;
 import models.Operator;
+import models.BusFareFactor;
 
 import utils.FieldManager;
 
@@ -40,7 +44,21 @@ public class AddOperatorTicketFareServlet extends HttpServlet {
         Operator operator = (Operator) session.getAttribute("operator");
 
         boolean success = OperatorTicketFare.addRecord(fareFactorId, charge, operator.getOperatorId());
+        if(success) {
+            Enumeration<String> allAttributes = session.getAttributeNames();
+            List<String> toRemove = new ArrayList<>();
 
+            while (allAttributes.hasMoreElements()) {
+                String attributeName = allAttributes.nextElement();
+                if (attributeName.startsWith("bus_fare_factor_list")) {
+                    toRemove.add(attributeName);
+                }
+            }
+
+            for (String name : toRemove) {
+                session.removeAttribute(name);
+            }
+        }
         response.getWriter().println(success ? "success" : "internal");
     }
 }

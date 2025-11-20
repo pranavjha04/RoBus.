@@ -8,6 +8,9 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.List;
 
 import models.OperatorTicketFare;
 
@@ -24,9 +27,33 @@ public class DeleteFareFactorServlet extends HttpServlet {
             return;
         }
 
-        int operatorTicketFareId = Integer.parseInt(request.getParameter("operator_ticket_fare_id"));
-        boolean success = OperatorTicketFare.deleteRecord(operatorTicketFareId);
+        try {
+            int operatorTicketFareId = Integer.parseInt(request.getParameter("operator_ticket_fare_id"));
+            boolean success = OperatorTicketFare.deleteRecord(operatorTicketFareId);
 
-        response.getWriter().println(success == true ? "success" : "internal");
+            if(success) {
+                Enumeration<String> allAttributes = session.getAttributeNames();
+                List<String> toRemove = new ArrayList<>();
+
+                while (allAttributes.hasMoreElements()) {
+                    String attributeName = allAttributes.nextElement();
+                    if (attributeName.startsWith("bus_fare_factor_list")) {
+                        toRemove.add(attributeName);
+                    }
+                }
+                for (String name : toRemove) {
+                    session.removeAttribute(name);
+                }
+
+                response.getWriter().println("success");
+            }
+            else {
+                throw new IllegalArgumentException("Invalid Request");
+            }
+        }
+        catch(IllegalArgumentException e) {
+            e.printStackTrace();
+            response.getWriter().println("invalid");
+        }
     }
 }

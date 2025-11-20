@@ -30,17 +30,16 @@ public class GetBusRouteWeekdaysServlet extends HttpServlet {
             Operator operator = (Operator) session.getAttribute("operator");
             Integer operatorId = operator.getOperatorId();
 
-            if(session.getAttribute("bus_route_weekday_list") == null) {
+            if(session.getAttribute("bus_route_weekday_list" + operatorRouteId) == null) {
                 ArrayList<BusRouteWeekday> busRouteWeekdayList = BusRouteWeekday.collectAllRecords(operatorRouteId, operatorId);
                 
                 if(busRouteWeekdayList == null) throw new IllegalArgumentException("Invalid");
-
-                session.setAttribute("bus_route_weekday_list", busRouteWeekdayList);
+                session.setAttribute("bus_route_weekday_list" + operatorRouteId, busRouteWeekdayList);
             }
 
             if(!requestURLPath.equals("add_bus_schedule.do")) {
                 @SuppressWarnings("unchecked")
-                ArrayList<BusRouteWeekday> list = (ArrayList<BusRouteWeekday>) session.getAttribute("bus_route_weekday_list");
+                ArrayList<BusRouteWeekday> list = (ArrayList<BusRouteWeekday>) session.getAttribute("bus_route_weekday_list" + operatorRouteId);
                 response.getWriter().println(new Gson().toJson(list));
             }
         }

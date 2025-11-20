@@ -6,7 +6,6 @@ import {
   addOperatorRouteMidCities,
   collectAllBusRouteWeekdayRequest,
   collectAllWeekdayRequest,
-  collectAvailableRouteMidCitiesRequest,
   collectOperatorRouteMidCitiesRequest,
   collectRouteMidCitiesRequest,
   deleteBusRouteWeekdayRequest,

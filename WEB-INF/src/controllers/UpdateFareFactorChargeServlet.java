@@ -8,9 +8,13 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.ArrayList;
 
 import models.OperatorTicketFare;
 import models.Operator;
+import models.OperatorTicketFare;
+import models.BusFareFactor;
 
 import utils.FieldManager;
 
@@ -38,6 +42,23 @@ public class UpdateFareFactorChargeServlet extends HttpServlet {
         
         boolean success = OperatorTicketFare.updateCharge(newChargeValue, operatorTicketFareId);
 
-        response.getWriter().println(success == true ? "success" : "internal");
+        if(success) {
+            Enumeration<String> allAttributes = session.getAttributeNames(); 
+            while(allAttributes.hasMoreElements()) {
+                String attributeName = allAttributes.nextElement();
+                if(attributeName.startsWith("bus_fare_factor_list")) {
+                    @SuppressWarnings("unchecked")
+                    ArrayList<BusFareFactor> list = (ArrayList<BusFareFactor>) session.getAttribute(attributeName);
+
+                    for(BusFareFactor next : list) {
+                        if(next.getOperatorTicketFare().getOperatorTicketFareId().equals(operatorTicketFareId)) {
+                            next.getOperatorTicketFare().setCharge(newChargeValue);
+                        }
+                    }
+                }
+            }
+        }
+
+        response.getWriter().println(success ? "success" : "internal");
     }
 }

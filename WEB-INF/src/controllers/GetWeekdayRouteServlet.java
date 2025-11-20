@@ -17,7 +17,7 @@ import models.BusRouteWeekday;
 import com.google.gson.Gson;
 
 
-@WebServlet("/get_weekday_route")
+@WebServlet("/get_weekday_route.do")
 public class GetWeekdayRouteServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();

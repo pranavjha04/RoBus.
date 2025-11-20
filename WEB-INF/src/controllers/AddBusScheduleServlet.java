@@ -55,6 +55,7 @@ public class AddBusScheduleServlet extends HttpServlet {
             Integer driverId = Integer.parseInt(request.getParameter("driver_id"));
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));
             Integer busRouteWeekdayId = Integer.parseInt(request.getParameter("bus_route_weekday_id"));
+            Integer operatorRouteId = Integer.parseInt(request.getParameter("operator_route_id"));
             Integer seaterSeatsBooked = 0;
             Integer sleeperSeatsBooked = 0;
 
@@ -112,9 +113,9 @@ public class AddBusScheduleServlet extends HttpServlet {
                     throw new IllegalArgumentException("Invalid Request");
                 }
             }
-            if(session.getAttribute("bus_route_weekday_list") == null) {
+            if(session.getAttribute("bus_route_weekday_list" + operatorRouteId) == null) {
                 request.getRequestDispatcher("get_bus_route_weekday_all.do").include(request, response);
-                if(session.getAttribute("bus_route_weekday_list") == null) {
+                if(session.getAttribute("bus_route_weekday_list" + operatorRouteId) == null) {
                     throw new IllegalArgumentException("Invalid Request");
                 }
             }
@@ -123,7 +124,7 @@ public class AddBusScheduleServlet extends HttpServlet {
             ArrayList<BusFareFactor> busFareFactorList = (ArrayList<BusFareFactor>) session.getAttribute("bus_fare_factor_list"+ busId);
 
             @SuppressWarnings("unchecked")
-            ArrayList<BusRouteWeekday> busRouteWeekdayList = (ArrayList<BusRouteWeekday>) session.getAttribute("bus_route_weekday_list");
+            ArrayList<BusRouteWeekday> busRouteWeekdayList = (ArrayList<BusRouteWeekday>) session.getAttribute("bus_route_weekday_list" + operatorRouteId);
             
             int distance = 0;
             for(BusRouteWeekday next : busRouteWeekdayList) {

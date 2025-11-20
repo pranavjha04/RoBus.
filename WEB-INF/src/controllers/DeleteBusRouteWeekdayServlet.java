@@ -33,17 +33,20 @@ public class DeleteBusRouteWeekdayServlet extends HttpServlet {
             Integer busRouteWeekdayId = Integer.parseInt(request.getParameter("bus_route_weekday_id"));
             Integer operatorId = operator.getOperatorId();
 
-            success = BusRouteWeekday.deleteRecord(busRouteWeekdayId, operatorRouteId, operatorId);
-        }
-        catch(NumberFormatException e) {
-            e.printStackTrace();
-            success = false;
+            success = BusRouteWeekday.deleteRecord(busRouteWeekdayId, operatorRouteId, operatorId)
+            if(success) {
+                session.removeAttribute("bus_route_weekday_list" + operatorRouteId);
+                response.getWriter().println("success");
+            }
+            else {
+                throw new IllegalArgumentException("Invalid Request");
+            }
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
-            success = false;
+            response.getWriter().println("invalid");
+            return;
         }
 
-        response.getWriter().println(success ? "success" : "invalid");
     }
 }
