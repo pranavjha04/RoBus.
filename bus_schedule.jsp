@@ -329,13 +329,13 @@ prefix="e" uri="bts" %>
                 </div>
 
                 <div class="d-flex align-items-center gap-2">
-                  <button class="btn bg-secondary-subtle">&lt;</button>
-                  <span>Nov 9 - Nov 15, 2025 </span>
-                  <button class="btn bg-secondary-subtle">&gt;</button>
+                  <button class="btn bg-secondary-subtle" id="date_range_back">&lt;</button>
+                  <span id="date_range_display">Nov 9 - Nov 15, 2025 </span>
+                  <button class="btn bg-secondary-subtle" id="date_range_next">&gt;</button>
                 </div>
               </div>
 
-              <div class="row">
+              <div class="row" id="date_range">
                 <button
                   class="col d-flex flex-column text-center btn btn-primary justify-content-center"
                 >

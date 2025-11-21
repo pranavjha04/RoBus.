@@ -12,6 +12,7 @@ import { disableElements, enableElements } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 import { ModalHandler } from "./modalHandler.js";
 
+// *****************FORM ******************************
 const busScheduleModal = document.querySelector("#centeredModal");
 const scheduleBusForm = document.querySelector("#schedule_bus_form");
 const busId = document.querySelector("#bus_id");
@@ -38,12 +39,20 @@ const totalCharge = document.querySelector("#total_charges");
 
 const MAX_EXTRA_CHARGE = 500;
 
+const dateRangePrev = document.querySelector("#date_range_back");
+const dateRangeText = document.querySelector("#date_range_display");
+const dateRangeNext = document.querySelector("#date_range_next");
+const dateRangeContainer = document.querySelector("#date_range");
+let range = 0;
+
 const prevValue = {
   additionalCharges: 0,
   seaterFare: 0,
   sleeperFare: 0,
   journeyDate: null,
 };
+
+const journeyDateScheduleCache = {};
 
 const modal = {
   activeBus: null,
@@ -187,6 +196,41 @@ const updateDriverListDisplay = () => {
       .join("");
   }
 };
+
+function updateDateRange() {
+  const currDate = new Date();
+  let startDate = new Date(currDate);
+
+  startDate.setDate(currDate.getDate() - currDate.getDay());
+  startDate.setDate(startDate.getDate() + range);
+
+  const endDate = new Date(startDate);
+  endDate.setDate(startDate.getDate() + 6);
+
+  dateRangeText.textContent = new Intl.DateTimeFormat(navigator.language, {
+    dateStyle: "medium",
+  }).formatRange(startDate, endDate);
+
+  dateRangeContainer.innerHTML = "";
+  for (let day = 0; day < 7; day++) {
+    const date = new Date(startDate);
+    date.setDate(date.getDate() + day);
+
+    dateRangeContainer.innerHTML += `<button
+                  class="col d-flex flex-column text-center btn justify-content-center"
+                >
+                  <h4>${new Intl.DateTimeFormat(navigator.language, {
+                    weekday: "narrow",
+                  }).format(date)}</h4>
+                  <span class="fs-4">${new Intl.DateTimeFormat(
+                    navigator.language,
+                    {
+                      day: "2-digit",
+                    }
+                  ).format(date)}</span>
+                </button>`;
+  }
+}
 
 /*************************EVENT LISTENERS *********************************** */
 journeyDate.addEventListener("blur", (e) => {
@@ -472,6 +516,16 @@ scheduleBusForm.addEventListener("submit", async (e) => {
   }
 });
 
+dateRangePrev.addEventListener("click", (e) => {
+  range -= 7;
+  updateDateRange();
+});
+
+dateRangeNext.addEventListener("click", (e) => {
+  range += 7;
+  updateDateRange();
+});
+
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     modal.activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
@@ -483,6 +537,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     updateBusInfoDisplay();
     PageLoading.stopLoading();
     disableForm();
+    updateDateRange();
   } catch (err) {
     toast.error(err.message);
     PageLoading.stopLoading();

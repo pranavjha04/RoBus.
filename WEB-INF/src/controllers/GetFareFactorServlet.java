@@ -31,14 +31,20 @@ public class GetFareFactorServlet extends HttpServlet {
         }
         Gson gson = new Gson();
         boolean onlyFactors = request.getParameter("onlyFactors").equals("true") ? true : false;
-     
         Operator operator = (Operator) session.getAttribute("operator");
-        ArrayList<OperatorTicketFare> factors = OperatorTicketFare.getAvailableFareFactors(operator.getOperatorId(), onlyFactors);
+        if(session.getAttribute("fare_factors" + onlyFactors) == null) {
+            ArrayList<OperatorTicketFare> factors = OperatorTicketFare.getAvailableFareFactors(operator.getOperatorId(), onlyFactors);
 
-        if(factors == null) {
-            response.getWriter().println("internal");
-            return;
+            if(factors == null) {
+                response.getWriter().println("internal");
+                return;
+            }
+
+            session.setAttribute("fare_factors" + onlyFactors, factors);
         }
+
+        @SuppressWarnings("unchecked")
+        ArrayList<OperatorTicketFare> factors = (ArrayList<OperatorTicketFare>) session.getAttribute("fare_factors" + onlyFactors);
         
         response.getWriter().println(gson.toJson(factors));        
     }

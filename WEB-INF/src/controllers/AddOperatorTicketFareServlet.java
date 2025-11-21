@@ -58,6 +58,8 @@ public class AddOperatorTicketFareServlet extends HttpServlet {
             for (String name : toRemove) {
                 session.removeAttribute(name);
             }
+            session.removeAttribute("fare_factors" + true);
+            session.removeAttribute("fare_factors" + false);
         }
         response.getWriter().println(success ? "success" : "internal");
     }
