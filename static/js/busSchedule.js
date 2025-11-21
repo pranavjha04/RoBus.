@@ -475,6 +475,9 @@ scheduleBusForm.addEventListener("submit", async (e) => {
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     modal.activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
+    if (modal.activeBus.status.name === "Incomplete") {
+      history.back();
+    }
     busId.value = modal.activeBus.busId;
     await handleCollectBusFareFactors();
     updateBusInfoDisplay();
