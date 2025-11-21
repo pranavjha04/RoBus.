@@ -151,9 +151,13 @@ export class ViewHelper {
                       <li class="border-bottom">
                         <a class="dropdown-item option-link" href="bus_seating_configuration.do?bus_id=${busId}">Seating</a>
                       </li>
-                      <li>
+                      ${
+                        statusName !== "Incomplete"
+                          ? `<li>
                         <a class="dropdown-item option-link" href="bus_schedule.do?bus_id=${busId}">Schedule</a>
-                      </li>
+                      </li>`
+                          : ""
+                      }
                     </ul>
                   </div>
                 </td>

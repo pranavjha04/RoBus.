@@ -101,7 +101,7 @@ public class AddBusScheduleServlet extends HttpServlet {
 
             /* -------- BUS START -------- */
             Bus inputBus = Bus.getRecord(busId, operator.getOperatorId());
-            if(inputBus == null) {
+            if(inputBus == null || inputBus.getStatus().getName().equals("Incomplete")) {
                 throw new IllegalArgumentException("Invalid Bus ID");
             }
             /* -------- BUS END -------- */
