@@ -6,6 +6,7 @@ import {
   collectAllBusFareFactorRequest,
   collectInactiveDriversRequest,
   collectWeekdayRoutes,
+  getJourneyDateScheduleRequest,
   validateScheduleTimeClash,
 } from "./service.js";
 import { disableElements, enableElements } from "./util.js";
@@ -197,7 +198,53 @@ const updateDriverListDisplay = () => {
   }
 };
 
-function updateDateRange() {
+const updateScheduleRecords = (list = []) => {
+  console.log(list);
+  if (list.length === 0) {
+    // do something
+  } else {
+    // do something
+  }
+};
+
+const handleJourneyDateScheduleRecordRequest = async (journeyDate) => {
+  try {
+    if (!(journeyDate instanceof Date)) throw new Error("Invalid Request");
+    if (!journeyDateScheduleCache[journeyDate.toDateString()]) {
+      const year = journeyDate.getFullYear();
+      const month = journeyDate.getMonth();
+      const day = journeyDate.getDate();
+      const formattedDate = [year, month, day].join("-");
+      const response = await getJourneyDateScheduleRequest(formattedDate);
+      if (response === "invalid") throw new Error("Invalid Request");
+      journeyDateScheduleCache[journeyDate.toString()] = JSON.parse(response);
+      updateScheduleRecords(
+        journeyDateScheduleCache[journeyDate.toDateString()]
+      );
+    } else {
+      updateScheduleRecords(
+        journeyDateScheduleCache[journeyDate.toDateString()]
+      );
+    }
+  } catch (err) {
+    toast.error(err.message);
+  }
+};
+
+const showActiveDateRecord = () => {
+  const activeDate = dateRangeContainer.querySelector(".active");
+
+  if (!activeDate) {
+    return;
+  }
+
+  const { year, month, day } = activeDate.dataset;
+  const formattedDate = [year, month, day].join("-");
+  console.log(formattedDate);
+  handleJourneyDateScheduleRecordRequest(new Date(formattedDate));
+};
+
+const updateDateRange = () => {
   const currDate = new Date();
   let startDate = new Date(currDate);
 
@@ -208,16 +255,32 @@ function updateDateRange() {
   endDate.setDate(startDate.getDate() + 6);
 
   dateRangeText.textContent = new Intl.DateTimeFormat(navigator.language, {
-    dateStyle: "medium",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
   }).formatRange(startDate, endDate);
 
   dateRangeContainer.innerHTML = "";
-  for (let day = 0; day < 7; day++) {
+  let isInRange = false;
+  Array.from({ length: 7 }, (_, day) => {
     const date = new Date(startDate);
     date.setDate(date.getDate() + day);
 
+    if (
+      date.getDate() === currDate.getDate() &&
+      date.getDay() === currDate.getDay() &&
+      date.getFullYear() === currDate.getFullYear()
+    ) {
+      isInRange = true;
+    }
+
     dateRangeContainer.innerHTML += `<button
-                  class="col d-flex flex-column text-center btn justify-content-center"
+                  class="col norm rounded-2  d-flex flex-column ${
+                    isInRange ? "active" : ""
+                  } text-center justify-content-center"
+                  data-year=${date.getFullYear()}
+                  data-month=${date.getMonth().toString().padStart(2, "0")}
+                  data-day=${date.getDate().toString().padStart(2, "0")}
                 >
                   <h4>${new Intl.DateTimeFormat(navigator.language, {
                     weekday: "narrow",
@@ -229,8 +292,14 @@ function updateDateRange() {
                     }
                   ).format(date)}</span>
                 </button>`;
+  });
+
+  if (!isInRange) {
+    dateRangeContainer.firstElementChild.classList.add("active");
   }
-}
+
+  showActiveDateRecord();
+};
 
 /*************************EVENT LISTENERS *********************************** */
 journeyDate.addEventListener("blur", (e) => {
@@ -247,7 +316,7 @@ journeyDate.addEventListener("blur", (e) => {
     const targetDate = new Date(todayDate);
     targetDate.setDate(todayDate.getDate() + 60);
 
-    if (inputDate < todayDate || inputDate > targetDate) {
+    if (inputDate > targetDate) {
       throw new Error(
         `Date should be between ${new Intl.DateTimeFormat(navigator.language, {
           month: "short",
@@ -506,6 +575,8 @@ scheduleBusForm.addEventListener("submit", async (e) => {
       clearForm();
       disableForm();
       ModalHandler.hide(busScheduleModal);
+      journeyDateScheduleCache[new Date(journeyDate.value).toDateString()] =
+        null;
     } else {
       throw new Error("Invalid Request");
     }

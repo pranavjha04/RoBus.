@@ -47,6 +47,15 @@ prefix="e" uri="bts" %>
         background: #fff;
         transition: all 0.3s ease;
       }
+      .norm {
+        background: none;
+        border: none;
+      }
+      .active {
+        background-color: #0d6efd;
+        color: white;
+        
+      }
     </style>
   </head>
   <body>
@@ -65,7 +74,7 @@ prefix="e" uri="bts" %>
 
           <div class="modal-body">
             <form id="schedule_bus_form" class="rounded-3">
-              <input type="hidden" name="bus_id" value="" id="bus_id">
+              <input type="hidden" name="bus_id" value="" id="bus_id" />
               <!-- Journey Date -->
               <div class="mb-3">
                 <label for="journey_date" class="form-label fw-semibold"
@@ -101,7 +110,12 @@ prefix="e" uri="bts" %>
               </div>
 
               <!-- Route Select -->
-               <input type="hidden" name="operator_route_id" name="operator_route_id" id="operator_route_id">
+              <input
+                type="hidden"
+                name="operator_route_id"
+                name="operator_route_id"
+                id="operator_route_id"
+              />
               <div class="mb-3">
                 <label class="form-label fw-semibold">Route</label>
 
@@ -329,9 +343,13 @@ prefix="e" uri="bts" %>
                 </div>
 
                 <div class="d-flex align-items-center gap-2">
-                  <button class="btn bg-secondary-subtle" id="date_range_back">&lt;</button>
+                  <button class="btn bg-secondary-subtle" id="date_range_back">
+                    &lt;
+                  </button>
                   <span id="date_range_display">Nov 9 - Nov 15, 2025 </span>
-                  <button class="btn bg-secondary-subtle" id="date_range_next">&gt;</button>
+                  <button class="btn bg-secondary-subtle" id="date_range_next">
+                    &gt;
+                  </button>
                 </div>
               </div>
 

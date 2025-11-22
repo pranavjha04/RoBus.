@@ -157,6 +157,7 @@ public class AddBusScheduleServlet extends HttpServlet {
             response.getWriter().println("ok");
             // clear cache
             session.removeAttribute(journeyDate.toString() + operator.getOperatorId() + busId);
+            session.removeAttribute("date_schedule_list" + journeyDate.toString());
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();

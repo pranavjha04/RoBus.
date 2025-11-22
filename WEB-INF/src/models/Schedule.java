@@ -51,6 +51,157 @@ public class Schedule {
     public Schedule() {
     }
 
+
+    public static ArrayList<Schedule> collectDateScheduleRecords(Date journeyDate, int operatorId) {
+        ArrayList<Schedule> list = new ArrayList<>();
+
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "SELECT * FROM schedules sch " +
+                        // buses
+                        "JOIN buses b ON sch.bus_id = b.bus_id " + 
+                        "JOIN status bs ON b.status_id = bs.status_id " +
+                        "JOIN manufacturers m ON b.manufacturer_id = m.manufacturer_id " +
+                        // drivers
+                        "JOIN drivers dr ON sch.driver_id = dr.driver_id " +
+                        "JOIN users u ON dr.user_id = u.user_id " +
+                        "JOIN status us ON u.status_id = us.status_id " +
+                        "JOIN user_types ut ON u.user_type_id = ut.user_type_id " +
+                        // busroutweekdays
+                        "JOIN bus_route_weekdays brw ON sch.bus_route_weekday_id = brw.bus_route_weekday_id " +
+                        "JOIN operator_routes opr ON brw.operator_route_id = opr.operator_route_id " + 
+                        "JOIN operator_route_midcities oprm ON oprm.operator_route_id = opr.operator_route_id " +
+                        "JOIN weekdays w ON brw.weekday_id = w.weekday_id " +
+                        "JOIN routes r ON opr.route_id = r.route_id " +
+                        "JOIN cities s ON r.source = s.city_id " +
+                        "JOIN states ss ON s.state_id = ss.state_id " +
+                        "JOIN cities d ON r.destination = d.city_id " +
+                        "JOIN states ds ON d.state_id = ds.state_id " +
+                        "JOIN status st ON st.status_id = opr.status_id " +
+                        "WHERE opr.operator_id=? AND sch.journey_date=?";
+            
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setInt(1, operatorId);
+            ps.setDate(2, journeyDate);
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()) {
+                // busRouteWeekday
+                Weekday weekday = new Weekday(rs.getInt("w.weekday_id"), rs.getString("w.name"));
+                City source = new City(
+                    rs.getInt("s.city_id"),
+                    rs.getString("s.name"),
+                    new State(
+                        rs.getInt("ss.state_id"),
+                        rs.getString("ss.name")
+                    )
+                );
+                City destination = new City(
+                    rs.getInt("d.city_id"),
+                    rs.getString("d.name"),
+                    new State(
+                        rs.getInt("ds.state_id"),
+                        rs.getString("ds.name")
+                    )
+                );
+                Status status = new Status(
+                    rs.getInt("st.status_id"),
+                    rs.getString("st.name")
+                );
+                
+                Route route = new Route(
+                    rs.getInt("r.route_id"),
+                    source, 
+                    destination, 
+                    rs.getInt("r.distance"),
+                    rs.getInt("r.duration")
+                );
+
+                OperatorRoute operatorRoute = new OperatorRoute(
+                    rs.getInt("opr.operator_route_id"),
+                    route,
+                    status
+                );
+
+                BusRouteWeekday currWeekDay = new BusRouteWeekday(
+                    rs.getInt("brw.bus_route_weekday_id"),
+                    weekday,
+                    operatorRoute
+                );
+
+                // driver
+                User user = new User(
+                        rs.getInt("u.user_id"), 
+                        rs.getString("u.full_name"),
+                        rs.getDate("u.dob"),
+                        rs.getString("u.contact"),
+                        rs.getInt("u.gender"),
+                        rs.getString("u.email"),
+                        rs.getString("u.password"),
+                        rs.getString("u.profile_pic"),
+                        new Status(rs.getInt("us.status_id"), rs.getString("us.name")),
+                        rs.getString("u.verification_code"),
+                        rs.getTimestamp("u.created_at"),
+                        rs.getTimestamp("u.updated_at"),
+                        new UserType(rs.getInt("ut.user_type_id"), rs.getString("ut.name"))
+                );
+
+                Driver driver = new Driver(
+                    rs.getInt("dr.driver_id"),
+                    rs.getDate("dr.start_date"),
+                    rs.getDate("dr.end_date"),
+                    rs.getString("dr.licence_pic"),
+                    rs.getString("dr.licence_no"),
+                    user
+                );
+
+                // bus
+                Bus bus = new Bus(
+                    rs.getInt("b.bus_id"),
+                    rs.getString("b.bus_number"),
+                    new Manufacturer(
+                        rs.getInt("m.manufacturer_id"),
+                        rs.getString("m.name")
+                    ),
+                    rs.getBoolean("b.double_decker"),
+                    new Status(
+                        rs.getInt("bs.status_id"),
+                        rs.getString("bs.name")
+                    )
+                );
+
+                Schedule schedule = new Schedule(
+                    rs.getInt("sch.schedule_id"),
+                    rs.getDate("sch.journey_date"),
+                    rs.getTime("sch.departure_time"),
+                    rs.getTime("sch.arrival_time"),
+                    rs.getInt("sch.seater_seats_booked"),
+                    rs.getInt("sch.sleeper_seats_booked"),
+                    rs.getInt("sch.additional_charges"),
+                    rs.getInt("sch.seater_fare"),
+                    rs.getInt("sch.sleeper_fare"),
+                    rs.getInt("sch.total_charges"),
+                    bus,
+                    driver,
+                    currWeekDay
+                );
+
+                list.add(schedule);
+            }
+
+            con.close();
+
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            list = null;
+        }
+        return list;
+    }
+
     public static Boolean addRecord(Date journeyDate, Time departureTime, Time arrivalTime, Integer additionalCharges, Integer sleeperFare, Integer seaterFare, Integer totalCharges, Integer busId, Integer driverId, Integer busRouteWeekdayId) {
         boolean flag = false;
         try {
@@ -106,9 +257,6 @@ public class Schedule {
                         "JOIN bus_route_weekdays brw ON sch.bus_route_weekday_id = brw.bus_route_weekday_id " +
                         "JOIN operator_routes opr ON brw.operator_route_id = opr.operator_route_id " + 
                         "JOIN operator_route_midcities oprm ON oprm.operator_route_id = opr.operator_route_id " +
-                        "JOIN route_midcities rmc ON rmc.route_midcity_id = oprm.route_midcity_id " +
-                        "JOIN cities mc ON mc.city_id = rmc.midcity_id " +
-                        "JOIN states ms ON ms.state_id = mc.state_id " +
                         "JOIN weekdays w ON brw.weekday_id = w.weekday_id " +
                         "JOIN routes r ON opr.route_id = r.route_id " +
                         "JOIN cities s ON r.source = s.city_id " +

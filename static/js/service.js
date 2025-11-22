@@ -604,3 +604,13 @@ export const addBusScheduleRequest = async (formData) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const getJourneyDateScheduleRequest = async (date) => {
+  const params = createURLParams({
+    date,
+  });
+  const res = await fetch(`get_journey_date_schedule.do?` + params.toString());
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
