@@ -23,13 +23,10 @@ public class GetAllDriverServlet extends HttpServlet {
             response.getWriter().println("invalid");
             return;
         }   
-
-        System.out.println("hello");
         Operator operator = (Operator) session.getAttribute("operator");
         Integer operatorId = operator.getOperatorId();
 
         ArrayList<Driver> driverList = Driver.collectRecords(operatorId);
-        System.out.println(driverList);
         if(driverList == null) {
             response.getWriter().println("invalid");
             return;

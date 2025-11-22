@@ -18,24 +18,44 @@ import com.google.gson.Gson;
 
 @WebServlet("/get_operator_route_mid_cities.do")
 public class GetOperatorRouteMidCitiesServlet extends HttpServlet {
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
 
-        if(session.getAttribute("operator") == null || request.getParameter("operator_route_id") == null) {
-            response.getWriter().println("invalid");
-            return;
-        }
-        
+        String requestURLPath = request.getServletPath().substring(1);
         try {
+            if(session.getAttribute("operator") == null) {
+                throw new IllegalArgumentException("Invalid Request");
+            }
             Operator operator = (Operator) session.getAttribute("operator");
             Integer operatorId = operator.getOperatorId();
-            Integer operatorRouteId = Integer.parseInt(request.getParameter("operator_route_id"));
-            ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = OperatorRouteMidCity.collectAllRecords(operatorRouteId, operatorId);
-            response.getWriter().println(new Gson().toJson(operatorRouteMidCityList));
+            Integer operatorRouteId = 0;
+            if(requestURLPath.equals("get_journey_date_schedule.do")) {
+                operatorRouteId = (Integer) request.getAttribute("operator_route_id");
+            }
+            else {
+                operatorRouteId = Integer.parseInt(request.getParameter("operator_route_id"));
+            }
+            String formattedAttribute = "operator_route_midcities" + operatorRouteId;
+
+            if(session.getAttribute(formattedAttribute) == null) {
+                ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = OperatorRouteMidCity.collectAllRecords(operatorRouteId, operatorId);
+
+                if(operatorRouteMidCityList == null) {
+                    throw new IllegalArgumentException("Invalid Request");
+                }
+                session.setAttribute(formattedAttribute, operatorRouteMidCityList);
+            }
+            if(!requestURLPath.equals("get_journey_date_schedule.do")) {
+                @SuppressWarnings("unchecked")
+                ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = (ArrayList<OperatorRouteMidCity>) session.getAttribute(formattedAttribute);
+                response.getWriter().println(new Gson().toJson(operatorRouteMidCityList));
+            }
         }
-        catch(NumberFormatException e) {
+        catch(IllegalArgumentException e) {
             e.printStackTrace();
-            response.getWriter().println("invalid");
+            if(!requestURLPath.equals("get_journey_date_schedule.do")) {
+                response.getWriter().println("invalid");
+            }
             return;
         }
     }

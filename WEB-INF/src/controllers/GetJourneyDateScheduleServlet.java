@@ -18,6 +18,8 @@ import com.google.gson.Gson;
 
 import models.Schedule;
 import models.Operator;
+import models.OperatorRoute;
+import models.OperatorRouteMidCity;
 
 @WebServlet("/get_journey_date_schedule.do")
 public class GetJourneyDateScheduleServlet extends HttpServlet {
@@ -33,7 +35,6 @@ public class GetJourneyDateScheduleServlet extends HttpServlet {
             }
 
             Date journeyDate = Date.valueOf(request.getParameter("date"));
-            System.out.println(journeyDate);
             Operator operator = (Operator) session.getAttribute("operator");
 
             if(session.getAttribute("date_schedule_list" + journeyDate.toString()) == null) {
@@ -42,17 +43,31 @@ public class GetJourneyDateScheduleServlet extends HttpServlet {
                 if(list == null) {
                     throw new IllegalArgumentException("Internal Server Error");
                 }
+                for(Schedule schedule : list) {
+                    OperatorRoute operatorRoute = schedule.getBusRouteWeekday().getOperatorRoute();
+                    int operatorRouteId = operatorRoute.getOperatorRouteId();
+                    String formattedAttribute = "operator_route_midcities" + operatorRouteId;
+                    
+                    if(session.getAttribute(formattedAttribute) == null) {
+                        request.setAttribute("operator_route_id", operatorRouteId);
+                        request.getRequestDispatcher("get_operator_route_mid_cities.do").include(request, response);
+                        if(session.getAttribute(formattedAttribute) == null) {
+                            throw new IllegalArgumentException("Invalid Request");
+                        }
+                        request.removeAttribute("operator_route_id");
+                    }
 
+                    @SuppressWarnings("unchecked")
+                    ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = (ArrayList<OperatorRouteMidCity>) session.getAttribute(formattedAttribute);
+
+                    operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
+                }
                 session.setAttribute("date_schedule_list" + journeyDate.toString(), list);
             }
 
             @SuppressWarnings("unchecked")
             ArrayList<Schedule> dateScheduleList = (ArrayList<Schedule>) session.getAttribute("date_schedule_list" + journeyDate.toString());
-
-            System.out.println(dateScheduleList);
-
             response.getWriter().println(new Gson().toJson(dateScheduleList));
-   
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();

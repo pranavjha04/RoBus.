@@ -71,7 +71,6 @@ public class Schedule {
                         // busroutweekdays
                         "JOIN bus_route_weekdays brw ON sch.bus_route_weekday_id = brw.bus_route_weekday_id " +
                         "JOIN operator_routes opr ON brw.operator_route_id = opr.operator_route_id " + 
-                        "JOIN operator_route_midcities oprm ON oprm.operator_route_id = opr.operator_route_id " +
                         "JOIN weekdays w ON brw.weekday_id = w.weekday_id " +
                         "JOIN routes r ON opr.route_id = r.route_id " +
                         "JOIN cities s ON r.source = s.city_id " +
@@ -90,6 +89,7 @@ public class Schedule {
 
             while(rs.next()) {
                 // busRouteWeekday
+
                 Weekday weekday = new Weekday(rs.getInt("w.weekday_id"), rs.getString("w.name"));
                 City source = new City(
                     rs.getInt("s.city_id"),
@@ -256,7 +256,6 @@ public class Schedule {
                         // busroutweekdays
                         "JOIN bus_route_weekdays brw ON sch.bus_route_weekday_id = brw.bus_route_weekday_id " +
                         "JOIN operator_routes opr ON brw.operator_route_id = opr.operator_route_id " + 
-                        "JOIN operator_route_midcities oprm ON oprm.operator_route_id = opr.operator_route_id " +
                         "JOIN weekdays w ON brw.weekday_id = w.weekday_id " +
                         "JOIN routes r ON opr.route_id = r.route_id " +
                         "JOIN cities s ON r.source = s.city_id " +

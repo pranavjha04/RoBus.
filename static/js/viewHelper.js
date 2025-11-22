@@ -1,4 +1,4 @@
-import { getFormatedDuration } from "./util.js";
+import { getFormatedDuration, getFormattedTime } from "./util.js";
 
 export class ViewHelper {
   static getFareFactorBody(factor) {
@@ -779,5 +779,71 @@ export class ViewHelper {
                       <a class="dropdown-item py-2">${user.fullName}</a>
               </li>
                     `;
+  }
+
+  static getScheduleTableHeading() {
+    return `<thead>
+                <tr class="border border-bottom text-center">
+                  <th class="p-3">Timings</th>
+                  <th class="p-3">Route</th>
+                  <th class="p-3">Bus</th>
+                  <th class="p-3">Driver</th>
+                  <th class="p-3">Total Charges</th>
+                  <th class="p-3">Options</th>
+                </tr>
+              </thead>`;
+  }
+
+  static getScheduleTableRow(schedule) {
+    const {
+      scheduleId,
+      arrivalTime,
+      departureTime,
+      driver,
+      bus,
+      busRouteWeekday,
+      totalCharges,
+    } = schedule;
+    const { operatorRoute } = busRouteWeekday;
+
+    return ` <tr class="border border-bottom text-center" data-schedule-id=${scheduleId}>
+                  <td class="p-3">${getFormattedTime(
+                    arrivalTime
+                  )} → ${getFormattedTime(departureTime)}</td>
+                  <td class="d-flex align-items-center text-center justify-content-center">
+                    <div
+                      class="p-3 text-center d-flex flex-column align-items-center justify-content-center"
+                    >
+                      ${operatorRoute.route.source.name}
+                      <span class="text-muted small">${
+                        operatorRoute.route.source.state.name
+                      }</span>
+                    </div>
+                    &rightarrow;
+                    <div
+                      class="p-3 text-center d-flex flex-column align-items-center justify-content-center"
+                    >
+                      ${operatorRoute.route.destination.name}
+                      <span class="text-muted small">${
+                        operatorRoute.route.destination.state.name
+                      }</span>
+                    </div>
+                  </td>
+                  <td class="p-3">${bus.busNumber}</td>
+                  <td class="p-3">${driver.user.fullName}</td>
+                  <td class="p-3">&#8377; ${totalCharges}</td>
+                  <td class="p-3">
+                    <button
+                      class="btn manage-icon border-primary-subtle py-2 px-2"
+                    >
+                      <img
+                        src="static/media/images/edit_sm_blue.svg"
+                        width="18"
+                        height="18"
+                      />
+                      <span class="text-primary">Manage</span>
+                    </button>
+                  </td>
+                </tr>`;
   }
 }

@@ -49,7 +49,10 @@ public class AddOperatorRouteMidCityServlet extends HttpServlet {
             }
 
             boolean success = RouteMidCity.addRecords(routeId, operatorRouteId, formattedMidCities);
-
+            if(success) {
+                session.removeAttribute("operator_route_midcities" + operatorRouteId);
+            }
+            
             response.getWriter().println(success ? "success" : "internal");
             return;
         }

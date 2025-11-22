@@ -30,4 +30,13 @@ export class ModalHandler {
       modalElement.classList.contains("modal")
     );
   }
+
+  static isOpen(modalElement) {
+    if (!this.#validateModal(modalElement)) {
+      throw new Error("Invalid Modal Element");
+    }
+    const isOpen = modalElement.classList.contains("show");
+
+    return isOpen;
+  }
 }

@@ -262,3 +262,9 @@ export const validateLicenceNumber = (value) => {
   const regex = /^[A-Z]{2}\d{2}[-\s]?\d{4}\d{7}$/;
   return regex.test(value);
 };
+
+export const getFormattedTime = (time) => {
+  const a = time.slice(0, 5);
+  const b = time.slice(-2);
+  return a + " " + b;
+};

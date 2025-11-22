@@ -30,16 +30,21 @@ public class GetWeekdayRouteServlet extends HttpServlet {
             int weekdayId = Integer.parseInt(request.getParameter("weekday_id"));
             Operator operator = (Operator) session.getAttribute("operator");
             int operatorId = operator.getOperatorId();
-            ArrayList<BusRouteWeekday> routeWeekdayList = BusRouteWeekday.collectWeekdayAvailableRouteList(weekdayId, operatorId);
 
-            if(routeWeekdayList == null) {
-                response.getWriter().println("invalid");
-                return;
+            if(session.getAttribute("weekday_route_list" + weekdayId) == null) {
+                ArrayList<BusRouteWeekday> routeWeekdayList = BusRouteWeekday.collectWeekdayAvailableRouteList(weekdayId + 1,operatorId);
+                if(routeWeekdayList == null) {
+                    throw new IllegalArgumentException("Invalid Request");
+                }
+                session.setAttribute("weekday_route_list" + weekdayId, routeWeekdayList); 
             }
+
+            @SuppressWarnings("unchecked")
+            ArrayList<BusRouteWeekday> routeWeekdayList = (ArrayList<BusRouteWeekday>) session.getAttribute("weekday_route_list" + weekdayId);
 
             response.getWriter().println(new Gson().toJson(routeWeekdayList));
         }
-        catch(NumberFormatException e) {
+        catch(IllegalArgumentException e) {
             e.printStackTrace();
             response.getWriter().println("invalid");
             return;

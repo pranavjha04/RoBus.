@@ -54,7 +54,6 @@ prefix="e" uri="bts" %>
       .active {
         background-color: #0d6efd;
         color: white;
-        
       }
     </style>
   </head>
@@ -68,7 +67,8 @@ prefix="e" uri="bts" %>
             <button
               type="button"
               class="btn-close"
-              data-bs-dismiss="modal"
+              data-bs-toggle="modal"
+              data-bs-target="#centeredModal"
             ></button>
           </div>
 
@@ -331,10 +331,10 @@ prefix="e" uri="bts" %>
               </div>
             </div>
           </div>
-          <div
-            class="d-flex flex-column gap-3 bg-white shadow shadow-sm rounded p-2"
-          >
-            <div class="d-flex flex-column gap-2 px-3 py-2">
+          <div class="d-flex flex-column gap-3 rounded p-2">
+            <div
+              class="d-flex flex-column gap-2 px-3 py-2 bg-white shadow shadow-sm"
+            >
               <div
                 class="d-flex align-items-center justify-content-between w-100"
               >
@@ -398,6 +398,11 @@ prefix="e" uri="bts" %>
                 </button>
               </div>
             </div>
+
+            <table
+              class="border rounded table-responsive border-bottom-0"
+              id="schedule_table"
+            ></table>
           </div>
 
           <footer class="container mt-4 mb-4"></footer>

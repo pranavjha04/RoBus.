@@ -245,6 +245,7 @@ public class OperatorRouteMidCity {
         } 
         catch (SQLException e) {
             e.printStackTrace();
+            operatorRouteMidCityList = null;
         } 
         return operatorRouteMidCityList;
     }

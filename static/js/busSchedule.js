@@ -44,6 +44,8 @@ const dateRangePrev = document.querySelector("#date_range_back");
 const dateRangeText = document.querySelector("#date_range_display");
 const dateRangeNext = document.querySelector("#date_range_next");
 const dateRangeContainer = document.querySelector("#date_range");
+
+const scheduleTable = document.querySelector("#schedule_table");
 let range = 0;
 
 const prevValue = {
@@ -199,25 +201,43 @@ const updateDriverListDisplay = () => {
 };
 
 const updateScheduleRecords = (list = []) => {
-  console.log(list);
+  scheduleTable.innerHTML = "";
   if (list.length === 0) {
     // do something
+    scheduleTable.innerHTML = `<div class="d-flex mt-5 flex-column text-center align-items-center justify-content-center">
+                <h3>No Schedules</h3>
+                <p>There are no schedules for this date.</p>
+                <button
+                  class="btn btn-primary mt-2"
+                  data-type="empty"
+                   data-bs-toggle="modal"
+                  data-bs-target="#centeredModal"
+                >
+                   Add Schedule
+                </button>
+              </div>`;
   } else {
     // do something
+    scheduleTable.innerHTML = ViewHelper.getScheduleTableHeading();
+    scheduleTable.innerHTML += `<tbody>${list
+      .map(ViewHelper.getScheduleTableRow)
+      .join("")}</tbody>`;
   }
 };
 
 const handleJourneyDateScheduleRecordRequest = async (journeyDate) => {
   try {
     if (!(journeyDate instanceof Date)) throw new Error("Invalid Request");
+    scheduleTable.innerHTML = ViewHelper.getTableLoader();
     if (!journeyDateScheduleCache[journeyDate.toDateString()]) {
       const year = journeyDate.getFullYear();
       const month = journeyDate.getMonth();
       const day = journeyDate.getDate();
-      const formattedDate = [year, month, day].join("-");
+      const formattedDate = [year, month + 1, day].join("-");
       const response = await getJourneyDateScheduleRequest(formattedDate);
       if (response === "invalid") throw new Error("Invalid Request");
-      journeyDateScheduleCache[journeyDate.toString()] = JSON.parse(response);
+      journeyDateScheduleCache[journeyDate.toDateString()] =
+        JSON.parse(response);
       updateScheduleRecords(
         journeyDateScheduleCache[journeyDate.toDateString()]
       );
@@ -228,6 +248,7 @@ const handleJourneyDateScheduleRecordRequest = async (journeyDate) => {
     }
   } catch (err) {
     toast.error(err.message);
+    scheduleTable.innerHTML = "";
   }
 };
 
@@ -239,8 +260,8 @@ const showActiveDateRecord = () => {
   }
 
   const { year, month, day } = activeDate.dataset;
-  const formattedDate = [year, month, day].join("-");
-  console.log(formattedDate);
+  const formattedDate = [year, +month, day].join("-");
+
   handleJourneyDateScheduleRecordRequest(new Date(formattedDate));
 };
 
@@ -265,6 +286,7 @@ const updateDateRange = () => {
   Array.from({ length: 7 }, (_, day) => {
     const date = new Date(startDate);
     date.setDate(date.getDate() + day);
+    let currInRange = false;
 
     if (
       date.getDate() === currDate.getDate() &&
@@ -272,14 +294,17 @@ const updateDateRange = () => {
       date.getFullYear() === currDate.getFullYear()
     ) {
       isInRange = true;
+      currInRange = true;
     }
 
     dateRangeContainer.innerHTML += `<button
                   class="col norm rounded-2  d-flex flex-column ${
-                    isInRange ? "active" : ""
+                    currInRange ? "active" : ""
                   } text-center justify-content-center"
                   data-year=${date.getFullYear()}
-                  data-month=${date.getMonth().toString().padStart(2, "0")}
+                  data-month=${(date.getMonth() + 1)
+                    .toString()
+                    .padStart(2, "0")}
                   data-day=${date.getDate().toString().padStart(2, "0")}
                 >
                   <h4>${new Intl.DateTimeFormat(navigator.language, {
@@ -311,12 +336,16 @@ journeyDate.addEventListener("blur", (e) => {
   }
   try {
     e.target.value = value;
+
     const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0); // normalize
+
     const inputDate = new Date(value);
     const targetDate = new Date(todayDate);
-    targetDate.setDate(todayDate.getDate() + 60);
+    targetDate.setDate(todayDate.getDate() + 60); // 60 days ahead
 
-    if (inputDate > targetDate) {
+    // Check if inputDate is BEFORE today OR AFTER targetDate
+    if (inputDate < todayDate || inputDate > targetDate) {
       throw new Error(
         `Date should be between ${new Intl.DateTimeFormat(navigator.language, {
           month: "short",
@@ -399,7 +428,6 @@ routeSelectContainer.addEventListener("mousedown", (e) => {
   const { fixed, perPersonPerKm } = modal.busFareFactorList.reduce(
     (acc, curr) => {
       const charge = curr.operatorTicketFare.charge;
-      console.log(charge);
       if (curr.operatorTicketFare.fareFactor.fixedCharge) {
         return {
           ...acc,
@@ -567,7 +595,6 @@ scheduleBusForm.addEventListener("submit", async (e) => {
     const formData = new FormData(scheduleBusForm);
     disableForm();
     const response = await addBusScheduleRequest(formData);
-    console.log(response);
     if (response === "invalid") {
       throw new Error("Invalid Request");
     } else if (response === "ok") {
@@ -577,6 +604,7 @@ scheduleBusForm.addEventListener("submit", async (e) => {
       ModalHandler.hide(busScheduleModal);
       journeyDateScheduleCache[new Date(journeyDate.value).toDateString()] =
         null;
+      showActiveDateRecord();
     } else {
       throw new Error("Invalid Request");
     }
@@ -595,6 +623,37 @@ dateRangePrev.addEventListener("click", (e) => {
 dateRangeNext.addEventListener("click", (e) => {
   range += 7;
   updateDateRange();
+});
+
+scheduleTable.addEventListener("click", (e) => {
+  const target = e.target.closest("button");
+  if (!target) return;
+
+  const { type } = target.dataset;
+
+  if (type === "empty") {
+    const activeDate = dateRangeContainer.querySelector(".active");
+    const { year, month, day } = activeDate.dataset;
+
+    const formattedDate = `${year}-${month}-${day}`;
+    journeyDate.value = formattedDate;
+    setTimeout(() => {
+      journeyDate.focus();
+    }, 200);
+  }
+});
+
+dateRangeContainer.addEventListener("click", (e) => {
+  const target = e.target.closest("button");
+
+  dateRangeContainer.childNodes.forEach((children) => {
+    if (children !== target) {
+      children.classList.remove("active");
+    }
+  });
+
+  target.classList.add("active");
+  showActiveDateRecord();
 });
 
 window.addEventListener("DOMContentLoaded", async () => {

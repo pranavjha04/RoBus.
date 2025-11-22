@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import models.Operator;
 import models.OperatorRouteMidCity;
@@ -42,13 +43,22 @@ public class UpdateHaltingTimeServlet extends HttpServlet {
 
             boolean isUpdated = OperatorRouteMidCity.updateHaltingTime(operatorRouteId, operatorRouteMidCityId, haltingTime, operatorId);
 
+            if(isUpdated) {
+                if(session.getAttribute("operator_route_midcities" + operatorRouteId) != null) {
+                    @SuppressWarnings("unchecked")
+                    ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = (ArrayList<OperatorRouteMidCity>) session.getAttribute("operator_route_midcities" + operatorRouteId);
+
+                    for(OperatorRouteMidCity next : operatorRouteMidCityList) {
+                        if(next.getOperatorRouteMidCityId().equals(operatorRouteMidCityId)) {
+                            next.setHaltingTime(haltingTime);
+                        }
+                    }
+                }
+            }
+
             response.getWriter().println(isUpdated ? "success" : "failed");
         }
-        catch (NumberFormatException e) {
-            e.printStackTrace();
-            response.getWriter().println("invalid");
-            return;
-        } catch (IllegalArgumentException e) {
+        catch (IllegalArgumentException e) {
             e.printStackTrace();
             response.getWriter().println("invalid");
             return;
