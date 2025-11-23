@@ -31,6 +31,10 @@ const allFields = Array.from(document.querySelectorAll(".bfld"));
 const prevImagesContainer = document.querySelector("#preview_img_container");
 const busTable = document.querySelector("#bus_table");
 
+const model = {
+  busList: [],
+};
+
 const setFareLoader = () => {
   fareList.innerHTML = '<div class="loader sm-loader"></div>';
 };
@@ -144,10 +148,9 @@ const handleBusRecords = async (firstTime = false) => {
     } else if (response === "invalid") {
       throw new Error("Invalid Request");
     } else if (response.startsWith("[")) {
-      const busList = JSON.parse(response);
-      sessionStorage.setItem("busList", JSON.stringify(busList));
+      model.busList = JSON.parse(response);
       PageLoading.stopLoading();
-      handleBusListDisplay(busList);
+      handleBusListDisplay(model.busList);
     } else {
       throw new Error("Invalid Request");
     }
@@ -233,7 +236,7 @@ busTable.addEventListener("click", (e) => {
   const busId = +target.closest("tr").dataset.id;
   if (isNaN(busId) || !busId) return;
 
-  const activeBus = JSON.parse(sessionStorage.getItem("busList"))?.find(
+  const activeBus = JSON.parse(model.busList)?.find(
     (bus) => bus.busId === busId
   );
 

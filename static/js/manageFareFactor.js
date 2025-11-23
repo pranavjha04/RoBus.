@@ -29,8 +29,6 @@ const chargeDisplay = document.querySelector("#charge_display_text");
 
 const busTable = document.querySelector("#operator_ticket_fare_bus_table");
 
-let watchSessionInternal = null;
-
 const modal = {
   activeFare: null,
   operatorTicketFareBusList: [],
@@ -54,7 +52,6 @@ const updateChargeInputEdit = () => {
   const newValue = chargeInput.value;
   chargeDisplay.textContent = chargeInput.value;
   modal.activeFare.charge = newValue;
-  sessionStorage.setItem("activeFare", JSON.stringify(modal.activeFare));
 };
 
 const chargeEvent = async (e) => {
@@ -186,10 +183,8 @@ const handleDeleteBusFareFactorRequest = async (busId, busFareFactorId) => {
           (fare) => fare.busFareFactorId !== busFareFactorId
         );
         modal.operatorTicketFareBusList = newList;
-        sessionStorage.setItem(
-          "operatorTicketFareBusList",
-          JSON.stringify(newList)
-        );
+        modal.operatorTicketFareBusList;
+
         displayBusTableInfo(newList);
         toast.success("Bus fare factor deleted successfully");
         break;
@@ -296,10 +291,6 @@ const handleBusRecords = async (firstTime = false) => {
       throw new Error("Internal Server Error");
     }
     const operatorTicketFareBusList = JSON.parse(response);
-    sessionStorage.setItem(
-      "operatorTicketFareBusList",
-      JSON.stringify(operatorTicketFareBusList)
-    );
     modal.operatorTicketFareBusList = operatorTicketFareBusList;
     displayBusTableInfo(operatorTicketFareBusList);
   } catch (err) {
@@ -309,21 +300,11 @@ const handleBusRecords = async (firstTime = false) => {
 
 const init = async () => {
   modal.activeFare = JSON.parse(sessionStorage.getItem("activeFare"));
+  sessionStorage.removeItem("activeFare");
   updateInputValue();
   updateInfo();
   handleBusRecords(true);
 };
-
-function startWatchingSession() {
-  if (watchSessionInternal) clearInterval(watchSessionInternal);
-  watchSessionInternal = setInterval(() => {
-    const activeFare = sessionStorage.getItem("activeFare");
-    if (!activeFare) {
-      clearInterval(watchSessionInternal);
-      history.back();
-    }
-  }, 100);
-}
 
 busSelect.addEventListener("click", (e) => {
   e.stopPropagation();
@@ -439,17 +420,10 @@ formModal.addEventListener("hide.bs.modal", () => {
 
 window.addEventListener("pageshow", (e) => {
   try {
-    startWatchingSession();
     init();
     PageLoading.stopLoading();
   } catch (err) {
     toast.error(err.message);
     PageError.showOperatorError();
   }
-});
-
-window.addEventListener("pagehide", () => {
-  ["activeFare"].forEach((key) => sessionStorage.removeItem(key));
-  clearInterval(watchSessionInternal);
-  watchSessionInternal = null;
 });

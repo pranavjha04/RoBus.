@@ -22,6 +22,10 @@ const filterNavContainer = document.querySelector("#filter_nav");
 const totalFare = document.querySelector("#total_fare");
 const totalCharges = document.querySelector("#total_charges");
 
+const model = {
+  fareList: [],
+};
+
 const collectFareCharge = (acc, curr) => {
   return acc + curr?.charge;
 };
@@ -123,7 +127,7 @@ fareTable.addEventListener("click", async (e) => {
     return;
   }
 
-  const activeFare = JSON.parse(sessionStorage.getItem("fareList")).find(
+  const activeFare = model.fareList.find(
     (data) => data.operatorTicketFareId === +operatorTicketFareId
   );
 
@@ -141,13 +145,13 @@ fareTable.addEventListener("click", async (e) => {
 });
 
 sortCharges.addEventListener("change", (e) => {
-  if (!sessionStorage.getItem("fareList")) {
+  if (!model.fareList.length) {
     resetFilter();
     handleFareFactorList();
     return;
   }
   const value = e.target.value;
-  const fareFactorList = JSON.parse(sessionStorage.getItem("fareList"));
+  const fareFactorList = [...model.fareList];
   switch (sortCharges.value) {
     case "low": {
       handleFareFactorsListDisplay(
@@ -172,13 +176,13 @@ sortCharges.addEventListener("change", (e) => {
 
 filterNavContainer.addEventListener("click", (e) => {
   if (!e.target.classList.contains("btn")) return;
-  if (!sessionStorage.getItem("fareList")) {
+  if (!model.fareList.length) {
     resetFilter();
     handleFareFactorsListDisplay();
     return;
   }
   const element = e.target;
-  const fareFactorList = JSON.parse(sessionStorage.getItem("fareList"));
+  const fareFactorList = [...model.fareList];
   handleNav(element.textContent, fareFactorList);
   resetFilter();
 });
@@ -193,7 +197,7 @@ const handleFareFactorList = async () => {
       fareFactorList = JSON.parse(fareFactorList);
       removeTableLoader();
       update(fareFactorList);
-      sessionStorage.setItem("fareList", JSON.stringify(fareFactorList));
+      model.fareList = fareFactorList;
       PageLoading.stopLoading();
       handleFareFactorsListDisplay(fareFactorList);
     }
@@ -332,8 +336,4 @@ window.addEventListener("pageshow", async () => {
   } catch {
     PageError.showOperatorError();
   }
-});
-
-window.addEventListener("pagehide", () => {
-  sessionStorage.removeItem("fareList");
 });
