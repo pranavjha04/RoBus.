@@ -178,17 +178,12 @@ public class Bus implements Cloneable {
         return flag;
     }
     
-    public static ArrayList<Bus> collectRecords(int operatorId, boolean allData) {
+    public static ArrayList<Bus> collectRecords(int operatorId) {
         ArrayList<Bus> busList = new ArrayList<>();
 
         try {
             Connection con = DBManager.getConnection();
-            String query = "";
-            if(allData) {
-
-            }
-            else {
-                query = 
+            String query =
                     "SELECT " +
                     "b.bus_id, b.bus_number, b.double_decker, " +
                     "m.manufacturer_id, m.name AS manufacturer_name, " +
@@ -198,40 +193,33 @@ public class Bus implements Cloneable {
                     "ON b.status_id = s.status_id " +
                     "JOIN manufacturers m ON b.manufacturer_id = m.manufacturer_id " +
                     "WHERE operator_id=?";
-            }
 
             PreparedStatement ps = con.prepareStatement(query);
             ps.setInt(1, operatorId);
 
             ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                Bus bus = new Bus(
+                    rs.getInt("bus_id"),
+                    rs.getString("bus_number"),
+                    new Manufacturer(
+                        rs.getInt("manufacturer_id"),
+                        rs.getString("manufacturer_name")
+                    ),
+                    rs.getBoolean("double_decker"),
+                    new Status(
+                        rs.getInt("status_id"),
+                        rs.getString("status_name")
+                    )
+                );
 
-            if(allData) {}
-            else {
-                while(rs.next()) {
-                    Bus bus = new Bus(
-                        rs.getInt("bus_id"),
-                        rs.getString("bus_number"),
-                        new Manufacturer(
-                            rs.getInt("manufacturer_id"),
-                            rs.getString("manufacturer_name")
-                        ),
-                        rs.getBoolean("double_decker"),
-                        new Status(
-                            rs.getInt("status_id"),
-                            rs.getString("status_name")
-                        )
-                    );
-
-                    busList.add(bus);
-                }
+                busList.add(bus);
             }
-
         }
         catch(SQLException e) {
             e.printStackTrace();
             busList = null;
         }
-
         return busList;
     }
 

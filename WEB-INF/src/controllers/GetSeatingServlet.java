@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import models.Seating;
+import models.Operator;
 
 import com.google.gson.Gson;
 
@@ -19,43 +20,79 @@ import com.google.gson.Gson;
 public class GetSeatingServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
+        String requestURLPath = request.getServletPath().substring(1);
 
-        if(session.getAttribute("operator") == null || request.getParameter("bus_id") == null) {
-            response.getWriter().println("invalid");
+        try {
+            if(session.getAttribute("operator") == null || request.getParameter("bus_id") == null) {
+                throw new IllegalArgumentException("Missing Paramters");
+            }
+
+            Operator operator = (Operator) session.getAttribute("operator");
+            int busId = Integer.parseInt(request.getParameter("bus_id"));
+            int operatorId = operator.getOperatorId();
+
+            String cachedAttribute = "seatingList" + busId;
+
+            if(session.getAttribute(cachedAttribute) == null) {
+                ArrayList<Seating> seatingList = Seating.collectRecords(busId, operatorId);
+
+                if(seatingList == null) {
+                    throw new IllegalArgumentException("Internal or Invalid Request");
+                }
+
+                switch(seatingList.size()) {
+                    case 1 : {
+                        Seating firstSeating = seatingList.get(0);
+                        if(firstSeating.getDeck()) {
+                            seatingList.set(0, null);
+                            seatingList.add(firstSeating);
+                        }
+                        break;
+                    }
+                    case 2 : {
+                        Seating firstSeating = seatingList.get(0);
+                        Seating secondSeating = seatingList.get(1);
+
+                        if(firstSeating.getDeck()) {
+                            seatingList.set(0, secondSeating);
+                            seatingList.set(1, firstSeating);
+                        }
+                        break;
+                    }
+                    default : 
+                        break;
+                }
+
+                session.setAttribute(cachedAttribute, seatingList);
+            }
+            
+            if(!requestURLPath.equals("add_seating.do")) {
+                @SuppressWarnings("unchecked")
+                ArrayList<Seating> seatingList = (ArrayList<Seating>) session.getAttribute(cachedAttribute);
+
+                response.getWriter().println(new Gson().toJson(seatingList));
+            }
+        }
+        catch(IllegalArgumentException e) {
+            e.printStackTrace();
+            if(!requestURLPath.equals("add_seating.do")) {
+                response.getWriter().println("invalid");
+            }
+            return;
+        }
+    }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession();
+        if(session.getAttribute("operator") == null) {
+            response.sendRedirect("/bts");
             return;
         }
 
-        int busId = Integer.parseInt(request.getParameter("bus_id"));
-        
-        ArrayList<Seating> seatingList = Seating.collectRecords(busId);
-        if(seatingList == null) {
-            response.getWriter().println("internal");
+        String requestURLPath = request.getServletPath().substring(1);
+        if(requestURLPath.equals("add_seating.do")) {
+            doGet(request, response);
             return;
-        } 
-
-        switch(seatingList.size()) {
-            case 1 : {
-                Seating firstSeating = seatingList.get(0);
-                if(firstSeating.getDeck()) {
-                    seatingList.set(0, null);
-                    seatingList.add(firstSeating);
-                }
-                break;
-            }
-            case 2 : {
-                Seating firstSeating = seatingList.get(0);
-                Seating secondSeating = seatingList.get(1);
-
-                if(firstSeating.getDeck()) {
-                    seatingList.set(0, secondSeating);
-                    seatingList.set(1, firstSeating);
-                }
-                break;
-            }
-            default : 
-                break;
         }
-        
-        response.getWriter().println(new Gson().toJson(seatingList));
     }
 }

@@ -63,6 +63,9 @@ public class UpdateSeatingServlet extends HttpServlet {
             response.getWriter().println("internal");
             return;
         }
+        else {
+            session.removeAttribute("seatingList" + busId);
+        }
         response.getWriter().println(new Gson().toJson(seating));
     }
 }

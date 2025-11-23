@@ -68,13 +68,40 @@ public class AddSeatingServlet extends HttpServlet {
             return;
         }
 
-        Bus activeBus = Bus.getRecord(busId, operator.getOperatorId());
+        Bus activeBus = null;
+        if(session.getAttribute("busList") != null) {
+            @SuppressWarnings("unchecked")
+            ArrayList<Bus> busList = (ArrayList<Bus>) session.getAttribute("busList");
+
+            for(Bus bus : busList) {
+                if(bus.getBusId().equals(busId)) {
+                    activeBus = bus;
+                    break;
+                }
+            }
+        }
+        if(activeBus == null) {
+            activeBus = Bus.getRecord(busId, operator.getOperatorId());
+        }
+
         if(activeBus == null) {
             response.getWriter().println("internal");
             return;
         }
-                
-        ArrayList<Seating> seatingList = Seating.collectRecords(busId);
+        
+        String cachedSeatingListAttribute = "seatingList" + busId;
+        if(session.getAttribute(cachedSeatingListAttribute) == null) {
+            request.getRequestDispatcher("get_seating.do").include(request, response);
+
+            if(session.getAttribute(cachedSeatingListAttribute) == null) {
+                response.getWriter().println("invalid");
+                return;
+            }
+        }      
+
+        @SuppressWarnings("unchecked")
+        ArrayList<Seating> seatingList = (ArrayList<Seating>) session.getAttribute(cachedSeatingListAttribute);
+
         Boolean isUpdatable = false;
         if(activeBus.getDoubleDecker()) {
             if(seatingList.size() == 2) {
@@ -93,10 +120,13 @@ public class AddSeatingServlet extends HttpServlet {
                 response.getWriter().println("internal");
                 return;
             }
+            else {
+                session.removeAttribute("busList");
+            }
         }
 
         seating.setSeatingId(generatedId);
-            
+        session.removeAttribute(cachedSeatingListAttribute);
         response.getWriter().println(new Gson().toJson(seating));
 
     } 

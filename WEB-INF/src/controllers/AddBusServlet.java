@@ -147,6 +147,7 @@ public class AddBusServlet extends HttpServlet {
                 item.write(currFile);
             }
 
+            session.removeAttribute("busList");
             response.getWriter().println(new Gson().toJson(bus));
 
         } catch (FileUploadException e) {

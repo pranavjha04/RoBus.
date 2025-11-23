@@ -20,23 +20,33 @@ import com.google.gson.Gson;
 public class GetBusServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
+        
+        try {
+            if(session.getAttribute("operator") == null) {
+                throw new IllegalArgumentException("Invalid Request");
+            }
+            if(session.getAttribute("busList") == null) {
+                Operator operator = (Operator) session.getAttribute("operator");
+                ArrayList<Bus> busList = Bus.collectRecords(operator.getOperatorId());
 
-        if(session.getAttribute("operator") == null || request.getParameter("allRecord") == null) {
+                if(busList == null) {
+                    throw new IllegalArgumentException("Invalid Request");
+                }
+
+                session.setAttribute("busList", busList);
+            }
+
+            @SuppressWarnings("unchecked")
+            ArrayList<Bus> busList = (ArrayList<Bus>) session.getAttribute("busList");
+
+            response.getWriter().println(new Gson().toJson(busList));
+
+        }
+        catch(IllegalArgumentException e) {
+            e.printStackTrace();
             response.getWriter().println("invalid");
             return;
         }
-
-        Boolean allRecord = Boolean.parseBoolean(request.getParameter("allRecord"));
-        Gson gson = new Gson();
         
-        Operator operator = (Operator) session.getAttribute("operator");
-        ArrayList<Bus> busList = Bus.collectRecords(operator.getOperatorId(), allRecord);
-        
-        if(busList == null) {
-            response.getWriter().println("internal");
-            return;
-        }
-        
-        response.getWriter().println(gson.toJson(busList));
     }
 }

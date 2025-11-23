@@ -18,18 +18,37 @@ import com.google.gson.Gson;
 
 @WebServlet("/get_operator_routes.do")
 public class GetOperatorRouteServlet extends HttpServlet {
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
 
-        if(session.getAttribute("operator") == null) {
+        try {
+            if(session.getAttribute("operator") == null) {
+                throw new IllegalArgumentException("Invalid Request");
+            }
+
+            Operator operator = (Operator) session.getAttribute("operator");
+            Integer operatorId = operator.getOperatorId();
+            String cachedAttribute = "opetator_route_list" + operatorId;
+            
+            if(session.getAttribute(cachedAttribute) == null) {
+                ArrayList<OperatorRoute> operatorRouteList = OperatorRoute.collectAllRecords(operatorId);
+                if(operatorRouteList == null) {
+                    throw new IllegalArgumentException("Invalid Request");
+                }
+
+                session.setAttribute(cachedAttribute, operatorRouteList);
+            }
+
+            @SuppressWarnings("unchecked")
+            ArrayList<OperatorRoute> list = (ArrayList<OperatorRoute>) session.getAttribute(cachedAttribute);
+            response.getWriter().println(new Gson().toJson(list));
+        }   
+        catch(IllegalArgumentException e) {
+            e.printStackTrace();
             response.getWriter().println("invalid");
             return;
         }
 
-        Operator operator = (Operator) session.getAttribute("operator");
-        Integer operatorId = operator.getOperatorId();
-        ArrayList<OperatorRoute> operatorRouteList = OperatorRoute.collectAllRecords(operatorId);
         
-        response.getWriter().println(new Gson().toJson(operatorRouteList));
     }
 }

@@ -108,18 +108,20 @@ public class Seating {
         return generatedId;
     } 
 
-    public static ArrayList<Seating> collectRecords(Integer busId) {
+    public static ArrayList<Seating> collectRecords(Integer busId, Integer operatorId) {
         ArrayList<Seating> seatingList = new ArrayList<>();
 
         try {
             Connection con = DBManager.getConnection();
             String query = 
-                    "SELECT * FROM seatings " +
-                    "where bus_id=?";
+                    "SELECT * FROM seatings s " + 
+                    "JOIN buses b ON s.bus_id = b.bus_id " +
+                    "WHERE s.bus_id=? AND b.operator_id=?";
             
             PreparedStatement ps = con.prepareStatement(query);
 
             ps.setInt(1, busId);
+            ps.setInt(2, operatorId);
 
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {

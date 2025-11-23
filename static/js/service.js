@@ -316,9 +316,7 @@ export const collectRouteRequest = async (source, destination) => {
 };
 
 export const collectOperatorRouteRequest = async () => {
-  const res = await fetch("get_operator_routes.do", {
-    method: "POST",
-  });
+  const res = await fetch("get_operator_routes.do");
   if (!res.ok) throw new Error("Internal Server error");
 
   const data = await res.text();

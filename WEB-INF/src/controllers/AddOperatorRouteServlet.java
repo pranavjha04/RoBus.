@@ -20,15 +20,13 @@ public class AddOperatorRouteServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
 
-        if(
-            session.getAttribute("operator") == null ||
-            request.getParameter("route_id") == null
-        ) {
-            response.getWriter().println("invalid");
-            return;
-        }
-
         try {
+            if(
+                session.getAttribute("operator") == null ||
+                request.getParameter("route_id") == null
+            ) {
+                throw new IllegalArgumentException("Invalid Request");
+            }
             Operator operator = (Operator) session.getAttribute("operator");
             Integer operatorId = operator.getOperatorId();
             Integer routeId = Integer.parseInt(request.getParameter("route_id"));
@@ -55,19 +53,18 @@ public class AddOperatorRouteServlet extends HttpServlet {
                     }
                     Boolean success = OperatorRouteMidCity.addRecord(generatedOperatorRouteId, routeMidCityId, haltingTime);
 
-                    if(!success) {
-                        response.getWriter().println("internal");
-                        return;
+                    if(success) {
+                        session.removeAttribute("opetator_route_list" + operatorId);
                     }
+                    response.getWriter().println(success ? "success" : "internal");
                 }
             }
         }
-        catch(NumberFormatException e) {
+        catch(IllegalArgumentException e) {
             e.printStackTrace();
             response.getWriter().println("invalid");
             return;
         }
-
-        response.getWriter().println("success");
+   
     }
 }
