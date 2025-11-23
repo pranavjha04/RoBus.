@@ -780,10 +780,25 @@ export class ViewHelper {
       bus,
       busRouteWeekday,
       totalCharges,
+      journeyDate,
     } = schedule;
-    const { operatorRoute } = busRouteWeekday;
 
-    return ` <tr class="border border-bottom text-center" data-schedule-id=${scheduleId}>
+    const { operatorRoute } = busRouteWeekday;
+    const currDate = new Date(journeyDate);
+
+    return ` <tr class="border border-bottom text-center" data-schedule-id=${scheduleId} data-day=${new Intl.DateTimeFormat(
+      navigator.language,
+      {
+        weekday: "short",
+      }
+    ).format(currDate)} data-month=${new Intl.DateTimeFormat(
+      navigator.language,
+      {
+        month: "short",
+      }
+    ).format(
+      currDate
+    )} data-date=${currDate.getDate()} data-year=${currDate.getFullYear()}>
                   <td class="p-3">${getFormattedTime(
                     arrivalTime
                   )} → ${getFormattedTime(departureTime)}</td>
@@ -812,6 +827,7 @@ export class ViewHelper {
                   <td class="p-3">
                     <button
                       class="btn manage-icon border-primary-subtle py-2 px-2"
+                      data-type="manage"
                     >
                       <img
                         src="static/media/images/edit_sm_blue.svg"

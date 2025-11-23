@@ -431,60 +431,60 @@
                 Route Weekdays
               </button>
             </div>
-          </div>
-          <div class="d-flex flex-column gap-3">
-            <div
-              class="bg-white p-4 rounded shadow-sm d-flex flex-column"
-              id="route_time_line"
-            >
-              <h2 class="fs-3">Route TimeLine & Mid Cities</h2>
+            <div class="d-flex flex-column gap-3">
               <div
-                class="d-flex flex-column align-items-start pt-4"
-                id="route_timeline_cont"
-              ></div>
-            </div>
-            <div
-              class="bg-white p-4 rounded shadow-sm d-flex flex-column gap-3"
-              id="route_mid_city_cont"
-            >
-              <h2 class="fs-3">Route Mid Cities</h2>
-              <button
-                id="add_mid_city_form_trigger_btn"
-                class="btn btn-primary align-self-end"
-                data-bs-toggle="modal"
-                data-bs-target="#centeredModal"
+                class="bg-white p-4 rounded shadow-sm d-flex flex-column"
+                id="route_time_line"
               >
-                &plus; Add Mid Cities
-              </button>
-              <table
-                class="border rounded table-responsive w-100"
-                id="route_mid_city_table"
-              ></table>
-            </div>
-            <div
-              class="bg-white p-4 rounded shadow-sm d-flex flex-column gap-3"
-              id="route_weekday_cont"
-            >
-              <h2 class="fs-3">Route Weekdays</h2>
-              <button
-                id="add_bus_route_weekday_form_trigger_btn"
-                class="btn btn-primary align-self-end"
-                data-bs-toggle="modal"
-                data-bs-target="#centeredModalB"
+                <h2 class="fs-3">Route TimeLine & Mid Cities</h2>
+                <div
+                  class="d-flex flex-column align-items-start pt-4"
+                  id="route_timeline_cont"
+                ></div>
+              </div>
+              <div
+                class="bg-white p-4 rounded shadow-sm d-flex flex-column gap-3"
+                id="route_mid_city_cont"
               >
-                &plus; Route Weekdays
-              </button>
-              <table
-                class="border rounded table-responsive w-100"
-                id="bus_route_weekday_table"
-              ></table>
+                <h2 class="fs-3">Route Mid Cities</h2>
+                <button
+                  id="add_mid_city_form_trigger_btn"
+                  class="btn btn-primary align-self-end"
+                  data-bs-toggle="modal"
+                  data-bs-target="#centeredModal"
+                >
+                  &plus; Add Mid Cities
+                </button>
+                <table
+                  class="border rounded table-responsive w-100"
+                  id="route_mid_city_table"
+                ></table>
+              </div>
+              <div
+                class="bg-white p-4 rounded shadow-sm d-flex flex-column gap-3"
+                id="route_weekday_cont"
+              >
+                <h2 class="fs-3">Route Weekdays</h2>
+                <button
+                  id="add_bus_route_weekday_form_trigger_btn"
+                  class="btn btn-primary align-self-end"
+                  data-bs-toggle="modal"
+                  data-bs-target="#centeredModalB"
+                >
+                  &plus; Route Weekdays
+                </button>
+                <table
+                  class="border rounded table-responsive w-100"
+                  id="bus_route_weekday_table"
+                ></table>
+              </div>
             </div>
+  
+            <!-- Rest of your existing content -->
+            <footer class="container mt-4 mb-4">
+              <!-- Your existing fare factor and table content here -->
+            </footer>
           </div>
-
-          <!-- Rest of your existing content -->
-          <footer class="container mt-4 mb-4">
-            <!-- Your existing fare factor and table content here -->
-          </footer>
         </div>
       </main>
     </div>

@@ -169,9 +169,9 @@ const updateBusInfoDisplay = () => {
 const updateRouteSelect = (routeList = []) => {
   if (!routeList.length) {
     disableElements(routeSelect);
+    routeSelect.disabled = true;
     routeSelectContainer.innerHTML = "";
     routeSelect.textContent = "No Routes are available";
-    routeSelect.disabled = true;
   }
 
   routeSelect.disabled = false;
@@ -662,6 +662,22 @@ scheduleTable.addEventListener("click", (e) => {
     setTimeout(() => {
       journeyDate.focus();
     }, 200);
+  } else if (type === "manage") {
+    const { scheduleId, day, month, date, year } = target.closest("tr").dataset;
+    const key = [day, month, date, year].join(" ");
+
+    const activeSchedule = journeyDateScheduleCache[key].find((schedule) => {
+      return schedule.scheduleId === +scheduleId;
+    });
+
+    if (!activeSchedule) return;
+    sessionStorage.setItem("activeSchedule", JSON.stringify(activeSchedule));
+
+    const APP_URL = window.location.href.substring(
+      0,
+      window.location.href.lastIndexOf("/")
+    );
+    window.location.href = `${APP_URL}/manage_bus_schedule.do`;
   }
 });
 
@@ -681,7 +697,6 @@ dateRangeContainer.addEventListener("click", (e) => {
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     modal.activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
-
     if (modal.activeBus.status.name === "Incomplete") {
       history.back();
     }

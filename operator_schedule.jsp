@@ -7,53 +7,20 @@ prefix="e" uri="bts" %>
     <c:import url="essential_page_import.jsp" />
     <title>Route Information</title>
     <style>
-      .route-card {
-        background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        transition: all 0.2s ease;
-        overflow: hidden;
-      }
-
-      .route-card:hover {
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-        transform: translateY(-2px);
-      }
-
-      .card-border-accent {
-        border-left: 4px solid #0d6efd;
-      }
-
-      .section-title {
-        color: #6c757d;
-        font-size: 0.75rem;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-      }
-
-      .section-content {
-        color: #212529;
-        font-weight: 700;
-        font-size: 1.1rem;
-        margin-bottom: 0;
-        display: flex;
-        align-items: center;
-      }
-
-      .route-card {
-        border-bottom: 1px solid #e0e0e0;
-        background: #fff;
-        transition: all 0.3s ease;
-      }
       .norm {
         background: none;
         border: none;
+        transition: all 0.25s ease;
+      }
+      .norm:hover {
+        background-color: rgba(215, 215, 215, 0.477);
       }
       .active {
         background-color: #0d6efd;
         color: white;
+      }
+      .active:hover {
+        background-color: #0451c3;
       }
     </style>
   </head>
@@ -280,14 +247,8 @@ prefix="e" uri="bts" %>
 
         <!-- Dashboard Content -->
         <div class="p-4 d-flex flex-column overflow-scroll">
-          <a
-            href="operator_buses.do"
-            class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link back-link align-self-start"
-          >
-            <span>&larr;</span>
-            <span>Back</span>
-          </a>
           <div class="container mt-2 mb-4" id="pageWrapper">
+            <h2>All Schedules</h2>
             <div class="d-flex flex-column gap-3 rounded p-2">
               <div
                 class="d-flex flex-column gap-2 px-3 py-2 bg-white shadow shadow-sm"

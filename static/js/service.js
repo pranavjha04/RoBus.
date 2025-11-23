@@ -612,6 +612,7 @@ export const getBusJourneyDateScheduleRequest = async (date, bus_id) => {
   const data = await res.text();
   return data.trim();
 };
+
 export const getJourneyDateScheduleRequest = async (date) => {
   const params = createURLParams({
     date,

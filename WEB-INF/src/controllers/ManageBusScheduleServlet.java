@@ -10,9 +10,9 @@ import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
 
-@WebServlet("/manage_fare_factor.do")
-public class ManageOperatorFareFactorServlet extends HttpServlet {
+@WebServlet("/manage_bus_schedule.do")
+public class ManageBusScheduleServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.getRequestDispatcher("manage_fare_factor.jsp").forward(request, response);
+        request.getRequestDispatcher("manage_bus_schedule.jsp").forward(request, response);
     }
 }
