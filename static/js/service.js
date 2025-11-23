@@ -327,7 +327,6 @@ export const collectOperatorRouteRequest = async () => {
 
 export const collectAllRecordsWithOperatorTicketFareRequest = async (obj) => {
   const queryParams = createURLParams(obj);
-  console.log(queryParams.toString());
   const res = await fetch(
     `get_operator_ticket_fare_bus.do?${queryParams.toString()}`,
     {
@@ -342,7 +341,6 @@ export const collectAllRecordsWithOperatorTicketFareRequest = async (obj) => {
 
 export const deleteBusFareFactor = async (obj) => {
   const queryParams = createURLParams(obj);
-  console.log(queryParams.toString());
   const res = await fetch(
     `delete_bus_fare_factor.do?${queryParams.toString()}`,
     {
@@ -602,6 +600,18 @@ export const addBusScheduleRequest = async (formData) => {
   return data.trim();
 };
 
+export const getBusJourneyDateScheduleRequest = async (date, bus_id) => {
+  const params = createURLParams({
+    date,
+    bus_id,
+  });
+  const res = await fetch(
+    `get_bus_journey_date_schedule.do?` + params.toString()
+  );
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
 export const getJourneyDateScheduleRequest = async (date) => {
   const params = createURLParams({
     date,

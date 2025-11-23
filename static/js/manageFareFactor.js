@@ -160,16 +160,6 @@ chargeDeleteBtn.addEventListener("click", async () => {
 });
 
 chargeEditBtn.addEventListener("click", async () => {
-  const { operatorTicketFareBusList } = modal;
-
-  const isAnyBusActive = operatorTicketFareBusList.some(
-    ({ bus }) => bus.status.name === "Active"
-  );
-  if (isAnyBusActive) {
-    toast.error("Cannot edit because some buses are active");
-    disableChargeInput();
-    return;
-  }
   enableChargeInput();
 });
 

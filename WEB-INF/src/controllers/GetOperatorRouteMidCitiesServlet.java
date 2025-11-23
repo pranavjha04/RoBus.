@@ -29,7 +29,7 @@ public class GetOperatorRouteMidCitiesServlet extends HttpServlet {
             Operator operator = (Operator) session.getAttribute("operator");
             Integer operatorId = operator.getOperatorId();
             Integer operatorRouteId = 0;
-            if(requestURLPath.equals("get_journey_date_schedule.do")) {
+            if(requestURLPath.equals("get_journey_date_schedule.do") || requestURLPath.equals("get_bus_journey_date_schedule.do")) {
                 operatorRouteId = (Integer) request.getAttribute("operator_route_id");
             }
             else {
@@ -45,7 +45,7 @@ public class GetOperatorRouteMidCitiesServlet extends HttpServlet {
                 }
                 session.setAttribute(formattedAttribute, operatorRouteMidCityList);
             }
-            if(!requestURLPath.equals("get_journey_date_schedule.do")) {
+            if(!requestURLPath.equals("get_journey_date_schedule.do") && !requestURLPath.equals("get_bus_journey_date_schedule.do")) {
                 @SuppressWarnings("unchecked")
                 ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = (ArrayList<OperatorRouteMidCity>) session.getAttribute(formattedAttribute);
                 response.getWriter().println(new Gson().toJson(operatorRouteMidCityList));
@@ -53,7 +53,7 @@ public class GetOperatorRouteMidCitiesServlet extends HttpServlet {
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
-            if(!requestURLPath.equals("get_journey_date_schedule.do")) {
+            if(!requestURLPath.equals("get_journey_date_schedule.do") && !requestURLPath.equals("get_bus_journey_date_schedule.do")) {
                 response.getWriter().println("invalid");
             }
             return;

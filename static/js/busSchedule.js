@@ -6,7 +6,7 @@ import {
   collectAllBusFareFactorRequest,
   collectInactiveDriversRequest,
   collectWeekdayRoutes,
-  getJourneyDateScheduleRequest,
+  getBusJourneyDateScheduleRequest,
   validateScheduleTimeClash,
 } from "./service.js";
 import { disableElements, enableElements } from "./util.js";
@@ -229,22 +229,28 @@ const handleJourneyDateScheduleRecordRequest = async (journeyDate) => {
   try {
     if (!(journeyDate instanceof Date)) throw new Error("Invalid Request");
     scheduleTable.innerHTML = ViewHelper.getTableLoader();
-    if (!journeyDateScheduleCache[journeyDate.toDateString()]) {
-      const year = journeyDate.getFullYear();
-      const month = journeyDate.getMonth();
-      const day = journeyDate.getDate();
-      const formattedDate = [year, month + 1, day].join("-");
-      const response = await getJourneyDateScheduleRequest(formattedDate);
-      if (response === "invalid") throw new Error("Invalid Request");
-      journeyDateScheduleCache[journeyDate.toDateString()] =
-        JSON.parse(response);
+    if (journeyDateScheduleCache[journeyDate.toDateString()]) {
       updateScheduleRecords(
         journeyDateScheduleCache[journeyDate.toDateString()]
       );
     } else {
-      updateScheduleRecords(
-        journeyDateScheduleCache[journeyDate.toDateString()]
+      const year = journeyDate.getFullYear();
+      const month = journeyDate.getMonth();
+      const day = journeyDate.getDate();
+      const formattedDate = [year, month + 1, day].join("-");
+      const response = await getBusJourneyDateScheduleRequest(
+        formattedDate,
+        modal.activeBus.busId
       );
+      if (response === "invalid" || response.startsWith("invalid"))
+        throw new Error("Invalid Request");
+      if (response.startsWith("[")) {
+        journeyDateScheduleCache[journeyDate.toDateString()] =
+          JSON.parse(response);
+        updateScheduleRecords(
+          journeyDateScheduleCache[journeyDate.toDateString()]
+        );
+      }
     }
   } catch (err) {
     toast.error(err.message);
@@ -263,6 +269,19 @@ const showActiveDateRecord = () => {
   const formattedDate = [year, +month, day].join("-");
 
   handleJourneyDateScheduleRecordRequest(new Date(formattedDate));
+};
+
+const clearActiveDateRecord = () => {
+  const activeDate = dateRangeContainer.querySelector(".active");
+
+  if (!activeDate) {
+    return;
+  }
+
+  const { year, month, day } = activeDate.dataset;
+  const formattedDate = [year, +month, day].join("-");
+
+  journeyDateScheduleCache[new Date(formattedDate).toDateString()] = null;
 };
 
 const updateDateRange = () => {
@@ -308,7 +327,7 @@ const updateDateRange = () => {
                   data-day=${date.getDate().toString().padStart(2, "0")}
                 >
                   <h4>${new Intl.DateTimeFormat(navigator.language, {
-                    weekday: "narrow",
+                    weekday: "short",
                   }).format(date)}</h4>
                   <span class="fs-4">${new Intl.DateTimeFormat(
                     navigator.language,
@@ -383,6 +402,7 @@ showAvailableRouteBtn.addEventListener("click", async () => {
         throw new Error("Internal Server Error");
 
       cache.availableRouteCache[weekday] = JSON.parse(response);
+
       cache.availableRouteCache[weekday].forEach(({ operatorRoute }) => {
         operatorRoute.route = { ...operatorRoute.route };
         const totalDuration = operatorRoute.operatorRouteMidCities.reduce(
@@ -519,6 +539,7 @@ driverSelect.addEventListener("click", async (e) => {
       }
 
       cache.driverCache = JSON.parse(response);
+
       updateDriverListDisplay();
     } else {
       updateDriverListDisplay();
@@ -601,10 +622,11 @@ scheduleBusForm.addEventListener("submit", async (e) => {
       toast.success("Bus is scheduled successfully");
       clearForm();
       disableForm();
-      ModalHandler.hide(busScheduleModal);
       journeyDateScheduleCache[new Date(journeyDate.value).toDateString()] =
         null;
+      clearActiveDateRecord();
       showActiveDateRecord();
+      ModalHandler.hide(busScheduleModal);
     } else {
       throw new Error("Invalid Request");
     }
@@ -659,6 +681,7 @@ dateRangeContainer.addEventListener("click", (e) => {
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     modal.activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
+
     if (modal.activeBus.status.name === "Incomplete") {
       history.back();
     }
@@ -667,7 +690,9 @@ window.addEventListener("DOMContentLoaded", async () => {
     updateBusInfoDisplay();
     PageLoading.stopLoading();
     disableForm();
-    updateDateRange();
+    setTimeout(() => {
+      updateDateRange();
+    }, 200);
   } catch (err) {
     toast.error(err.message);
     PageLoading.stopLoading();

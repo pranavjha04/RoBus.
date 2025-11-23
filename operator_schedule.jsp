@@ -288,49 +288,6 @@ prefix="e" uri="bts" %>
             <span>Back</span>
           </a>
           <div class="container mt-2 mb-4" id="pageWrapper">
-            <div class="route-card p-4 card-border-accent">
-              <div
-                class="d-flex flex-column flex-md-row align-items-center justify-content-between"
-              >
-                <!-- Route Section -->
-                <div
-                  class="route-section text-center text-md-start mb-3 mb-md-0"
-                >
-                  <div class="section-title">Bus</div>
-                  <div class="section-content">
-                    <div class="d-flex flex-column gap-0">
-                      <span class="fs-4" id="bus_number">-</span>
-                      <span
-                        class="small text-muted small fs-6 fw-normal"
-                        id="bus_decker"
-                        >-</span
-                      >
-                    </div>
-                  </div>
-                </div>
-
-                <div class="divider d-none d-md-block"></div>
-                <div class="divider d-md-none"></div>
-
-                <!-- Journey Time Section -->
-                <div class="time-section text-center mb-3 mb-md-0">
-                  <div class="section-title">Manufacturer</div>
-                  <div class="section-content fs-4" id="manufacturer">=</div>
-                </div>
-
-                <div class="divider d-none d-md-block"></div>
-                <div class="divider d-md-none"></div>
-
-                <button
-                  class="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#centeredModal"
-                >
-                  &plus; Add Schedule
-                </button>
-              </div>
-            </div>
-
             <div class="d-flex flex-column gap-3 rounded p-2">
               <div
                 class="d-flex flex-column gap-2 px-3 py-2 bg-white shadow shadow-sm"
@@ -338,7 +295,7 @@ prefix="e" uri="bts" %>
                 <div
                   class="d-flex align-items-center justify-content-between w-100"
                 >
-                  <div>
+                  <div class="">
                     <h4>Select Date</h4>
                   </div>
 
@@ -367,12 +324,12 @@ prefix="e" uri="bts" %>
                 id="schedule_table"
               ></table>
             </div>
-
-            <footer class="container mt-4 mb-4"></footer>
           </div>
+
+          <footer class="container mt-4 mb-4"></footer>
         </div>
       </main>
     </div>
-    <script type="module" src="static/js/busSchedule.js"></script>
+    <script type="module" src="static/js/operatorSchedule.js"></script>
   </body>
 </html>

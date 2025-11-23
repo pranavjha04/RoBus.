@@ -154,10 +154,13 @@ public class AddBusScheduleServlet extends HttpServlet {
 
             if(!isUpdated) throw new IllegalArgumentException("Internal Server Error");
     
-            response.getWriter().println("ok");
             // clear cache
             session.removeAttribute(journeyDate.toString() + operator.getOperatorId() + busId);
             session.removeAttribute("date_schedule_list" + journeyDate.toString());
+            session.removeAttribute(busId + "bus_date_schedule_list" + journeyDate.toString());
+
+
+            response.getWriter().println("ok");
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();

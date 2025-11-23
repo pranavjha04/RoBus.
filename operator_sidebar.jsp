@@ -91,14 +91,29 @@
         >
       </button>
     </li>
+
     <li class="w-100 border-bottom">
       <button
-        data-link="operator_drivers.do"
+        data-link="operator_schedules.do"
         class="d-flex justify-content-center text-decoration-none align-items-center gap-2 side-bar-link w-100 py-3 px-2 btn"
       >
-        <img src="static/media/images/account.svg" alt="driver" class="p-0" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          fill="#0d6efd"
+          class="bi bi-calendar-event"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"
+          />
+          <path
+            d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"
+          />
+        </svg>
         <span class="fs-4 fw-medium" style="color: oklch(26.8% 0.007 34.298)"
-          >Drivers</span
+          >Schedules</span
         >
       </button>
     </li>
@@ -148,7 +163,7 @@
   navContainer.addEventListener("click", (e) => {
     const target = e.target.closest("button");
     if (!target) return;
-    
+
     const { link } = target.dataset;
     if (link !== currentLink) {
       window.location.href = APP_URL + "/" + link;
