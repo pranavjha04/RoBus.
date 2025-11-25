@@ -204,8 +204,8 @@ prefix="e" uri="bts" %>
 
                 <div class="row g-3">
                   <div class="col-md-4">
-                    <label class="form-label small"
-                      >Additional Charges (Operator)</label
+                    <label class="form-label small" for="additional_charges"
+                      >Additional Charges</label
                     >
                     <input
                       type="number"
@@ -217,7 +217,9 @@ prefix="e" uri="bts" %>
                   </div>
 
                   <div class="col-md-4">
-                    <label class="form-label small">Seater Fare</label>
+                    <label class="form-label small" for="seater_fare"
+                      >Seater Fare</label
+                    >
                     <input
                       type="number"
                       class="form-control"
@@ -228,7 +230,9 @@ prefix="e" uri="bts" %>
                   </div>
 
                   <div class="col-md-4">
-                    <label class="form-label small">Sleeper Fare</label>
+                    <label class="form-label small" for="seater_fare"
+                      >Sleeper Fare</label
+                    >
                     <input
                       type="number"
                       class="form-control"
@@ -239,7 +243,9 @@ prefix="e" uri="bts" %>
                   </div>
 
                   <div class="col-md-4 mt-2">
-                    <label class="form-label small">Total Charges (Auto)</label>
+                    <label class="form-label small" for="total_charges"
+                      >Total Charges (Auto)</label
+                    >
                     <input
                       type="number"
                       class="form-control bg-light"
@@ -280,8 +286,14 @@ prefix="e" uri="bts" %>
 
         <!-- Dashboard Content -->
         <div class="p-4 d-flex flex-column overflow-scroll">
-          <
           <div class="container mt-2 mb-4" id="pageWrapper">
+            <a
+              href="operator_buses.do"
+              class="link-primary link-underline-opacity-0 cursor-pointer fw-medium fs-4 d-flex link back-link align-self-start"
+            >
+              <span>&larr;</span>
+              <span>Back</span>
+            </a>
             <div class="route-card p-4 card-border-accent">
               <div
                 class="d-flex flex-column flex-md-row align-items-center justify-content-between"

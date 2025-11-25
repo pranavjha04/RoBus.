@@ -28,7 +28,7 @@ public class GetInactiveDriverServlet extends HttpServlet {
         String requestURLPath = request.getServletPath().substring(1);
         Operator operator = (Operator) session.getAttribute("operator");
 
-        if(session.getAttribute("driverList") == null) {
+        if(session.getAttribute("inactiveDriverList") == null) {
             ArrayList<Driver> driverList = Driver.collectInactiveDrivers(operator.getOperatorId());
             if(driverList == null) {
                 if(!requestURLPath.equals("add_bus_schedule.do")) {
@@ -37,12 +37,12 @@ public class GetInactiveDriverServlet extends HttpServlet {
                 }
             }
             else {
-                session.setAttribute("driverList", driverList);
+                session.setAttribute("inactiveDriverList", driverList);
             }
         }
         
         @SuppressWarnings("unchecked")
-        ArrayList<Driver> list = (ArrayList<Driver>) session.getAttribute("driverList");
+        ArrayList<Driver> list = (ArrayList<Driver>) session.getAttribute("inactiveDriverList");
 
         if(!requestURLPath.equals("add_bus_schedule.do")) {
             response.getWriter().println(new Gson().toJson(list));

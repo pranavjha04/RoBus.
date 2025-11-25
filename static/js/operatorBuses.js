@@ -236,12 +236,7 @@ busTable.addEventListener("click", (e) => {
   const busId = +target.closest("tr").dataset.id;
   if (isNaN(busId) || !busId) return;
 
-  const activeBus = JSON.parse(model.busList)?.find(
-    (bus) => bus.busId === busId
-  );
-
-  if (!activeBus || !Object.entries(activeBus).length) return;
-
+  const activeBus = model.busList.find((bus) => bus.busId === busId);
   sessionStorage.setItem("activeBus", JSON.stringify(activeBus));
 });
 

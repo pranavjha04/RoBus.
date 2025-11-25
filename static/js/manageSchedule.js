@@ -9,7 +9,7 @@ const model = {
 window.addEventListener("DOMContentLoaded", () => {
   try {
     model.activeSchedule = JSON.parse(sessionStorage.getItem("activeSchedule"));
-    
+    console.log(model.activeSchedule);
   } catch (err) {
     PageError.showOperatorError();
     toast.error(err.message);

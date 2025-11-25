@@ -99,7 +99,7 @@ public class Driver {
                             "JOIN users u ON d.user_id = u.user_id " +
                             "JOIN status s ON u.status_id = s.status_id " +
                             "JOIN user_types ut ON u.user_type_id = ut.user_type_id " +
-                            "WHERE operator_id=?";
+                            "WHERE operator_id=? AND u.status_id=5";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setInt(1, operatorId);
 

@@ -205,3 +205,137 @@ tbody tr {
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 99999;
+}
+
+.rht-toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  background: #ffffff;
+  padding: 14px 18px;
+  border-radius: 12px;
+
+  font-size: 15px;
+  color: #1f1f1f;
+
+  border: 1px solid #e6e6e6;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+
+  opacity: 0;
+  transform: translateY(20px) scale(0.96);
+  animation: rht-enter 0.35s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
+  position: relative;
+  overflow: hidden;
+}
+
+.rht-close {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  margin-left: auto;
+  color: #888;
+  transition: 0.2s;
+}
+
+.rht-close:hover {
+  color: #000;
+}
+
+@keyframes rht-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-3px) scale(1.02);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.rht-exit {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.98);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.toast-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rht-toast {
+  position: relative;
+  min-width: 260px;
+  padding: 12px 16px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  animation: rht-enter 0.35s ease forwards;
+  font-family: sans-serif;
+}
+
+.rht-toast.success {
+  border-left: 6px solid #33c863;
+}
+.rht-toast.error {
+  border-left: 6px solid #ff4f4f;
+}
+.rht-toast.warning {
+  border-left: 6px solid #f2b11b;
+}
+.rht-toast.normal {
+  border-left: 6px solid #555;
+}
+
+.rht-toast.rht-exit {
+  animation: rht-exit 0.3s ease forwards;
+}
+
+.rht-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+/* Animations */
+@keyframes rht-enter {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes rht-exit {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+}

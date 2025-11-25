@@ -23,6 +23,7 @@ public class Schedule {
     private Integer seaterFare;
     private Integer sleeperFare;
     private Integer totalCharges;
+    private Status status;
 
     private Bus bus;
     private Driver driver;
@@ -32,7 +33,7 @@ public class Schedule {
                     Time arrivalTime, Integer additionalCharges,
                     Integer seaterSeatsBooked, Integer sleeperSeatsBooked,
                     Integer seaterFare, Integer sleeperFare, Integer totalCharges,
-                    Bus bus, Driver driver, BusRouteWeekday busRouteWeekday) {
+                    Bus bus, Driver driver, BusRouteWeekday busRouteWeekday, Status status) {
 
         this.scheduleId = scheduleId;
         this.journeyDate = journeyDate;
@@ -47,6 +48,8 @@ public class Schedule {
         this.bus = bus;
         this.driver = driver;
         this.busRouteWeekday = busRouteWeekday;
+        this.status = status;
+
     }
     public Schedule() {
     }
@@ -59,6 +62,7 @@ public class Schedule {
             Connection con = DBManager.getConnection();
             String query = 
                         "SELECT * FROM schedules sch " +
+                        "JOIN status schs ON sch.status_id = schs.status_id " +
                         // buses
                         "JOIN buses b ON sch.bus_id = b.bus_id " + 
                         "JOIN status bs ON b.status_id = bs.status_id " +
@@ -172,6 +176,10 @@ public class Schedule {
                         rs.getString("bs.name")
                     )
                 );
+                Status scheduleStatus = new Status(
+                    rs.getInt("schs.status_id"),
+                    rs.getString("schs.name")
+                );
 
                 Schedule schedule = new Schedule(
                     rs.getInt("sch.schedule_id"),
@@ -186,7 +194,8 @@ public class Schedule {
                     rs.getInt("sch.total_charges"),
                     bus,
                     driver,
-                    currWeekDay
+                    currWeekDay,
+                    scheduleStatus
                 );
 
                 list.add(schedule);
@@ -208,6 +217,7 @@ public class Schedule {
             Connection con = DBManager.getConnection();
             String query = 
                         "SELECT * FROM schedules sch " +
+                        "JOIN status schs ON sch.status_id = schs.status_id " +
                         // buses
                         "JOIN buses b ON sch.bus_id = b.bus_id " + 
                         "JOIN status bs ON b.status_id = bs.status_id " +
@@ -323,6 +333,11 @@ public class Schedule {
                     )
                 );
 
+                Status scheduleStatus = new Status(
+                    rs.getInt("schs.status_id"),
+                    rs.getString("schs.name")
+                );
+
                 Schedule schedule = new Schedule(
                     rs.getInt("sch.schedule_id"),
                     rs.getDate("sch.journey_date"),
@@ -336,7 +351,8 @@ public class Schedule {
                     rs.getInt("sch.total_charges"),
                     bus,
                     driver,
-                    currWeekDay
+                    currWeekDay,
+                    scheduleStatus
                 );
 
                 list.add(schedule);
@@ -358,8 +374,8 @@ public class Schedule {
             Connection con = DBManager.getConnection();
             String query = 
                         "INSERT INTO schedules " +
-                        "(journey_date, departure_time, arrival_time, seater_seats_booked, sleeper_seats_booked, additional_charges, seater_fare, sleeper_fare, total_charges, bus_id, driver_id, bus_route_weekday_id) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        "(journey_date, departure_time, arrival_time, seater_seats_booked, sleeper_seats_booked, additional_charges, seater_fare, sleeper_fare, total_charges, bus_id, driver_id, bus_route_weekday_id, status_id) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 11)";
             PreparedStatement ps = con.prepareStatement(query);
             
             ps.setDate(1, journeyDate);
@@ -394,6 +410,7 @@ public class Schedule {
             Connection con = DBManager.getConnection();
             String query = 
                         "SELECT * FROM schedules sch " +
+                        "JOIN status schs ON sch.status_id = schs.status_id " +
                         // buses
                         "JOIN buses b ON sch.bus_id = b.bus_id " + 
                         "JOIN status bs ON b.status_id = bs.status_id " +
@@ -507,6 +524,10 @@ public class Schedule {
                         rs.getString("bs.name")
                     )
                 );
+                Status scheduleStatus = new Status(
+                    rs.getInt("schs.status_id"),
+                    rs.getString("schs.name")
+                );
 
                 Schedule schedule = new Schedule(
                     rs.getInt("sch.schedule_id"),
@@ -521,7 +542,8 @@ public class Schedule {
                     rs.getInt("sch.total_charges"),
                     bus,
                     driver,
-                    currWeekDay
+                    currWeekDay,
+                    scheduleStatus
                 );
 
                 list.add(schedule);
@@ -638,5 +660,13 @@ public class Schedule {
 
     public void setBusRouteWeekday(BusRouteWeekday busRouteWeekday) {
         this.busRouteWeekday = busRouteWeekday;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

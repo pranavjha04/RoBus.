@@ -77,14 +77,14 @@ public class AddBusScheduleServlet extends HttpServlet {
             /* -------- EXTRA FARE CHARGES END -------- */
 
             /* -------- DRIVER START -------- */
-            if(session.getAttribute("driverList") == null) {
+            if(session.getAttribute("inactiveDriverList") == null) {
                 request.getRequestDispatcher("get_inactive_drivers.do").include(request, response);
-                if(session.getAttribute("driverList") == null) {
+                if(session.getAttribute("inactiveDriverList") == null) {
                     throw new IllegalArgumentException("Invalid Request");
                 }
             }
             @SuppressWarnings("unchecked")
-            ArrayList<Driver> driverList = (ArrayList<Driver>) session.getAttribute("driverList");
+            ArrayList<Driver> driverList = (ArrayList<Driver>) session.getAttribute("inactiveDriverList");
 
             boolean isDriverValid = false;
             for(Driver next : driverList) {
@@ -155,11 +155,18 @@ public class AddBusScheduleServlet extends HttpServlet {
             if(!isUpdated) throw new IllegalArgumentException("Internal Server Error");
     
             // clear cache
-            session.removeAttribute(journeyDate.toString() + operator.getOperatorId() + busId);
-            session.removeAttribute("date_schedule_list" + journeyDate.toString());
-            session.removeAttribute(busId + "bus_date_schedule_list" + journeyDate.toString());
+            String[] clearCahceAttributeList = {
+                journeyDate.toString() + operator.getOperatorId() + busId, 
+                "date_schedule_list" + journeyDate.toString(), 
+                busId + "bus_date_schedule_list" + journeyDate.toString(), 
+                "inactiveDriverList", 
+                "driverList"
+            };
 
-
+            for(String attribute : clearCahceAttributeList) {
+                session.removeAttribute(attribute);
+            }
+        
             response.getWriter().println("ok");
         }
         catch(IllegalArgumentException e) {

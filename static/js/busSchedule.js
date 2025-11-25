@@ -696,10 +696,10 @@ dateRangeContainer.addEventListener("click", (e) => {
 
 window.addEventListener("DOMContentLoaded", async () => {
   try {
-    modal.activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
-    if (modal.activeBus.status.name === "Incomplete") {
+    if (sessionStorage.getItem("activeBus") == null) {
       history.back();
     }
+    modal.activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
     busId.value = modal.activeBus.busId;
     await handleCollectBusFareFactors();
     updateBusInfoDisplay();
@@ -709,6 +709,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       updateDateRange();
     }, 200);
   } catch (err) {
+    console.error(err);
     toast.error(err.message);
     PageLoading.stopLoading();
     PageError.showOperatorError();

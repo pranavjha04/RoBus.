@@ -19,19 +19,32 @@ import models.Operator;
 public class GetAllDriverServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
-        if(session.getAttribute("operator") == null) {
-            response.getWriter().println("invalid");
-            return;
-        }   
-        Operator operator = (Operator) session.getAttribute("operator");
-        Integer operatorId = operator.getOperatorId();
 
-        ArrayList<Driver> driverList = Driver.collectRecords(operatorId);
-        if(driverList == null) {
-            response.getWriter().println("invalid");
-            return;
+        try {
+            if(session.getAttribute("operator") == null) {
+                throw new IllegalArgumentException("Invalid Request");
+            }   
+            Operator operator = (Operator) session.getAttribute("operator");
+            Integer operatorId = operator.getOperatorId();
+
+            if(session.getAttribute("driverList") == null) {
+                ArrayList<Driver> driverList = Driver.collectRecords(operatorId);
+                if(driverList == null) {
+                    throw new IllegalArgumentException("Invalid Operation");
+                }
+                
+                session.setAttribute("driverList", driverList);
+            }
+            
+            @SuppressWarnings("unchecked")
+            ArrayList<Driver> driverList = (ArrayList<Driver>) session.getAttribute("driverList");
+            response.getWriter().println(new Gson().toJson(driverList));
+
         }
-
-        response.getWriter().println(new Gson().toJson(driverList));
+        catch(IllegalArgumentException e) {
+            e.printStackTrace();
+            response.getWriter().println("invalid");
+            return;
+        } 
     }
 }

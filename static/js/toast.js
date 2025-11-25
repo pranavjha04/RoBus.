@@ -1,78 +1,60 @@
 class Toast {
   #parentElement;
-  #message;
-  #toastEl;
-  delay;
-  #currToast;
-  static #toastNum = 1;
-  constructor(message, delay = 3000) {
-    this.#message = message;
-    this.delay = delay;
+  defaultDelay = 3000; // visible time
+  exitDuration = 300; // animation time
+
+  constructor() {
     this.#parentElement = document.querySelector(".toast-container");
-    this.#currToast = Toast.#toastNum++;
 
-    this.#init();
+    if (!this.#parentElement) {
+      const el = document.createElement("div");
+      el.className = "toast-container";
+      el.style.position = "fixed";
+      el.style.top = "1rem";
+      el.style.right = "1rem";
+      el.style.zIndex = "9999";
+      document.body.appendChild(el);
+      this.#parentElement = el;
+    }
   }
 
-  #init() {
-    this.#parentElement.insertAdjacentHTML("afterbegin", this.#createToast());
-    this.#toastEl = document.querySelector(`#toast_${this.#currToast}`);
+  #createToast(message, type) {
+    const toast = document.createElement("div");
+    toast.className = `rht-toast ${type}`;
+
+    toast.innerHTML = `
+      <div class="rht-bar"></div>
+      <div class="rht-content">${message}</div>
+      <button class="rht-close">&times;</button>
+    `;
+
+    toast.querySelector(".rht-close").onclick = () => this.#removeToast(toast);
+    return toast;
   }
 
-  #createToast() {
-    return ` <div
-        class="toast align-items-center border-0 mt-2"
-        role="alert"
-        id="toast_${this.#currToast}"
-        aria-live="assertive"
-        aria-atomic="true"
-      >
-        <div class="d-flex">
-          <div class="toast-body">${this.#message}</div>
-          <button
-            type="button"
-            class="btn-close btn-close-white me-2 m-auto"
-            data-bs-dismiss="toast"
-            aria-label="Close"
-          ></button>
-        </div>
-      </div>`;
+  #removeToast(el) {
+    el.classList.add("rht-exit");
+    setTimeout(() => el.remove(), this.exitDuration);
   }
 
-  #displayToast() {
-    const toast = new bootstrap.Toast(this.#toastEl, { delay: this.delay });
-    toast.show();
-    this.#removeToast();
+  #show(message, type, delay) {
+    const toast = this.#createToast(message, type);
+    this.#parentElement.insertAdjacentElement("afterbegin", toast);
+
+    setTimeout(() => this.#removeToast(toast), delay ?? this.defaultDelay);
   }
 
-  #removeToast() {
-    setTimeout(() => {
-      this.#toastEl.remove();
-    }, this.delay);
+  success(msg, delay) {
+    this.#show(msg, "success", delay);
   }
-
-  error(message, delay) {
-    const toast = new Toast(message, delay);
-    toast.#toastEl.classList.add("text-bg-danger");
-    toast.#displayToast();
+  error(msg, delay) {
+    this.#show(msg, "error", delay);
   }
-
-  warning(message, delay) {
-    const toast = new Toast(message, delay);
-    toast.#toastEl.classList.add("text-bg-warning");
-    toast.#displayToast();
+  warning(msg, delay) {
+    this.#show(msg, "warning", delay);
   }
-
-  normal(message, delay) {
-    const toast = new Toast(message, delay);
-    toast.#toastEl.classList.add("text-bg-primary");
-    toast.#displayToast();
-  }
-
-  success(message, delay) {
-    const toast = new Toast(message, delay);
-    toast.#toastEl.classList.add("text-bg-success");
-    toast.#displayToast();
+  normal(msg, delay) {
+    this.#show(msg, "normal", delay);
   }
 }
 

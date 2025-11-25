@@ -6,215 +6,28 @@ prefix="e" uri="bts" %>
   <head>
     <c:import url="essential_page_import.jsp" />
     <title>Manage Bus Schedule</title>
+    <style>
+      .route-card {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        transition: all 0.2s ease;
+        overflow: hidden;
+      }
+
+      .route-card:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
+      }
+
+      .card-border-accent {
+        border-left: 4px solid #0d6efd;
+      }
+    </style>
   </head>
   <body>
     <c:import url="essential_page_display.jsp" />
-    <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header border-0">
-            <h5 class="modal-title fw-semibold">Add Bus Schedule</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-toggle="modal"
-              data-bs-target="#centeredModal"
-            ></button>
-          </div>
-
-          <div class="modal-body">
-            <form id="schedule_bus_form" class="rounded-3">
-              <input type="hidden" name="bus_id" value="" id="bus_id" />
-              <!-- Journey Date -->
-              <div class="mb-3">
-                <label for="journey_date" class="form-label fw-semibold"
-                  >Journey Date</label
-                >
-                <input
-                  type="date"
-                  class="form-control"
-                  name="journey_date"
-                  id="journey_date"
-                  min="${e:currentDate()}"
-                  required
-                />
-              </div>
-
-              <input
-                type="hidden"
-                value=""
-                name="bus_route_weekday_id"
-                id="bus_route_weekday_id"
-              />
-
-              <!-- Show Routes -->
-              <div class="mb-3 text-end">
-                <button
-                  type="button"
-                  class="btn btn-primary rounded-2 px-4"
-                  id="show_available_routes"
-                  disabled
-                >
-                  Show Available Routes
-                </button>
-              </div>
-
-              <!-- Route Select -->
-              <input
-                type="hidden"
-                name="operator_route_id"
-                name="operator_route_id"
-                id="operator_route_id"
-              />
-              <div class="mb-3">
-                <label class="form-label fw-semibold">Route</label>
-
-                <div class="dropdown w-100">
-                  <button
-                    class="btn border rounded w-100 d-flex justify-content-between align-items-center form-select text-start"
-                    type="button"
-                    id="route_select"
-                    data-bs-toggle="dropdown"
-                    disabled
-                    aria-expanded="false"
-                  >
-                    <span class="text-secondary">Select Route</span>
-                    <span class="ms-2 small text-muted">&#9662;</span>
-                  </button>
-
-                  <ul
-                    id="route_available_list"
-                    class="dropdown-menu w-100 shadow-sm overflow-y-scroll"
-                    style="max-height: 275px"
-                    aria-labelledby="route_select"
-                  ></ul>
-                </div>
-              </div>
-
-              <!-- Times -->
-              <div class="row mb-3">
-                <div class="col">
-                  <label for="departure_time" class="form-label fw-semibold"
-                    >Departure Time</label
-                  >
-                  <input
-                    type="time"
-                    class="form-control"
-                    id="departure_time"
-                    name="departure_time"
-                    required
-                  />
-                </div>
-
-                <div class="col">
-                  <label for="arrival_time" class="form-label fw-semibold"
-                    >Arrival Time</label
-                  >
-                  <input
-                    type="time"
-                    class="form-control bg-light"
-                    id="arrival_time"
-                    name="arrival_time"
-                    readonly
-                    required
-                  />
-                </div>
-              </div>
-
-              <!-- Driver Selection -->
-              <div class="mb-3">
-                <label class="form-label fw-semibold">Driver</label>
-
-                <div class="dropdown w-100">
-                  <button
-                    class="btn border rounded w-100 d-flex justify-content-between align-items-center form-select text-start"
-                    type="button"
-                    id="driver_select"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <span class="text-secondary">Select Driver</span>
-                    <span class="ms-2 small text-muted">&#9662;</span>
-                  </button>
-
-                  <input type="hidden" name="driver_id" id="driver_id" />
-
-                  <ul
-                    id="driver_available_list"
-                    class="dropdown-menu w-100 shadow-sm overflow-y-scroll"
-                    style="max-height: 250px"
-                    aria-labelledby="driver_select"
-                  ></ul>
-                </div>
-              </div>
-
-              <!-- Fare Section -->
-              <div class="mb-3">
-                <label class="form-label fw-semibold">Fare Details</label>
-
-                <div class="row g-3">
-                  <div class="col-md-4">
-                    <label class="form-label small"
-                      >Additional Charges (Operator)</label
-                    >
-                    <input
-                      type="number"
-                      class="form-control"
-                      name="additional_charges"
-                      id="additional_charges"
-                      value="0"
-                    />
-                  </div>
-
-                  <div class="col-md-4">
-                    <label class="form-label small">Seater Fare</label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      name="seater_fare"
-                      id="seater_fare"
-                      value="0"
-                    />
-                  </div>
-
-                  <div class="col-md-4">
-                    <label class="form-label small">Sleeper Fare</label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      name="sleeper_fare"
-                      id="sleeper_fare"
-                      value="0"
-                    />
-                  </div>
-
-                  <div class="col-md-4 mt-2">
-                    <label class="form-label small">Total Charges (Auto)</label>
-                    <input
-                      type="number"
-                      class="form-control bg-light"
-                      name="total_charges"
-                      id="total_charges"
-                      readonly
-                      value="0"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <!-- Submit -->
-              <div class="d-flex justify-content-end">
-                <input
-                  type="submit"
-                  value="Add Schedule"
-                  class="btn btn-primary px-4 py-2"
-                />
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <div class="dashContainer">
       <!-- Sidebar -->
@@ -231,91 +44,167 @@ prefix="e" uri="bts" %>
         <!-- Dashboard Content -->
         <div class="p-4 d-flex flex-column overflow-scroll">
           <a
-            href="operator_.do"
-            class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link back-link align-self-start"
+            class="link-primary link-underline-opacity-0 cursor-pointer fw-medium fs-4 d-flex link back-link align-self-start"
+            href="operator_schedules.do"
           >
             <span>&larr;</span>
             <span>Back</span>
           </a>
           <div class="container mt-2 mb-4" id="pageWrapper">
-            <div class="route-card p-4 card-border-accent">
-              <div
-                class="d-flex flex-column flex-md-row align-items-center justify-content-between"
+            <div class="d-flex gap-2 align-items-center mt-4 mb-0" id="nav">
+              <button
+                class="btn btn-primary rounded-pill"
+                data-target="overview_cont"
               >
-                <!-- Route Section -->
-                <div
-                  class="route-section text-center text-md-start mb-3 mb-md-0"
-                >
-                  <div class="section-title">Bus</div>
-                  <div class="section-content">
-                    <div class="d-flex flex-column gap-0">
-                      <span class="fs-4" id="bus_number">-</span>
-                      <span
-                        class="small text-muted small fs-6 fw-normal"
-                        id="bus_decker"
-                        >-</span
+                Overview
+              </button>
+              <button
+                class="btn text-primary border border-primary rounded-pill"
+                data-target="bus_cont"
+              >
+                Bus
+              </button>
+              <button
+                class="btn text-primary border border-primary rounded-pill"
+                data-target="driver_cont"
+              >
+                Driver
+              </button>
+              <button
+                class="btn text-primary border border-primary rounded-pill"
+                data-target="route_cont"
+              >
+                Route
+              </button>
+            </div>
+            <div class="d-flex flex-column gap-4">
+              <!--Overview Container-->
+              <div class="card shadow-sm border-0" id="overview_cont">
+                <div class="card-header bg-white border-0 pb-0">
+                  <h4 class="mb-1 fw-medium">Schedule Overview</h4>
+                </div>
+
+                <div class="card-body">
+                  <div class="row g-4">
+                    <!-- Journey Date -->
+                    <div class="col-md-4">
+                      <label for="journey_date" class="form-label fw-semibold"
+                        >Journey Date</label
                       >
+                      <input
+                        type="date"
+                        class="form-control bg-light"
+                        id="journey_date"
+                        readonly
+                      />
+                    </div>
+
+                    <!-- Arrival Time -->
+                    <div class="col-md-4">
+                      <label for="arrival_time" class="form-label fw-semibold"
+                        >Arrival Time</label
+                      >
+                      <input
+                        type="time"
+                        class="form-control bg-light"
+                        id="arrival_time"
+                        readonly
+                      />
+                    </div>
+
+                    <!-- Journey Time -->
+                    <div class="col-md-4">
+                      <label for="departure_time" class="form-label fw-semibold"
+                        >Journey Time</label
+                      >
+                      <input
+                        type="time"
+                        class="form-control bg-light"
+                        id="departure_time"
+                        readonly
+                      />
+                    </div>
+
+                    <!-- Seater Seats -->
+                    <div class="col-md-4">
+                      <label
+                        for="seater_seats_booked"
+                        class="form-label fw-semibold"
+                        >Seater Seats Booked</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control bg-light"
+                        id="seater_seats_booked"
+                        readonly
+                      />
+                    </div>
+
+                    <!-- Sleeper Seats -->
+                    <div class="col-md-4">
+                      <label
+                        for="sleeper_seats_booked"
+                        class="form-label fw-semibold"
+                        >Sleeper Seats Booked</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control bg-light"
+                        id="sleeper_seats_booked"
+                        readonly
+                      />
                     </div>
                   </div>
                 </div>
-
-                <div class="divider d-none d-md-block"></div>
-                <div class="divider d-md-none"></div>
-
-                <!-- Journey Time Section -->
-                <div class="time-section text-center mb-3 mb-md-0">
-                  <div class="section-title">Manufacturer</div>
-                  <div class="section-content fs-4" id="manufacturer">=</div>
+              </div>
+              <!--Bus Container-->
+              <div class="card shadow-sm border-0" id="bus_cont">
+                <div class="card-header bg-white border-0 pb-0">
+                  <h4 class="mb-1 fw-medium">Bus Overview</h4>
                 </div>
 
-                <div class="divider d-none d-md-block"></div>
-                <div class="divider d-md-none"></div>
+                <div class="card-body">
+                  <div class="row g-4">
+                    <!-- Bus Number -->
+                    <div class="col-md-4">
+                      <label for="bus_number" class="form-label fw-semibold"
+                        >Bus Number</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control bg-light"
+                        id="bus_number"
+                        readonly
+                      />
+                    </div>
 
-                <button
-                  class="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#centeredModal"
-                >
-                  &plus; Add Schedule
-                </button>
-              </div>
-            </div>
-
-            <div class="d-flex flex-column gap-3 rounded p-2">
-              <div
-                class="d-flex flex-column gap-2 px-3 py-2 bg-white shadow shadow-sm"
-              >
-                <div
-                  class="d-flex align-items-center justify-content-between w-100"
-                >
-                  <div>
-                    <h4>Select Date</h4>
-                  </div>
-
-                  <div class="d-flex align-items-center gap-2">
-                    <button
-                      class="btn bg-secondary-subtle"
-                      id="date_range_back"
-                    >
-                      &lt;
-                    </button>
-                    <span id="date_range_display"></span>
-                    <button
-                      class="btn bg-secondary-subtle"
-                      id="date_range_next"
-                    >
-                      &gt;
-                    </button>
+                    <!-- Manufacturer -->
+                    <div class="col-md-4">
+                      <label for="manufacturer" class="form-label fw-semibold"
+                        >Manufacturer</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control bg-light"
+                        id="manufacturer"
+                        readonly
+                      />
+                    </div>
+                    <!--Bus Type-->
+                    <div class="col-md-4">
+                      <label for="bus_type" class="form-label fw-semibold"
+                        >Bus Type</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control bg-light"
+                        id="bus_type"
+                        readonly
+                      />
+                    </div>
                   </div>
                 </div>
-
-                <div class="row" id="date_range"></div>
               </div>
-
-              <table
-                class="border rounded table-responsive border-bottom-0"
-                id="schedule_table"
-              ></table>
             </div>
 
             <footer class="container mt-4 mb-4"></footer>
