@@ -268,3 +268,11 @@ export const getFormattedTime = (time) => {
   const b = time.slice(-2);
   return a + " " + b;
 };
+
+export const getSplittedTime = (timeString) => {
+  const pref = timeString.slice(-2);
+  const split = timeString.split(":");
+  split[2] = split[2].slice(0, 2);
+
+  return [split[0], split[1], split[2], pref];
+};

@@ -339,3 +339,31 @@ tbody tr {
     transform: translateX(30px);
   }
 }
+
+/* Upcoming - Elegant Green */
+.status-upcoming {
+  color: #0f5132;
+  background-color: #d1f2e0;
+  border-color: #8ad4b1;
+}
+
+/* Ongoing - Premium Blue */
+.status-ongoing {
+  color: #084298;
+  background-color: #d1e4ff;
+  border-color: #8cb8ff;
+}
+
+/* Completed - Smooth Gold */
+.status-completed {
+  color: #7a5a00;
+  background-color: #fff2cc;
+  border-color: #e6c76b;
+}
+
+/* Cancelled - Soft Red */
+.status-cancelled {
+  color: #842029;
+  background-color: #f8d7da;
+  border-color: #e29aa3;
+}

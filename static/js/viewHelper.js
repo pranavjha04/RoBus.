@@ -765,7 +765,7 @@ export class ViewHelper {
                   <th class="p-3">Route</th>
                   <th class="p-3">Bus</th>
                   <th class="p-3">Driver</th>
-                  <th class="p-3">Total Charges</th>
+                  <th class="p-3">Status</th>
                   <th class="p-3">Options</th>
                 </tr>
               </thead>`;
@@ -779,8 +779,8 @@ export class ViewHelper {
       driver,
       bus,
       busRouteWeekday,
-      totalCharges,
       journeyDate,
+      status,
     } = schedule;
 
     const { operatorRoute } = busRouteWeekday;
@@ -823,7 +823,13 @@ export class ViewHelper {
                   </td>
                   <td class="p-3">${bus.busNumber}</td>
                   <td class="p-3">${driver.user.fullName}</td>
-                  <td class="p-3">&#8377; ${totalCharges}</td>
+                  <td class="p-3 charge">
+                  <span
+                    class="badge border  status-${status.name.toLowerCase()}
+                    "
+                    >${status.name.toUpperCase()}</span
+                  >
+                </td>
                   <td class="p-3">
                     <button
                       class="btn manage-icon border-primary-subtle py-2 px-2"

@@ -7,22 +7,9 @@ prefix="e" uri="bts" %>
     <c:import url="essential_page_import.jsp" />
     <title>Manage Bus Schedule</title>
     <style>
-      .route-card {
-        background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        transition: all 0.2s ease;
-        overflow: hidden;
-      }
-
-      .route-card:hover {
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-        transform: translateY(-2px);
-      }
-
-      .card-border-accent {
-        border-left: 4px solid #0d6efd;
+      .warning {
+        border: 1px solid #ff8c00;
+        color: #ff8c00;
       }
     </style>
   </head>
@@ -80,8 +67,11 @@ prefix="e" uri="bts" %>
             <div class="d-flex flex-column gap-4">
               <!--Overview Container-->
               <div class="card shadow-sm border-0" id="overview_cont">
-                <div class="card-header bg-white border-0 pb-0">
+                <div
+                  class="card-header bg-white border-0 pb-0 d-flex justify-content-between"
+                >
                   <h4 class="mb-1 fw-medium">Schedule Overview</h4>
+                  <p>Status</p>
                 </div>
 
                 <div class="card-body">
@@ -203,6 +193,164 @@ prefix="e" uri="bts" %>
                       />
                     </div>
                   </div>
+                </div>
+              </div>
+              <!--Driver Container-->
+              <div class="card shadow-sm border-0" id="driver_cont">
+                <div class="card-header bg-white border-0 pb-0">
+                  <h4 class="mb-1 fw-medium">Driver Overview</h4>
+                </div>
+
+                <div class="card-body">
+                  <div class="row g-4">
+                    <!-- Driver Name -->
+                    <div class="col-md-4">
+                      <label class="form-label fw-semibold">Driver</label>
+                      <div class="dropdown w-100">
+                        <button
+                          class="btn border rounded w-100 d-flex justify-content-between align-items-center form-select text-start"
+                          type="button"
+                          id="driver_select"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          <span class="text-secondary">Select Driver</span>
+                          <span class="ms-2 small text-muted">&#9662;</span>
+                        </button>
+
+                        <input type="hidden" name="driver_id" id="driver_id" />
+
+                        <ul
+                          id="driver_available_list"
+                          class="dropdown-menu w-100 shadow-sm overflow-y-scroll"
+                          style="max-height: 250px"
+                          aria-labelledby="driver_select"
+                        ></ul>
+                      </div>
+                    </div>
+
+                    <!-- Contact -->
+                    <div class="col-md-4">
+                      <label for="contact" class="form-label fw-semibold"
+                        >Contact</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control bg-light"
+                        id="contact"
+                        readonly
+                      />
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-4">
+                      <label for="email" class="form-label fw-semibold"
+                        >Email</label
+                      >
+                      <input
+                        type="email"
+                        class="form-control bg-light"
+                        id="email"
+                        autocomplete="email"
+                        readonly
+                      />
+                    </div>
+
+                    <!-- License Number -->
+                    <div class="col-md-4">
+                      <label for="licence_no" class="form-label fw-semibold"
+                        >License Number</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control bg-light"
+                        id="licence_no"
+                        readonly
+                      />
+                    </div>
+
+                    <!-- Buttons aligned to right -->
+                    <div class="col-12 text-end">
+                      <button class="btn btn-secondary me-2">
+                        Undo Changes
+                      </button>
+                      <button class="btn btn-primary">Change Driver</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--Route Container-->
+              <div class="card shadow-sm border-0" id="route_cont">
+                <div class="card-header bg-white border-0 pb-0">
+                  <h4 class="mb-1 fw-medium">Route Overview</h4>
+                </div>
+
+                <div class="card-body">
+                  <div class="row g-4">
+                    <div class="text-center text-md-start mb-3 mb-md-0">
+                      <div
+                        class="d-flex align-items-center gap-4"
+                        id="route_overview"
+                      >
+                        <div class="d-flex flex-column gap-0">
+                          <span class="fs-4" id="source_info_city"></span>
+                          <span
+                            class="small text-muted small fs-6 fw-normal"
+                            id="source_info_state"
+                          ></span>
+                        </div>
+                        <span class="arrow">&rarr;</span>
+                        <div class="d-flex flex-column gap-0">
+                          <span class="fs-4" id="destination_info_city"></span>
+                          <span
+                            class="small text-muted small fs-6 fw-normal"
+                            id="destination_info_state"
+                          ></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Distance -->
+                    <div class="col-md-4">
+                      <label for="distance" class="form-label fw-semibold"
+                        >Distance</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control bg-light"
+                        id="distance"
+                        readonly
+                      />
+                    </div>
+                    <!-- Duration -->
+                    <div class="col-md-4">
+                      <label for="duration" class="form-label fw-semibold"
+                        >Duration</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control bg-light"
+                        id="duration"
+                        readonly
+                      />
+                    </div>
+                    <!--Weekday-->
+                    <div class="col-md-4">
+                      <label for="weekday" class="form-label fw-semibold"
+                        >Weekday</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control bg-light"
+                        id="weekday"
+                        readonly
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="d-flex flex-column align-items-start pt-4"
+                    id="route_timeline_cont"
+                  ></div>
                 </div>
               </div>
             </div>
