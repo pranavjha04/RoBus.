@@ -210,7 +210,16 @@ prefix="e" uri="bts" %>
                     <!-- Driver Name -->
                     <div class="col-md-4">
                       <label class="form-label fw-semibold">Driver</label>
-                      <div class="dropdown w-100">
+                      <input
+                        type="text"
+                        class="form-control bg-light"
+                        id="driver"
+                        readonly
+                      />
+                      <div
+                        class="dropdown w-100 d-none"
+                        id="driver_select_cont"
+                      >
                         <button
                           class="btn border rounded w-100 d-flex justify-content-between align-items-center form-select text-start"
                           type="button"
@@ -221,8 +230,6 @@ prefix="e" uri="bts" %>
                           <span class="text-secondary">Select Driver</span>
                           <span class="ms-2 small text-muted">&#9662;</span>
                         </button>
-
-                        <input type="hidden" name="driver_id" id="driver_id" />
 
                         <ul
                           id="driver_available_list"
@@ -275,10 +282,21 @@ prefix="e" uri="bts" %>
 
                     <!-- Buttons aligned to right -->
                     <div class="col-12 text-end">
-                      <button class="btn btn-secondary me-2">
+                      <button
+                        class="btn btn-secondary me-2 d-none"
+                        id="undo_changes_btn"
+                      >
                         Undo Changes
                       </button>
-                      <button class="btn btn-primary">Change Driver</button>
+                      <button
+                        class="btn btn-primary d-none"
+                        id="save_change_btn"
+                      >
+                        Save Changes
+                      </button>
+                      <button class="btn btn-primary" id="change_driver_btn">
+                        Change Driver
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -317,7 +335,7 @@ prefix="e" uri="bts" %>
                     <!-- Distance -->
                     <div class="col-md-4">
                       <label for="distance" class="form-label fw-semibold"
-                        >Distance</label
+                        >Distance (KM)</label
                       >
                       <input
                         type="text"

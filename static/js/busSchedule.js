@@ -624,6 +624,7 @@ scheduleBusForm.addEventListener("submit", async (e) => {
       disableForm();
       journeyDateScheduleCache[new Date(journeyDate.value).toDateString()] =
         null;
+      cache.driverCache = null;
       clearActiveDateRecord();
       showActiveDateRecord();
       ModalHandler.hide(busScheduleModal);

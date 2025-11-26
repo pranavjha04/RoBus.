@@ -1,5 +1,6 @@
 import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
+import { collectInactiveDriversRequest } from "./service.js";
 import { toast } from "./toast.js";
 import { getFormatedDuration, getSplittedTime } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
@@ -21,9 +22,22 @@ const distance = document.querySelector("#distance");
 const duration = document.querySelector("#duration");
 const weekday = document.querySelector("#weekday");
 
+const changeDriverBtn = document.querySelector("#change_driver_btn");
+const saveChangeBtn = document.querySelector("#save_change_btn");
+const undoChangesBtn = document.querySelector("#undo_changes_btn");
+const driverSelectContainer = document.querySelector("#driver_select_cont");
+
+const driver = document.querySelector("#driver");
+const contact = document.querySelector("#contact");
+const email = document.querySelector("#email");
+const licenceNumber = document.querySelector("#licence_no");
+
 const model = {
   activeSchedule: null,
+  activeDriver: null,
 };
+
+const driverCache = {};
 
 const convertTo24Hour = (time12h) => {
   const [time, modifier] = time12h.split(" ");
@@ -151,6 +165,23 @@ const updateRouteOverViewContainer = () => {
   updateRouteTimeLine();
 };
 
+const updateDriver = () => {
+  const { user, licenceNumber: activeLicenceNumber } = model.activeDriver;
+  driver.value = user.fullName;
+  contact.value = user.contact;
+  email.value = user.email;
+  licenceNumber.value = activeLicenceNumber;
+};
+
+const handleCollectInActiveDriverRequest = async () => {
+  if (changeDriverBtn.classList.contains("d-none")) return;
+  try {
+    const response = await collectInactiveDriversRequest();
+  } catch (err) {
+    toast.error(err.message);
+  }
+};
+
 navContainer.addEventListener("click", (e) => {
   const button = e.target.closest("button");
   if (!button) return;
@@ -161,12 +192,22 @@ navContainer.addEventListener("click", (e) => {
   document.getElementById(target).scrollIntoView({ behavior: "smooth" });
 });
 
+changeDriverBtn.addEventListener("click", () => {
+  changeDriverBtn.classList.add("d-none");
+  saveChangeBtn.classList.remove("d-none");
+  undoChangesBtn.classList.remove("d-none");
+  driver.classList.add("d-none");
+  driverSelectContainer.classList.remove("d-none");
+});
+
 window.addEventListener("DOMContentLoaded", () => {
   try {
     model.activeSchedule = JSON.parse(sessionStorage.getItem("activeSchedule"));
+    model.activeDriver = model.activeSchedule.driver;
     updateOverViewContainer();
     updateBusOverViewContainer();
     updateRouteOverViewContainer();
+    updateDriver();
   } catch (err) {
     PageError.showOperatorError();
     toast.error(err.message);

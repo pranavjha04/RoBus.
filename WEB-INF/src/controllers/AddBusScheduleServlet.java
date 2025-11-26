@@ -87,9 +87,11 @@ public class AddBusScheduleServlet extends HttpServlet {
             ArrayList<Driver> driverList = (ArrayList<Driver>) session.getAttribute("inactiveDriverList");
 
             boolean isDriverValid = false;
+            int userId = -1;
             for(Driver next : driverList) {
                 if(next.getDriverId().equals(driverId) && next.getUser().getStatus().getName().equals("Inactive")) {
                     isDriverValid = true;
+                    userId = next.getUser().getUserId();
                     break;
                 }
             }
@@ -144,16 +146,29 @@ public class AddBusScheduleServlet extends HttpServlet {
                 throw new IllegalArgumentException("Invalid Total Charges");
             }
             /* -------- TOTAL CHARGES END -------- */
+            boolean isBusStatusUpdated = inputBus.updateStatus(inputBus.getBusId(), 4, operator.getOperatorId());
+            if(!isBusStatusUpdated) throw new IllegalArgumentException("Internal Server Error");
+            /******** UPDATE DRIVER STATUS */
+
+            request.setAttribute("user_id", userId);
+            request.setAttribute("status_id", 4);
+            request.getRequestDispatcher("update_user_status.do").include(request, response);
+            if(request.getAttribute("isUpdated") == null) {
+                throw new IllegalArgumentException("Invalid Request");
+            }
+            boolean isDriverStatusUpdated = (Boolean) request.getAttribute("isUpdated");
+
+            if(!isDriverStatusUpdated) {
+                throw new IllegalArgumentException("Invalid Request");
+            }
 
             /* -------- ADD QUERY -------- */
             boolean isScheduled = Schedule.addRecord(journeyDate, departureTime, arrivalTime, additionalCharges, sleeperFare, seaterFare, totalCharges, busId, driverId, busRouteWeekdayId);
 
             if(!isScheduled) throw new IllegalArgumentException("Internal Server Error");
 
-            boolean isUpdated = inputBus.updateStatus(inputBus.getBusId(), 4, operator.getOperatorId());
-
-            if(!isUpdated) throw new IllegalArgumentException("Internal Server Error");
-    
+            request.removeAttribute("user_id");
+            request.removeAttribute("status_id");
             // clear cache
             String[] clearCahceAttributeList = {
                 journeyDate.toString() + operator.getOperatorId() + busId, 

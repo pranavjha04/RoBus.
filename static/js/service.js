@@ -620,4 +620,3 @@ export const getJourneyDateScheduleRequest = async (date) => {
   const data = await res.text();
   return data.trim();
 };
-

@@ -16,7 +16,6 @@ import models.Driver;
 
 import com.google.gson.Gson;
 
-
 @WebServlet("/get_inactive_drivers.do")
 public class GetInactiveDriverServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

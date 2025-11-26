@@ -62,6 +62,32 @@ public class User implements Cloneable {
     
     public User() {}
 
+    public static boolean updateStatus(Integer userId, Integer statusId) {
+        boolean flag = false;
+
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "UPDATE users " +
+                        "SET status_id=? " +
+                        "WHERE user_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, statusId);
+            ps.setInt(2, userId);
+
+            int rows = ps.executeUpdate();
+            if(rows > 0) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
+    }
+
     public static boolean updateProfilePic(String profilePic, Integer userId) {
         boolean flag = false;
         try {
