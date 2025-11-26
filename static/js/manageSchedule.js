@@ -1,6 +1,9 @@
 import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
-import { collectInactiveDriversRequest } from "./service.js";
+import {
+  collectInactiveDriversRequest,
+  updateScheduleDriver,
+} from "./service.js";
 import { toast } from "./toast.js";
 import { getFormatedDuration, getSplittedTime } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
@@ -25,7 +28,11 @@ const weekday = document.querySelector("#weekday");
 const changeDriverBtn = document.querySelector("#change_driver_btn");
 const saveChangeBtn = document.querySelector("#save_change_btn");
 const undoChangesBtn = document.querySelector("#undo_changes_btn");
+const driverSelect = document.querySelector("#driver_select");
 const driverSelectContainer = document.querySelector("#driver_select_cont");
+const availableDriverListContainer = document.querySelector(
+  "#driver_available_list"
+);
 
 const driver = document.querySelector("#driver");
 const contact = document.querySelector("#contact");
@@ -35,9 +42,12 @@ const licenceNumber = document.querySelector("#licence_no");
 const model = {
   activeSchedule: null,
   activeDriver: null,
+  driverId: null,
 };
 
-const driverCache = {};
+const cache = {
+  driverCache: null,
+};
 
 const convertTo24Hour = (time12h) => {
   const [time, modifier] = time12h.split(" ");
@@ -173,10 +183,28 @@ const updateDriver = () => {
   licenceNumber.value = activeLicenceNumber;
 };
 
+const updateAvailableDriverList = () => {
+  availableDriverListContainer.innerHTML = cache.driverCache
+    ?.map(ViewHelper.getScheduleAvailableDriver)
+    .join("");
+};
+
 const handleCollectInActiveDriverRequest = async () => {
-  if (changeDriverBtn.classList.contains("d-none")) return;
   try {
-    const response = await collectInactiveDriversRequest();
+    if (!cache.driverCache) {
+      const response = await collectInactiveDriversRequest();
+      console.log(response);
+      if (response === "invalid") {
+        throw new Error("Invalid Request");
+      } else if (response.startsWith("[")) {
+        cache.driverCache = JSON.parse(response);
+        updateAvailableDriverList();
+      } else {
+        throw new Error("Invalid Request");
+      }
+    } else {
+      updateAvailableDriverList();
+    }
   } catch (err) {
     toast.error(err.message);
   }
@@ -193,11 +221,86 @@ navContainer.addEventListener("click", (e) => {
 });
 
 changeDriverBtn.addEventListener("click", () => {
+  handleCollectInActiveDriverRequest();
   changeDriverBtn.classList.add("d-none");
   saveChangeBtn.classList.remove("d-none");
   undoChangesBtn.classList.remove("d-none");
   driver.classList.add("d-none");
   driverSelectContainer.classList.remove("d-none");
+
+  driverSelect.focus();
+
+  contact.value = "";
+  email.value = "";
+  licenceNumber.value = "";
+});
+
+availableDriverListContainer.addEventListener("mousedown", (e) => {
+  const target = e.target.closest("li");
+  if (!target) {
+    driverSelect.textContent = "Select Driver";
+    model.driverId = null;
+    return;
+  }
+
+  if (!target.dataset.driverId) return;
+  model.driverId = +target.dataset.driverId;
+  const newActivrDriver = cache.driverCache.find(
+    (driver) => driver.driverId === model.driverId
+  );
+  if (!newActivrDriver) return;
+
+  model.activeDriver = newActivrDriver;
+  updateDriver();
+  driverSelect.textContent = target.querySelector("a").textContent;
+});
+
+undoChangesBtn.addEventListener("click", () => {
+  model.activeDriver = model.activeSchedule.driver;
+  updateDriver();
+  driverSelect.textContent = "Select Driver";
+  changeDriverBtn.classList.remove("d-none");
+  saveChangeBtn.classList.add("d-none");
+  undoChangesBtn.classList.add("d-none");
+  driver.classList.remove("d-none");
+  driverSelectContainer.classList.add("d-none");
+  model.driverId = null;
+});
+
+saveChangeBtn.addEventListener("click", async () => {
+  try {
+    if (model.activeSchedule.status.statusId !== 11) return;
+
+    if (!model.driverId) throw new Error("Invalid Request");
+    if (!cache.driverCache) throw new Error("Invalid Request");
+
+    const isValidDrierId = cache.driverCache.some(
+      (driver) => driver.driverId === +model.driverId
+    );
+    if (!isValidDrierId) throw new Error("Invalid Request");
+    if (model.driverId === model.activeSchedule.driver.driverId) {
+      throw new Error("Invalid Request");
+    }
+
+    const response = await updateScheduleDriver(
+      model.driverId,
+      model.activeSchedule.drivef.driverId,
+      model.activeSchedule.scheduleId
+    );
+
+    if (response === "invalid") {
+      throw new Error("Invalid Request");
+    } else if (response === "ok") {
+      
+      cache.driverCache = cache.driverCache.filter((driver) => {
+        return driver.driverId !== +model.driverId;
+      });
+
+      cache.driverCache.push(m);
+    }
+  } catch (err) {
+    toast.error(err.message);
+  }
 });
 
 window.addEventListener("DOMContentLoaded", () => {

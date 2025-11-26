@@ -7,7 +7,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.annotation.WebServlet;
 
-
 import java.io.IOException;
 
 import models.User;

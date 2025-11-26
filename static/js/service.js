@@ -620,3 +620,23 @@ export const getJourneyDateScheduleRequest = async (date) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const updateScheduleDriver = async (
+  old_driver_id,
+  new_driver_id,
+  schedule_id
+) => {
+  const params = createURLParams({
+    old_driver_id,
+    new_driver_id,
+    schedule_id,
+  });
+
+  const res = await fetch(`update_schedule_driver.do?${params.toString()}`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Internal Server Error");
+
+  const data = await res.text();
+  return data.trim();
+};
