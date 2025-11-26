@@ -270,9 +270,21 @@ export const getFormattedTime = (time) => {
 };
 
 export const getSplittedTime = (timeString) => {
-  const pref = timeString.slice(-2);
-  const split = timeString.split(":");
-  split[2] = split[2].slice(0, 2);
+  if (timeString.includes("AM") || timeString.includes("PM")) {
+    const [time, modifier] = timeString.split(" ");
+    const [hours, minutes, seconds] = time.split(":");
 
-  return [split[0], split[1], split[2], pref];
+    let hour = parseInt(hours, 10);
+
+    if (modifier === "PM" && hour < 12) {
+      hour += 12;
+    } else if (modifier === "AM" && hour === 12) {
+      hour = 0;
+    }
+
+    return [hour, parseInt(minutes, 10), parseInt(seconds, 10), modifier];
+  } else {
+    const split = timeString.split(":");
+    return [+split[0], +split[1], +split[2], ""];
+  }
 };

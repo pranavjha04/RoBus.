@@ -424,7 +424,7 @@ export class ViewHelper {
                   </span>`;
   }
 
-  static getRouteTimeLine(city, isSource = false, distance) {
+  static getRouteTimeLine(city, isSource = false, distance, time) {
     return `<div
                 class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4 ${
                   isSource && "border-start"
@@ -452,6 +452,15 @@ export class ViewHelper {
                 </h4>
                 <div class="d-flex align-items-center mb-0 gap-2">
                 ${
+                  time
+                    ? `<p
+                    class="small rounded-pill bg-light px-2 py-1 fw-medium violet"
+                  >
+                    <span>${time}</span>
+                  </p>`
+                    : ""
+                } 
+                ${
                   isSource
                     ? `<p
                     class="small rounded-pill bg-light px-2 py-1 fw-medium border text-primary border-primary"
@@ -474,11 +483,13 @@ export class ViewHelper {
                     <span>Destination</span>
                   </p>`
                 }  
+
+    
                 </div>
               </div>`;
   }
 
-  static getMidCityRouteTimeLine(city, haltingTime) {
+  static getMidCityRouteTimeLine(city, haltingTime, time) {
     return `  <div
                 class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4 border-start pb-2 border-black"
               >
@@ -495,10 +506,21 @@ export class ViewHelper {
                 <h4 class="fs-5 align-self-start">
                   <div class="d-flex flex-column gap-0">
                     <span class="fs-5">${city.midCity.name}</span>
-                    <span class="text-muted" style="font-size : 1rem">${city.midCity.state.name}</span>
+                    <span class="text-muted" style="font-size : 1rem">${
+                      city.midCity.state.name
+                    }</span>
                   </div>
                 </h4>
                 <div class="d-flex align-items-center mb-0 gap-2">
+                ${
+                  time
+                    ? `<p
+                    class="small rounded-pill bg-light px-2 py-1 fw-medium violet"
+                  >
+                    <span>${time}</span>
+                  </p>`
+                    : ""
+                } 
                   <p
                     class="small rounded-pill bg-light px-2 py-1 fw-medium border text-primary border-primary"
                   >

@@ -11,6 +11,10 @@ prefix="e" uri="bts" %>
         border: 1px solid #ff8c00;
         color: #ff8c00;
       }
+      .violet {
+        border: 1px solid #8a2be2;
+        color: #8a2be2;
+      }
     </style>
   </head>
   <body>
@@ -89,6 +93,19 @@ prefix="e" uri="bts" %>
                       />
                     </div>
 
+                    <!-- Journey Time -->
+                    <div class="col-md-4">
+                      <label for="departure_time" class="form-label fw-semibold"
+                        >Departure Time</label
+                      >
+                      <input
+                        type="time"
+                        class="form-control bg-light"
+                        id="departure_time"
+                        readonly
+                      />
+                    </div>
+
                     <!-- Arrival Time -->
                     <div class="col-md-4">
                       <label for="arrival_time" class="form-label fw-semibold"
@@ -98,19 +115,6 @@ prefix="e" uri="bts" %>
                         type="time"
                         class="form-control bg-light"
                         id="arrival_time"
-                        readonly
-                      />
-                    </div>
-
-                    <!-- Journey Time -->
-                    <div class="col-md-4">
-                      <label for="departure_time" class="form-label fw-semibold"
-                        >Journey Time</label
-                      >
-                      <input
-                        type="time"
-                        class="form-control bg-light"
-                        id="departure_time"
                         readonly
                       />
                     </div>

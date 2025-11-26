@@ -1,7 +1,7 @@
 import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import { toast } from "./toast.js";
-import { getSplittedTime } from "./util.js";
+import { getFormatedDuration, getSplittedTime } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
 const navContainer = document.querySelector("#nav");
@@ -25,19 +25,41 @@ const model = {
   activeSchedule: null,
 };
 
-const getFormattedTime = (target) => {
-  return `${target[0]}:${target[1]}:${target[2]}`;
+const convertTo24Hour = (time12h) => {
+  const [time, modifier] = time12h.split(" ");
+  let [hours, minutes, seconds] = time.split(":");
+
+  if (hours === "12") {
+    hours = "00";
+  }
+
+  if (modifier === "PM") {
+    hours = parseInt(hours, 10) + 12;
+  }
+
+  return `${hours.toString().padStart(2, "0")}:${minutes}:${seconds}`;
+};
+
+const formateTime = (date) => {
+  const time = new Intl.DateTimeFormat(navigator.language, {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  }).format(date);
+
+  return time;
 };
 
 const updateOverViewContainer = () => {
   const d = new Date(model.activeSchedule.journeyDate);
+  journeyDate.value = d.toISOString().split("T")[0];
 
-  departureTime.value = getFormattedTime(
-    getSplittedTime(model.activeSchedule.departureTime)
-  );
-  arrivalTime.value = getFormattedTime(
-    getSplittedTime(model.activeSchedule.arrivalTime)
-  );
+  const departure24h = convertTo24Hour(model.activeSchedule.departureTime);
+  const arrival24h = convertTo24Hour(model.activeSchedule.arrivalTime);
+
+  departureTime.value = departure24h;
+  arrivalTime.value = arrival24h;
+
   seaterSeatsBooked.value = model.activeSchedule.seaterSeatsBooked;
   sleeperSeatsBooked.value = model.activeSchedule.sleeperSeatsBooked;
 };
@@ -56,10 +78,21 @@ const updateRouteTimeLine = () => {
   const { source, destination, distance: routeDistance } = route;
   routeTimeLineContainer.innerHTML = "";
 
-  // add source
-  routeTimeLineContainer.innerHTML = ViewHelper.getRouteTimeLine(source, true);
+  const { journeyDate, departureTime, arrivalTime } = model.activeSchedule;
+  const startDate = new Date(journeyDate);
 
-  // add midcities
+  const departure24h = convertTo24Hour(departureTime);
+  const [startHours, startMins, startSecs] = departure24h.split(":");
+  startDate.setHours(+startHours, +startMins, +startSecs, 0);
+
+  routeTimeLineContainer.innerHTML = ViewHelper.getRouteTimeLine(
+    source,
+    true,
+    routeDistance,
+    formateTime(startDate)
+  );
+
+  let sumHaltingTime = 0;
   routeTimeLineContainer.innerHTML += [...operatorRouteMidCities]
     .sort(
       (a, b) =>
@@ -67,15 +100,36 @@ const updateRouteTimeLine = () => {
     )
     .map((midCity) => {
       const { routeMidCity, haltingTime } = midCity;
-      return ViewHelper.getMidCityRouteTimeLine(routeMidCity, haltingTime);
+      sumHaltingTime += haltingTime;
+
+      const currDate = new Date(startDate.getTime());
+      currDate.setTime(
+        startDate.getTime() +
+          (routeMidCity.durationFromSource + sumHaltingTime) * 60000
+      );
+
+      return ViewHelper.getMidCityRouteTimeLine(
+        routeMidCity,
+        haltingTime,
+        formateTime(currDate)
+      );
     })
     .join("");
+
+  const totalDuration = operatorRouteMidCities.reduce((acc, curr) => {
+    return acc + curr.haltingTime;
+  }, route.duration);
+
+  const endDate = new Date(startDate);
+  endDate.setTime(startDate.getTime() + totalDuration * 60000);
 
   routeTimeLineContainer.innerHTML += ViewHelper.getRouteTimeLine(
     destination,
     false,
-    routeDistance
+    routeDistance,
+    formateTime(endDate)
   );
+  duration.value = getFormatedDuration(totalDuration);
 };
 
 const updateRouteOverViewContainer = () => {
@@ -83,6 +137,7 @@ const updateRouteOverViewContainer = () => {
   const { operatorRoute, weekday: routeWeekday } = busRouteWeekday;
   const { route } = operatorRoute;
   const { source, destination } = route;
+
   weekday.value = routeWeekday.name;
   routeOverView.querySelector("#source_info_city").textContent = source.name;
   routeOverView.querySelector("#source_info_state").textContent =
