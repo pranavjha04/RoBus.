@@ -49,6 +49,31 @@ const cache = {
   driverCache: null,
 };
 
+const closeDriverSelectContainer = () => {
+  model.activeDriver = model.activeSchedule.driver;
+  updateDriver();
+  driverSelect.textContent = "Select Driver";
+  changeDriverBtn.classList.remove("d-none");
+  saveChangeBtn.classList.add("d-none");
+  undoChangesBtn.classList.add("d-none");
+  driver.classList.remove("d-none");
+  driverSelectContainer.classList.add("d-none");
+  model.driverId = null;
+};
+const openDriverSelectContainer = () => {
+  changeDriverBtn.classList.add("d-none");
+  saveChangeBtn.classList.remove("d-none");
+  undoChangesBtn.classList.remove("d-none");
+  driver.classList.add("d-none");
+  driverSelectContainer.classList.remove("d-none");
+
+  driverSelect.focus();
+
+  contact.value = "";
+  email.value = "";
+  licenceNumber.value = "";
+};
+
 const convertTo24Hour = (time12h) => {
   const [time, modifier] = time12h.split(" ");
   let [hours, minutes, seconds] = time.split(":");
@@ -222,17 +247,7 @@ navContainer.addEventListener("click", (e) => {
 
 changeDriverBtn.addEventListener("click", () => {
   handleCollectInActiveDriverRequest();
-  changeDriverBtn.classList.add("d-none");
-  saveChangeBtn.classList.remove("d-none");
-  undoChangesBtn.classList.remove("d-none");
-  driver.classList.add("d-none");
-  driverSelectContainer.classList.remove("d-none");
-
-  driverSelect.focus();
-
-  contact.value = "";
-  email.value = "";
-  licenceNumber.value = "";
+  openDriverSelectContainer();
 });
 
 availableDriverListContainer.addEventListener("mousedown", (e) => {
@@ -256,15 +271,7 @@ availableDriverListContainer.addEventListener("mousedown", (e) => {
 });
 
 undoChangesBtn.addEventListener("click", () => {
-  model.activeDriver = model.activeSchedule.driver;
-  updateDriver();
-  driverSelect.textContent = "Select Driver";
-  changeDriverBtn.classList.remove("d-none");
-  saveChangeBtn.classList.add("d-none");
-  undoChangesBtn.classList.add("d-none");
-  driver.classList.remove("d-none");
-  driverSelectContainer.classList.add("d-none");
-  model.driverId = null;
+  closeDriverSelectContainer();
 });
 
 saveChangeBtn.addEventListener("click", async () => {
@@ -284,21 +291,26 @@ saveChangeBtn.addEventListener("click", async () => {
 
     const response = await updateScheduleDriver(
       model.driverId,
-      model.activeSchedule.drivef.driverId,
-      model.activeSchedule.scheduleId
+      model.activeSchedule.driver.driverId,
+      model.activeSchedule.scheduleId,
+      model.activeSchedule.bus.busId
     );
 
     if (response === "invalid") {
       throw new Error("Invalid Request");
-    } else if (response === "ok") {
-      
+    } else if (response.startsWith("{")) {
+      // model.activeSchedule =
       cache.driverCache = cache.driverCache.filter((driver) => {
         return driver.driverId !== +model.driverId;
       });
-
-      cache.driverCache.push(m);
+      model.activeSchedule = JSON.parse(response);
+      closeDriverSelectContainer();
+      toast.success("Driver Updated Successfully");
+    } else {
+      throw new Error("Invalid Request");
     }
   } catch (err) {
+    console.error(err.message);
     toast.error(err.message);
   }
 });

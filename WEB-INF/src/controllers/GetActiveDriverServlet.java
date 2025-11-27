@@ -16,8 +16,8 @@ import models.Driver;
 
 import com.google.gson.Gson;
 
-@WebServlet("/get_inactive_drivers.do")
-public class GetInactiveDriverServlet extends HttpServlet {
+@WebServlet("/get_active_drivers.do")
+public class GetActiveDriverServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         if(session.getAttribute("operator") == null) {
@@ -27,23 +27,23 @@ public class GetInactiveDriverServlet extends HttpServlet {
         String requestURLPath = request.getServletPath().substring(1);
         Operator operator = (Operator) session.getAttribute("operator");
 
-        if(session.getAttribute("inactiveDriverList") == null) {
-            ArrayList<Driver> driverList = Driver.collectInactiveDrivers(operator.getOperatorId());
+        if(session.getAttribute("activeDriverList") == null) {
+            ArrayList<Driver> driverList = Driver.collectActiveDrivers(operator.getOperatorId());
             if(driverList == null) {
-                if(!requestURLPath.equals("add_bus_schedule.do") && requestURLPath.equals("check_inactive_driver.do")) {
+                if(!requestURLPath.equals("check_active_driver.do")) {
                     response.getWriter().println("invalid");   
                     return;
                 }
             }
             else {
-                session.setAttribute("inactiveDriverList", driverList);
+                session.setAttribute("activeDriverList", driverList);
             }
         }
         
 
-        if(!requestURLPath.equals("add_bus_schedule.do") && !requestURLPath.equals("check_inactive_driver.do")) {
-            @SuppressWarnings("unchecked")  
-            ArrayList<Driver> list = (ArrayList<Driver>) session.getAttribute("inactiveDriverList");
+        if(!requestURLPath.equals("check_active_driver.do")) {
+            @SuppressWarnings("unchecked")
+            ArrayList<Driver> list = (ArrayList<Driver>) session.getAttribute("activeDriverList");
             response.getWriter().println(new Gson().toJson(list));
         }
     }
@@ -54,16 +54,14 @@ public class GetInactiveDriverServlet extends HttpServlet {
 
         if(session.getAttribute("operator") == null) {
             response.sendRedirect("/bts");
-            return;
         }
 
-        if(requestURLPath.equals("add_bus_schedule.do") || requestURLPath.equals("check_inactive_driver.do")) {
+        if(requestURLPath.equals("check_active_driver.do")) {
             doGet(request, response);
         }
         else {
             response.sendRedirect("/bts");
-            return;
-        }    
+        }
     }
 
 }

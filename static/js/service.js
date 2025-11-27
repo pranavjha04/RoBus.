@@ -624,12 +624,14 @@ export const getJourneyDateScheduleRequest = async (date) => {
 export const updateScheduleDriver = async (
   old_driver_id,
   new_driver_id,
-  schedule_id
+  schedule_id,
+  bus_id
 ) => {
   const params = createURLParams({
     old_driver_id,
     new_driver_id,
     schedule_id,
+    bus_id,
   });
 
   const res = await fetch(`update_schedule_driver.do?${params.toString()}`, {
