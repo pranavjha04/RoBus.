@@ -25,9 +25,13 @@ public class CheckDriverInActiveServlet extends HttpServlet {
         String requestURLPath = request.getServletPath().substring(1);
         int driverId = -1;
         boolean isInActive = false;
-        try {
+        boolean isIncludeRequest = false;
+        if(requestURLPath.equals("update_schedule_driver.do")) {
+            isIncludeRequest = true;
+        }
 
-            if(requestURLPath.equals("update_schedule_driver.do")) {
+        try {
+            if(isIncludeRequest) {
                 if(request.getAttribute("driver_id") == null) {
                     throw new IllegalArgumentException("Invalid Request");
                 }
@@ -64,18 +68,17 @@ public class CheckDriverInActiveServlet extends HttpServlet {
                 }
             }
 
-            if(!isInActive) throw new IllegalArgumentException("Invalid Request");
-            if(requestURLPath.equals("update_schedule_driver.do")) {
-                request.setAttribute("isValid", true);
+            if(isIncludeRequest) {
+                request.setAttribute("isInActive", isInActive);
             }
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
-            if(!requestURLPath.equals("update_schedule_driver.do")) {
-                response.getWriter().println("invalid");
+            if(isIncludeRequest) {
+                request.setAttribute("isInActive", false);
             }
             else {
-                request.setAttribute("isValid", false);
+                response.getWriter().println("invalid");
             }
         }
     }

@@ -18,33 +18,51 @@ import com.google.gson.Gson;
 
 @WebServlet("/get_inactive_drivers.do")
 public class GetInactiveDriverServlet extends HttpServlet {
+    private static String[] acceptedIncludeRequestURL = {"add_bus_schedule.do", "check_inactive_driver.do", "update_schedule_driver.do"};
+
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
-        if(session.getAttribute("operator") == null) {
-            response.getWriter().println("invalid");
-            return;
-        }
         String requestURLPath = request.getServletPath().substring(1);
         Operator operator = (Operator) session.getAttribute("operator");
+        boolean isIncludeRequest = false;
 
-        if(session.getAttribute("inactiveDriverList") == null) {
-            ArrayList<Driver> driverList = Driver.collectInactiveDrivers(operator.getOperatorId());
-            if(driverList == null) {
-                if(!requestURLPath.equals("add_bus_schedule.do") && requestURLPath.equals("check_inactive_driver.do")) {
-                    response.getWriter().println("invalid");   
-                    return;
-                }
-            }
-            else {
-                session.setAttribute("inactiveDriverList", driverList);
+        for(String next : acceptedIncludeRequestURL) {
+            if(requestURLPath.equals(next)) {
+                isIncludeRequest = true;
+                break;
             }
         }
-        
 
-        if(!requestURLPath.equals("add_bus_schedule.do") && !requestURLPath.equals("check_inactive_driver.do")) {
-            @SuppressWarnings("unchecked")  
-            ArrayList<Driver> list = (ArrayList<Driver>) session.getAttribute("inactiveDriverList");
-            response.getWriter().println(new Gson().toJson(list));
+        try {
+            if(session.getAttribute("operator") == null) {
+                throw new IllegalArgumentException("Invalid Request");
+            }
+            final String CACHE_ATTRIBUTE = "inactiveDriverList";
+
+            if(session.getAttribute(CACHE_ATTRIBUTE) == null) {
+                ArrayList<Driver> driverList = Driver.collectInactiveDrivers(operator.getOperatorId());
+                if(driverList == null) {
+                    throw new IllegalArgumentException("Invalid Request");
+                }
+                else {
+                    session.setAttribute(CACHE_ATTRIBUTE, driverList);
+                }
+            }
+
+            if(!isIncludeRequest) {
+                @SuppressWarnings("unchecked")  
+                ArrayList<Driver> list = (ArrayList<Driver>) session.getAttribute(CACHE_ATTRIBUTE);
+                response.getWriter().println(new Gson().toJson(list));
+                
+            }
+        }
+        catch(IllegalArgumentException e) {
+            e.printStackTrace();
+            if(!isIncludeRequest) {
+                response.getWriter().println("invalid");
+                System.out.println("wow");
+                return;
+            }
         }
     }
 
@@ -52,18 +70,21 @@ public class GetInactiveDriverServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String requestURLPath = request.getServletPath().substring(1);
 
-        if(session.getAttribute("operator") == null) {
+        boolean isIncludeRequest = false;
+        for(String next : acceptedIncludeRequestURL) {
+            if(requestURLPath.equals(next)) {
+                isIncludeRequest = true;
+                break;
+            }
+        }
+
+        if(session.getAttribute("operator") == null || !isIncludeRequest) {
             response.sendRedirect("/bts");
             return;
         }
 
-        if(requestURLPath.equals("add_bus_schedule.do") || requestURLPath.equals("check_inactive_driver.do")) {
+        if(isIncludeRequest) {
             doGet(request, response);
         }
-        else {
-            response.sendRedirect("/bts");
-            return;
-        }    
     }
-
 }

@@ -5,7 +5,12 @@ import {
   updateScheduleDriver,
 } from "./service.js";
 import { toast } from "./toast.js";
-import { getFormatedDuration, getSplittedTime } from "./util.js";
+import {
+  disableElements,
+  enableElements,
+  getFormatedDuration,
+  getSplittedTime,
+} from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
 const navContainer = document.querySelector("#nav");
@@ -72,6 +77,26 @@ const openDriverSelectContainer = () => {
   contact.value = "";
   email.value = "";
   licenceNumber.value = "";
+};
+
+const disableDriverContainer = () => {
+  disableElements(
+    changeDriverBtn,
+    saveChangeBtn,
+    undoChangesBtn,
+    driver,
+    driverSelect
+  );
+};
+
+const enableDriverContainer = () => {
+  enableElements(
+    changeDriverBtn,
+    saveChangeBtn,
+    undoChangesBtn,
+    driver,
+    driverSelect
+  );
 };
 
 const convertTo24Hour = (time12h) => {
@@ -289,9 +314,10 @@ saveChangeBtn.addEventListener("click", async () => {
       throw new Error("Invalid Request");
     }
 
+    disableDriverContainer();
     const response = await updateScheduleDriver(
-      model.driverId,
       model.activeSchedule.driver.driverId,
+      model.activeDriver.driverId,
       model.activeSchedule.scheduleId,
       model.activeSchedule.bus.busId
     );
@@ -300,10 +326,15 @@ saveChangeBtn.addEventListener("click", async () => {
       throw new Error("Invalid Request");
     } else if (response.startsWith("{")) {
       // model.activeSchedule =
-      cache.driverCache = cache.driverCache.filter((driver) => {
-        return driver.driverId !== +model.driverId;
-      });
+      cache.driverCache = null;
+      model.driverId = null;
       model.activeSchedule = JSON.parse(response);
+      sessionStorage.setItem(
+        "activeSchedule",
+        JSON.stringify(model.activeSchedule)
+      );
+      await handleCollectInActiveDriverRequest();
+
       closeDriverSelectContainer();
       toast.success("Driver Updated Successfully");
     } else {
@@ -312,6 +343,8 @@ saveChangeBtn.addEventListener("click", async () => {
   } catch (err) {
     console.error(err.message);
     toast.error(err.message);
+  } finally {
+    enableDriverContainer();
   }
 });
 

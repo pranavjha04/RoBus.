@@ -47,6 +47,5 @@ public class GetBusServlet extends HttpServlet {
             response.getWriter().println("invalid");
             return;
         }
-        
     }
 }

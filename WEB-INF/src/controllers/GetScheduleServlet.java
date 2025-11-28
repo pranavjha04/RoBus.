@@ -20,8 +20,19 @@ import com.google.gson.Gson;
 
 @WebServlet("/get_schedule.do")
 public class GetScheduleServlet extends HttpServlet {
+    private static String[] acceptedIncludeRequestURL = {"update_schedule_driver.do"};
+
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
+        String requestURLPath = request.getServletPath().substring(1);
+        boolean isIncludeRequest = false;
+
+        for(String next : acceptedIncludeRequestURL) {
+            if(requestURLPath.equals(next)) {
+                isIncludeRequest = true;
+                break;
+            }
+        }
 
         try {
             if(session.getAttribute("operator") == null) {
@@ -61,14 +72,34 @@ public class GetScheduleServlet extends HttpServlet {
                 operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
                 session.setAttribute(formattedAttribute, schedule);
             }
-            Schedule schedule = (Schedule) session.getAttribute(formattedAttribute);
-
-            response.getWriter().println(new Gson().toJson(schedule));
+            if(!isIncludeRequest) {
+                Schedule schedule = (Schedule) session.getAttribute(formattedAttribute);
+                response.getWriter().println(new Gson().toJson(schedule));   
+            }
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
-            response.getWriter().println("invalid");
+            if(!isIncludeRequest) {
+                response.getWriter().println("invalid");
+            }
             return;
+        }
+    }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
+        String requestURLPath = request.getServletPath().substring(1);
+        boolean isIncludeRequest = false;
+
+        for(String next : acceptedIncludeRequestURL) {
+            if(requestURLPath.equals(next)) {
+                isIncludeRequest = true;
+                break;
+            }
+        }
+
+        if(isIncludeRequest) {
+            doGet(request, response);
         }
     }
 }
