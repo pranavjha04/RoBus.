@@ -243,7 +243,6 @@ const handleCollectInActiveDriverRequest = async () => {
   try {
     if (!cache.driverCache) {
       const response = await collectInactiveDriversRequest();
-      console.log(response);
       if (response === "invalid") {
         throw new Error("Invalid Request");
       } else if (response.startsWith("[")) {
@@ -341,7 +340,6 @@ saveChangeBtn.addEventListener("click", async () => {
       throw new Error("Invalid Request");
     }
   } catch (err) {
-    console.error(err.message);
     toast.error(err.message);
   } finally {
     enableDriverContainer();
