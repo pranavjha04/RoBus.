@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 
 @WebServlet("/get_active_drivers.do")
 public class GetActiveDriverServlet extends HttpServlet {
-    private static String[] acceptedIncludeRequestURL = {"add_bus_schedule.do", "check_active_driver.do", "update_schedule_driver.do"};
+    private static String[] acceptedIncludeRequestList = {"add_bus_schedule.do", "check_active_driver.do", "update_schedule_driver.do"};
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
@@ -26,7 +26,7 @@ public class GetActiveDriverServlet extends HttpServlet {
         Operator operator = (Operator) session.getAttribute("operator");
         boolean isIncludeRequest = false;
 
-        for(String next : acceptedIncludeRequestURL) {
+        for(String next : acceptedIncludeRequestList) {
             if(requestURLPath.equals(next)) {
                 isIncludeRequest = true;
                 break;
@@ -69,7 +69,7 @@ public class GetActiveDriverServlet extends HttpServlet {
         String requestURLPath = request.getServletPath().substring(1);
 
         boolean isIncludeRequest = false;
-        for(String next : acceptedIncludeRequestURL) {
+        for(String next : acceptedIncludeRequestList) {
             if(requestURLPath.equals(next)) {
                 isIncludeRequest = true;
                 break;

@@ -19,4 +19,13 @@ public final class AppUtil {
     public static final int generateRandomInt() {
         return Math.abs(random.nextInt());
     }
+
+    public static final boolean isIncludeRequest(String request, String[] acceptedIncludeRequestList) {
+        for(String next : acceptedIncludeRequestList) {
+            if(request.equals(next)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

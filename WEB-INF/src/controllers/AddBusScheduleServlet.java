@@ -68,8 +68,8 @@ public class AddBusScheduleServlet extends HttpServlet {
 
             /* -------- EXTRA FARE CHARGES  START -------- */
             if(
-                !FieldManager.validateExtraChargeFare(seaterSeatsBooked) || 
-                !FieldManager.validateExtraChargeFare(sleeperSeatsBooked) || 
+                !FieldManager.validateExtraChargeFare(sleeperFare) || 
+                !FieldManager.validateExtraChargeFare(seaterFare) || 
                 !FieldManager.validateExtraChargeFare(additionalCharges)
             ) {
                 throw new IllegalArgumentException("Invalid Seating Fare");
@@ -88,10 +88,13 @@ public class AddBusScheduleServlet extends HttpServlet {
 
             boolean isDriverValid = false;
             int userId = -1;
-            for(Driver next : driverList) {
+            int removeIndex = -1;
+            for(int index = 0; index < driverList.size(); index++) {
+                Driver next = driverList.get(index);
                 if(next.getDriverId().equals(driverId) && next.getUser().getStatus().getName().equals("Inactive")) {
                     isDriverValid = true;
                     userId = next.getUser().getUserId();
+                    removeIndex = index;
                     break;
                 }
             }
@@ -99,6 +102,9 @@ public class AddBusScheduleServlet extends HttpServlet {
             if(!isDriverValid) {
                 throw new IllegalArgumentException("Illegal Driver");
             }
+
+            driverList.remove(removeIndex);
+
             /* -------- DRIVER END -------- */
 
             /* -------- BUS START -------- */
@@ -173,10 +179,12 @@ public class AddBusScheduleServlet extends HttpServlet {
             String[] clearCahceAttributeList = {
                 journeyDate.toString() + operator.getOperatorId() + busId, 
                 "date_schedule_list" + journeyDate.toString(), 
-                busId + "bus_date_schedule_list" + journeyDate.toString(), 
-                "inactiveDriverList", 
-                "driverList"
+                busId + "bus_date_schedule_list" + journeyDate.toString()
             };
+
+            if(driverList.size() == 0) {
+                session.removeAttribute("inactiveDriverList");
+            }
 
             for(String attribute : clearCahceAttributeList) {
                 session.removeAttribute(attribute);

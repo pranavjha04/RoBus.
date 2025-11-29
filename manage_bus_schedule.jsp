@@ -63,6 +63,12 @@ prefix="e" uri="bts" %>
               </button>
               <button
                 class="btn text-primary border border-primary rounded-pill"
+                data-target="charge_cont"
+              >
+                Charges
+              </button>
+              <button
+                class="btn text-primary border border-primary rounded-pill"
                 data-target="route_cont"
               >
                 Route
@@ -284,18 +290,97 @@ prefix="e" uri="bts" %>
                     <div class="col-12 text-end">
                       <button
                         class="btn btn-secondary me-2 d-none"
-                        id="undo_changes_btn"
+                        id="undo_driver_change_btn"
                       >
                         Undo Changes
                       </button>
                       <button
                         class="btn btn-primary d-none"
-                        id="save_change_btn"
+                        id="save_driver_change_btn"
                       >
                         Save Changes
                       </button>
                       <button class="btn btn-primary" id="change_driver_btn">
                         Change Driver
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--Charges COntainer-->
+              <div class="card shadow-sm border-0" id="charge_cont">
+                <div class="card-header bg-white border-0 pb-0">
+                  <h4 class="mb-1 fw-medium">Charges Overview</h4>
+                </div>
+
+                <div class="card-body">
+                  <div class="row g-4">
+                    <!-- Bus Number -->
+                    <div class="col-md-4">
+                      <label
+                        for="additional_charge"
+                        class="form-label fw-semibold"
+                        >Additional Charge</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control bg-light"
+                        id="additional_charge"
+                        readonly
+                      />
+                    </div>
+
+                    <!-- Seater Fare -->
+                    <div class="col-md-4">
+                      <label for="seater_fare" class="form-label fw-semibold"
+                        >Seater Fare</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control bg-light"
+                        id="seater_fare"
+                        readonly
+                      />
+                    </div>
+                    <!-- Sleeper Fare -->
+                    <div class="col-md-4">
+                      <label for="sleeper_fare" class="form-label fw-semibold"
+                        >Sleeper Fare</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control bg-light"
+                        id="sleeper_fare"
+                        readonly
+                      />
+                    </div>
+                    <!-- Total Charges -->
+                    <div class="col-md-4">
+                      <label for="total_charge" class="form-label fw-semibold"
+                        >Total Charges</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control bg-light"
+                        id="total_charge"
+                        readonly
+                      />
+                    </div>
+                    <div class="col-12 text-end">
+                      <button
+                        class="btn btn-secondary me-2 d-none"
+                        id="undo_charge_change_btn"
+                      >
+                        Undo Changes
+                      </button>
+                      <button
+                        class="btn btn-primary d-none"
+                        id="save_charge_change_btn"
+                      >
+                        Save Changes
+                      </button>
+                      <button class="btn btn-primary" id="update_charge_btn">
+                        Update Charge
                       </button>
                     </div>
                   </div>

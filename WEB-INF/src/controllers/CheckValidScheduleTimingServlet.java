@@ -66,7 +66,6 @@ public class CheckValidScheduleTimingServlet extends HttpServlet {
                 throw new IllegalArgumentException("Invalid Parameter");
             }
             
-            
             for(Schedule schedule : scheduleList) {
                 if(
                     (departureTime.getTime() >= schedule.getDepartureTime().getTime() && departureTime.getTime() <= schedule.getArrivalTime().getTime()) ||

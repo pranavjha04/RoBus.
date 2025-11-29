@@ -14,12 +14,16 @@ import java.util.ArrayList;
 import models.Operator;
 import models.BusFareFactor;
 
+import utils.AppUtil;
+
 import com.google.gson.Gson;
 @WebServlet("/get_bus_fare_factors.do")
 public class GetBusFareFactorServlet extends HttpServlet {
+    private static String[] acceptedIncludeRequestList = {"update_schedule_charges.do", "add_bus_schedule.do"};
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         String requestURLPath = request.getServletPath().substring(1);
+        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
 
         try {
             if(session.getAttribute("operator") == null) {
@@ -40,16 +44,16 @@ public class GetBusFareFactorServlet extends HttpServlet {
                 session.setAttribute("bus_fare_factor_list" + busId, busFareFactorList);
             }
 
-            @SuppressWarnings("unchecked")
-            ArrayList<BusFareFactor> list = (ArrayList<BusFareFactor>) session.getAttribute("bus_fare_factor_list" + busId);
             
-            if(!requestURLPath.equals("add_bus_schedule.do")) {
+            if(!isIncludeRequest) {
+                @SuppressWarnings("unchecked")
+                ArrayList<BusFareFactor> list = (ArrayList<BusFareFactor>) session.getAttribute("bus_fare_factor_list" + busId);
                 response.getWriter().println(new Gson().toJson(list));
             }
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
-            if(!requestURLPath.equals("add_bus_schedule.do")) {
+            if(!isIncludeRequest) {
                 response.getWriter().println("invalid");
             }
             return;
@@ -59,11 +63,13 @@ public class GetBusFareFactorServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         String requestURLPath = request.getServletPath().substring(1);
+        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
 
-        if(session.getAttribute("operator") == null || !requestURLPath.equals("add_bus_schedule.do")) {
+        if(session.getAttribute("operator") == null || !isIncludeRequest) {
             response.sendRedirect("/bts");
         }
-        
-        doGet(request, response);
+        if(isIncludeRequest) {
+            doGet(request, response);
+        }
     }
 }

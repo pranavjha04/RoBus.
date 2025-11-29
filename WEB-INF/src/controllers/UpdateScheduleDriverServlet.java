@@ -10,7 +10,10 @@ import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import java.sql.Date;
+
 import com.google.gson.Gson;
+
 
 import models.Operator;
 import models.Driver;
@@ -39,31 +42,38 @@ public class UpdateScheduleDriverServlet extends HttpServlet {
              ) {
                 throw new IllegalArgumentException("Invalid Request");
             }
-
+            Operator operator = (Operator) session.getAttribute("operator");
             Integer newDriverId = Integer.parseInt(request.getParameter("new_driver_id"));
             Integer oldDriverId = Integer.parseInt(request.getParameter("old_driver_id"));
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));
             Integer scheduleId = Integer.parseInt(request.getParameter("schedule_id"));
-            final String SCHEDULE_CACHE = "schedule"  + scheduleId;
+            Date journeyDate = Date.valueOf(request.getParameter("date"));
+            final String JOURNEY_DATE_CACHE = "date_schedule_list" + journeyDate.toString();
+            Driver newDriver = null;
+            Driver oldDriver = null;
+            Schedule currSchedule = null;
 
-            boolean isOldDriverActive = false;
-            boolean isNewDriverInActive = false;
-
-            int oldDriverUserId = -1;
-            int newDriverUserId = -1;
-
-            request.getRequestDispatcher("get_schedule.do").include(request, response);
-
-            if(session.getAttribute(SCHEDULE_CACHE) == null) {
-                throw new IllegalArgumentException("Invalid Request");
+            if(session.getAttribute(JOURNEY_DATE_CACHE) == null) {
+                request.getRequestDispatcher("get_journey_date_schedule.do").include(request, response);
+                if(session.getAttribute(JOURNEY_DATE_CACHE) == null) {
+                    throw new IllegalArgumentException("Invalid Request");
+                }
             }
 
-            Schedule currSchedule = (Schedule) session.getAttribute(SCHEDULE_CACHE);
-            if(!currSchedule.getStatus().getStatusId().equals(11)) {
-                throw new IllegalArgumentException("Invalid Request");
-            } // upcoming nahi hai
-            
+            @SuppressWarnings("unchecked")
+            ArrayList<Schedule> dateScheduleList = (ArrayList<Schedule>) session.getAttribute(JOURNEY_DATE_CACHE);
 
+            for(Schedule curr : dateScheduleList) {
+                if(curr.getScheduleId().equals(scheduleId)) {
+                    currSchedule = curr;
+                    break;
+                }
+            }
+
+            if(currSchedule == null || !currSchedule.getStatus().getStatusId().equals(11))  { // upcoming nahi hai
+                throw new IllegalArgumentException("Invalid Request");
+            } 
+            
             // check karo ki jo new driver hai inactive hai ya nahi
             request.getRequestDispatcher("get_inactive_drivers.do").include(request, response);
 
@@ -74,15 +84,15 @@ public class UpdateScheduleDriverServlet extends HttpServlet {
             @SuppressWarnings("unchecked")
             ArrayList<Driver> inactiveDriverList = (ArrayList<Driver>) session.getAttribute("inactiveDriverList");
 
-            for(Driver driver : inactiveDriverList) {
-                if(driver.getDriverId().equals(newDriverId)) {
-                    newDriverUserId = driver.getUser().getUserId();
-                    isNewDriverInActive = true;
+            for(int index = 0; index < inactiveDriverList.size(); index++) {
+                Driver curr = inactiveDriverList.get(index);
+                if(curr.getDriverId().equals(newDriverId)) {
+                    newDriver = curr;
                     break;
                 }
             }
 
-            if(!isNewDriverInActive || newDriverUserId == -1) throw new IllegalArgumentException("Invalid Request");
+            if(newDriver == null) throw new IllegalArgumentException("Invalid Request");
 
             request.getRequestDispatcher("get_active_drivers.do").include(request, response);
 
@@ -93,58 +103,62 @@ public class UpdateScheduleDriverServlet extends HttpServlet {
             @SuppressWarnings("unchecked")
             ArrayList<Driver> activeDriverList = (ArrayList<Driver>) session.getAttribute("activeDriverList");
 
-            for(Driver driver : activeDriverList) {
-                if(driver.getDriverId().equals(oldDriverId)) {
-                    oldDriverUserId = driver.getUser().getUserId();
-                    isOldDriverActive = true;
+            for(int index = 0; index < activeDriverList.size(); index++) {
+                Driver curr = activeDriverList.get(index);
+                if(curr.getDriverId().equals(oldDriverId)) {
+                    oldDriver = curr;
                     break;
                 }
             }
+    
 
-            if(!isOldDriverActive || oldDriverUserId == -1) throw new IllegalArgumentException("Invalid Request");
-
-            Operator operator = (Operator) session.getAttribute("operator");
-            
+            if(oldDriver == null) throw new IllegalArgumentException("Invalid Request");
             
             boolean isScheduleDriverUpdated = Schedule.updateDriver(newDriverId, busId, scheduleId, operator.getOperatorId());
             if(!isScheduleDriverUpdated) throw new IllegalArgumentException("Invalid Request");
 
             // update old driver to inactive
-            request.setAttribute("user_id", oldDriverUserId);
+            request.setAttribute("user_id", oldDriver.getUser().getUserId());
             request.setAttribute("status_id", 5);
 
+            // update old driver to inactive
             request.getRequestDispatcher("update_user_status.do").include(request, response);
-            
-
+        
             if(request.getAttribute("isUpdated") == null) throw new IllegalArgumentException("Invalid Request");
             request.removeAttribute("isUpdated");
 
+            oldDriver.getUser().getStatus().setStatusId(5);
+            oldDriver.getUser().getStatus().setName("Inactive");
+            for(int index = 0; index < inactiveDriverList.size(); index++) {
+                Driver curr = inactiveDriverList.get(index);
+                if(curr.getDriverId().equals(newDriverId)) {
+                    inactiveDriverList.set(index, oldDriver);
+                    break;
+                }
+            }
 
-            // update new driver to active
-            request.setAttribute("user_id", newDriverUserId);
+            // update old driver to active
+            request.setAttribute("user_id", newDriver.getUser().getUserId());
             request.setAttribute("status_id", 4);
 
             request.getRequestDispatcher("update_user_status.do").include(request, response);
 
             if(request.getAttribute("isUpdated") == null) throw new IllegalArgumentException("Invalid Request");
             request.removeAttribute("isUpdated");
-            session.removeAttribute(SCHEDULE_CACHE);
 
-            request.getRequestDispatcher("get_schedule.do").include(request, response);
             
-            if(session.getAttribute(SCHEDULE_CACHE) == null) {
-                throw new IllegalArgumentException("Invalid Request");
+            newDriver.getUser().getStatus().setStatusId(4);
+            newDriver.getUser().getStatus().setName("Active");
+            for(int index = 0; index < activeDriverList.size(); index++) {
+                Driver curr = activeDriverList.get(index);
+                if(curr.getDriverId().equals(oldDriverId)) {
+                    activeDriverList.set(index, newDriver);
+                    break;
+                }
             }
 
-            Schedule schedule = (Schedule) session.getAttribute(SCHEDULE_CACHE);
-
-            session.removeAttribute("inactiveDriverList");
-            session.removeAttribute("activeDriverList");
-            session.removeAttribute("date_schedule_list" + schedule.getJourneyDate().toString());
-            session.removeAttribute(schedule.getJourneyDate().toString() + operator.getOperatorId() + schedule.getBus().getBusId());
-
-
-            response.getWriter().println(new Gson().toJson(schedule));
+            currSchedule.setDriver(newDriver);
+            response.getWriter().println(new Gson().toJson(currSchedule));
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();

@@ -52,6 +52,7 @@ const prevValue = {
   additionalCharges: 0,
   seaterFare: 0,
   sleeperFare: 0,
+  totalCharges: 0,
   journeyDate: null,
 };
 
@@ -145,13 +146,14 @@ const extraChargeHandler = (target, type) => {
       `Charge should be positive and not exceed ₹${MAX_EXTRA_CHARGE}`,
       5000
     );
-    prevValue[type] = 0;
-    e.target.value = 0;
+    target.value = prevValue[type];
+    totalCharge.value = prevValue.totalCharges;
     return;
   } else {
     target.value = value;
     prevValue[type] = value;
     totalCharge.value = +totalCharge.value + value;
+    prevValue.totalCharges = +totalCharge.value;
   }
 };
 
@@ -173,6 +175,7 @@ const updateRouteSelect = (routeList = []) => {
     routeSelectContainer.innerHTML = "";
     routeSelect.textContent = "No Routes are available";
   }
+  
 
   routeSelect.disabled = false;
   routeSelect.textContent = "Select Route";

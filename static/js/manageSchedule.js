@@ -2,6 +2,7 @@ import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import {
   collectInactiveDriversRequest,
+  updateScheduleChargeRequest,
   updateScheduleDriver,
 } from "./service.js";
 import { toast } from "./toast.js";
@@ -9,7 +10,8 @@ import {
   disableElements,
   enableElements,
   getFormatedDuration,
-  getSplittedTime,
+  readOnlyElements,
+  removeReadOnlyElements,
 } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
@@ -31,8 +33,8 @@ const duration = document.querySelector("#duration");
 const weekday = document.querySelector("#weekday");
 
 const changeDriverBtn = document.querySelector("#change_driver_btn");
-const saveChangeBtn = document.querySelector("#save_change_btn");
-const undoChangesBtn = document.querySelector("#undo_changes_btn");
+const saveDriverChageBtn = document.querySelector("#save_driver_change_btn");
+const undoDriverChangeBtn = document.querySelector("#undo_driver_change_btn");
 const driverSelect = document.querySelector("#driver_select");
 const driverSelectContainer = document.querySelector("#driver_select_cont");
 const availableDriverListContainer = document.querySelector(
@@ -44,14 +46,45 @@ const contact = document.querySelector("#contact");
 const email = document.querySelector("#email");
 const licenceNumber = document.querySelector("#licence_no");
 
+const additionalCharge = document.querySelector("#additional_charge");
+const seaterFare = document.querySelector("#seater_fare");
+const sleeperFare = document.querySelector("#sleeper_fare");
+const totalCharges = document.querySelector("#total_charge");
+const updateChargesBtn = document.querySelector("#update_charge_btn");
+const saveChargeChageBtn = document.querySelector("#save_charge_change_btn");
+const undoChargeChangeBtn = document.querySelector("#undo_charge_change_btn");
+
+const MAX_EXTRA_CHARGE = 500;
+
 const model = {
   activeSchedule: null,
   activeDriver: null,
   driverId: null,
 };
 
+const prevValue = {
+  additionalCharges: 0,
+  seaterFare: 0,
+  sleeperFare: 0,
+  totalCharges: 0,
+};
+
 const cache = {
   driverCache: null,
+};
+
+const openChargeContainer = () => {
+  removeReadOnlyElements(additionalCharge, seaterFare, sleeperFare);
+  updateChargesBtn.classList.add("d-none");
+  saveChargeChageBtn.classList.remove("d-none");
+  undoChargeChangeBtn.classList.remove("d-none");
+};
+
+const closeChargeContainer = () => {
+  readOnlyElements(additionalCharge, seaterFare, sleeperFare);
+  updateChargesBtn.classList.remove("d-none");
+  saveChargeChageBtn.classList.add("d-none");
+  undoChargeChangeBtn.classList.add("d-none");
 };
 
 const closeDriverSelectContainer = () => {
@@ -59,16 +92,16 @@ const closeDriverSelectContainer = () => {
   updateDriver();
   driverSelect.textContent = "Select Driver";
   changeDriverBtn.classList.remove("d-none");
-  saveChangeBtn.classList.add("d-none");
-  undoChangesBtn.classList.add("d-none");
+  saveDriverChageBtn.classList.add("d-none");
+  undoDriverChangeBtn.classList.add("d-none");
   driver.classList.remove("d-none");
   driverSelectContainer.classList.add("d-none");
   model.driverId = null;
 };
 const openDriverSelectContainer = () => {
   changeDriverBtn.classList.add("d-none");
-  saveChangeBtn.classList.remove("d-none");
-  undoChangesBtn.classList.remove("d-none");
+  saveDriverChageBtn.classList.remove("d-none");
+  undoDriverChangeBtn.classList.remove("d-none");
   driver.classList.add("d-none");
   driverSelectContainer.classList.remove("d-none");
 
@@ -82,8 +115,8 @@ const openDriverSelectContainer = () => {
 const disableDriverContainer = () => {
   disableElements(
     changeDriverBtn,
-    saveChangeBtn,
-    undoChangesBtn,
+    saveDriverChageBtn,
+    undoDriverChangeBtn,
     driver,
     driverSelect
   );
@@ -92,11 +125,60 @@ const disableDriverContainer = () => {
 const enableDriverContainer = () => {
   enableElements(
     changeDriverBtn,
-    saveChangeBtn,
-    undoChangesBtn,
+    saveDriverChageBtn,
+    undoDriverChangeBtn,
     driver,
     driverSelect
   );
+};
+
+const disableChargeContainer = () => {
+  disableElements(
+    additionalCharge,
+    totalCharges,
+    sleeperFare,
+    seaterFare,
+    saveChargeChageBtn,
+    undoChargeChangeBtn
+  );
+};
+
+const enableChargeContainer = () => {
+  enableElements(
+    additionalCharge,
+    totalCharges,
+    sleeperFare,
+    seaterFare,
+    saveChargeChageBtn,
+    undoChargeChangeBtn
+  );
+};
+const validateCurrCharge = (value) => {
+  if (isNaN(+value) || +value < 0 || +value > MAX_EXTRA_CHARGE) return false;
+  return true;
+};
+
+const extraChargeHandler = (target, type) => {
+  if (target.readOnly) {
+    return;
+  }
+
+  const value = Math.floor(+target.value);
+  totalCharges.value = +totalCharges.value - prevValue[type];
+  if (isNaN(value) || value < 0 || value > MAX_EXTRA_CHARGE) {
+    toast.error(
+      `Charge should be positive and not exceed ₹${MAX_EXTRA_CHARGE}`,
+      5000
+    );
+    target.value = prevValue[type];
+    totalCharges.value = prevValue.totalCharges;
+    return;
+  } else {
+    target.value = value;
+    prevValue[type] = value;
+    totalCharges.value = +totalCharges.value + value;
+    prevValue.totalCharges = +totalCharges.value;
+  }
 };
 
 const convertTo24Hour = (time12h) => {
@@ -126,7 +208,12 @@ const formateTime = (date) => {
 
 const updateOverViewContainer = () => {
   const d = new Date(model.activeSchedule.journeyDate);
-  journeyDate.value = d.toISOString().split("T")[0];
+
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+
+  journeyDate.value = `${year}-${month}-${day}`;
 
   const departure24h = convertTo24Hour(model.activeSchedule.departureTime);
   const arrival24h = convertTo24Hour(model.activeSchedule.arrivalTime);
@@ -225,6 +312,13 @@ const updateRouteOverViewContainer = () => {
   updateRouteTimeLine();
 };
 
+const updateChargeContainer = () => {
+  additionalCharge.value = model.activeSchedule.additionalCharges;
+  totalCharges.value = model.activeSchedule.totalCharges;
+  seaterFare.value = model.activeSchedule.seaterFare;
+  sleeperFare.value = model.activeSchedule.sleeperFare;
+};
+
 const updateDriver = () => {
   const { user, licenceNumber: activeLicenceNumber } = model.activeDriver;
   driver.value = user.fullName;
@@ -294,11 +388,12 @@ availableDriverListContainer.addEventListener("mousedown", (e) => {
   driverSelect.textContent = target.querySelector("a").textContent;
 });
 
-undoChangesBtn.addEventListener("click", () => {
+undoDriverChangeBtn.addEventListener("click", () => {
+  model.driverId = null;
   closeDriverSelectContainer();
 });
 
-saveChangeBtn.addEventListener("click", async () => {
+saveDriverChageBtn.addEventListener("click", async () => {
   try {
     if (model.activeSchedule.status.statusId !== 11) return;
 
@@ -318,6 +413,7 @@ saveChangeBtn.addEventListener("click", async () => {
       model.activeSchedule.driver.driverId,
       model.activeDriver.driverId,
       model.activeSchedule.scheduleId,
+      journeyDate.value,
       model.activeSchedule.bus.busId
     );
 
@@ -346,13 +442,89 @@ saveChangeBtn.addEventListener("click", async () => {
   }
 });
 
+updateChargesBtn.addEventListener("click", () => {
+  additionalCharge.focus();
+  openChargeContainer();
+});
+
+undoChargeChangeBtn.addEventListener("click", () => {
+  updateChargeContainer();
+  closeChargeContainer();
+});
+
+saveChargeChageBtn.addEventListener("click", async () => {
+  if (additionalCharge.readOnly || sleeperFare.readOnly || seaterFare.readOnly)
+    return;
+  const newAdditionalCharge = additionalCharge.value;
+  const newSeaterFare = seaterFare.value;
+  const newSleeperFare = sleeperFare.value;
+  const newTotalCharges = totalCharges.value;
+
+  if (
+    validateCurrCharge(newAdditionalCharge) &&
+    validateCurrCharge(newSeaterFare) &&
+    validateCurrCharge(newSleeperFare)
+  ) {
+    if (
+      +newAdditionalCharge === model.activeSchedule.additionalCharges &&
+      +newSeaterFare === model.activeSchedule.sleeperFare &&
+      +newSleeperFare === model.activeSchedule.sleeperFare &&
+      +newTotalCharges === model.activeSchedule.totalCharges
+    ) {
+      toast.normal("No Changes needed");
+      closeChargeContainer();
+    } else {
+      try {
+        disableChargeContainer();
+        const response = await updateScheduleChargeRequest(
+          newAdditionalCharge,
+          newSeaterFare,
+          newSleeperFare,
+          newTotalCharges,
+          model.activeSchedule.scheduleId,
+          journeyDate.value
+        );
+
+        if (response === "ok") {
+          model.activeSchedule.additionalCharges = newAdditionalCharge;
+          model.activeSchedule.sleeperFare = newSleeperFare;
+          model.activeSchedule.seaterFare = newSeaterFare;
+          model.activeSchedule.totalCharges = newTotalCharges;
+          updateChargeContainer();
+          closeChargeContainer();
+        } else {
+          throw new Error("Invalid Request");
+        }
+      } catch (err) {
+        toast.error(err.message);
+      } finally {
+        enableChargeContainer();
+      }
+    }
+  }
+});
+
+additionalCharge.addEventListener("blur", (e) => {
+  extraChargeHandler(e.target, "additionalCharges");
+});
+seaterFare.addEventListener("blur", (e) => {
+  extraChargeHandler(e.target, "seaterFare");
+});
+sleeperFare.addEventListener("blur", (e) => {
+  extraChargeHandler(e.target, "sleeperFare");
+});
+
 window.addEventListener("DOMContentLoaded", () => {
   try {
     model.activeSchedule = JSON.parse(sessionStorage.getItem("activeSchedule"));
     model.activeDriver = model.activeSchedule.driver;
+    for (const key in prevValue) {
+      prevValue[key] = model.activeSchedule[key];
+    }
     updateOverViewContainer();
     updateBusOverViewContainer();
     updateRouteOverViewContainer();
+    updateChargeContainer();
     updateDriver();
   } catch (err) {
     PageError.showOperatorError();

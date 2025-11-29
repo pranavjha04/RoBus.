@@ -21,10 +21,16 @@ import models.Operator;
 import models.OperatorRoute;
 import models.OperatorRouteMidCity;
 
+import utils.AppUtil;
+
 @WebServlet("/get_journey_date_schedule.do")
 public class GetJourneyDateScheduleServlet extends HttpServlet {
+    private static String[] acceptedIncludeRequestList = {"update_schedule_driver.do", "update_schedule_charges.do"};
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
+        String requestURLPath = request.getServletPath().substring(1);
+        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
+
         try {
             if(session.getAttribute("operator") == null) {
                 throw new IllegalArgumentException("Invalid Request");   
@@ -37,7 +43,10 @@ public class GetJourneyDateScheduleServlet extends HttpServlet {
             Date journeyDate = Date.valueOf(request.getParameter("date"));
             Operator operator = (Operator) session.getAttribute("operator");
 
-            if(session.getAttribute("date_schedule_list" + journeyDate.toString()) == null) {
+            final String CACHE_ATTRIBUTE = "date_schedule_list" + journeyDate.toString();
+
+
+            if(session.getAttribute(CACHE_ATTRIBUTE) == null) {
                 ArrayList<Schedule> list = Schedule.collectDateScheduleRecords(journeyDate, operator.getOperatorId());
 
                 if(list == null) {
@@ -62,17 +71,36 @@ public class GetJourneyDateScheduleServlet extends HttpServlet {
 
                     operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
                 }
-                session.setAttribute("date_schedule_list" + journeyDate.toString(), list);
+                session.setAttribute(CACHE_ATTRIBUTE, list);
             }
 
-            @SuppressWarnings("unchecked")
-            ArrayList<Schedule> dateScheduleList = (ArrayList<Schedule>) session.getAttribute("date_schedule_list" + journeyDate.toString());
-            response.getWriter().println(new Gson().toJson(dateScheduleList));
+            if(!isIncludeRequest) {
+                @SuppressWarnings("unchecked")
+                ArrayList<Schedule> dateScheduleList = (ArrayList<Schedule>) session.getAttribute(CACHE_ATTRIBUTE);
+                response.getWriter().println(new Gson().toJson(dateScheduleList));
+            }
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
-            response.getWriter().println("invalid");
+            if(!isIncludeRequest) {
+                response.getWriter().println("invalid");
+            }
             return;
         }
     } 
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession();
+        if(session.getAttribute("operator") == null) {
+            response.sendRedirect("/bts");
+            return;
+        }
+
+        String requestURLPath = request.getServletPath().substring(1);
+        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
+
+        if(isIncludeRequest) {
+            doGet(request, response);
+        }
+        
+    }
 }

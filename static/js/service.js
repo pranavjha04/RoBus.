@@ -625,12 +625,14 @@ export const updateScheduleDriver = async (
   old_driver_id,
   new_driver_id,
   schedule_id,
+  date,
   bus_id
 ) => {
   const params = createURLParams({
     old_driver_id,
     new_driver_id,
     schedule_id,
+    date,
     bus_id,
   });
 
@@ -639,6 +641,30 @@ export const updateScheduleDriver = async (
   });
   if (!res.ok) throw new Error("Internal Server Error");
 
+  const data = await res.text();
+  return data.trim();
+};
+
+export const updateScheduleChargeRequest = async (
+  additional_charges,
+  seater_fare,
+  sleeper_fare,
+  total_charges,
+  schedule_id,
+  date
+) => {
+  const params = createURLParams({
+    additional_charges,
+    seater_fare,
+    sleeper_fare,
+    total_charges,
+    schedule_id,
+    date,
+  });
+  const res = await fetch(`update_schedule_charges.do?${params.toString()}`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Internal Server Error");
   const data = await res.text();
   return data.trim();
 };
