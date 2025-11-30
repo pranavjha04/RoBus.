@@ -73,6 +73,6 @@ public class AppListener implements ServletContextListener {
 
         System.out.println("-------- Status Config Starting --------");
         ArrayList<Status> statusList = Status.collectAllRecords();
-        context.setAttribute("statusList", weekdayList);
+        context.setAttribute("statusList", statusList);
     }
 }

@@ -37,7 +37,7 @@ public class GetBusJourneyDateServlet extends HttpServlet {
             Date journeyDate = Date.valueOf(request.getParameter("date"));
             Operator operator = (Operator) session.getAttribute("operator");
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));
-            String cachedAttribute = busId + "bus_date_schedule_list" + journeyDate.toString();
+            String cachedAttribute = "bus_date_schedule_list" + journeyDate.toString() + busId;
 
             if(session.getAttribute(cachedAttribute) == null) {
                 ArrayList<Schedule> list = Schedule.collectBusDateScheduleRecords(journeyDate, busId, operator.getOperatorId());

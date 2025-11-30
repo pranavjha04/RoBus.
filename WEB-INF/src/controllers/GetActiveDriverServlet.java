@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 
 @WebServlet("/get_active_drivers.do")
 public class GetActiveDriverServlet extends HttpServlet {
-    private static String[] acceptedIncludeRequestList = {"add_bus_schedule.do", "check_active_driver.do", "update_schedule_driver.do"};
+    private static String[] acceptedIncludeRequestList = {"add_bus_schedule.do", "check_active_driver.do", "update_schedule_driver.do", "update_schedule_status.do"};
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();

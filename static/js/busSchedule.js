@@ -190,8 +190,8 @@ const updateRouteSelect = (routeList = []) => {
 const updateDriverListDisplay = () => {
   const { driverCache: driverList } = cache;
   if (driverList.length === 0) {
-    driverSelect.textContent = `No drivers are available`;
     driverSelect.disabled = true;
+    driverSelect.textContent = `No drivers are available`;
     driverSelectContainer.innerHTML = "";
   } else {
     driverSelect.disabled = false;
@@ -232,6 +232,7 @@ const handleJourneyDateScheduleRecordRequest = async (journeyDate) => {
     if (!(journeyDate instanceof Date)) throw new Error("Invalid Request");
     scheduleTable.innerHTML = ViewHelper.getTableLoader();
     if (journeyDateScheduleCache[journeyDate.toDateString()]) {
+      console.log("CACHED");
       updateScheduleRecords(
         journeyDateScheduleCache[journeyDate.toDateString()]
       );
@@ -239,7 +240,9 @@ const handleJourneyDateScheduleRecordRequest = async (journeyDate) => {
       const year = journeyDate.getFullYear();
       const month = journeyDate.getMonth();
       const day = journeyDate.getDate();
-      const formattedDate = [year, month + 1, day].join("-");
+      const formattedDate = [year, month + 1, day]
+        .map((next) => next.toString().padStart(2, "0"))
+        .join("-");
       const response = await getBusJourneyDateScheduleRequest(
         formattedDate,
         modal.activeBus.busId
@@ -268,7 +271,9 @@ const showActiveDateRecord = () => {
   }
 
   const { year, month, day } = activeDate.dataset;
-  const formattedDate = [year, +month, day].join("-");
+  const formattedDate = [year, month, day]
+    .map((next) => next.padStart(2, "0"))
+    .join("-");
 
   handleJourneyDateScheduleRecordRequest(new Date(formattedDate));
 };
@@ -533,7 +538,7 @@ driverSelect.addEventListener("click", async (e) => {
   }
 
   try {
-    if (!cache.driverCache.length) {
+    if (!cache.driverCache) {
       const response = await collectInactiveDriversRequest();
 
       if (response === "invalid") {
@@ -650,7 +655,7 @@ dateRangeNext.addEventListener("click", (e) => {
   updateDateRange();
 });
 
-scheduleTable.addEventListener("click", (e) => {
+scheduleTable.addEventListener("click", async (e) => {
   const target = e.target.closest("button");
   if (!target) return;
 
@@ -667,20 +672,27 @@ scheduleTable.addEventListener("click", (e) => {
     }, 200);
   } else if (type === "manage") {
     const { scheduleId, day, month, date, year } = target.closest("tr").dataset;
-    const key = [day, month, date, year].join(" ");
+    const key = [day, month, date, year]
+      .map((next) => next.padStart(2, "0"))
+      .join(" ");
 
-    const activeSchedule = journeyDateScheduleCache[key].find((schedule) => {
-      return schedule.scheduleId === +scheduleId;
-    });
+    if (!journeyDateScheduleCache[key]) {
+      await handleJourneyDateScheduleRecordRequest(new Date(key));
+    } else {
+      const activeSchedule = journeyDateScheduleCache[key]?.find((schedule) => {
+        return schedule.scheduleId === +scheduleId;
+      });
+      console.log(activeSchedule);
 
-    if (!activeSchedule) return;
-    sessionStorage.setItem("activeSchedule", JSON.stringify(activeSchedule));
+      if (!activeSchedule) return;
+      sessionStorage.setItem("activeSchedule", JSON.stringify(activeSchedule));
 
-    const APP_URL = window.location.href.substring(
-      0,
-      window.location.href.lastIndexOf("/")
-    );
-    window.location.href = `${APP_URL}/manage_bus_schedule.do`;
+      const APP_URL = window.location.href.substring(
+        0,
+        window.location.href.lastIndexOf("/")
+      );
+      window.location.href = `${APP_URL}/manage_bus_schedule.do`;
+    }
   }
 });
 
@@ -708,9 +720,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     updateBusInfoDisplay();
     PageLoading.stopLoading();
     disableForm();
-    setTimeout(() => {
-      updateDateRange();
-    }, 200);
+    updateDateRange();
   } catch (err) {
     console.error(err);
     toast.error(err.message);

@@ -547,8 +547,10 @@ cancelScheduleBtn.addEventListener("click", async () => {
       throw new Error("Invalid Request");
     } else {
       model.activeSchedule = JSON.parse(response);
-      ModalHandler.hide();
+      ModalHandler.hide(confirmModal);
+      statusContainer.removeChild(statusContainer.firstChild);
       updateStatusContainer();
+      toast.success("Schedule was cancelled successfully");
     }
   } catch (err) {
     toast.error(err.message);

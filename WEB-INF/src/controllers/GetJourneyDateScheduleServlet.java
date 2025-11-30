@@ -25,7 +25,7 @@ import utils.AppUtil;
 
 @WebServlet("/get_journey_date_schedule.do")
 public class GetJourneyDateScheduleServlet extends HttpServlet {
-    private static String[] acceptedIncludeRequestList = {"update_schedule_driver.do", "update_schedule_charges.do"};
+    private static String[] acceptedIncludeRequestList = {"update_schedule_driver.do", "update_schedule_charges.do", "update_schedule_status.do"};
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         String requestURLPath = request.getServletPath().substring(1);
@@ -44,7 +44,12 @@ public class GetJourneyDateScheduleServlet extends HttpServlet {
             Operator operator = (Operator) session.getAttribute("operator");
 
             final String CACHE_ATTRIBUTE = "date_schedule_list" + journeyDate.toString();
-
+            java.util.Enumeration enums = session.getAttributeNames();
+            System.out.println(CACHE_ATTRIBUTE);
+            while(enums.hasMoreElements()) {
+                System.out.println(enums.nextElement());
+            }
+            System.out.println("##########################3");
 
             if(session.getAttribute(CACHE_ATTRIBUTE) == null) {
                 ArrayList<Schedule> list = Schedule.collectDateScheduleRecords(journeyDate, operator.getOperatorId());
@@ -78,6 +83,7 @@ public class GetJourneyDateScheduleServlet extends HttpServlet {
                 @SuppressWarnings("unchecked")
                 ArrayList<Schedule> dateScheduleList = (ArrayList<Schedule>) session.getAttribute(CACHE_ATTRIBUTE);
                 response.getWriter().println(new Gson().toJson(dateScheduleList));
+                System.out.println("CACHED");
             }
         }
         catch(IllegalArgumentException e) {

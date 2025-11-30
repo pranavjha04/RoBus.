@@ -158,12 +158,12 @@ dateRangeNext.addEventListener("click", (e) => {
 scheduleTable.addEventListener("click", async (e) => {
   const target = e.target.closest("button");
   if (!target) return;
-  console.log(journeyDateScheduleCache);
 
   const { scheduleId, day, month, date, year } = target.closest("tr").dataset;
-  const key = [day, month, date, year].join(" ");
-  console.log(key);
-  console.log(journeyDateScheduleCache[key]);
+  const key = [day, month, date, year]
+    .map((next) => next.padStart(2, "0"))
+    .join(" ");
+
   if (!journeyDateScheduleCache[key]) {
     await handleJourneyDateScheduleRecordRequest(new Date(key));
   } else {
@@ -175,11 +175,11 @@ scheduleTable.addEventListener("click", async (e) => {
     if (!activeSchedule) return;
     sessionStorage.setItem("activeSchedule", JSON.stringify(activeSchedule));
 
-    // const APP_URL = window.location.href.substring(
-    //   0,
-    //   window.location.href.lastIndexOf("/")
-    // );
-    // window.location.href = `${APP_URL}/manage_bus_schedule.do`;
+    const APP_URL = window.location.href.substring(
+      0,
+      window.location.href.lastIndexOf("/")
+    );
+    window.location.href = `${APP_URL}/manage_bus_schedule.do`;
   }
 });
 
