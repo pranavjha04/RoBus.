@@ -19,6 +19,40 @@ prefix="e" uri="bts" %>
   </head>
   <body>
     <c:import url="essential_page_display.jsp" />
+    <div class="modal fade" tabindex="-1" id="centeredModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Modal title</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to cancel this schedule?</p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="cancel_schedule_btn"
+            >
+              Save changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="dashContainer">
       <!-- Sidebar -->
@@ -42,7 +76,7 @@ prefix="e" uri="bts" %>
             <span>Back</span>
           </a>
           <div class="container mt-2 mb-4" id="pageWrapper">
-            <div class="d-flex gap-2 align-items-center mt-4 mb-0" id="nav">
+            <div class="d-flex gap-2 align-items-center mt-4 mb-2" id="nav">
               <button
                 class="btn btn-primary rounded-pill"
                 data-target="overview_cont"
@@ -81,7 +115,19 @@ prefix="e" uri="bts" %>
                   class="card-header bg-white border-0 pb-0 d-flex justify-content-between"
                 >
                   <h4 class="mb-1 fw-medium">Schedule Overview</h4>
-                  <p>Status</p>
+                  <div
+                    class="d-flex gap-2 align-items-center"
+                    id="status_container"
+                  >
+                    <button
+                      class="btn btn-warning"
+                      id="cancel_schedule_trigger_btn"
+                      data-bs-toggle="modal"
+                      data-bs-target="#centeredModal"
+                    >
+                      Cancel Schedule
+                    </button>
+                  </div>
                 </div>
 
                 <div class="card-body">
@@ -310,7 +356,7 @@ prefix="e" uri="bts" %>
               <!--Charges COntainer-->
               <div class="card shadow-sm border-0" id="charge_cont">
                 <div class="card-header bg-white border-0 pb-0">
-                  <h4 class="mb-1 fw-medium">Charges Overview</h4>
+                  <h4 class="mb-1 fw-medium">Charges Overview (&#x20B9;)</h4>
                 </div>
 
                 <div class="card-body">
@@ -320,8 +366,8 @@ prefix="e" uri="bts" %>
                       <label
                         for="additional_charge"
                         class="form-label fw-semibold"
-                        >Additional Charge</label
-                      >
+                        >Additional Charge
+                      </label>
                       <input
                         type="number"
                         class="form-control bg-light"

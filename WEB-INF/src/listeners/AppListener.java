@@ -21,6 +21,8 @@ import models.Route;
 import models.RouteMidCity;
 import models.Manufacturer;
 import models.Weekday;
+import models.Status;
+
 
 @WebListener
 public class AppListener implements ServletContextListener {
@@ -69,5 +71,8 @@ public class AppListener implements ServletContextListener {
         ArrayList<Weekday> weekdayList = Weekday.collectAllRecords();
         context.setAttribute("weekdayList", weekdayList);
 
+        System.out.println("-------- Status Config Starting --------");
+        ArrayList<Status> statusList = Status.collectAllRecords();
+        context.setAttribute("statusList", weekdayList);
     }
 }

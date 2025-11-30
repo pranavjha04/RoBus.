@@ -1,9 +1,11 @@
+import { ModalHandler } from "./modalHandler.js";
 import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import {
   collectInactiveDriversRequest,
   updateScheduleChargeRequest,
   updateScheduleDriver,
+  updateScheduleStatusRequest,
 } from "./service.js";
 import { toast } from "./toast.js";
 import {
@@ -54,6 +56,12 @@ const updateChargesBtn = document.querySelector("#update_charge_btn");
 const saveChargeChageBtn = document.querySelector("#save_charge_change_btn");
 const undoChargeChangeBtn = document.querySelector("#undo_charge_change_btn");
 
+const statusContainer = document.querySelector("#status_container");
+const cancelScheduleTriggerBtn = document.querySelector(
+  "#cancel_schedule_trigger_btn"
+);
+const cancelScheduleBtn = document.querySelector("#cancel_schedule_btn");
+const confirmModal = document.querySelector("#centeredModal");
 const MAX_EXTRA_CHARGE = 500;
 
 const model = {
@@ -312,11 +320,27 @@ const updateRouteOverViewContainer = () => {
   updateRouteTimeLine();
 };
 
+const updateStatusContainer = () => {
+  statusContainer.insertAdjacentHTML(
+    "afterbegin",
+    ViewHelper.getStatusPill(model.activeSchedule.status)
+  );
+  if (model.activeSchedule.status.name !== "Upcoming") {
+    removeButtons();
+  }
+};
+
 const updateChargeContainer = () => {
   additionalCharge.value = model.activeSchedule.additionalCharges;
   totalCharges.value = model.activeSchedule.totalCharges;
   seaterFare.value = model.activeSchedule.seaterFare;
   sleeperFare.value = model.activeSchedule.sleeperFare;
+};
+
+const removeButtons = () => {
+  [cancelScheduleTriggerBtn, changeDriverBtn, updateChargesBtn].forEach((btn) =>
+    btn.classList.add("d-none")
+  );
 };
 
 const updateDriver = () => {
@@ -476,14 +500,17 @@ saveChargeChageBtn.addEventListener("click", async () => {
     } else {
       try {
         disableChargeContainer();
-        const response = await updateScheduleChargeRequest(
-          newAdditionalCharge,
-          newSeaterFare,
-          newSleeperFare,
-          newTotalCharges,
-          model.activeSchedule.scheduleId,
-          journeyDate.value
-        );
+        const response = await updateScheduleChargeRequest({
+          additional_charges: newAdditionalCharge,
+          seater_fare: newSeaterFare,
+          sleeper_fare: newSleeperFare,
+          total_charges: newTotalCharges,
+          schedule_id: model.activeSchedule.scheduleId,
+          bus_id: model.activeSchedule.bus.busId,
+          date: journeyDate.value,
+          operator_route_id:
+            model.activeSchedule.busRouteWeekday.operatorRoute.operatorRouteId,
+        });
 
         if (response === "ok") {
           model.activeSchedule.additionalCharges = newAdditionalCharge;
@@ -492,6 +519,7 @@ saveChargeChageBtn.addEventListener("click", async () => {
           model.activeSchedule.totalCharges = newTotalCharges;
           updateChargeContainer();
           closeChargeContainer();
+          toast.success("Charges were updated successfully");
         } else {
           throw new Error("Invalid Request");
         }
@@ -501,6 +529,29 @@ saveChargeChageBtn.addEventListener("click", async () => {
         enableChargeContainer();
       }
     }
+  }
+});
+
+cancelScheduleBtn.addEventListener("click", async () => {
+  if (model.activeSchedule.status.name !== "Upcoming") {
+    ModalHandler.hide(confirmModal);
+    return;
+  }
+  try {
+    const response = await updateScheduleStatusRequest({
+      date: journeyDate.value,
+      schedule_id: model.activeSchedule.scheduleId,
+      status_id: 6,
+    });
+    if (!response.startsWith("{")) {
+      throw new Error("Invalid Request");
+    } else {
+      model.activeSchedule = JSON.parse(response);
+      ModalHandler.hide();
+      updateStatusContainer();
+    }
+  } catch (err) {
+    toast.error(err.message);
   }
 });
 
@@ -521,6 +572,8 @@ window.addEventListener("DOMContentLoaded", () => {
     for (const key in prevValue) {
       prevValue[key] = model.activeSchedule[key];
     }
+
+    updateStatusContainer();
     updateOverViewContainer();
     updateBusOverViewContainer();
     updateRouteOverViewContainer();

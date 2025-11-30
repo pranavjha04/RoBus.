@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 import models.Operator;
 import models.Driver;
 import models.Schedule;
-
+import models.Status;
 
 @WebServlet("/update_schedule_driver.do")
 public class UpdateScheduleDriverServlet extends HttpServlet {
@@ -127,8 +127,17 @@ public class UpdateScheduleDriverServlet extends HttpServlet {
             if(request.getAttribute("isUpdated") == null) throw new IllegalArgumentException("Invalid Request");
             request.removeAttribute("isUpdated");
 
-            oldDriver.getUser().getStatus().setStatusId(5);
-            oldDriver.getUser().getStatus().setName("Inactive");
+            @SuppressWarnings("unchecked")
+            ArrayList<Status> statusList = (ArrayList<Status>) getServletContext().getAttribute("statusList");
+
+            if(statusList == null) throw new IllegalArgumentException("Invalid Request");
+
+            for(Status next : statusList) {
+                if(next.getStatusId().equals(5)) {
+                    oldDriver.getUser().setStatus(next);
+                    break;
+                }
+            }
             for(int index = 0; index < inactiveDriverList.size(); index++) {
                 Driver curr = inactiveDriverList.get(index);
                 if(curr.getDriverId().equals(newDriverId)) {
@@ -147,8 +156,13 @@ public class UpdateScheduleDriverServlet extends HttpServlet {
             request.removeAttribute("isUpdated");
 
             
-            newDriver.getUser().getStatus().setStatusId(4);
-            newDriver.getUser().getStatus().setName("Active");
+            for(Status next : statusList) {
+                if(next.getStatusId().equals(4)) {
+                    newDriver.getUser().setStatus(next);
+                    break;
+                }
+            }
+
             for(int index = 0; index < activeDriverList.size(); index++) {
                 Driver curr = activeDriverList.get(index);
                 if(curr.getDriverId().equals(oldDriverId)) {

@@ -175,7 +175,6 @@ const updateRouteSelect = (routeList = []) => {
     routeSelectContainer.innerHTML = "";
     routeSelect.textContent = "No Routes are available";
   }
-  
 
   routeSelect.disabled = false;
   routeSelect.textContent = "Select Route";

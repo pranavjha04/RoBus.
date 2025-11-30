@@ -69,7 +69,7 @@ const handleJourneyDateScheduleRecordRequest = async (journeyDate) => {
   }
 };
 
-const showActiveDateRecord = () => {
+const showActiveDateRecord = async () => {
   const activeDate = dateRangeContainer.querySelector(".active");
 
   if (!activeDate) {
@@ -79,7 +79,7 @@ const showActiveDateRecord = () => {
   const { year, month, day } = activeDate.dataset;
   const formattedDate = [year, +month, day].join("-");
 
-  handleJourneyDateScheduleRecordRequest(new Date(formattedDate));
+  await handleJourneyDateScheduleRecordRequest(new Date(formattedDate));
 };
 
 const updateDateRange = () => {
@@ -155,25 +155,32 @@ dateRangeNext.addEventListener("click", (e) => {
   updateDateRange();
 });
 
-scheduleTable.addEventListener("click", (e) => {
+scheduleTable.addEventListener("click", async (e) => {
   const target = e.target.closest("button");
   if (!target) return;
+  console.log(journeyDateScheduleCache);
 
   const { scheduleId, day, month, date, year } = target.closest("tr").dataset;
   const key = [day, month, date, year].join(" ");
+  console.log(key);
+  console.log(journeyDateScheduleCache[key]);
+  if (!journeyDateScheduleCache[key]) {
+    await handleJourneyDateScheduleRecordRequest(new Date(key));
+  } else {
+    const activeSchedule = journeyDateScheduleCache[key]?.find((schedule) => {
+      return schedule.scheduleId === +scheduleId;
+    });
+    console.log(activeSchedule);
 
-  const activeSchedule = journeyDateScheduleCache[key].find((schedule) => {
-    return schedule.scheduleId === +scheduleId;
-  });
+    if (!activeSchedule) return;
+    sessionStorage.setItem("activeSchedule", JSON.stringify(activeSchedule));
 
-  if (!activeSchedule) return;
-  sessionStorage.setItem("activeSchedule", JSON.stringify(activeSchedule));
-
-  const APP_URL = window.location.href.substring(
-    0,
-    window.location.href.lastIndexOf("/")
-  );
-  window.location.href = `${APP_URL}/manage_bus_schedule.do`;
+    // const APP_URL = window.location.href.substring(
+    //   0,
+    //   window.location.href.lastIndexOf("/")
+    // );
+    // window.location.href = `${APP_URL}/manage_bus_schedule.do`;
+  }
 });
 
 dateRangeContainer.addEventListener("click", (e) => {

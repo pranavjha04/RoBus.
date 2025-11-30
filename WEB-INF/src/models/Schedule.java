@@ -30,8 +30,9 @@ public class Schedule {
     private BusRouteWeekday busRouteWeekday;
 
     public Schedule(Integer scheduleId, Date journeyDate, Time departureTime,
-                    Time arrivalTime, Integer additionalCharges,
+                    Time arrivalTime,
                     Integer seaterSeatsBooked, Integer sleeperSeatsBooked,
+                    Integer additionalCharges,
                     Integer seaterFare, Integer sleeperFare, Integer totalCharges,
                     Bus bus, Driver driver, BusRouteWeekday busRouteWeekday, Status status) {
 
@@ -39,9 +40,9 @@ public class Schedule {
         this.journeyDate = journeyDate;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
-        this.additionalCharges = additionalCharges;
         this.seaterSeatsBooked = seaterSeatsBooked;
         this.sleeperSeatsBooked = sleeperSeatsBooked;
+        this.additionalCharges = additionalCharges;
         this.seaterFare = seaterFare;
         this.sleeperFare = sleeperFare;
         this.totalCharges = totalCharges;
@@ -53,6 +54,70 @@ public class Schedule {
     }
     public Schedule() {
 
+    }
+
+    public static boolean updateStatus(int scheduleId, int statusId, int operatorId) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query =  
+                        "UPDATE schedules sch " +
+                        "JOIN buses b " +
+                        "ON b.bus_id = sch.bus_id " +
+                        "SET " +
+                        "sch.status_id=? " +
+                        "WHERE sch.schedule_id=? AND b.operator_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setInt(1, statusId);
+            ps.setInt(2, scheduleId);
+            ps.setInt(3, operatorId);
+            int rows = ps.executeUpdate();
+            
+            if(rows == 1) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
+    }
+    public static boolean updateCharges(int scheduleId, int additionalCharges, int seaterFare, int sleeperFare, int totalCharges, int operatorId) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query =  
+                        "UPDATE schedules sch " +
+                        "JOIN buses b " +
+                        "ON b.bus_id = sch.bus_id " +
+                        "SET " +
+                        "additional_charges=?, " +
+                        "seater_fare=?, " +
+                        "sleeper_fare=?, " +
+                        "total_charges=? " +
+                        "WHERE sch.schedule_id=? AND b.operator_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, additionalCharges); 
+            ps.setInt(2, seaterFare); 
+            ps.setInt(3, sleeperFare); 
+            ps.setInt(4, totalCharges);
+            ps.setInt(5, scheduleId);
+            ps.setInt(6, operatorId);
+
+            int rows = ps.executeUpdate();
+            if(rows == 1) {
+                flag = true;
+            } 
+            con.close();
+        }
+        catch(SQLException e) {
+            flag = false;
+            e.printStackTrace();
+        }
+        return flag;
     }
 
     public static boolean updateDriver(int driverId, int busId, int scheduleId, int operatorId) {

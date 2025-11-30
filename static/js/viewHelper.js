@@ -867,4 +867,49 @@ export class ViewHelper {
                   </td>
                 </tr>`;
   }
+
+  static getStatusPill(status) {
+    const color = {
+      Upcoming: "#d1f2e0",
+      Ongoing: "#8cb8ff",
+      Completed: "#e6c76b",
+      Cancelled: "#e29aa3",
+    };
+    const borderColor = {
+      Upcoming: "#45a87a",
+      Ongoing: "#4f7fd6",
+      Completed: "#c4a23f",
+      Cancelled: "#c65463",
+    };
+    const textColor = {
+      Upcoming: "#0b3d28",
+      Ongoing: "#062e6f",
+      Completed: "#4a3800",
+      Cancelled: "#6e1723",
+    };
+    const statusBg = {
+      Upcoming: "text-success",
+      Ongoing: "text-primary",
+      Completed: "text-dark",
+      Cancelled: "text-danger",
+    };
+
+    return `<div
+                      class="d-flex align-items-center gap-2 px-2 py-1 rounded-pill"
+                      style="background-color: ${
+                        color[status.name]
+                      }; border : 1px solid ${borderColor[status.name]}"
+
+                    >
+                      <div
+                        class="spinner-grow ${statusBg[status.name]}"
+                        
+                        style="width: 8.5px; height: 8.5px;"
+                        role="status"
+                      ></div>
+                      <span style="color: ${textColor[status.name]}">${
+      status.name
+    }</span>
+                    </div>`;
+  }
 }

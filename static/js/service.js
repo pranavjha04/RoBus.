@@ -645,23 +645,22 @@ export const updateScheduleDriver = async (
   return data.trim();
 };
 
-export const updateScheduleChargeRequest = async (
-  additional_charges,
-  seater_fare,
-  sleeper_fare,
-  total_charges,
-  schedule_id,
-  date
-) => {
-  const params = createURLParams({
-    additional_charges,
-    seater_fare,
-    sleeper_fare,
-    total_charges,
-    schedule_id,
-    date,
-  });
-  const res = await fetch(`update_schedule_charges.do?${params.toString()}`, {
+export const updateScheduleChargeRequest = async (params) => {
+  const queryParams = createURLParams(params);
+  const res = await fetch(
+    `update_schedule_charges.do?${queryParams.toString()}`,
+    {
+      method: "POST",
+    }
+  );
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
+
+export const updateScheduleStatusRequest = async (params) => {
+  const queryParams = createURLParams(params);
+  const res = await fetch(`update_schedule_status.do?${queryParams.toString()}`, {
     method: "POST",
   });
   if (!res.ok) throw new Error("Internal Server Error");

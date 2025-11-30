@@ -34,8 +34,9 @@ public class UpdateScheduleChargeServlet extends HttpServlet {
                 if(request.getParameter(next) == null) {
                     throw new IllegalArgumentException("Missing Parameter");
                 }
-            }
+            }   
 
+            Operator operator = (Operator) session.getAttribute("operator");
             Integer additionalCharges = Integer.parseInt(request.getParameter("additional_charges"));
             Integer seaterFare = Integer.parseInt(request.getParameter("seater_fare"));
             Integer sleeperFare = Integer.parseInt(request.getParameter("sleeper_fare"));
@@ -44,6 +45,7 @@ public class UpdateScheduleChargeServlet extends HttpServlet {
             Date journeyDate = Date.valueOf(request.getParameter("date"));
             final String JOURNEY_DATE_CACHE = "date_schedule_list" + journeyDate.toString();
             Schedule currSchedule = null;
+            int targetIndex = -1;
 
             if(
                 !FieldManager.validateExtraChargeFare(sleeperFare) || 
@@ -63,8 +65,10 @@ public class UpdateScheduleChargeServlet extends HttpServlet {
             @SuppressWarnings("unchecked")
             ArrayList<Schedule> dateScheduleList = (ArrayList<Schedule>) session.getAttribute(JOURNEY_DATE_CACHE);
 
-            for(Schedule curr : dateScheduleList) {
+            for(int index = 0; index < dateScheduleList.size(); index++) {
+                Schedule curr = dateScheduleList.get(index);
                 if(curr.getScheduleId().equals(scheduleId)) {
+                    targetIndex = index;
                     currSchedule = curr;
                     break;
                 }
@@ -113,6 +117,17 @@ public class UpdateScheduleChargeServlet extends HttpServlet {
                 throw new IllegalArgumentException("Invalid Total Charges");
             }
             else {
+                boolean isUpdated = Schedule.updateCharges(scheduleId, additionalCharges, seaterFare, sleeperFare, totalCharges, operator.getOperatorId());
+
+                if(!isUpdated) throw new IllegalArgumentException("Invalid Request");
+
+
+                currSchedule.setAdditionalCharges(additionalCharges);
+                currSchedule.setSeaterFare(seaterFare);
+                currSchedule.setSleeperFare(sleeperFare);
+                currSchedule.setTotalCharges(totalCharges);
+
+                dateScheduleList.set(targetIndex, currSchedule);
                 response.getWriter().println("ok");
             }
         }
