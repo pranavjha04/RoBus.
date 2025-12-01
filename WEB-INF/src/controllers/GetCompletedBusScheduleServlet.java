@@ -21,31 +21,49 @@ import models.Operator;
 import models.OperatorRoute;
 import models.OperatorRouteMidCity;
 
-@WebServlet("/get_bus_journey_date_schedule.do")
-public class GetBusJourneyDateServlet extends HttpServlet {
+import utils.AppUtil;
+
+@WebServlet("/get_completed_bus_schedule.do")
+public class GetCompletedBusScheduleServlet extends HttpServlet {
+    private static String[] acceptedIncludeRequestList = {"update_schedule_driver.do", "update_schedule_charges.do", "update_schedule_status.do"};
+
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
+        String requestURLPath = request.getServletPath().substring(1);
+        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
+
         try {
             if(session.getAttribute("operator") == null) {
                 throw new IllegalArgumentException("Invalid Request");   
             }
-
-            if(request.getParameter("date") == null || request.getParameter("bus_id") == null) {
+            if(request.getParameter("date") == null) {
                 throw new IllegalArgumentException("Missing Parameter");
             }
-
+            int busId = -1;
+            if(isIncludeRequest) {
+                if(request.getAttribute("bus_id") == null) {
+                    throw new IllegalArgumentException("Invalid Request");
+                }
+                busId = (Integer) request.getAttribute("bus_id");
+            }
+            else {
+                if(request.getParameter("bus_id") == null) {
+                    throw new IllegalArgumentException("Invalid Request");
+                }
+                busId = Integer.parseInt(request.getParameter("bus_id"));
+            }
+            if(busId == -1) throw new IllegalArgumentException("Invalid Request");
             Date journeyDate = Date.valueOf(request.getParameter("date"));
             Operator operator = (Operator) session.getAttribute("operator");
-            Integer busId = Integer.parseInt(request.getParameter("bus_id"));
-            String cachedAttribute = "bus_date_schedule_list" + journeyDate.toString() + busId;
 
-            if(session.getAttribute(cachedAttribute) == null) {
-                ArrayList<Schedule> list = Schedule.collectBusDateScheduleRecords(journeyDate, busId, operator.getOperatorId());
+            final String CACHE_ATTRIBUTE = "completed_bus_schedule_list" + journeyDate.toString();
+
+            if(session.getAttribute(CACHE_ATTRIBUTE) == null) {
+                ArrayList<Schedule> list = Schedule.collectBusScheduleRecords(journeyDate, busId, operator.getOperatorId(), 13);
 
                 if(list == null) {
                     throw new IllegalArgumentException("Internal Server Error");
                 }
-
                 for(Schedule schedule : list) {
                     OperatorRoute operatorRoute = schedule.getBusRouteWeekday().getOperatorRoute();
                     int operatorRouteId = operatorRoute.getOperatorRouteId();
@@ -65,17 +83,35 @@ public class GetBusJourneyDateServlet extends HttpServlet {
 
                     operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
                 }
-                session.setAttribute(cachedAttribute, list);
+                session.setAttribute(CACHE_ATTRIBUTE, list);
             }
 
-            @SuppressWarnings("unchecked")
-            ArrayList<Schedule> busDateScheduleList = (ArrayList<Schedule>) session.getAttribute(cachedAttribute);
-            response.getWriter().println(new Gson().toJson(busDateScheduleList));
+            if(!isIncludeRequest) {
+                @SuppressWarnings("unchecked")
+                ArrayList<Schedule> list = (ArrayList<Schedule>) session.getAttribute(CACHE_ATTRIBUTE);
+                response.getWriter().println(new Gson().toJson(list));
+            }
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
-            response.getWriter().println("invalid");
+            if(!isIncludeRequest) {
+                response.getWriter().println("invalid");
+            }
             return;
         }
     } 
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession();
+        if(session.getAttribute("operator") == null) {
+            response.sendRedirect("/bts");
+            return;
+        }
+
+        String requestURLPath = request.getServletPath().substring(1);
+        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
+
+        if(isIncludeRequest) {
+            doGet(request, response);
+        }   
+    }
 }

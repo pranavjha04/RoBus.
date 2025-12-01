@@ -49,7 +49,7 @@ public class UpdateScheduleStatusServlet extends HttpServlet {
            final String JOURNEY_DATE_CACHE = "date_schedule_list" + journeyDate.toString();
            System.out.println(journeyDate);
 
-           if(session.getAttribute(JOURNEY_DATE_CACHE) == null) {
+            if(session.getAttribute(JOURNEY_DATE_CACHE) == null) {
                 request.getRequestDispatcher("get_journey_date_schedule.do").include(request, response);
                 if(session.getAttribute(JOURNEY_DATE_CACHE) == null) {
                     throw new IllegalArgumentException("Invalid Request");
@@ -78,6 +78,14 @@ public class UpdateScheduleStatusServlet extends HttpServlet {
             if(currSchedule == null || !currSchedule.getStatus().getStatusId().equals(11))  { // upcoming nahi hai
                 throw new IllegalArgumentException("Invalid Request");
             } 
+           final String BUS_JOURNEY_DATE_CACHE = "bus_date_schedule_list" + journeyDate.toString() + currSchedule.getBus().getBusId();
+
+            if(session.getAttribute(BUS_JOURNEY_DATE_CACHE) == null) {
+                request.getRequestDispatcher("get_bus_journey_date_schedule.do").include(request, response);
+                if(session.getAttribute(BUS_JOURNEY_DATE_CACHE) == null) {
+                    throw new IllegalArgumentException("Invalid Request");
+                }
+            }
 
             boolean isStatusUpdatable = true;
 

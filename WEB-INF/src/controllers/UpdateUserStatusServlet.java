@@ -13,7 +13,7 @@ import models.User;
 
 @WebServlet("/update_user_status.do")
 public class UpdateUserStatusServlet extends HttpServlet {
-    private static String[] acceptedIncludeRequestURL = {"add_bus_schedule.do", "update_schedule_driver.do", "update_schedule_status.do"};
+    private static String[] acceptedIncludeRequestURL = {"add_bus_schedule.do", "update_schedule_driver.do", "update_schedule_status.do", "update_driver_status.do"};
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();

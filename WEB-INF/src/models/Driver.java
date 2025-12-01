@@ -34,6 +34,60 @@ public class Driver {
 
     }
 
+    public static Driver getRecord(Integer driverId, Integer operatorId) {
+        Driver driver = null;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                            "SELECT * " +
+                            "from drivers d " +
+                            "JOIN users u ON d.user_id = u.user_id " +
+                            "JOIN status s ON u.status_id = s.status_id " +
+                            "JOIN user_types ut ON u.user_type_id = ut.user_type_id " +
+                            "WHERE operator_id=? AND d.driver_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, operatorId);
+            ps.setInt(2, driverId);
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()) {
+                 User user = new User(
+                        rs.getInt("u.user_id"), 
+                        rs.getString("u.full_name"),
+                        rs.getDate("u.dob"),
+                        rs.getString("u.contact"),
+                        rs.getInt("u.gender"),
+                        rs.getString("u.email"),
+                        rs.getString("u.password"),
+                        rs.getString("u.profile_pic"),
+                        new Status(rs.getInt("s.status_id"), rs.getString("s.name")),
+                        rs.getString("u.verification_code"),
+                        rs.getTimestamp("u.created_at"),
+                        rs.getTimestamp("u.updated_at"),
+                        new UserType(rs.getInt("ut.user_type_id"), rs.getString("ut.name"))
+                );
+
+                driver = new Driver(
+                    rs.getInt("d.driver_id"),
+                    rs.getDate("d.start_date"),
+                    rs.getDate("d.end_date"),
+                    rs.getString("d.licence_pic"),
+                    rs.getString("d.licence_no"),
+                    user
+                );
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            driver = null;
+            e.printStackTrace();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        return driver;
+    }
+
     public static ArrayList<Driver> collectActiveDrivers(Integer operatorId) {
         ArrayList<Driver> list = new ArrayList<>();
         try {

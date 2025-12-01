@@ -598,24 +598,85 @@ export const addBusScheduleRequest = async (formData) => {
   return data.trim();
 };
 
-export const getBusJourneyDateScheduleRequest = async (date, bus_id) => {
+export const getUpcomingAllScheduleRequest = async (date) => {
   const params = createURLParams({
     date,
-    bus_id,
   });
-  const res = await fetch(
-    `get_bus_journey_date_schedule.do?` + params.toString()
-  );
+  const res = await fetch(`get_upcoming_schedule.do?${params.toString()}`);
   if (!res.ok) throw new Error("Internal Server Error");
   const data = await res.text();
   return data.trim();
 };
 
-export const getJourneyDateScheduleRequest = async (date) => {
+export const getOngoingAllScheduleRequest = async (date) => {
   const params = createURLParams({
     date,
   });
-  const res = await fetch(`get_journey_date_schedule.do?` + params.toString());
+  const res = await fetch(`get_ongoing_schedule.do?${params.toString()}`);
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
+
+export const getCompletedAllScheduleRequest = async (date) => {
+  const params = createURLParams({
+    date,
+  });
+  const res = await fetch(`get_completed_schedule.do?${params.toString()}`);
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
+
+export const getCancelledAllScheduleRequest = async (date) => {
+  const params = createURLParams({
+    date,
+  });
+  const res = await fetch(`get_cancelled_schedule.do?${params.toString()}`);
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
+
+export const getUpcomingBusScheduleRequest = async (date, bus_id) => {
+  const params = createURLParams({
+    date,
+    bus_id,
+  });
+  const res = await fetch(`get_upcoming_bus_schedule.do?${params.toString()}`);
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
+
+export const getOngoingBusScheduleRequest = async (date, bus_id) => {
+  const params = createURLParams({
+    date,
+    bus_id,
+  });
+  const res = await fetch(`get_ongoing_bus_schedule.do?${params.toString()}`);
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
+
+export const getCompletedBusScheduleRequest = async (date, bus_id) => {
+  const params = createURLParams({
+    date,
+    bus_id,
+  });
+  const res = await fetch(`get_completed_bus_schedule.do?${params.toString()}`);
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
+
+export const getCancelledBusScheduleRequest = async (date, bus_id) => {
+  const params = createURLParams({
+    date,
+    bus_id,
+  });
+  const res = await fetch(`get_cancelled_bus_schedule.do?${params.toString()}`);
   if (!res.ok) throw new Error("Internal Server Error");
   const data = await res.text();
   return data.trim();
@@ -660,9 +721,12 @@ export const updateScheduleChargeRequest = async (params) => {
 
 export const updateScheduleStatusRequest = async (params) => {
   const queryParams = createURLParams(params);
-  const res = await fetch(`update_schedule_status.do?${queryParams.toString()}`, {
-    method: "POST",
-  });
+  const res = await fetch(
+    `update_schedule_status.do?${queryParams.toString()}`,
+    {
+      method: "POST",
+    }
+  );
   if (!res.ok) throw new Error("Internal Server Error");
   const data = await res.text();
   return data.trim();

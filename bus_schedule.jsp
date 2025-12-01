@@ -367,6 +367,17 @@ prefix="e" uri="bts" %>
 
                 <div class="row" id="date_range"></div>
               </div>
+              <div class="ms-auto d-flex align-items-center gap-2">
+                <div
+                  class="d-flex align-items-center bg-white rounded p-1"
+                  id="filter_nav"
+                >
+                  <button class="btn btn-primary">Upcoming</button>
+                  <button class="btn">Ongoing</button>
+                  <button class="btn">Completed</button>
+                  <button class="btn">Cancelled</button>
+                </div>
+              </div>
 
               <table
                 class="border rounded table-responsive border-bottom-0"

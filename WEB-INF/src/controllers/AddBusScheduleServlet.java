@@ -59,12 +59,15 @@ public class AddBusScheduleServlet extends HttpServlet {
             Integer seaterSeatsBooked = 0;
             Integer sleeperSeatsBooked = 0;
 
-            /* -------- DATE TIME START -------- */
+            // -------- DATE TIME START -------- 
             request.getRequestDispatcher("check_valid_schedule_timings.do").include(request, response);
             if (session.getAttribute("isScheduleDateTimeValid") == null) {
                 throw new IllegalArgumentException("Invalid schedule timing");
             }
-            /* -------- DATE TIME VALIDATION END -------- */
+            boolean isScheduleDateTimeValid = (Boolean) session.getAttribute("isScheduleDateTimeValid");
+            if(!isScheduleDateTimeValid) throw new IllegalArgumentException("Invalid Request");
+
+            // -------- DATE TIME VALIDATION END -------- 
 
             /* -------- EXTRA FARE CHARGES  START -------- */
             if(
@@ -77,6 +80,9 @@ public class AddBusScheduleServlet extends HttpServlet {
             /* -------- EXTRA FARE CHARGES END -------- */
 
             /* -------- DRIVER START -------- */
+            boolean isDriverValid = false;
+            int userId = -1;
+            int removeIndex = -1;
             if(session.getAttribute("inactiveDriverList") == null) {
                 request.getRequestDispatcher("get_inactive_drivers.do").include(request, response);
                 if(session.getAttribute("inactiveDriverList") == null) {
@@ -86,9 +92,6 @@ public class AddBusScheduleServlet extends HttpServlet {
             @SuppressWarnings("unchecked")
             ArrayList<Driver> driverList = (ArrayList<Driver>) session.getAttribute("inactiveDriverList");
 
-            boolean isDriverValid = false;
-            int userId = -1;
-            int removeIndex = -1;
             for(int index = 0; index < driverList.size(); index++) {
                 Driver next = driverList.get(index);
                 if(next.getDriverId().equals(driverId) && next.getUser().getStatus().getName().equals("Inactive")) {
@@ -104,7 +107,6 @@ public class AddBusScheduleServlet extends HttpServlet {
             }
 
             driverList.remove(removeIndex);
-
             /* -------- DRIVER END -------- */
 
             /* -------- BUS START -------- */

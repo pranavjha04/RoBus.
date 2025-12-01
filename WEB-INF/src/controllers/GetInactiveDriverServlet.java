@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import models.Operator;
 import models.Driver;
 
+import utils.AppUtil;
+
 import com.google.gson.Gson;
 
 @WebServlet("/get_inactive_drivers.do")
@@ -24,14 +26,7 @@ public class GetInactiveDriverServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String requestURLPath = request.getServletPath().substring(1);
         Operator operator = (Operator) session.getAttribute("operator");
-        boolean isIncludeRequest = false;
-
-        for(String next : acceptedIncludeRequestURL) {
-            if(requestURLPath.equals(next)) {
-                isIncludeRequest = true;
-                break;
-            }
-        }
+        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestURL);
 
         try {
             if(session.getAttribute("operator") == null) {

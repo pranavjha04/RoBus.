@@ -11,17 +11,23 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.Time;
 
+import java.time.LocalTime;
+
 import java.util.ArrayList;
 
 import models.Schedule;
 import models.Operator;
 import models.BusRouteWeekday;
 
+import utils.AppUtil;
+
 import utils.FieldManager;
 
 @WebServlet("/check_valid_schedule_timings.do")
 public class CheckValidScheduleTimingServlet extends HttpServlet {
     private static final String[] acceptedParams = {"departure_time", "arrival_time", "journey_date", "bus_id"};
+    private static final String[] acceptedIncludeRequestList = {"add_bus_schedule.do"};
+    
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         session.removeAttribute("isScheduleDateTimeValid");
@@ -31,6 +37,7 @@ public class CheckValidScheduleTimingServlet extends HttpServlet {
         }
 
         String requestURLPath = request.getServletPath().substring(1);
+        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
         
         try {
             for(String next : acceptedParams) {
@@ -44,41 +51,44 @@ public class CheckValidScheduleTimingServlet extends HttpServlet {
             Time departureTime = Time.valueOf(request.getParameter("departure_time"));
             Time arrivalTime = Time.valueOf(request.getParameter("arrival_time"));
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));  
-
+            final String CACHE_ATTRIBUTE = "upcoming_bus_schedule_list" + journeyDate.toString();
+        
             if(!FieldManager.validateScheduleDate(journeyDate.toString())) {
                 throw new IllegalArgumentException("Invalid Date");
             }
 
-            String formattedAttribute = journeyDate.toString() + operator.getOperatorId() + busId;
-
-            if(session.getAttribute(formattedAttribute) == null) {
-                ArrayList<Schedule> scheduleList = Schedule.getRecordsForTimings(operator.getOperatorId(), journeyDate, busId);
-                if(scheduleList == null) throw new IllegalArgumentException("Invalid request");
-
-                session.setAttribute(formattedAttribute, scheduleList);
+            if(session.getAttribute(CACHE_ATTRIBUTE) == null) {
+                request.getRequestDispatcher("get_upcoming_bus_schedule.do").include(request, response);
+                if(session.getAttribute(CACHE_ATTRIBUTE) == null) {
+                    throw new IllegalArgumentException("Invalid Request");
+                }
             }
             
             @SuppressWarnings("unchecked")
-            ArrayList<Schedule> scheduleList = (ArrayList<Schedule>) session.getAttribute(formattedAttribute);
+            ArrayList<Schedule> scheduleList = (ArrayList<Schedule>) session.getAttribute(CACHE_ATTRIBUTE);
 
-            
             if(scheduleList == null) {
                 throw new IllegalArgumentException("Invalid Parameter");
             }
             
-            for(Schedule schedule : scheduleList) {
-                if(
-                    (departureTime.getTime() >= schedule.getDepartureTime().getTime() && departureTime.getTime() <= schedule.getArrivalTime().getTime()) ||
-                    (arrivalTime.getTime() >= schedule.getDepartureTime().getTime() && arrivalTime.getTime() <= schedule.getArrivalTime().getTime())
-                ) {
-                    if(!requestURLPath.equals("add_bus_schedule.do")) {
-                        response.getWriter().println("clash");
-                    }
-                    return;
-                }
-            };
+            for (Schedule schedule : scheduleList) {
+                    LocalTime newStart = departureTime.toLocalTime();
+                    LocalTime newEnd = arrivalTime.toLocalTime();
 
-            if(!requestURLPath.equals("add_bus_schedule.do")) {
+                    LocalTime existingStart = schedule.getDepartureTime().toLocalTime();
+                    LocalTime existingEnd = schedule.getArrivalTime().toLocalTime();
+
+                    boolean isOverlap = newStart.isBefore(existingEnd) && newEnd.isAfter(existingStart);
+
+                    if (isOverlap) {
+                        if (!isIncludeRequest) {
+                            response.getWriter().println("clash");
+                        }
+                        return;
+                    }
+            }
+
+            if(!isIncludeRequest) {
                 response.getWriter().println("ok");
             }
             else {
@@ -87,7 +97,7 @@ public class CheckValidScheduleTimingServlet extends HttpServlet {
             return;
         }
         catch(IllegalArgumentException e) {
-            if(requestURLPath.equals("add_bus_schedule.do")) {
+            if(isIncludeRequest) {
                 session.removeAttribute("isScheduleDateTimeValid");
             }
             else {
