@@ -912,4 +912,27 @@ export class ViewHelper {
     }</span>
                     </div>`;
   }
+
+  static getDateRangeButton(currDate, isInRange) {
+    return `<button
+                  class="col norm rounded-2  d-flex flex-column text-center ${
+                    isInRange ? "active" : ""
+                  } justify-content-center"
+                  data-year=${currDate.getFullYear()}
+                  data-month=${(currDate.getMonth() + 1)
+                    .toString()
+                    .padStart(2, "0")}
+                  data-day=${currDate.getDate().toString().padStart(2, "0")}
+                >
+                  <h4>${new Intl.DateTimeFormat(navigator.language, {
+                    weekday: "short",
+                  }).format(currDate)}</h4>
+                  <span class="fs-4">${new Intl.DateTimeFormat(
+                    navigator.language,
+                    {
+                      day: "2-digit",
+                    }
+                  ).format(currDate)}</span>
+                </button>`;
+  }
 }
