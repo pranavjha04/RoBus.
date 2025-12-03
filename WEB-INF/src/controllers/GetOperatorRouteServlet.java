@@ -48,7 +48,5 @@ public class GetOperatorRouteServlet extends HttpServlet {
             response.getWriter().println("invalid");
             return;
         }
-
-        
     }
 }

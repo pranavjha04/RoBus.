@@ -14,14 +14,24 @@ import java.util.ArrayList;
 import models.Operator;
 import models.OperatorRouteMidCity;
 
+import utils.AppUtil;
+
 import com.google.gson.Gson;
 
 @WebServlet("/get_operator_route_mid_cities.do")
 public class GetOperatorRouteMidCitiesServlet extends HttpServlet {
+    private static String[] acceptedIncludeRequestList = {
+        "get_upcoming_schedule.do", "get_upcoming_bus_schedule.do",
+        "get_ongoing_schedule.do", "get_ongoing_bus_schedule.do",
+        "get_completed_schedule.do", "get_completed_bus_schedule.do",
+        "get_cancelled_schedule.do", "get_cancelled_bus_schedule.do",
+        "get_schedule.do"
+    };
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
 
         String requestURLPath = request.getServletPath().substring(1);
+        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
         try {
             if(session.getAttribute("operator") == null) {
                 throw new IllegalArgumentException("Invalid Request");
@@ -29,7 +39,7 @@ public class GetOperatorRouteMidCitiesServlet extends HttpServlet {
             Operator operator = (Operator) session.getAttribute("operator");
             Integer operatorId = operator.getOperatorId();
             Integer operatorRouteId = 0;
-            if(requestURLPath.equals("get_journey_date_schedule.do") || requestURLPath.equals("get_bus_journey_date_schedule.do") || requestURLPath.equals("get_schedule.do")) {
+            if(isIncludeRequest) {
                 operatorRouteId = (Integer) request.getAttribute("operator_route_id");
             }
             else {
@@ -45,7 +55,7 @@ public class GetOperatorRouteMidCitiesServlet extends HttpServlet {
                 }
                 session.setAttribute(formattedAttribute, operatorRouteMidCityList);
             }
-            if(!requestURLPath.equals("get_journey_date_schedule.do") && !requestURLPath.equals("get_bus_journey_date_schedule.do") && !requestURLPath.equals("get_schedule.do")) {
+            if(!isIncludeRequest) {
                 @SuppressWarnings("unchecked")
                 ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = (ArrayList<OperatorRouteMidCity>) session.getAttribute(formattedAttribute);
                 response.getWriter().println(new Gson().toJson(operatorRouteMidCityList));
@@ -53,7 +63,7 @@ public class GetOperatorRouteMidCitiesServlet extends HttpServlet {
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
-            if(!requestURLPath.equals("get_journey_date_schedule.do") && !requestURLPath.equals("get_bus_journey_date_schedule.do") && !requestURLPath.equals("get_schedule.do")) {
+            if(!isIncludeRequest) {
                 response.getWriter().println("invalid");
             }
             return;

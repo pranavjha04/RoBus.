@@ -47,15 +47,13 @@ public class GetInactiveDriverServlet extends HttpServlet {
             if(!isIncludeRequest) {
                 @SuppressWarnings("unchecked")  
                 ArrayList<Driver> list = (ArrayList<Driver>) session.getAttribute(CACHE_ATTRIBUTE);
-                response.getWriter().println(new Gson().toJson(list));
-                
+                response.getWriter().println(new Gson().toJson(list)); 
             }
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
             if(!isIncludeRequest) {
                 response.getWriter().println("invalid");
-                System.out.println("wow");
                 return;
             }
         }
@@ -65,14 +63,7 @@ public class GetInactiveDriverServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String requestURLPath = request.getServletPath().substring(1);
 
-        boolean isIncludeRequest = false;
-        for(String next : acceptedIncludeRequestURL) {
-            if(requestURLPath.equals(next)) {
-                isIncludeRequest = true;
-                break;
-            }
-        }
-
+        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
         if(session.getAttribute("operator") == null || !isIncludeRequest) {
             response.sendRedirect("/bts");
             return;

@@ -6,7 +6,6 @@ import {
   collectAllBusFareFactorRequest,
   collectInactiveDriversRequest,
   collectWeekdayRoutes,
-  getBusJourneyDateScheduleRequest,
   validateScheduleTimeClash,
 } from "./service.js";
 import { disableElements, enableElements } from "./util.js";
@@ -645,15 +644,7 @@ scheduleBusForm.addEventListener("submit", async (e) => {
   }
 });
 
-dateRangePrev.addEventListener("click", (e) => {
-  range -= 7;
-  updateDateRange();
-});
 
-dateRangeNext.addEventListener("click", (e) => {
-  range += 7;
-  updateDateRange();
-});
 
 scheduleTable.addEventListener("click", async (e) => {
   const target = e.target.closest("button");
