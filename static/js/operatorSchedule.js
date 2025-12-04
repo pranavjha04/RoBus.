@@ -198,7 +198,6 @@ scheduleTable.addEventListener("click", (e) => {
 
   const row = target.closest("tr");
   const { year, month, day, scheduleId } = row.dataset;
-  console.log(row.dataset);
   const date = [year, month, day].join("-");
   const activeFilter =
     filterNavContainer.querySelector(".btn-primary").dataset.type;
