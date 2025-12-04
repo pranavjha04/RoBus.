@@ -372,10 +372,12 @@ prefix="e" uri="bts" %>
                   class="d-flex align-items-center bg-white rounded p-1"
                   id="filter_nav"
                 >
-                  <button class="btn btn-primary">Upcoming</button>
-                  <button class="btn">Ongoing</button>
-                  <button class="btn">Completed</button>
-                  <button class="btn">Cancelled</button>
+                  <button class="btn btn-primary" data-type="upcoming">
+                    Upcoming
+                  </button>
+                  <button class="btn" data-type="ongoing">Ongoing</button>
+                  <button class="btn" data-type="completed">Completed</button>
+                  <button class="btn" data-type="cancelled">Cancelled</button>
                 </div>
               </div>
 

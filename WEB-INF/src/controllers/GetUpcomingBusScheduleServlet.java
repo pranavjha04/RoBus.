@@ -33,13 +33,8 @@ public class GetUpcomingBusScheduleServlet extends HttpServlet {
         boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
 
         try {
-            if(session.getAttribute("operator") == null) {
-                throw new IllegalArgumentException("Invalid Request");   
-            }
-            if(request.getParameter("date") == null) {
-                throw new IllegalArgumentException("Missing Parameter");
-            }
             int busId = -1;
+            
             if(isIncludeRequest) {
                 if(request.getAttribute("bus_id") == null) {
                     throw new IllegalArgumentException("Invalid Request");
@@ -53,10 +48,11 @@ public class GetUpcomingBusScheduleServlet extends HttpServlet {
                 busId = Integer.parseInt(request.getParameter("bus_id"));
             }
             if(busId == -1) throw new IllegalArgumentException("Invalid Request");
-            Date journeyDate = Date.valueOf(request.getParameter("date"));
+            Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
+
             Operator operator = (Operator) session.getAttribute("operator");
 
-            final String CACHE_ATTRIBUTE = "upcoming_bus_schedule_list" + journeyDate.toString();
+            final String CACHE_ATTRIBUTE = "upcoming" + busId + "schedule_list" + journeyDate.toString();
 
             if(session.getAttribute(CACHE_ATTRIBUTE) == null) {
                 ArrayList<Schedule> list = Schedule.collectBusScheduleRecords(journeyDate, busId, operator.getOperatorId(), 11);
@@ -75,7 +71,6 @@ public class GetUpcomingBusScheduleServlet extends HttpServlet {
                         if(session.getAttribute(formattedAttribute) == null) {
                             throw new IllegalArgumentException("Invalid Request");
                         }
-                        request.removeAttribute("operator_route_id");
                     }
 
                     @SuppressWarnings("unchecked")
@@ -98,6 +93,9 @@ public class GetUpcomingBusScheduleServlet extends HttpServlet {
                 response.getWriter().println("invalid");
             }
             return;
+        }
+        finally {
+            request.removeAttribute("operator_route_id");
         }
     } 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

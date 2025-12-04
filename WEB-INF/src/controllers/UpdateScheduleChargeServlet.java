@@ -21,17 +21,17 @@ import utils.FieldManager;
 
 @WebServlet("/update_schedule_charges.do")
 public class UpdateScheduleChargeServlet extends HttpServlet {
-    private static String[] acceptedParams = {"additional_charges", "seater_fare", "sleeper_fare", "total_charges", "schedule_id", "date"};
+    private static String[] acceptedParams = {"additional_charges", "seater_fare", "sleeper_fare", "total_charges", "schedule_id", "journey_date", "bus_id"};
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         if(session.getAttribute("operator") == null) {
             response.sendRedirect("/bts");
             return;
         }
-
         try {
             for(String next : acceptedParams) {
                 if(request.getParameter(next) == null) {
+                    System.out.println(next);
                     throw new IllegalArgumentException("Missing Parameter");
                 }
             }   
@@ -41,9 +41,11 @@ public class UpdateScheduleChargeServlet extends HttpServlet {
             Integer seaterFare = Integer.parseInt(request.getParameter("seater_fare"));
             Integer sleeperFare = Integer.parseInt(request.getParameter("sleeper_fare"));
             Integer totalCharges = Integer.parseInt(request.getParameter("total_charges"));
+            Integer busId = Integer.parseInt(request.getParameter("bus_id"));
             Integer scheduleId = Integer.parseInt(request.getParameter("schedule_id"));
-            Date journeyDate = Date.valueOf(request.getParameter("date"));
-            final String JOURNEY_DATE_CACHE = "date_schedule_list" + journeyDate.toString();
+            Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
+            final String ALL_INCOMING_SCHEDULE_LIST = "upcoming_schedule_list" + journeyDate.toString();
+            final String BUS_INCOMING_SCHEDULE_LIST = "upcoming" + busId + "schedule_list" + journeyDate.toString();
             Schedule currSchedule = null;
             int targetIndex = -1;
 
@@ -55,30 +57,37 @@ public class UpdateScheduleChargeServlet extends HttpServlet {
                 throw new IllegalArgumentException("Invalid Seating Fare");
             }
 
-            if(session.getAttribute(JOURNEY_DATE_CACHE) == null) {
-                request.getRequestDispatcher("get_journey_date_schedule.do").include(request, response);
-                if(session.getAttribute(JOURNEY_DATE_CACHE) == null) {
-                    throw new IllegalArgumentException("Invalid Request");
+            if(session.getAttribute(ALL_INCOMING_SCHEDULE_LIST) != null) {
+                @SuppressWarnings("unchecked")
+                ArrayList<Schedule> dateScheduleList = (ArrayList<Schedule>) session.getAttribute(ALL_INCOMING_SCHEDULE_LIST);   
+                for(Schedule curr : dateScheduleList) {
+                    if(curr.getScheduleId().equals(scheduleId)) {
+                        currSchedule = curr;
+                        break;
+                    }
                 }
             }
-
-            @SuppressWarnings("unchecked")
-            ArrayList<Schedule> dateScheduleList = (ArrayList<Schedule>) session.getAttribute(JOURNEY_DATE_CACHE);
-
-            for(int index = 0; index < dateScheduleList.size(); index++) {
-                Schedule curr = dateScheduleList.get(index);
-                if(curr.getScheduleId().equals(scheduleId)) {
-                    targetIndex = index;
-                    currSchedule = curr;
-                    break;
+            else if(session.getAttribute(BUS_INCOMING_SCHEDULE_LIST) != null) {
+                @SuppressWarnings("unchecked")
+                ArrayList<Schedule> dateScheduleList = (ArrayList<Schedule>) session.getAttribute(BUS_INCOMING_SCHEDULE_LIST);   
+                for(Schedule curr : dateScheduleList) {
+                    if(curr.getScheduleId().equals(scheduleId)) {
+                        currSchedule = curr;
+                        break;
+                    }
                 }
+            }
+            else {
+                currSchedule = Schedule.getRecord(scheduleId, operator.getOperatorId());
+            }
+            if(currSchedule == null || !currSchedule.getStatus().getStatusId().equals(11))  { // upcoming nahi hai
+                throw new IllegalArgumentException("Invalid Request");
             }
 
             if(currSchedule == null || !currSchedule.getStatus().getStatusId().equals(11))  { // upcoming nahi hai
                 throw new IllegalArgumentException("Invalid Request");
             } 
 
-            int busId = currSchedule.getBus().getBusId();
             if(session.getAttribute("bus_fare_factor_list" + busId) == null) {
                 request.getRequestDispatcher("get_bus_fare_factors.do").include(request, response);
                 if(session.getAttribute("bus_fare_factor_list" + busId) == null) {
@@ -127,7 +136,6 @@ public class UpdateScheduleChargeServlet extends HttpServlet {
                 currSchedule.setSleeperFare(sleeperFare);
                 currSchedule.setTotalCharges(totalCharges);
 
-                dateScheduleList.set(targetIndex, currSchedule);
                 response.getWriter().println("ok");
             }
         }

@@ -53,7 +53,6 @@ const updateScheduleRecords = (list = []) => {
 
 const handleScheduleDateRequest = async (callback, filter, date) => {
   if (!callback || !filter | !date) return;
-
   try {
     if (!cache[filter][date]) {
       scheduleTable.innerHTML = ViewHelper.getTableLoader();
@@ -191,6 +190,32 @@ dateRangeNext.addEventListener("click", () => {
 dateRangePrev.addEventListener("click", () => {
   range -= 7;
   updateDateRange();
+});
+
+scheduleTable.addEventListener("click", (e) => {
+  const target = e.target.closest("button");
+  if (!target || !target.dataset.type || !target.closest("tr")) return;
+
+  const row = target.closest("tr");
+  const { year, month, day, scheduleId } = row.dataset;
+  console.log(row.dataset);
+  const date = [year, month, day].join("-");
+  const activeFilter =
+    filterNavContainer.querySelector(".btn-primary").dataset.type;
+  console.log(activeFilter, date);
+  const activeDate = cache[activeFilter][date]?.find(
+    (schedule) => schedule.scheduleId === +scheduleId
+  );
+
+  if (!activeDate) return;
+
+  sessionStorage.setItem("activeSchedule", JSON.stringify(activeDate));
+
+  const APP_URL = window.location.href.substring(
+    0,
+    window.location.href.lastIndexOf("/")
+  );
+  window.location.href = `${APP_URL}/manage_bus_schedule.do`;
 });
 
 const init = () => {

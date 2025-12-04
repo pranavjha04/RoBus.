@@ -11,9 +11,11 @@ import java.io.IOException;
 
 import models.User;
 
+import utils.AppUtil;
+
 @WebServlet("/update_user_status.do")
 public class UpdateUserStatusServlet extends HttpServlet {
-    private static String[] acceptedIncludeRequestURL = {"add_bus_schedule.do", "update_schedule_driver.do", "update_schedule_status.do", "update_driver_status.do"};
+    private static String[] acceptedIncludeRequestURL = {"update_driver_status.do", "add_bus_schedule.do", "update_schedule_driver.do"};
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
@@ -23,14 +25,8 @@ public class UpdateUserStatusServlet extends HttpServlet {
             return;
         }
         String requestURLPath = request.getServletPath().substring(1);
-        boolean isIncludeRequest = false;
-
-        for(String next : acceptedIncludeRequestURL) {
-            if(requestURLPath.equals(next)) {
-                isIncludeRequest = true;
-                break;
-            }
-        }
+        System.out.println(requestURLPath);
+        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestURL);
 
         int userId = -1;
         int statusId = -1;
@@ -85,5 +81,6 @@ public class UpdateUserStatusServlet extends HttpServlet {
                 response.getWriter().println("invalid");
             }
         }
+       
     }
 }

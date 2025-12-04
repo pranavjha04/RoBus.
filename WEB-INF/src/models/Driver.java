@@ -34,6 +34,34 @@ public class Driver {
 
     }
 
+    public static boolean checkStatus(int driverId, int statusId, int operatorId) {
+        boolean flag = false;
+
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "SELECT d.driver_id FROM drivers d " +
+                        "JOIN users u ON u.user_id = d.user_id " +
+                        "WHERE d.driver_id=? AND u.status_id=? AND d.operator_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setInt(1, driverId);
+            ps.setInt(2, statusId);
+            ps.setInt(3, operatorId);
+
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
+    }
+
     public static Driver getRecord(Integer driverId, Integer operatorId) {
         Driver driver = null;
         try {

@@ -51,7 +51,7 @@ public class CheckValidScheduleTimingServlet extends HttpServlet {
             Time departureTime = Time.valueOf(request.getParameter("departure_time"));
             Time arrivalTime = Time.valueOf(request.getParameter("arrival_time"));
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));  
-            final String CACHE_ATTRIBUTE = "upcoming_bus_schedule_list" + journeyDate.toString();
+            final String CACHE_ATTRIBUTE = "upcoming" + busId + "schedule_list" + journeyDate.toString();
         
             if(!FieldManager.validateScheduleDate(journeyDate.toString())) {
                 throw new IllegalArgumentException("Invalid Date");
@@ -92,7 +92,7 @@ public class CheckValidScheduleTimingServlet extends HttpServlet {
                 response.getWriter().println("ok");
             }
             else {
-                session.setAttribute("isScheduleDateTimeValid", true);
+                request.setAttribute("isScheduleDateTimeValid", true);
             }
             return;
         }

@@ -36,7 +36,7 @@ public class AddBusScheduleServlet extends HttpServlet {
         }
 
         try {
-            // validate if any missing parameter
+            // validate journey_date if any missing parameter
             for(String next : acceptedParams) {
                 if(request.getParameter(next) == null) {
                     throw new IllegalArgumentException("Missing Parameter");
@@ -61,12 +61,10 @@ public class AddBusScheduleServlet extends HttpServlet {
 
             // -------- DATE TIME START -------- 
             request.getRequestDispatcher("check_valid_schedule_timings.do").include(request, response);
-            if (session.getAttribute("isScheduleDateTimeValid") == null) {
+            Object isScheduleDateTimeValid = request.getAttribute("isScheduleDateTimeValid");
+            if (isScheduleDateTimeValid == null || !((Boolean) isScheduleDateTimeValid)) {
                 throw new IllegalArgumentException("Invalid schedule timing");
             }
-            boolean isScheduleDateTimeValid = (Boolean) session.getAttribute("isScheduleDateTimeValid");
-            if(!isScheduleDateTimeValid) throw new IllegalArgumentException("Invalid Request");
-
             // -------- DATE TIME VALIDATION END -------- 
 
             /* -------- EXTRA FARE CHARGES  START -------- */
@@ -80,33 +78,14 @@ public class AddBusScheduleServlet extends HttpServlet {
             /* -------- EXTRA FARE CHARGES END -------- */
 
             /* -------- DRIVER START -------- */
-            boolean isDriverValid = false;
-            int userId = -1;
-            int removeIndex = -1;
-            if(session.getAttribute("inactiveDriverList") == null) {
-                request.getRequestDispatcher("get_inactive_drivers.do").include(request, response);
-                if(session.getAttribute("inactiveDriverList") == null) {
-                    throw new IllegalArgumentException("Invalid Request");
-                }
-            }
-            @SuppressWarnings("unchecked")
-            ArrayList<Driver> driverList = (ArrayList<Driver>) session.getAttribute("inactiveDriverList");
+            request.setAttribute("driver_id", driverId);
+            request.getRequestDispatcher("check_inactive_driver.do").include(request, response);
 
-            for(int index = 0; index < driverList.size(); index++) {
-                Driver next = driverList.get(index);
-                if(next.getDriverId().equals(driverId) && next.getUser().getStatus().getName().equals("Inactive")) {
-                    isDriverValid = true;
-                    userId = next.getUser().getUserId();
-                    removeIndex = index;
-                    break;
-                }
+            Object isInActive = request.getAttribute("isInActive");
+            if(isInActive == null || !((Boolean) isInActive)) {
+                throw new IllegalArgumentException("Invalid Request");
             }
 
-            if(!isDriverValid) {
-                throw new IllegalArgumentException("Illegal Driver");
-            }
-
-            driverList.remove(removeIndex);
             /* -------- DRIVER END -------- */
 
             /* -------- BUS START -------- */
@@ -156,37 +135,29 @@ public class AddBusScheduleServlet extends HttpServlet {
             /* -------- TOTAL CHARGES END -------- */
             boolean isBusStatusUpdated = inputBus.updateStatus(inputBus.getBusId(), 4, operator.getOperatorId());
             if(!isBusStatusUpdated) throw new IllegalArgumentException("Internal Server Error");
+
             /******** UPDATE DRIVER STATUS */
-
-            request.setAttribute("user_id", userId);
+            request.setAttribute("driver_id", driverId);
             request.setAttribute("status_id", 4);
-            request.getRequestDispatcher("update_user_status.do").include(request, response);
-            if(request.getAttribute("isUpdated") == null) {
+
+            request.getRequestDispatcher("update_driver_status.do").include(request, response);
+
+            Object isDriverStatusUpdated = request.getAttribute("isUpdated");
+            if(isDriverStatusUpdated == null || !((Boolean) isDriverStatusUpdated)) {
                 throw new IllegalArgumentException("Invalid Request");
             }
-            boolean isDriverStatusUpdated = (Boolean) request.getAttribute("isUpdated");
-
-            if(!isDriverStatusUpdated) {
-                throw new IllegalArgumentException("Invalid Request");
-            }
-
+            
+    
             /* -------- ADD QUERY -------- */
             boolean isScheduled = Schedule.addRecord(journeyDate, departureTime, arrivalTime, additionalCharges, sleeperFare, seaterFare, totalCharges, busId, driverId, busRouteWeekdayId);
 
             if(!isScheduled) throw new IllegalArgumentException("Internal Server Error");
 
-            request.removeAttribute("user_id");
-            request.removeAttribute("status_id");
             // clear cache
             String[] clearCahceAttributeList = {
-                journeyDate.toString() + operator.getOperatorId() + busId, 
-                "date_schedule_list" + journeyDate.toString(), 
-                busId + "bus_date_schedule_list" + journeyDate.toString()
+                "upcoming_schedule_list" + journeyDate.toString(),
+                "upcoming" + busId + "schedule_list" + journeyDate.toString()
             };
-
-            if(driverList.size() == 0) {
-                session.removeAttribute("inactiveDriverList");
-            }
 
             for(String attribute : clearCahceAttributeList) {
                 session.removeAttribute(attribute);
@@ -201,6 +172,11 @@ public class AddBusScheduleServlet extends HttpServlet {
         }       
         catch(Exception e) {
             e.printStackTrace();
+        }
+        finally {
+            request.removeAttribute("driver_id");
+            request.removeAttribute("status_id");
+            request.removeAttribute("isUpdated");
         }
     }
 }

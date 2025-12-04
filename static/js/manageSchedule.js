@@ -452,6 +452,7 @@ saveDriverChageBtn.addEventListener("click", async () => {
         "activeSchedule",
         JSON.stringify(model.activeSchedule)
       );
+
       await handleCollectInActiveDriverRequest();
 
       closeDriverSelectContainer();
@@ -507,7 +508,7 @@ saveChargeChageBtn.addEventListener("click", async () => {
           total_charges: newTotalCharges,
           schedule_id: model.activeSchedule.scheduleId,
           bus_id: model.activeSchedule.bus.busId,
-          date: journeyDate.value,
+          journey_date: journeyDate.value,
           operator_route_id:
             model.activeSchedule.busRouteWeekday.operatorRoute.operatorRouteId,
         });
@@ -542,6 +543,7 @@ cancelScheduleBtn.addEventListener("click", async () => {
       date: journeyDate.value,
       schedule_id: model.activeSchedule.scheduleId,
       status_id: 6,
+      bus_id: model.activeSchedule.bus.busId,
     });
     if (!response.startsWith("{")) {
       throw new Error("Invalid Request");

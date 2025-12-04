@@ -6,6 +6,10 @@ import {
   collectAllBusFareFactorRequest,
   collectInactiveDriversRequest,
   collectWeekdayRoutes,
+  getCancelledBusScheduleRequest,
+  getCompletedBusScheduleRequest,
+  getOngoingBusScheduleRequest,
+  getUpcomingBusScheduleRequest,
   validateScheduleTimeClash,
 } from "./service.js";
 import { disableElements, enableElements } from "./util.js";
@@ -43,6 +47,7 @@ const dateRangePrev = document.querySelector("#date_range_back");
 const dateRangeText = document.querySelector("#date_range_display");
 const dateRangeNext = document.querySelector("#date_range_next");
 const dateRangeContainer = document.querySelector("#date_range");
+const filterNavContainer = document.querySelector("#filter_nav");
 
 const scheduleTable = document.querySelector("#schedule_table");
 let range = 0;
@@ -55,16 +60,18 @@ const prevValue = {
   journeyDate: null,
 };
 
-const journeyDateScheduleCache = {};
-
 const modal = {
   activeBus: null,
   busFareFactorList: [],
 };
 
 const cache = {
+  upcoming: {},
+  ongoing: {},
+  completed: {},
+  cancelled: {},
   availableRouteCache: {},
-  driverCache: [],
+  driverCache: null,
 };
 
 /******************UTILS ************************************ */
@@ -155,6 +162,9 @@ const extraChargeHandler = (target, type) => {
     prevValue.totalCharges = +totalCharge.value;
   }
 };
+const formatDate = (d) => {
+  return d.toISOString().split("T")[0];
+};
 
 /**********************UI UPDATES *********************************** */
 const updateBusInfoDisplay = () => {
@@ -173,6 +183,7 @@ const updateRouteSelect = (routeList = []) => {
     routeSelect.disabled = true;
     routeSelectContainer.innerHTML = "";
     routeSelect.textContent = "No Routes are available";
+    return;
   }
 
   routeSelect.disabled = false;
@@ -186,19 +197,33 @@ const updateRouteSelect = (routeList = []) => {
     .join("");
 };
 
-const updateDriverListDisplay = () => {
-  const { driverCache: driverList } = cache;
-  if (driverList.length === 0) {
+const updateDriverListDisplay = (driverList = []) => {
+  console.log(driverList);
+  if (!driverList.length) {
+    disableElements(driverSelect);
+    console.log(driverList);
     driverSelect.disabled = true;
-    driverSelect.textContent = `No drivers are available`;
     driverSelectContainer.innerHTML = "";
-  } else {
-    driverSelect.disabled = false;
-    driverSelect.textContent = "Select Driver";
-    driverSelectContainer.innerHTML = driverList
-      .map(ViewHelper.getScheduleAvailableDriver)
-      .join("");
+    driverSelect.textContent = "No Drivers are available";
+    return;
   }
+  driverSelect.disabled = false;
+  driverSelect.textContent = "Select Driver";
+
+  enableElements(driverSelect);
+  driverSelect.focus();
+
+  driverSelectContainer.innerHTML = driverList
+    .map(ViewHelper.getScheduleAvailableDriver)
+    .join("");
+};
+
+const resetFilter = () => {
+  [...filterNavContainer.children].forEach((node) => {
+    node.classList.remove("btn-primary");
+  });
+
+  filterNavContainer.firstElementChild.classList.add("btn-primary");
 };
 
 const updateScheduleRecords = (list = []) => {
@@ -206,17 +231,17 @@ const updateScheduleRecords = (list = []) => {
   if (list.length === 0) {
     // do something
     scheduleTable.innerHTML = `<div class="d-flex mt-5 flex-column text-center align-items-center justify-content-center">
-                <h3>No Schedules</h3>
-                <p>There are no schedules for this date.</p>
-                <button
-                  class="btn btn-primary mt-2"
-                  data-type="empty"
-                   data-bs-toggle="modal"
-                  data-bs-target="#centeredModal"
-                >
-                   Add Schedule
-                </button>
-              </div>`;
+            <h3>No Schedules</h3>
+            <p>There are no schedules for this date.</p>
+            <button
+              class="btn btn-primary mt-2"
+              data-type="empty"
+               data-bs-toggle="modal"
+              data-bs-target="#centeredModal"
+            >
+               Add Schedule
+            </button>
+          </div>`;
   } else {
     // do something
     scheduleTable.innerHTML = ViewHelper.getScheduleTableHeading();
@@ -226,128 +251,108 @@ const updateScheduleRecords = (list = []) => {
   }
 };
 
-const handleJourneyDateScheduleRecordRequest = async (journeyDate) => {
+const handleScheduleDateRequest = async (callback, filter, date) => {
+  if (!callback || !filter | !date) return;
+
   try {
-    if (!(journeyDate instanceof Date)) throw new Error("Invalid Request");
-    scheduleTable.innerHTML = ViewHelper.getTableLoader();
-    if (journeyDateScheduleCache[journeyDate.toDateString()]) {
-      console.log("CACHED");
-      updateScheduleRecords(
-        journeyDateScheduleCache[journeyDate.toDateString()]
-      );
-    } else {
-      const year = journeyDate.getFullYear();
-      const month = journeyDate.getMonth();
-      const day = journeyDate.getDate();
-      const formattedDate = [year, month + 1, day]
-        .map((next) => next.toString().padStart(2, "0"))
-        .join("-");
-      const response = await getBusJourneyDateScheduleRequest(
-        formattedDate,
-        modal.activeBus.busId
-      );
-      if (response === "invalid" || response.startsWith("invalid"))
-        throw new Error("Invalid Request");
-      if (response.startsWith("[")) {
-        journeyDateScheduleCache[journeyDate.toDateString()] =
-          JSON.parse(response);
-        updateScheduleRecords(
-          journeyDateScheduleCache[journeyDate.toDateString()]
-        );
-      }
+    if (!cache[filter][date]) {
+      scheduleTable.innerHTML = ViewHelper.getTableLoader();
+      const response = await callback(date, modal.activeBus.busId);
+      if (response === "invalid") throw new Error("Invalid Request");
+      cache[filter][date] = JSON.parse(response);
     }
+    updateScheduleRecords(cache[filter][date]);
   } catch (err) {
     toast.error(err.message);
-    scheduleTable.innerHTML = "";
+    console.error(err.message);
+    scheduleTable.innerHTML = ViewHelper.getTableEmptyMessage(
+      "There was an error while loading schedule"
+    );
   }
 };
 
 const showActiveDateRecord = () => {
   const activeDate = dateRangeContainer.querySelector(".active");
-
-  if (!activeDate) {
-    return;
+  const { day, month, year } = activeDate.dataset;
+  const formattedDate = [year, month, day].join("-");
+  const activeFilter =
+    filterNavContainer.querySelector(".btn-primary").dataset.type;
+  switch (activeFilter) {
+    case "upcoming": {
+      handleScheduleDateRequest(
+        getUpcomingBusScheduleRequest,
+        activeFilter,
+        formattedDate
+      );
+      break;
+    }
+    case "ongoing": {
+      handleScheduleDateRequest(
+        getOngoingBusScheduleRequest,
+        activeFilter,
+        formattedDate
+      );
+      break;
+    }
+    case "completed": {
+      handleScheduleDateRequest(
+        getCompletedBusScheduleRequest,
+        activeFilter,
+        formattedDate
+      );
+      break;
+    }
+    case "cancelled": {
+      handleScheduleDateRequest(
+        getCancelledBusScheduleRequest,
+        activeFilter,
+        formattedDate
+      );
+      break;
+    }
+    default: {
+      break;
+    }
   }
-
-  const { year, month, day } = activeDate.dataset;
-  const formattedDate = [year, month, day]
-    .map((next) => next.padStart(2, "0"))
-    .join("-");
-
-  handleJourneyDateScheduleRecordRequest(new Date(formattedDate));
-};
-
-const clearActiveDateRecord = () => {
-  const activeDate = dateRangeContainer.querySelector(".active");
-
-  if (!activeDate) {
-    return;
-  }
-
-  const { year, month, day } = activeDate.dataset;
-  const formattedDate = [year, +month, day].join("-");
-
-  journeyDateScheduleCache[new Date(formattedDate).toDateString()] = null;
 };
 
 const updateDateRange = () => {
-  const currDate = new Date();
-  let startDate = new Date(currDate);
+  const todayDate = new Date();
+  todayDate.setHours(0, 0, 0, 0);
 
-  startDate.setDate(currDate.getDate() - currDate.getDay());
-  startDate.setDate(startDate.getDate() + range);
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() + range);
+
+  const startDate = new Date(date);
+  startDate.setDate(date.getDate() - date.getDay());
+  startDate.setHours(0, 0, 0, 0);
 
   const endDate = new Date(startDate);
   endDate.setDate(startDate.getDate() + 6);
 
-  dateRangeText.textContent = new Intl.DateTimeFormat(navigator.language, {
-    month: "short",
-    day: "2-digit",
-    year: "numeric",
-  }).formatRange(startDate, endDate);
+  document.querySelector("#date_range_display").textContent =
+    new Intl.DateTimeFormat(navigator.language, {
+      dateStyle: "medium",
+    }).formatRange(startDate, endDate);
 
   dateRangeContainer.innerHTML = "";
-  let isInRange = false;
-  Array.from({ length: 7 }, (_, day) => {
-    const date = new Date(startDate);
-    date.setDate(date.getDate() + day);
-    let currInRange = false;
 
-    if (
-      date.getDate() === currDate.getDate() &&
-      date.getDay() === currDate.getDay() &&
-      date.getFullYear() === currDate.getFullYear()
-    ) {
-      isInRange = true;
-      currInRange = true;
-    }
+  Array.from({ length: 6 }).forEach((_, i) => {
+    const currDate = new Date(startDate);
+    currDate.setDate(startDate.getDate() + i);
+    const isInRange = formatDate(currDate) === formatDate(todayDate);
 
-    dateRangeContainer.innerHTML += `<button
-                  class="col norm rounded-2  d-flex flex-column ${
-                    currInRange ? "active" : ""
-                  } text-center justify-content-center"
-                  data-year=${date.getFullYear()}
-                  data-month=${(date.getMonth() + 1)
-                    .toString()
-                    .padStart(2, "0")}
-                  data-day=${date.getDate().toString().padStart(2, "0")}
-                >
-                  <h4>${new Intl.DateTimeFormat(navigator.language, {
-                    weekday: "short",
-                  }).format(date)}</h4>
-                  <span class="fs-4">${new Intl.DateTimeFormat(
-                    navigator.language,
-                    {
-                      day: "2-digit",
-                    }
-                  ).format(date)}</span>
-                </button>`;
+    dateRangeContainer.innerHTML += ViewHelper.getDateRangeButton(
+      currDate,
+      isInRange
+    );
   });
 
-  if (!isInRange) {
+  if (!dateRangeContainer.querySelector(".active")) {
     dateRangeContainer.firstElementChild.classList.add("active");
   }
-
+  resetFilter();
   showActiveDateRecord();
 };
 
@@ -397,6 +402,7 @@ journeyDate.addEventListener("blur", (e) => {
 
 showAvailableRouteBtn.addEventListener("click", async () => {
   const weekday = new Date(journeyDate.value).getDay();
+  console.log(weekday);
   try {
     if (!cache.availableRouteCache[weekday]) {
       disableForm();
@@ -406,7 +412,7 @@ showAvailableRouteBtn.addEventListener("click", async () => {
       }
       if (response === "internal" || !response)
         throw new Error("Internal Server Error");
-
+      console.log(response);
       cache.availableRouteCache[weekday] = JSON.parse(response);
 
       cache.availableRouteCache[weekday].forEach(({ operatorRoute }) => {
@@ -431,7 +437,7 @@ showAvailableRouteBtn.addEventListener("click", async () => {
   }
 });
 
-routeSelectContainer.addEventListener("mousedown", (e) => {
+routeSelectContainer.addEventListener("mousedown", async (e) => {
   const target = e.target.closest("li");
 
   if (!target) {
@@ -473,6 +479,23 @@ routeSelectContainer.addEventListener("mousedown", (e) => {
   );
 
   totalCharge.value = 180 + fixed + perPersonPerKm;
+  console.log(!cache.driverCache);
+
+  try {
+    if (!cache.driverCache) {
+      const response = await collectInactiveDriversRequest();
+
+      if (response === "invalid") {
+        throw new Error("Invalid request");
+      }
+
+      cache.driverCache = JSON.parse(response);
+    }
+
+    updateDriverListDisplay(cache.driverCache);
+  } catch (err) {
+    toast.error(err.message);
+  }
 });
 
 departureTime.addEventListener("blur", async (e) => {
@@ -530,31 +553,6 @@ departureTime.addEventListener("blur", async (e) => {
   }
 });
 
-driverSelect.addEventListener("click", async (e) => {
-  if (!busRoutWeekdayId.value) {
-    disableForm();
-    return;
-  }
-
-  try {
-    if (!cache.driverCache) {
-      const response = await collectInactiveDriversRequest();
-
-      if (response === "invalid") {
-        throw new Error("Invalid request");
-      }
-
-      cache.driverCache = JSON.parse(response);
-
-      updateDriverListDisplay();
-    } else {
-      updateDriverListDisplay();
-    }
-  } catch (err) {
-    toast.error(err.message);
-  }
-});
-
 driverSelectContainer.addEventListener("mousedown", (e) => {
   const target = e.target.closest("li");
   if (!target) {
@@ -571,6 +569,7 @@ driverSelectContainer.addEventListener("mousedown", (e) => {
 additionalCharges.addEventListener("blur", (e) => {
   extraChargeHandler(e.target, "additionalCharges");
 });
+
 seaterFare.addEventListener("blur", (e) => {
   extraChargeHandler(e.target, "seaterFare");
 });
@@ -626,12 +625,13 @@ scheduleBusForm.addEventListener("submit", async (e) => {
       throw new Error("Invalid Request");
     } else if (response === "ok") {
       toast.success("Bus is scheduled successfully");
+      cache["upcoming"][formatDate(new Date(journeyDate.value))] = null;
+      cache.driverCache = cache.driverCache.filter(
+        (driver) => driver.driverId !== +driverId.value
+      );
       clearForm();
       disableForm();
-      journeyDateScheduleCache[new Date(journeyDate.value).toDateString()] =
-        null;
-      cache.driverCache = null;
-      clearActiveDateRecord();
+      resetFilter();
       showActiveDateRecord();
       ModalHandler.hide(busScheduleModal);
     } else {
@@ -639,12 +639,10 @@ scheduleBusForm.addEventListener("submit", async (e) => {
     }
   } catch (err) {
     toast.error(err.message);
-    enableForm();
   } finally {
+    enableForm();
   }
 });
-
-
 
 scheduleTable.addEventListener("click", async (e) => {
   const target = e.target.closest("button");
@@ -663,41 +661,59 @@ scheduleTable.addEventListener("click", async (e) => {
     }, 200);
   } else if (type === "manage") {
     const { scheduleId, day, month, date, year } = target.closest("tr").dataset;
-    const key = [day, month, date, year]
-      .map((next) => next.padStart(2, "0"))
-      .join(" ");
+    const activeDateString = [year, month, day].join("-");
+    const activeFilter =
+      filterNavContainer.querySelector(".btn-primary").dataset.type;
+    console.log(activeFilter, date);
+    const activeDate = cache[activeFilter][activeDateString]?.find(
+      (schedule) => schedule.scheduleId === +scheduleId
+    );
 
-    if (!journeyDateScheduleCache[key]) {
-      await handleJourneyDateScheduleRecordRequest(new Date(key));
-    } else {
-      const activeSchedule = journeyDateScheduleCache[key]?.find((schedule) => {
-        return schedule.scheduleId === +scheduleId;
-      });
-      console.log(activeSchedule);
+    if (!activeDate) return;
 
-      if (!activeSchedule) return;
-      sessionStorage.setItem("activeSchedule", JSON.stringify(activeSchedule));
+    sessionStorage.setItem("activeSchedule", JSON.stringify(activeDate));
 
-      const APP_URL = window.location.href.substring(
-        0,
-        window.location.href.lastIndexOf("/")
-      );
-      window.location.href = `${APP_URL}/manage_bus_schedule.do`;
-    }
+    const APP_URL = window.location.href.substring(
+      0,
+      window.location.href.lastIndexOf("/")
+    );
+    window.location.href = `${APP_URL}/manage_bus_schedule.do`;
   }
+});
+
+filterNavContainer.addEventListener("click", (e) => {
+  const target = e.target.closest("button");
+  if (!target || target.classList.contains("btn-primary")) return;
+
+  [...filterNavContainer.children].forEach((node) => {
+    node.classList.remove("btn-primary");
+  });
+
+  target.classList.add("btn-primary");
+  showActiveDateRecord();
 });
 
 dateRangeContainer.addEventListener("click", (e) => {
   const target = e.target.closest("button");
+  if (!target || target.classList.contains("active")) return;
 
-  dateRangeContainer.childNodes.forEach((children) => {
-    if (children !== target) {
-      children.classList.remove("active");
-    }
+  dateRangeContainer.childNodes.forEach((child) => {
+    child.classList.remove("active");
   });
 
   target.classList.add("active");
+  resetFilter();
   showActiveDateRecord();
+});
+
+dateRangeNext.addEventListener("click", () => {
+  range += 7;
+  updateDateRange();
+});
+
+dateRangePrev.addEventListener("click", () => {
+  range -= 7;
+  updateDateRange();
 });
 
 window.addEventListener("DOMContentLoaded", async () => {
@@ -707,11 +723,11 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
     modal.activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
     busId.value = modal.activeBus.busId;
+    updateDateRange();
     await handleCollectBusFareFactors();
     updateBusInfoDisplay();
     PageLoading.stopLoading();
     disableForm();
-    updateDateRange();
   } catch (err) {
     console.error(err);
     toast.error(err.message);

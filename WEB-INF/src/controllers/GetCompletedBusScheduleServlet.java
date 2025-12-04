@@ -36,7 +36,7 @@ public class GetCompletedBusScheduleServlet extends HttpServlet {
             if(session.getAttribute("operator") == null) {
                 throw new IllegalArgumentException("Invalid Request");   
             }
-            if(request.getParameter("date") == null) {
+            if(request.getParameter("journey_date") == null) {
                 throw new IllegalArgumentException("Missing Parameter");
             }
             int busId = -1;
@@ -53,10 +53,10 @@ public class GetCompletedBusScheduleServlet extends HttpServlet {
                 busId = Integer.parseInt(request.getParameter("bus_id"));
             }
             if(busId == -1) throw new IllegalArgumentException("Invalid Request");
-            Date journeyDate = Date.valueOf(request.getParameter("date"));
+            Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
             Operator operator = (Operator) session.getAttribute("operator");
 
-            final String CACHE_ATTRIBUTE = "completed_bus_schedule_list" + journeyDate.toString();
+            final String CACHE_ATTRIBUTE = "completed" + busId + "schedule_list" + journeyDate.toString();
 
             if(session.getAttribute(CACHE_ATTRIBUTE) == null) {
                 ArrayList<Schedule> list = Schedule.collectBusScheduleRecords(journeyDate, busId, operator.getOperatorId(), 13);

@@ -37,11 +37,11 @@ public class GetUpcomingAllScheduleServlet extends HttpServlet {
                 throw new IllegalArgumentException("Invalid Request");   
             }
 
-            if(request.getParameter("date") == null) {
+            if(request.getParameter("journey_date") == null) {
                 throw new IllegalArgumentException("Missing Parameter");
             }
 
-            Date journeyDate = Date.valueOf(request.getParameter("date"));
+            Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
             Operator operator = (Operator) session.getAttribute("operator");
 
             final String CACHE_ATTRIBUTE = "upcoming_schedule_list" + journeyDate.toString();

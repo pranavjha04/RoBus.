@@ -13,8 +13,11 @@ import java.util.ArrayList;
 import models.Operator;
 import models.Driver;
 
+import utils.AppUtil;
+
 @WebServlet("/check_inactive_driver.do")
 public class CheckDriverInActiveServlet extends HttpServlet {
+    private static String[] acceptedIncludeRequestList = {"add_bus_schedule.do", "update_schedule_driver.do"};
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         if(session.getAttribute("operator") == null) {
@@ -23,12 +26,10 @@ public class CheckDriverInActiveServlet extends HttpServlet {
         }
 
         String requestURLPath = request.getServletPath().substring(1);
+        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
+        Operator operator = (Operator) session.getAttribute("operator");
         int driverId = -1;
         boolean isInActive = false;
-        boolean isIncludeRequest = false;
-        if(requestURLPath.equals("update_schedule_driver.do")) {
-            isIncludeRequest = true;
-        }
 
         try {
             if(isIncludeRequest) {
@@ -51,25 +52,25 @@ public class CheckDriverInActiveServlet extends HttpServlet {
             if(driverId == -1) {
                 throw new IllegalArgumentException("Invalid Request");
             }
-            if(session.getAttribute("inactiveDriverList") == null) {
-                request.getRequestDispatcher("get_inactive_drivers.do").include(request, response);
-                if(session.getAttribute("inactiveDriverList") == null) {
-                    throw new IllegalArgumentException("Invalid Request");
+            if(session.getAttribute("inactiveDriverList") != null) {
+                @SuppressWarnings("unchecked")
+                ArrayList<Driver> inactiveDriverList = (ArrayList<Driver>) session.getAttribute("inactiveDriverList");
+                for(Driver driver : inactiveDriverList) {
+                    if(driver.getDriverId().equals(driverId)) {
+                        isInActive = true;
+                        break;
+                    }
                 }
             }
-
-            @SuppressWarnings("unchecked")
-            ArrayList<Driver> inactiveDriverList = (ArrayList<Driver>) session.getAttribute("inactiveDriverList");
-
-            for(Driver driver : inactiveDriverList) {
-                if(driver.getDriverId().equals(driverId)) {
-                    isInActive = true;
-                    break;
-                }
+            else {
+                isInActive = Driver.checkStatus(driverId, 5, operator.getOperatorId());
             }
 
             if(isIncludeRequest) {
                 request.setAttribute("isInActive", isInActive);
+            }
+            else {
+                response.getWriter().println("ok");
             }
         }
         catch(IllegalArgumentException e) {

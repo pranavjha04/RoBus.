@@ -808,19 +808,16 @@ export class ViewHelper {
     const { operatorRoute } = busRouteWeekday;
     const currDate = new Date(journeyDate);
 
-    return ` <tr class="border border-bottom text-center" data-schedule-id=${scheduleId} data-day=${new Intl.DateTimeFormat(
-      navigator.language,
-      {
-        weekday: "short",
-      }
-    ).format(currDate)} data-month=${new Intl.DateTimeFormat(
-      navigator.language,
-      {
-        month: "short",
-      }
-    ).format(
-      currDate
-    )} data-date=${currDate.getDate()} data-year=${currDate.getFullYear()}>
+    return ` <tr class="border border-bottom text-center" data-schedule-id=${scheduleId} data-day=${currDate
+      .getDay()
+      .toString()
+      .padStart(2, "0")} data-month=${(currDate.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")} 
+      data-date=${currDate
+        .getDate()
+        .toString()
+        .padStart(2, "0")} data-year=${currDate.getFullYear()}>
                   <td class="p-3">${getFormattedTime(
                     arrivalTime
                   )} → ${getFormattedTime(departureTime)}</td>

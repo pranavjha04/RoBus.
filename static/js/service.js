@@ -598,9 +598,9 @@ export const addBusScheduleRequest = async (formData) => {
   return data.trim();
 };
 
-export const getUpcomingAllScheduleRequest = async (date) => {
+export const getUpcomingAllScheduleRequest = async (journey_date) => {
   const params = createURLParams({
-    date,
+    journey_date,
   });
   const res = await fetch(`get_upcoming_schedule.do?${params.toString()}`);
   if (!res.ok) throw new Error("Internal Server Error");
@@ -608,9 +608,9 @@ export const getUpcomingAllScheduleRequest = async (date) => {
   return data.trim();
 };
 
-export const getOngoingAllScheduleRequest = async (date) => {
+export const getOngoingAllScheduleRequest = async (journey_date) => {
   const params = createURLParams({
-    date,
+    journey_date,
   });
   const res = await fetch(`get_ongoing_schedule.do?${params.toString()}`);
   if (!res.ok) throw new Error("Internal Server Error");
@@ -618,9 +618,9 @@ export const getOngoingAllScheduleRequest = async (date) => {
   return data.trim();
 };
 
-export const getCompletedAllScheduleRequest = async (date) => {
+export const getCompletedAllScheduleRequest = async (journey_date) => {
   const params = createURLParams({
-    date,
+    journey_date,
   });
   const res = await fetch(`get_completed_schedule.do?${params.toString()}`);
   if (!res.ok) throw new Error("Internal Server Error");
@@ -628,9 +628,9 @@ export const getCompletedAllScheduleRequest = async (date) => {
   return data.trim();
 };
 
-export const getCancelledAllScheduleRequest = async (date) => {
+export const getCancelledAllScheduleRequest = async (journey_date) => {
   const params = createURLParams({
-    date,
+    journey_date,
   });
   const res = await fetch(`get_cancelled_schedule.do?${params.toString()}`);
   if (!res.ok) throw new Error("Internal Server Error");
@@ -638,9 +638,9 @@ export const getCancelledAllScheduleRequest = async (date) => {
   return data.trim();
 };
 
-export const getUpcomingBusScheduleRequest = async (date, bus_id) => {
+export const getUpcomingBusScheduleRequest = async (journey_date, bus_id) => {
   const params = createURLParams({
-    date,
+    journey_date,
     bus_id,
   });
   const res = await fetch(`get_upcoming_bus_schedule.do?${params.toString()}`);
@@ -649,9 +649,9 @@ export const getUpcomingBusScheduleRequest = async (date, bus_id) => {
   return data.trim();
 };
 
-export const getOngoingBusScheduleRequest = async (date, bus_id) => {
+export const getOngoingBusScheduleRequest = async (journey_date, bus_id) => {
   const params = createURLParams({
-    date,
+    journey_date,
     bus_id,
   });
   const res = await fetch(`get_ongoing_bus_schedule.do?${params.toString()}`);
@@ -660,9 +660,9 @@ export const getOngoingBusScheduleRequest = async (date, bus_id) => {
   return data.trim();
 };
 
-export const getCompletedBusScheduleRequest = async (date, bus_id) => {
+export const getCompletedBusScheduleRequest = async (journey_date, bus_id) => {
   const params = createURLParams({
-    date,
+    journey_date,
     bus_id,
   });
   const res = await fetch(`get_completed_bus_schedule.do?${params.toString()}`);
@@ -671,9 +671,9 @@ export const getCompletedBusScheduleRequest = async (date, bus_id) => {
   return data.trim();
 };
 
-export const getCancelledBusScheduleRequest = async (date, bus_id) => {
+export const getCancelledBusScheduleRequest = async (journey_date, bus_id) => {
   const params = createURLParams({
-    date,
+    journey_date,
     bus_id,
   });
   const res = await fetch(`get_cancelled_bus_schedule.do?${params.toString()}`);
@@ -686,14 +686,14 @@ export const updateScheduleDriver = async (
   old_driver_id,
   new_driver_id,
   schedule_id,
-  date,
+  journey_date,
   bus_id
 ) => {
   const params = createURLParams({
     old_driver_id,
     new_driver_id,
     schedule_id,
-    date,
+    journey_date,
     bus_id,
   });
 
