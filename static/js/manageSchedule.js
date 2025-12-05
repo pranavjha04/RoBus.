@@ -550,7 +550,6 @@ cancelScheduleBtn.addEventListener("click", async () => {
     } else {
       model.activeSchedule = JSON.parse(response);
       ModalHandler.hide(confirmModal);
-      console.log(model.activeSchedule);
       statusContainer.removeChild(statusContainer.firstChild);
       updateStatusContainer();
       toast.success("Schedule was cancelled successfully");
