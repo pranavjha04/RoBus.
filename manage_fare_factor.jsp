@@ -181,27 +181,22 @@
     </div>
 
     <div class="dashContainer">
-      <!-- Sidebar -->
-      <c:import url="operator_sidebar.jsp" />
+      <c:import url="operator_navbar.jsp" />
 
       <!-- Main content -->
-      <main
-        class="flex-grow-1 d-flex flex-column bg-light"
-        style="overflow: auto"
-      >
-        <!-- Top Navbar -->
-        <c:import url="operator_navbar.jsp" />
-
+      <main class="content-wrapper bg-light" style="overflow: auto">
+        <c:import url="operator_sidebar.jsp" />
         <!-- Dashboard Content -->
         <div class="p-4 d-flex flex-column overflow-scroll">
-          <a
-            href="operator_fare_factor.do"
-            class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link align-self-start"
+          <span
+            class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link"
+            style="cursor: pointer"
+            onclick="history.back()"
           >
             <span>&larr;</span>
             <span>Back</span>
-          </a>
-          <footer class="container mt-2 mb-4">
+          </span>
+          <div class="container mt-2 mb-4" id="pageWrapper">
             <!-- Row Layout Fare Factor Card -->
             <div class="container d-flex">
               <div class="fare-factor-card p-0 card-border-accent w-100">
@@ -264,12 +259,15 @@
                 </div>
               </div>
             </div>
-          </footer>
-
-          <table
-            class="border rounded table-responsive border-bottom-0 mt-2"
-            id="operator_ticket_fare_bus_table"
-          ></table>
+            <div
+              class="bg-white p-4 rounded shadow-sm d-flex flex-column gap-3"
+            >
+              <table
+                class="border rounded table-responsive border-bottom-0 mt-2"
+                id="operator_ticket_fare_bus_table"
+              ></table>
+            </div>
+          </div>
         </div>
       </main>
     </div>

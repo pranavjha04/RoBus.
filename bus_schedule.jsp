@@ -274,26 +274,27 @@ prefix="e" uri="bts" %>
 
     <div class="dashContainer">
       <!-- Sidebar -->
-      <c:import url="operator_sidebar.jsp" />
+      <c:import url="operator_navbar.jsp" />
 
       <!-- Main content -->
-      <main
-        class="flex-grow-1 d-flex flex-column bg-light"
-        style="overflow: auto"
-      >
+      <main class="content-wrapper bg-light">
+        <c:import url="operator_sidebar.jsp" />
         <!-- Top Navbar -->
-        <c:import url="operator_navbar.jsp" />
 
         <!-- Dashboard Content -->
-        <div class="p-4 d-flex flex-column overflow-scroll">
-          <div class="container mt-2 mb-4" id="pageWrapper">
-            <a
-              href="operator_buses.do"
-              class="link-primary link-underline-opacity-0 cursor-pointer fw-medium fs-4 d-flex link back-link align-self-start"
+        <div class="d-flex flex-column gap-3">
+          <div
+            class="p-4 d-flex flex-column overflow-auto gap-3"
+            id="pageWrapper"
+          >
+            <span
+              class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link"
+              style="cursor: pointer"
+              onclick="history.back()"
             >
               <span>&larr;</span>
               <span>Back</span>
-            </a>
+            </span>
             <div class="route-card p-4 card-border-accent">
               <div
                 class="d-flex flex-column flex-md-row align-items-center justify-content-between"

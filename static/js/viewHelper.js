@@ -338,7 +338,10 @@ export class ViewHelper {
   }
 
   static getOperatorTicketFareManageHeading() {
-    return `<thead>
+    return `<thead
+              class="border border-bottom text-center"
+              style="background-color: rgb(248, 249, 250)"
+            >
               <tr class="border border-bottom text-center">
                 <th class="p-3">Bus Number</th>
                 <th class="p-3">Manufacturer</th>
@@ -537,7 +540,7 @@ export class ViewHelper {
 
   static getManageRouteMidCityTableHeading() {
     return `<thead
-                  class="border border-bottom text-center"
+                   class="border border-bottom text-center"
                   style="background-color: rgb(248, 249, 250)"
                 >
                   <tr>
@@ -556,45 +559,45 @@ export class ViewHelper {
       city;
     const { distanceFromSource, durationFromSource, midCity } = routeMidCity;
     const isActive = operatorRoute.status.name === "Active";
-    return ` <tr class="text-center border-bottom" data-operator-route-mid-city-id=${operatorRouteMidCityId} data-halting-time=${haltingTime}>
-                    <td class="p-3 text-center d-flex flex-column align-items-center justify-content-center">
-                    ${midCity.name}
-                    <span class='text-muted'>${midCity.state.name}</span>
-                    </td>
-                    <td class="p-3 text-center">${distanceFromSource}km</td>
-                    <td class="p-3 text-center">${getFormatedDuration(
-                      durationFromSource
-                    )}</td>
-                    <td class="p-3 text-center position-relative halting">
-                      ${getFormatedDuration(haltingTime)}
-                    </td>
-                    <td class="p-3 text-center">
-                      <button
-                        class="btn manage-icon border-primary-subtle py-2 px-2 me-1"
-                        ${isActive && "disabled"}
-                        data-type='edit'
-                      >
-                        <img
-                          src="static/media/images/edit_sm_blue.svg"
-                          width="18"
-                          height="18"
-                        />
-                        <span class="text-primary">Edit</span>
-                      </button>
-                      <button
-                        class="btn delete-icon border-danger-subtle py-2 px-2"
-                        ${isActive && "disabled"}
-                        data-type='delete'
-                      >
-                        <img
-                          src="static/media/images/delete_sm_red.svg"
-                          width="18"
-                          height="18"
-                        />
-                        <span class="text-danger">Remove</span>
-                      </button>
-                    </td>
-                  </tr>`;
+    return `<tr class="text-center border-bottom"
+            data-operator-route-mid-city-id="${operatorRouteMidCityId}"
+            data-halting-time="${haltingTime}">
+            
+          <td class="p-3 d-flex flex-column align-items-center justify-content-center">
+            ${midCity.name}
+            <span class="text-muted">${midCity.state.name}</span>
+          </td>
+
+          <td class="p-3">${distanceFromSource} km</td>
+
+          <td class="p-3">${getFormatedDuration(durationFromSource)}</td>
+
+          <td class="p-3 position-relative halting">
+            ${getFormatedDuration(haltingTime)}
+          </td>
+
+          <td class="p-3">
+            <button
+              class="btn manage-icon border-primary-subtle py-2 px-2 me-1"
+              ${isActive ? "disabled" : ""}
+              data-type="edit"
+            >
+              <img src="static/media/images/edit_sm_blue.svg" width="18" height="18" />
+              <span class="text-primary">Edit</span>
+            </button>
+
+            <button
+              class="btn delete-icon border-danger-subtle py-2 px-2"
+              ${isActive ? "disabled" : ""}
+              data-type="delete"
+            >
+              <img src="static/media/images/delete_sm_red.svg" width="18" height="18" />
+              <span class="text-danger">Remove</span>
+            </button>
+          </td>
+
+        </tr>
+        `;
   }
 
   static getManageRouteCityActiveRow(route, totalDuration) {

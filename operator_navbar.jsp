@@ -1,4 +1,10 @@
-<nav class="navbar navbar-light bg-white border-bottom px-4 p-1 gap-2">
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<nav
+  class="navbar navbar-light bg-white border-bottom px-4 p-1 gap-2 position-sticky top-0"
+  style="z-index: 1030"
+>
+  <c:import url="logo.jsp" />
   <div
     class="ms-auto d-flex align-items-center gap-2 focus-ring-info p-1 rounded-5"
   >

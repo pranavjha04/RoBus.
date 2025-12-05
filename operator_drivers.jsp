@@ -119,16 +119,11 @@ prefix="e" uri="bts" %>
       </div>
     </div>
     <div class="dashContainer">
-      <!-- Sidebar -->
-      <c:import url="operator_sidebar.jsp" />
+      <c:import url="operator_navbar.jsp" />
 
       <!-- Main content -->
-      <main
-        class="flex-grow-1 d-flex flex-column bg-light"
-        style="overflow: auto"
-      >
-        <!-- Top Navbar -->
-        <c:import url="operator_navbar.jsp" />
+      <main class="content-wrapper bg-light" style="overflow: auto">
+        <c:import url="operator_sidebar.jsp" />
 
         <!-- Dashboard Content -->
         <div

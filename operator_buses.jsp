@@ -142,19 +142,15 @@
     <!-- Dashboard -->
     <div class="dashContainer">
       <!-- Sidebar -->
-      <c:import url="operator_sidebar.jsp" />
+      <c:import url="operator_navbar.jsp" />
 
-      <!-- Main Content -->
-      <main
-        class="flex-grow-1 d-flex flex-column bg-light"
-        style="overflow: auto"
-      >
-        <!-- Navbar -->
-        <c:import url="operator_navbar.jsp" />
+      <!-- Main content -->
+      <main class="content-wrapper bg-light">
+        <c:import url="operator_sidebar.jsp" />
 
         <!-- Page Header -->
         <div
-          class="p-4 d-flex flex-column gap-3 overflow-scroll"
+          class="p-4 d-flex flex-column gap-3 overflow-auto"
           id="pageWrapper"
         >
           <h2>All Buses</h2>

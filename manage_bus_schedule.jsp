@@ -17,7 +17,7 @@ prefix="e" uri="bts" %>
       }
     </style>
   </head>
-  <body>
+  <body class="">
     <c:import url="essential_page_display.jsp" />
     <div class="modal fade" tabindex="-1" id="centeredModal">
       <div class="modal-dialog">
@@ -55,27 +55,23 @@ prefix="e" uri="bts" %>
     </div>
 
     <div class="dashContainer">
-      <!-- Sidebar -->
-      <c:import url="operator_sidebar.jsp" />
+      <c:import url="operator_navbar.jsp" />
 
       <!-- Main content -->
-      <main
-        class="flex-grow-1 d-flex flex-column bg-light"
-        style="overflow: auto"
-      >
-        <!-- Top Navbar -->
-        <c:import url="operator_navbar.jsp" />
+      <main class="content-wrapper bg-light">
+        <c:import url="operator_sidebar.jsp" />
 
         <!-- Dashboard Content -->
-        <div class="p-4 d-flex flex-column overflow-scroll">
-          <a
-            class="link-primary link-underline-opacity-0 cursor-pointer fw-medium fs-4 d-flex link back-link align-self-start"
-            href="operator_schedules.do"
+        <div class="p-4 d-flex flex-column overflow-auto">
+          <span
+            class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link"
+            style="cursor: pointer"
+            onclick="history.back()"
           >
             <span>&larr;</span>
             <span>Back</span>
-          </a>
-          <div class="container mt-2 mb-4" id="pageWrapper">
+          </span>
+          <div class="px-2 mt-2 mb-4" id="pageWrapper">
             <div class="d-flex gap-2 align-items-center mt-4 mb-2" id="nav">
               <button
                 class="btn btn-primary rounded-pill"

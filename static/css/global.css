@@ -51,8 +51,14 @@ html {
 
 .dashContainer {
   display: grid;
+  grid-template-rows: auto 1fr;
+  width: 100%;
+}
+
+.content-wrapper {
+  display: grid;
   grid-template-columns: auto 1fr;
-  height: 100dvh;
+  width: 100%;
 }
 
 .feature-btn {

@@ -12,19 +12,16 @@
 
     <title>${sessionScope.operator.fullName} Dashboard</title>
   </head>
-  <body>
+  <body class="overflow-hidden">
     <c:import url="essential_page_display.jsp" />
     <div class="dashContainer">
       <!-- Sidebar -->
-      <c:import url="operator_sidebar.jsp" />
+      <c:import url="operator_navbar.jsp" />
 
       <!-- Main content -->
-      <main
-        class="flex-grow-1 d-flex flex-column bg-light"
-        style="overflow: auto"
-      >
+      <main class="content-wrapper bg-light overflow-hidden">
+        <c:import url="operator_sidebar.jsp" />
         <!-- Top Navbar -->
-        <c:import url="operator_navbar.jsp" />
 
         <!-- Dashboard Content -->
         <div class="p-4 d-flex flex-column gap-3 overflow-scroll">

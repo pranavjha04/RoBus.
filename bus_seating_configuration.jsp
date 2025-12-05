@@ -76,169 +76,179 @@
       color: rgb(36, 36, 36);
     }
   </style>
-  <c:import url="essential_page_display.jsp" />
   <body>
+    <c:import url="essential_page_display.jsp" />
     <div class="dashContainer">
-      <aside
-        class="border bg-white p-3 d-flex flex-column gap-5 side-bar gap-4 h-100 bg-da"
-        style="overflow: auto"
-      >
-        <a
-          href="operator_buses.do"
-          class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link align-self-start"
+      <!-- Sidebar -->
+      <c:import url="operator_navbar.jsp" />
+
+      <!-- Main content -->
+      <main class="content-wrapper bg-light" style="overflow: auto">
+        <aside
+          class="border bg-white p-3 d-flex flex-column gap-5 side-bar gap-4 h-100 bg-da"
+          style="overflow: auto"
         >
-          <span>&larr;</span>
-          <span>Back</span>
-        </a>
-        <div
-          class="btn-group w-100"
-          role="group"
-          id="deck_cont"
-          aria-label="Deck Toggle"
-        >
-          <button
-            role="button"
-            class="btn btn-outline-primary active"
-            data-type="lower"
+          <span
+            class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link"
+            style="cursor: pointer"
+            onclick="history.back()"
           >
-            Lower Deck
-          </button>
-          <button
-            role="button"
-            class="btn btn-outline-primary inactive"
-            data-type="upper"
-          >
-            Upper Deck
-          </button>
-        </div>
-
-        <form
-          class="d-flex flex-column flex-grow-1 gap-4 align-self-end"
-          id="bus_config_form"
-        >
-          <!-- DECK Type -->
-          <div class="d-flex flex-column gap-2">
-            <h4 class="fs-5 mb-1">Deck Type</h4>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="sleeper"
-                id="bus_seater"
-                checked
-              />
-              <label class="form-check-label fw-medium" for="bus_seater">
-                Seater
-              </label>
-            </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="sleeper"
-                id="bus_sleeper"
-              />
-              <label class="form-check-label fw-medium" for="bus_sleeper">
-                Sleeper
-              </label>
-            </div>
-          </div>
-
-          <!-- Seating Layout -->
-          <div class="d-flex flex-column gap-2">
-            <h4 class="fs-5 mb-1">Seating Layout (per row)</h4>
-            <div class="row g-2 align-items-center">
-              <div class="col">
-                <input
-                  type="number"
-                  min="1"
-                  max="3"
-                  step="1"
-                  required
-                  class="form-control fld"
-                  placeholder="Left side seats"
-                  id="lsCount"
-                  name="lsCount"
-                  aria-label="Left seats per row"
-                />
-              </div>
-              <div class="col-auto fw-bold">+</div>
-              <div class="col">
-                <input
-                  type="number"
-                  min="1"
-                  max="3"
-                  step="1"
-                  required
-                  class="form-control fld"
-                  id="rsCount"
-                  name="rsCount"
-                  placeholder="Right side seats"
-                  aria-label="Right seats per row"
-                />
-              </div>
-            </div>
-            <small class="text-muted"> Example: 2 + 2 = 4 seats per row </small>
-          </div>
-
-          <!-- Rows & Seats -->
-          <div class="d-flex flex-column gap-2">
-            <h4 class="fs-5 mb-1">Rows & Total Seats</h4>
-            <div class="row g-2 align-items-center">
-              <div class="col">
-                <label for="rowCount" class="form-label">Total Rows</label>
-                <input
-                  type="number"
-                  class="form-control fld"
-                  id="rowCount"
-                  step="1"
-                  required
-                  name="rowCount"
-                  placeholder="e.g. 10"
-                  aria-label="Rows count"
-                  min="1"
-                />
-              </div>
-              <div class="col">
-                <label for="total_seats" class="form-label">Total Seats</label>
-                <input
-                  type="number"
-                  class="form-control fld"
-                  id="total_seats"
-                  name="seats"
-                  placeholder="Auto"
-                  aria-label="Total seats"
-                  readonly
-                />
-              </div>
-            </div>
-          </div>
-          <input
-            type="hidden"
-            name="bus_id"
-            id="busId"
-            value="${param.busId}"
-          />
-          <input type="hidden" name="deck" id="deck" />
+            <span>&larr;</span>
+            <span>Back</span>
+          </span>
           <div
-            class="d-flex align-items-center justify-content-between mt-auto gap-2"
+            class="btn-group w-100"
+            role="group"
+            id="deck_cont"
+            aria-label="Deck Toggle"
           >
-            <input
-              type="reset"
-              class="btn btn-secondary px-4 w-100"
-              value="Reset"
-            />
-            <input
-              type="submit"
-              class="btn btn-primary px-4 w-100"
-              value="Save Changes"
-            />
+            <button
+              role="button"
+              class="btn btn-outline-primary active"
+              data-type="lower"
+            >
+              Lower Deck
+            </button>
+            <button
+              role="button"
+              class="btn btn-outline-primary inactive"
+              data-type="upper"
+            >
+              Upper Deck
+            </button>
           </div>
-        </form>
-      </aside>
-      <main class="flex-grow-1 d-flex flex-column bg-light overflow-auto">
-        <!-- Main content -->
-        <c:import url="operator_navbar.jsp" />
+
+          <form
+            class="d-flex flex-column flex-grow-1 gap-4 align-self-end"
+            id="bus_config_form"
+          >
+            <!-- DECK Type -->
+            <div class="d-flex flex-column gap-2">
+              <h4 class="fs-5 mb-1">Deck Type</h4>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="sleeper"
+                  id="bus_seater"
+                  checked
+                />
+                <label class="form-check-label fw-medium" for="bus_seater">
+                  Seater
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="sleeper"
+                  id="bus_sleeper"
+                />
+                <label class="form-check-label fw-medium" for="bus_sleeper">
+                  Sleeper
+                </label>
+              </div>
+            </div>
+
+            <!-- Seating Layout -->
+            <div class="d-flex flex-column gap-2">
+              <h4 class="fs-5 mb-1">Seating Layout (per row)</h4>
+              <div class="row g-2 align-items-center">
+                <div class="col">
+                  <input
+                    type="number"
+                    min="1"
+                    max="3"
+                    step="1"
+                    required
+                    class="form-control fld"
+                    placeholder="Left side seats"
+                    id="lsCount"
+                    name="lsCount"
+                    aria-label="Left seats per row"
+                  />
+                </div>
+                <div class="col-auto fw-bold">+</div>
+                <div class="col">
+                  <input
+                    type="number"
+                    min="1"
+                    max="3"
+                    step="1"
+                    required
+                    class="form-control fld"
+                    id="rsCount"
+                    name="rsCount"
+                    placeholder="Right side seats"
+                    aria-label="Right seats per row"
+                  />
+                </div>
+              </div>
+              <small class="text-muted">
+                Example: 2 + 2 = 4 seats per row
+              </small>
+            </div>
+
+            <!-- Rows & Seats -->
+            <div class="d-flex flex-column gap-2">
+              <h4 class="fs-5 mb-1">Rows & Total Seats</h4>
+              <div class="row g-2 align-items-center">
+                <div class="col">
+                  <label for="rowCount" class="form-label">Total Rows</label>
+                  <input
+                    type="number"
+                    class="form-control fld"
+                    id="rowCount"
+                    step="1"
+                    required
+                    name="rowCount"
+                    placeholder="e.g. 10"
+                    aria-label="Rows count"
+                    min="1"
+                  />
+                </div>
+                <div class="col">
+                  <label for="total_seats" class="form-label"
+                    >Total Seats</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control fld"
+                    id="total_seats"
+                    name="seats"
+                    placeholder="Auto"
+                    aria-label="Total seats"
+                    readonly
+                  />
+                </div>
+              </div>
+            </div>
+            <input
+              type="hidden"
+              name="bus_id"
+              id="busId"
+              value="${param.busId}"
+            />
+            <input type="hidden" name="deck" id="deck" />
+            <div
+              class="d-flex align-items-center justify-content-between mt-auto gap-2"
+            >
+              <input
+                type="reset"
+                class="btn btn-secondary px-4 w-100"
+                value="Reset"
+              />
+              <input
+                type="submit"
+                class="btn btn-primary px-4 w-100"
+                value="Save Changes"
+              />
+            </div>
+          </form>
+        </aside>
+
+        <!-- Dashboard Content -->
+
         <div
           class="p-4 d-flex flex-column gap-3 align-items-center overflow-scroll"
           id="pageWrapper"
@@ -268,6 +278,7 @@
         </div>
       </main>
     </div>
+
     <script type="module" src="static/js/operatorBusSeatingConfig.js"></script>
   </body>
 </html>
