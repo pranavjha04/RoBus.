@@ -15,7 +15,7 @@ import utils.AppUtil;
 
 @WebServlet("/update_user_status.do")
 public class UpdateUserStatusServlet extends HttpServlet {
-    private static String[] acceptedIncludeRequestURL = {"update_driver_status.do", "add_bus_schedule.do", "update_schedule_driver.do"};
+    private static String[] acceptedIncludeRequestURL = {"update_driver_status.do", "add_bus_schedule.do", "update_schedule_driver.do", "update_schedule_status.do"};
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
@@ -25,7 +25,6 @@ public class UpdateUserStatusServlet extends HttpServlet {
             return;
         }
         String requestURLPath = request.getServletPath().substring(1);
-        System.out.println(requestURLPath);
         boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestURL);
 
         int userId = -1;

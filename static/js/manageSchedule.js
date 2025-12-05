@@ -540,7 +540,7 @@ cancelScheduleBtn.addEventListener("click", async () => {
   }
   try {
     const response = await updateScheduleStatusRequest({
-      date: journeyDate.value,
+      journey_date: journeyDate.value,
       schedule_id: model.activeSchedule.scheduleId,
       status_id: 6,
       bus_id: model.activeSchedule.bus.busId,
@@ -550,6 +550,7 @@ cancelScheduleBtn.addEventListener("click", async () => {
     } else {
       model.activeSchedule = JSON.parse(response);
       ModalHandler.hide(confirmModal);
+      console.log(model.activeSchedule);
       statusContainer.removeChild(statusContainer.firstChild);
       updateStatusContainer();
       toast.success("Schedule was cancelled successfully");
