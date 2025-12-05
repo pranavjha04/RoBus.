@@ -10,6 +10,15 @@ html {
   scroll-behavior: smooth;
 }
 
+body {
+  overflow: hidden;
+}
+.wrapper {
+  height: calc(100vh - 70px);
+  width: 100%;
+  overflow: auto;
+}
+
 .back-link {
   transition: all 0.3s;
 }
@@ -52,13 +61,11 @@ html {
 .dashContainer {
   display: grid;
   grid-template-rows: auto 1fr;
-  width: 100%;
 }
 
 .content-wrapper {
   display: grid;
   grid-template-columns: auto 1fr;
-  width: 100%;
 }
 
 .feature-btn {

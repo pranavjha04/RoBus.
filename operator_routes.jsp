@@ -197,195 +197,198 @@
         <c:import url="operator_sidebar.jsp" />
 
         <!-- Dashboard Content -->
+        <div class="wrapper">
+          <div class="p-4 d-flex flex-column gap-3" id="pageWrapper">
+            <h2>All Routes</h2>
+            <div
+              class="businfo justify-content-between align-items-center gap-2"
+            >
+              <div
+                class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
+              >
+                <div
+                  class="bg-primary-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="28"
+                    height="28"
+                    fill="#0d6efd"
+                    class="bi bi-geo-alt-fill"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-1 text-secondary fw-medium info"
+                    style="font-size: small"
+                  >
+                    TOTAL ROUTES
+                  </p>
+                  <h5 class="mb-0 fs-5 fw-medium info" data-info-name="total">
+                    0
+                  </h5>
+                </div>
+              </div>
+              <div
+                class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
+              >
+                <div
+                  class="bg-success-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="28"
+                    height="28"
+                    fill="#198754"
+                    class="bi bi-geo-alt-fill"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-1 text-secondary fw-medium"
+                    style="font-size: small"
+                  >
+                    ACTIVE ROUTES
+                  </p>
+                  <h5 class="mb-0 fs-5 fw-medium info" data-info-name="active">
+                    0
+                  </h5>
+                </div>
+              </div>
+              <div
+                class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
+              >
+                <div
+                  class="bg-danger-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="28"
+                    height="28"
+                    fill="#dc3545"
+                    class="bi bi-geo-alt-fill"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-1 text-secondary fw-medium"
+                    style="font-size: small"
+                  >
+                    INACTIVE ROUTES
+                  </p>
+                  <h5
+                    class="mb-0 fs-5 fw-medium info"
+                    data-info-name="inActive"
+                  >
+                    0
+                  </h5>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="ms-auto d-flex align-items-center gap-2">
+                <div
+                  class="d-flex align-items-center bg-white rounded p-1"
+                  id="filter_nav"
+                >
+                  <button class="btn btn-primary">All</button>
+                  <button class="btn">Active</button>
+                  <button class="btn">Inactive</button>
+                </div>
 
-        <div
-          class="p-4 d-flex flex-column gap-3 overflow-scroll"
-          id="pageWrapper"
-        >
-          <h2>All Routes</h2>
-          <div class="businfo justify-content-between align-items-center gap-2">
-            <div
-              class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
-            >
-              <div
-                class="bg-primary-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="28"
-                  height="28"
-                  fill="#0d6efd"
-                  class="bi bi-geo-alt-fill"
-                  viewBox="0 0 16 16"
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#centeredModal"
                 >
-                  <path
-                    d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p
-                  class="mb-1 text-secondary fw-medium info"
-                  style="font-size: small"
-                >
-                  TOTAL ROUTES
-                </p>
-                <h5 class="mb-0 fs-5 fw-medium info" data-info-name="total">
-                  0
-                </h5>
+                  + Add Route
+                </button>
               </div>
             </div>
-            <div
-              class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
-            >
-              <div
-                class="bg-success-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="28"
-                  height="28"
-                  fill="#198754"
-                  class="bi bi-geo-alt-fill"
-                  viewBox="0 0 16 16"
+            <div class="d-flex align-self-end gap-2">
+              <div>
+                <label
+                  class="form-label small fw-semibold"
+                  for="filter_source_search"
+                  >Source</label
                 >
-                  <path
-                    d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"
-                  />
-                </svg>
+                <input
+                  type="search"
+                  id="filter_source_search"
+                  placeholder="Enter Source City"
+                  class="form-control filter"
+                  disabled
+                />
               </div>
               <div>
-                <p
-                  class="mb-1 text-secondary fw-medium"
-                  style="font-size: small"
+                <label
+                  class="form-label small fw-semibold"
+                  for="filter_destination_search"
+                  >Destination</label
                 >
-                  ACTIVE ROUTES
-                </p>
-                <h5 class="mb-0 fs-5 fw-medium info" data-info-name="active">
-                  0
-                </h5>
+                <input
+                  type="search"
+                  id="filter_destination_search"
+                  placeholder="Enter Destination City"
+                  class="form-control filter"
+                  disabled
+                />
+              </div>
+              <div class="align-self-end">
+                <button
+                  role="button"
+                  class="btn btn-primary"
+                  id="search_routes_btn"
+                >
+                  Search Routes
+                </button>
               </div>
             </div>
-            <div
-              class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
-            >
-              <div
-                class="bg-danger-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="28"
-                  height="28"
-                  fill="#dc3545"
-                  class="bi bi-geo-alt-fill"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p
-                  class="mb-1 text-secondary fw-medium"
-                  style="font-size: small"
-                >
-                  INACTIVE ROUTES
-                </p>
-                <h5 class="mb-0 fs-5 fw-medium info" data-info-name="inActive">
-                  0
-                </h5>
-              </div>
-            </div>
-          </div>
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="ms-auto d-flex align-items-center gap-2">
-              <div
-                class="d-flex align-items-center bg-white rounded p-1"
-                id="filter_nav"
-              >
-                <button class="btn btn-primary">All</button>
-                <button class="btn">Active</button>
-                <button class="btn">Inactive</button>
-              </div>
 
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#centeredModal"
-              >
-                + Add Route
-              </button>
-            </div>
-          </div>
-          <div class="d-flex align-self-end gap-2">
-            <div>
-              <label
-                class="form-label small fw-semibold"
-                for="filter_source_search"
-                >Source</label
-              >
-              <input
-                type="search"
-                id="filter_source_search"
-                placeholder="Enter Source City"
-                class="form-control filter"
-                disabled
-              />
-            </div>
-            <div>
-              <label
-                class="form-label small fw-semibold"
-                for="filter_destination_search"
-                >Destination</label
-              >
-              <input
-                type="search"
-                id="filter_destination_search"
-                placeholder="Enter Destination City"
-                class="form-control filter"
-                disabled
-              />
-            </div>
-            <div class="align-self-end">
+            <div class="ms-auto">
               <button
                 role="button"
-                class="btn btn-primary"
-                id="search_routes_btn"
+                class="btn btn-secondary"
+                id="remove_filter_btn"
+                disabled
               >
-                Search Routes
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-funnel-fill"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5z"
+                  />
+                </svg>
+                Remove Filter
               </button>
             </div>
-          </div>
 
-          <div class="ms-auto">
-            <button
-              role="button"
-              class="btn btn-secondary"
-              id="remove_filter_btn"
-              disabled
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                class="bi bi-funnel-fill"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5z"
-                />
-              </svg>
-              Remove Filter
-            </button>
+            <table
+              class="border rounded table-responsive border-bottom-0"
+              id="route_table"
+            ></table>
           </div>
-
-          <table
-            class="border rounded table-responsive border-bottom-0"
-            id="route_table"
-          ></table>
         </div>
       </main>
     </div>

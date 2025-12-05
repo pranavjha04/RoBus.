@@ -187,85 +187,90 @@
       <main class="content-wrapper bg-light" style="overflow: auto">
         <c:import url="operator_sidebar.jsp" />
         <!-- Dashboard Content -->
-        <div class="p-4 d-flex flex-column overflow-scroll">
-          <span
-            class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link"
-            style="cursor: pointer"
-            onclick="history.back()"
-          >
-            <span>&larr;</span>
-            <span>Back</span>
-          </span>
-          <div class="container mt-2 mb-4" id="pageWrapper">
-            <!-- Row Layout Fare Factor Card -->
-            <div class="container d-flex">
-              <div class="fare-factor-card p-0 card-border-accent w-100">
-                <div class="fare-factor-row">
-                  <!-- Fare Factor Name Section -->
-                  <div class="fare-factor-section divider">
-                    <div class="section-title">Fare Factor Name</div>
-                    <div class="section-content" id="factor_name">
-                      Standard Rate
-                    </div>
-                  </div>
-
-                  <!-- Type Section -->
-                  <div class="fare-factor-section divider">
-                    <div class="section-title">Type</div>
-                    <div class="section-content" id="charge_type">
-                      Fixed Amount
-                    </div>
-                  </div>
-
-                  <!-- Charges Section -->
-                  <div class="fare-factor-section">
-                    <div class="section-title">Charges</div>
-                    <div class="section-content" id="charges_display">
-                      &#8377; <span id="charge_display_text"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="align-self-start mt-4">
-              <label class="form-label small fw-semibold fs-6" for="charges">
-                Charges
-              </label>
-            </div>
-
-            <div class="align-self-start">
-              <div class="d-flex align-items-center gap-3 flex-wrap">
-                <input
-                  type="number"
-                  class="form-control fs-5"
-                  placeholder="Charges"
-                  name="charges"
-                  id="charges"
-                  readonly
-                  style="max-width: 200px"
-                />
-                <div class="d-flex align-items-center gap-2">
-                  <button class="btn btn-primary" id="edit_btn">Edit</button>
-                  <button class="btn btn-danger" id="delete_btn">Delete</button>
-                  <button
-                    class="btn btn-success"
-                    id="add_bus_btn"
-                    data-bs-toggle="modal"
-                    data-bs-target="#centeredModal"
-                  >
-                    + Add Bus
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div
-              class="bg-white p-4 rounded shadow-sm d-flex flex-column gap-3"
+        <div class="wrapper">
+          <div class="p-4 d-flex flex-column overflow-scroll">
+            <span
+              class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link"
+              style="cursor: pointer"
+              onclick="history.back()"
             >
-              <table
-                class="border rounded table-responsive border-bottom-0 mt-2"
-                id="operator_ticket_fare_bus_table"
-              ></table>
+              <span>&larr;</span>
+              <span>Back</span>
+            </span>
+            <div class="container mt-2 mb-4" id="pageWrapper">
+              <!-- Row Layout Fare Factor Card -->
+              <div class="container d-flex">
+                <div class="fare-factor-card p-0 card-border-accent w-100">
+                  <div class="fare-factor-row">
+                    <!-- Fare Factor Name Section -->
+                    <div class="fare-factor-section divider">
+                      <div class="section-title">Fare Factor Name</div>
+                      <div class="section-content" id="factor_name">
+                        Standard Rate
+                      </div>
+                    </div>
+
+                    <!-- Type Section -->
+                    <div class="fare-factor-section divider">
+                      <div class="section-title">Type</div>
+                      <div class="section-content" id="charge_type">
+                        Fixed Amount
+                      </div>
+                    </div>
+
+                    <!-- Charges Section -->
+                    <div class="fare-factor-section">
+                      <div class="section-title">Charges</div>
+                      <div class="section-content" id="charges_display">
+                        &#8377; <span id="charge_display_text"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="align-self-start mt-4">
+                <label class="form-label small fw-semibold fs-6" for="charges">
+                  Charges
+                </label>
+              </div>
+
+              <div class="align-self-start">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                  <input
+                    type="number"
+                    class="form-control fs-5"
+                    placeholder="Charges"
+                    name="charges"
+                    id="charges"
+                    readonly
+                    style="max-width: 200px"
+                  />
+                  <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-primary" id="edit_btn">Edit</button>
+                    <button class="btn btn-danger" id="delete_btn">
+                      Delete
+                    </button>
+                    <button
+                      class="btn btn-success"
+                      id="add_bus_btn"
+                      data-bs-toggle="modal"
+                      data-bs-target="#centeredModal"
+                    >
+                      + Add Bus
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-white p-4 rounded shadow-sm d-flex flex-column mt-4 gap-3"
+              >
+                <h2 class="fs-3">Active Buses</h2>
+                <table
+                  class="border rounded table-responsive border-bottom-0"
+                  id="operator_ticket_fare_bus_table"
+                ></table>
+              </div>
             </div>
           </div>
         </div>

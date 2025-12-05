@@ -282,113 +282,112 @@ prefix="e" uri="bts" %>
         <!-- Top Navbar -->
 
         <!-- Dashboard Content -->
-        <div class="d-flex flex-column gap-3">
-          <div
-            class="p-4 d-flex flex-column overflow-auto gap-3"
-            id="pageWrapper"
-          >
-            <span
-              class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link"
-              style="cursor: pointer"
-              onclick="history.back()"
-            >
-              <span>&larr;</span>
-              <span>Back</span>
-            </span>
-            <div class="route-card p-4 card-border-accent">
-              <div
-                class="d-flex flex-column flex-md-row align-items-center justify-content-between"
+        <div class="wrapper">
+          <div class="d-flex flex-column gap-3">
+            <div class="p-4 d-flex flex-column gap-3" id="pageWrapper">
+              <span
+                class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link"
+                style="cursor: pointer"
+                onclick="history.back()"
               >
-                <!-- Route Section -->
+                <span>&larr;</span>
+                <span>Back</span>
+              </span>
+              <div class="route-card p-4 card-border-accent">
                 <div
-                  class="route-section text-center text-md-start mb-3 mb-md-0"
+                  class="d-flex flex-column flex-md-row align-items-center justify-content-between"
                 >
-                  <div class="section-title">Bus</div>
-                  <div class="section-content">
-                    <div class="d-flex flex-column gap-0">
-                      <span class="fs-4" id="bus_number">-</span>
-                      <span
-                        class="small text-muted small fs-6 fw-normal"
-                        id="bus_decker"
-                        >-</span
-                      >
+                  <!-- Route Section -->
+                  <div
+                    class="route-section text-center text-md-start mb-3 mb-md-0"
+                  >
+                    <div class="section-title">Bus</div>
+                    <div class="section-content">
+                      <div class="d-flex flex-column gap-0">
+                        <span class="fs-4" id="bus_number">-</span>
+                        <span
+                          class="small text-muted small fs-6 fw-normal"
+                          id="bus_decker"
+                          >-</span
+                        >
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div class="divider d-none d-md-block"></div>
-                <div class="divider d-md-none"></div>
+                  <div class="divider d-none d-md-block"></div>
+                  <div class="divider d-md-none"></div>
 
-                <!-- Journey Time Section -->
-                <div class="time-section text-center mb-3 mb-md-0">
-                  <div class="section-title">Manufacturer</div>
-                  <div class="section-content fs-4" id="manufacturer">=</div>
-                </div>
-
-                <div class="divider d-none d-md-block"></div>
-                <div class="divider d-md-none"></div>
-
-                <button
-                  class="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#centeredModal"
-                >
-                  &plus; Add Schedule
-                </button>
-              </div>
-            </div>
-
-            <div class="d-flex flex-column gap-3 rounded p-2">
-              <div
-                class="d-flex flex-column gap-2 px-3 py-2 bg-white shadow shadow-sm"
-              >
-                <div
-                  class="d-flex align-items-center justify-content-between w-100"
-                >
-                  <div>
-                    <h4>Select Date</h4>
+                  <!-- Journey Time Section -->
+                  <div class="time-section text-center mb-3 mb-md-0">
+                    <div class="section-title">Manufacturer</div>
+                    <div class="section-content fs-4" id="manufacturer">=</div>
                   </div>
 
-                  <div class="d-flex align-items-center gap-2">
-                    <button
-                      class="btn bg-secondary-subtle"
-                      id="date_range_back"
-                    >
-                      &lt;
-                    </button>
-                    <span id="date_range_display"></span>
-                    <button
-                      class="btn bg-secondary-subtle"
-                      id="date_range_next"
-                    >
-                      &gt;
-                    </button>
-                  </div>
-                </div>
+                  <div class="divider d-none d-md-block"></div>
+                  <div class="divider d-md-none"></div>
 
-                <div class="row" id="date_range"></div>
-              </div>
-              <div class="ms-auto d-flex align-items-center gap-2">
-                <div
-                  class="d-flex align-items-center bg-white rounded p-1"
-                  id="filter_nav"
-                >
-                  <button class="btn btn-primary" data-type="upcoming">
-                    Upcoming
+                  <button
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#centeredModal"
+                  >
+                    &plus; Add Schedule
                   </button>
-                  <button class="btn" data-type="ongoing">Ongoing</button>
-                  <button class="btn" data-type="completed">Completed</button>
-                  <button class="btn" data-type="cancelled">Cancelled</button>
                 </div>
               </div>
 
-              <table
-                class="border rounded table-responsive border-bottom-0"
-                id="schedule_table"
-              ></table>
-            </div>
+              <div class="d-flex flex-column gap-3 rounded p-2">
+                <div
+                  class="d-flex flex-column gap-2 px-3 py-2 bg-white shadow shadow-sm"
+                >
+                  <div
+                    class="d-flex align-items-center justify-content-between w-100"
+                  >
+                    <div>
+                      <h4>Select Date</h4>
+                    </div>
 
-            <footer class="container mt-4 mb-4"></footer>
+                    <div class="d-flex align-items-center gap-2">
+                      <button
+                        class="btn bg-secondary-subtle"
+                        id="date_range_back"
+                      >
+                        &lt;
+                      </button>
+                      <span id="date_range_display"></span>
+                      <button
+                        class="btn bg-secondary-subtle"
+                        id="date_range_next"
+                      >
+                        &gt;
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="row" id="date_range"></div>
+                </div>
+                <div class="ms-auto d-flex align-items-center gap-2">
+                  <div
+                    class="d-flex align-items-center bg-white rounded p-1"
+                    id="filter_nav"
+                  >
+                    <button class="btn btn-primary" data-type="upcoming">
+                      Upcoming
+                    </button>
+                    <button class="btn" data-type="ongoing">Ongoing</button>
+                    <button class="btn" data-type="completed">Completed</button>
+                    <button class="btn" data-type="cancelled">Cancelled</button>
+                  </div>
+                </div>
+
+                <table
+                  class="border rounded table-responsive border-bottom-0"
+                  id="schedule_table"
+                ></table>
+              </div>
+
+              <footer class="container mt-4 mb-4"></footer>
+            </div>
           </div>
         </div>
       </main>

@@ -60,7 +60,7 @@
     <li class="w-100 border-bottom">
       <button
         data-link="operator_dashboard.do"
-        class="d-flex flex-column justify-content-center text-decoration-none align-items-center gap-0 side-bar-link w-100 p-2 btn"
+        class="d-flex flex-column justify-content-center text-decoration-none align-items-center gap-0 side-bar-link w-100 p-2 btn rounded-0"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -80,7 +80,7 @@
     <li class="w-100 border-bottom">
       <button
         data-link="operator_buses.do"
-        class="d-flex flex-column text-decoration-none align-items-center gap-0 side-bar-link w-100 p-2 btn"
+        class="d-flex flex-column justify-content-center text-decoration-none align-items-center gap-0 side-bar-link w-100 p-2 btn rounded-0"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +100,7 @@
     <li class="w-100 border-bottom">
       <button
         data-link="operator_routes.do"
-        class="d-flex flex-column text-decoration-none align-items-center gap-0 side-bar-link w-100 p-2 btn"
+        class="d-flex flex-column justify-content-center text-decoration-none align-items-center gap-0 side-bar-link w-100 p-2 btn rounded-0"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -124,7 +124,7 @@
     <li class="w-100 border-bottom">
       <button
         data-link="operator_schedules.do"
-        class="d-flex flex-column text-decoration-none align-items-center gap-0 side-bar-link w-100 p-2 btn"
+        class="d-flex flex-column justify-content-center text-decoration-none align-items-center gap-0 side-bar-link w-100 p-2 btn rounded-0"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -145,7 +145,7 @@
     <li class="w-100 border-bottom">
       <button
         data-link="operator_drivers.do"
-        class="d-flex flex-column text-decoration-none align-items-center gap-0 side-bar-link w-100 p-2 btn"
+        class="d-flex flex-column justify-content-center text-decoration-none align-items-center gap-0 side-bar-link w-100 p-2 btn rounded-0"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -167,7 +167,7 @@
 
     <li class="w-100 border-bottom">
       <button
-        class="d-flex flex-column text-decoration-none align-items-center gap-0 side-bar-link w-100 p-2 btn"
+        class="d-flex flex-column justify-content-center text-decoration-none align-items-center gap-0 side-bar-link w-100 p-2 btn rounded-0"
         data-link="operator_fare_factor.do"
       >
         <svg
@@ -206,16 +206,24 @@
     }
   });
 
-  window.addEventListener("DOMContentLoaded", (e) => {
+  const init = () => {
     allSideBarLinkButtons.forEach((button) => {
       const { link } = button.dataset;
-
-      if (link !== currentLink) {
-        button.classList.remove("active-sidebar-link");
-        return;
+      const svg = button.querySelector("svg");
+      const span = button.querySelector("span");
+      if (link === currentLink) {
+        svg.setAttribute("fill", "#fff");
+        span.classList.add("text-white");
+        span.classList.remove("text-primary");
+        button.classList.add("bg-primary");
+      } else {
+        svg.setAttribute("fill", "#0d6efd");
+        span.classList.remove("text-white");
+        span.classList.add("text-primary");
+        button.classList.remove("bg-white");
       }
-
-      button.classList.add("active-sidebar-link");
     });
-  });
+  };
+
+  init();
 </script>

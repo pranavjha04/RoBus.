@@ -421,9 +421,10 @@ formModal.addEventListener("hide.bs.modal", () => {
 window.addEventListener("pageshow", (e) => {
   try {
     init();
-    PageLoading.stopLoading();
   } catch (err) {
     toast.error(err.message);
     PageError.showOperatorError();
+  } finally {
+    PageLoading.stopLoading();
   }
 });

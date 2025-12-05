@@ -126,122 +126,130 @@ prefix="e" uri="bts" %>
         <c:import url="operator_sidebar.jsp" />
 
         <!-- Dashboard Content -->
-        <div
-          class="p-4 d-flex flex-column overflow-scroll gap-3"
-          id="pageWrapper"
-        >
-          <h2>All Drivers</h2>
-          <div class="businfo gap-2 align-items-center justify-content-between">
+        <div class="wrapper">
+          <div
+            class="p-4 d-flex flex-column overflow-scroll gap-3"
+            id="pageWrapper"
+          >
+            <h2>All Drivers</h2>
             <div
-              class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
+              class="businfo gap-2 align-items-center justify-content-between"
             >
               <div
-                class="bg-primary-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
+                class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="28"
-                  height="28"
-                  fill="#0d6efd"
-                  class="bi bi-person-circle"
-                  viewBox="0 0 16 16"
+                <div
+                  class="bg-primary-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
                 >
-                  <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                  <path
-                    fill-rule="evenodd"
-                    d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"
-                  />
-                </svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="28"
+                    height="28"
+                    fill="#0d6efd"
+                    class="bi bi-person-circle"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                    <path
+                      fill-rule="evenodd"
+                      d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-1 text-secondary fw-medium"
+                    style="font-size: small"
+                  >
+                    TOTAL DRIVERS
+                  </p>
+                  <h5 class="mb-0 fs-5 fw-medium" data-info-name="total">0</h5>
+                </div>
               </div>
-              <div>
-                <p
-                  class="mb-1 text-secondary fw-medium"
-                  style="font-size: small"
+              <div
+                class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
+              >
+                <div
+                  class="bg-success-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
                 >
-                  TOTAL DRIVERS
-                </p>
-                <h5 class="mb-0 fs-5 fw-medium" data-info-name="total">0</h5>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="28"
+                    height="28"
+                    fill="#198754"
+                    class="bi bi-person-circle"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                    <path
+                      fill-rule="evenodd"
+                      d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-1 text-secondary fw-medium"
+                    style="font-size: small"
+                  >
+                    ACTIVE DRIVERS
+                  </p>
+                  <h5 class="mb-0 fs-5 fw-medium" data-info-name="active">0</h5>
+                </div>
+              </div>
+              <div
+                class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
+              >
+                <div
+                  class="bg-danger-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="28"
+                    height="28"
+                    fill="#dc3545"
+                    class="bi bi-person-circle"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                    <path
+                      fill-rule="evenodd"
+                      d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-1 text-secondary fw-medium"
+                    style="font-size: small"
+                  >
+                    INACTIVE DRIVERS
+                  </p>
+                  <h5 class="mb-0 fs-5 fw-medium" data-info-name="inActive">
+                    0
+                  </h5>
+                </div>
               </div>
             </div>
             <div
-              class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
+              class="d-flex justify-content-between align-items-center gap-2"
             >
-              <div
-                class="bg-success-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="28"
-                  height="28"
-                  fill="#198754"
-                  class="bi bi-person-circle"
-                  viewBox="0 0 16 16"
+              <div class="ms-auto d-flex align-items-center gap-2">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#centeredModal"
                 >
-                  <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                  <path
-                    fill-rule="evenodd"
-                    d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p
-                  class="mb-1 text-secondary fw-medium"
-                  style="font-size: small"
-                >
-                  ACTIVE DRIVERS
-                </p>
-                <h5 class="mb-0 fs-5 fw-medium" data-info-name="active">0</h5>
+                  + Add Driver
+                </button>
               </div>
             </div>
-            <div
-              class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
-            >
-              <div
-                class="bg-danger-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="28"
-                  height="28"
-                  fill="#dc3545"
-                  class="bi bi-person-circle"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                  <path
-                    fill-rule="evenodd"
-                    d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p
-                  class="mb-1 text-secondary fw-medium"
-                  style="font-size: small"
-                >
-                  INACTIVE DRIVERS
-                </p>
-                <h5 class="mb-0 fs-5 fw-medium" data-info-name="inActive">0</h5>
-              </div>
-            </div>
+            <table
+              class="border rounded table-responsive border-bottom-0"
+              id="driver_table"
+            ></table>
           </div>
-          <div class="d-flex justify-content-between align-items-center gap-2">
-            <div class="ms-auto d-flex align-items-center gap-2">
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#centeredModal"
-              >
-                + Add Driver
-              </button>
-            </div>
-          </div>
-          <table
-            class="border rounded table-responsive border-bottom-0"
-            id="driver_table"
-          ></table>
         </div>
       </main>
     </div>

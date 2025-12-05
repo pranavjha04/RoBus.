@@ -241,61 +241,63 @@ prefix="e" uri="bts" %>
         <c:import url="operator_sidebar.jsp" />
 
         <!-- Dashboard Content -->
-        <div class="p-4 d-flex flex-column overflow-scroll">
-          <div class="container mt-2 mb-4" id="pageWrapper">
-            <h2>All Schedules</h2>
-            <div class="d-flex flex-column gap-3 rounded p-2">
-              <div
-                class="d-flex flex-column gap-2 px-3 py-2 bg-white shadow shadow-sm"
-              >
+        <div class="wrapper">
+          <div class="p-4 d-flex flex-column">
+            <div class="container mt-2 mb-4" id="pageWrapper">
+              <h2>All Schedules</h2>
+              <div class="d-flex flex-column gap-3 rounded p-2">
                 <div
-                  class="d-flex align-items-center justify-content-between w-100"
+                  class="d-flex flex-column gap-2 px-3 py-2 bg-white shadow shadow-sm"
                 >
-                  <div class="">
-                    <h4>Select Date</h4>
+                  <div
+                    class="d-flex align-items-center justify-content-between w-100"
+                  >
+                    <div class="">
+                      <h4>Select Date</h4>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                      <button
+                        class="btn bg-secondary-subtle"
+                        id="date_range_back"
+                      >
+                        &lt;
+                      </button>
+                      <span id="date_range_display"></span>
+                      <button
+                        class="btn bg-secondary-subtle"
+                        id="date_range_next"
+                      >
+                        &gt;
+                      </button>
+                    </div>
                   </div>
 
-                  <div class="d-flex align-items-center gap-2">
-                    <button
-                      class="btn bg-secondary-subtle"
-                      id="date_range_back"
-                    >
-                      &lt;
+                  <div class="row" id="date_range"></div>
+                </div>
+                <div class="ms-auto d-flex align-items-center gap-2">
+                  <div
+                    class="d-flex align-items-center bg-white rounded p-1"
+                    id="filter_nav"
+                  >
+                    <button class="btn btn-primary" data-type="upcoming">
+                      Upcoming
                     </button>
-                    <span id="date_range_display"></span>
-                    <button
-                      class="btn bg-secondary-subtle"
-                      id="date_range_next"
-                    >
-                      &gt;
-                    </button>
+                    <button class="btn" data-type="ongoing">Ongoing</button>
+                    <button class="btn" data-type="completed">Completed</button>
+                    <button class="btn" data-type="cancelled">Cancelled</button>
                   </div>
                 </div>
 
-                <div class="row" id="date_range"></div>
+                <table
+                  class="border rounded table-responsive border-bottom-0"
+                  id="schedule_table"
+                ></table>
               </div>
-              <div class="ms-auto d-flex align-items-center gap-2">
-                <div
-                  class="d-flex align-items-center bg-white rounded p-1"
-                  id="filter_nav"
-                >
-                  <button class="btn btn-primary" data-type="upcoming">
-                    Upcoming
-                  </button>
-                  <button class="btn" data-type="ongoing">Ongoing</button>
-                  <button class="btn" data-type="completed">Completed</button>
-                  <button class="btn" data-type="cancelled">Cancelled</button>
-                </div>
-              </div>
-
-              <table
-                class="border rounded table-responsive border-bottom-0"
-                id="schedule_table"
-              ></table>
             </div>
-          </div>
 
-          <footer class="container mt-4 mb-4"></footer>
+            <footer class="container mt-4 mb-4"></footer>
+          </div>
         </div>
       </main>
     </div>

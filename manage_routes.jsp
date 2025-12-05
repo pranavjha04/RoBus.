@@ -335,147 +335,148 @@
         <c:import url="operator_sidebar.jsp" />
 
         <!-- Dashboard Content -->
-        <div
-          class="p-4 d-flex flex-column overflow-scroll gap-3"
-          id="pageWrapper"
-        >
-          <span
-            class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link"
-            style="cursor: pointer"
-            onclick="history.back()"
-          >
-            <span>&larr;</span>
-            <span>Back</span>
-          </span>
-          <!-- Route Information Card -->
-          <div class="route-card p-4 card-border-accent">
-            <div
-              class="d-flex flex-column flex-md-row align-items-center justify-content-between"
+        <div class="wrapper">
+          <div class="p-4 d-flex flex-column gap-3" id="pageWrapper">
+            <span
+              class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link"
+              style="cursor: pointer"
+              onclick="history.back()"
             >
-              <!-- Route Section -->
-              <div class="route-section text-center text-md-start mb-3 mb-md-0">
-                <div class="section-title">Route</div>
-                <div class="section-content">
-                  <div class="d-flex flex-column gap-0">
-                    <span class="fs-4" id="source_info_city"></span>
-                    <span
-                      class="small text-muted small fs-6 fw-normal"
-                      id="source_info_state"
-                    ></span>
-                  </div>
-                  <span class="arrow">&rarr;</span>
-                  <div class="d-flex flex-column gap-0">
-                    <span class="fs-4" id="destination_info_city"></span>
-                    <span
-                      class="small text-muted small fs-6 fw-normal"
-                      id="destination_info_state"
-                    ></span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="divider d-none d-md-block"></div>
-              <div class="divider d-md-none"></div>
-
-              <!-- Journey Time Section -->
-              <div class="time-section text-center mb-3 mb-md-0">
-                <div class="section-title">Journey Time</div>
-                <div class="section-content fs-4" id="duration_info"></div>
-              </div>
-
-              <div class="divider d-none d-md-block"></div>
-              <div class="divider d-md-none"></div>
-
-              <!-- Distance Section -->
-              <div class="distance-section text-center">
-                <div class="section-title">Distance</div>
-                <div class="section-content fs-4">
-                  <span id="distance_info"></span> km
-                </div>
-              </div>
-
-              <div class="time-section text-center mb-3 mb-md-0">
-                <div class="section-title">Status</div>
-                <div class="section-content fs-4" id="status"></div>
-              </div>
-            </div>
-          </div>
-          <div class="d-flex align-items-center justify-content-between">
-            <div class="d-flex gap-2 align-items-center mt-4 mb-0" id="nav">
-              <button
-                class="btn btn-primary rounded-pill"
-                data-target="route_time_line"
-              >
-                Route Timeline
-              </button>
-              <button
-                class="btn text-primary border border-primary rounded-pill"
-                data-target="route_mid_city_cont"
-              >
-                Mid Cities
-              </button>
-              <button
-                class="btn text-primary border border-primary rounded-pill"
-                data-target="route_weekday_cont"
-              >
-                Route Weekdays
-              </button>
-            </div>
-          </div>
-
-          <div class="d-flex flex-column gap-3">
-            <div
-              class="bg-white p-4 rounded shadow-sm d-flex flex-column"
-              id="route_time_line"
-            >
-              <h2 class="fs-3">Route TimeLine & Mid Cities</h2>
+              <span>&larr;</span>
+              <span>Back</span>
+            </span>
+            <!-- Route Information Card -->
+            <div class="route-card p-4 card-border-accent">
               <div
-                class="d-flex flex-column align-items-start pt-4"
-                id="route_timeline_cont"
-              ></div>
-            </div>
-            <div
-              class="bg-white p-4 rounded shadow-sm d-flex flex-column gap-3"
-              id="route_mid_city_cont"
-            >
-              <h2 class="fs-3">Route Mid Cities</h2>
-              <button
-                id="add_mid_city_form_trigger_btn"
-                class="btn btn-primary align-self-end"
-                data-bs-toggle="modal"
-                data-bs-target="#centeredModal"
+                class="d-flex flex-column flex-md-row align-items-center justify-content-between"
               >
-                &plus; Add Mid Cities
-              </button>
-              <table
-                class="border rounded table-responsive w-100"
-                id="route_mid_city_table"
-              ></table>
-            </div>
-            <div
-              class="bg-white p-4 rounded shadow-sm d-flex flex-column gap-3"
-              id="route_weekday_cont"
-            >
-              <h2 class="fs-3">Route Weekdays</h2>
-              <button
-                id="add_bus_route_weekday_form_trigger_btn"
-                class="btn btn-primary align-self-end"
-                data-bs-toggle="modal"
-                data-bs-target="#centeredModalB"
-              >
-                &plus; Route Weekdays
-              </button>
-              <table
-                class="border rounded table-responsive w-100"
-                id="bus_route_weekday_table"
-              ></table>
-            </div>
-          </div>
+                <!-- Route Section -->
+                <div
+                  class="route-section text-center text-md-start mb-3 mb-md-0"
+                >
+                  <div class="section-title">Route</div>
+                  <div class="section-content">
+                    <div class="d-flex flex-column gap-0">
+                      <span class="fs-4" id="source_info_city"></span>
+                      <span
+                        class="small text-muted small fs-6 fw-normal"
+                        id="source_info_state"
+                      ></span>
+                    </div>
+                    <span class="arrow">&rarr;</span>
+                    <div class="d-flex flex-column gap-0">
+                      <span class="fs-4" id="destination_info_city"></span>
+                      <span
+                        class="small text-muted small fs-6 fw-normal"
+                        id="destination_info_state"
+                      ></span>
+                    </div>
+                  </div>
+                </div>
 
-          <!-- Rest of your existing content -->
-          <footer class="container mt-4 mb-4">
-            <!-- Your existing fare factor and table content here -->
-          </footer>
+                <div class="divider d-none d-md-block"></div>
+                <div class="divider d-md-none"></div>
+
+                <!-- Journey Time Section -->
+                <div class="time-section text-center mb-3 mb-md-0">
+                  <div class="section-title">Journey Time</div>
+                  <div class="section-content fs-4" id="duration_info"></div>
+                </div>
+
+                <div class="divider d-none d-md-block"></div>
+                <div class="divider d-md-none"></div>
+
+                <!-- Distance Section -->
+                <div class="distance-section text-center">
+                  <div class="section-title">Distance</div>
+                  <div class="section-content fs-4">
+                    <span id="distance_info"></span> km
+                  </div>
+                </div>
+
+                <div class="time-section text-center mb-3 mb-md-0">
+                  <div class="section-title">Status</div>
+                  <div class="section-content fs-4" id="status"></div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="d-flex gap-2 align-items-center mt-4 mb-0" id="nav">
+                <button
+                  class="btn btn-primary rounded-pill"
+                  data-target="route_time_line"
+                >
+                  Route Timeline
+                </button>
+                <button
+                  class="btn text-primary border border-primary rounded-pill"
+                  data-target="route_mid_city_cont"
+                >
+                  Mid Cities
+                </button>
+                <button
+                  class="btn text-primary border border-primary rounded-pill"
+                  data-target="route_weekday_cont"
+                >
+                  Route Weekdays
+                </button>
+              </div>
+            </div>
+
+            <div class="d-flex flex-column gap-3">
+              <div
+                class="bg-white p-4 rounded shadow-sm d-flex flex-column"
+                id="route_time_line"
+              >
+                <h2 class="fs-3">Route TimeLine & Mid Cities</h2>
+                <div
+                  class="d-flex flex-column align-items-start pt-4"
+                  id="route_timeline_cont"
+                ></div>
+              </div>
+              <div
+                class="bg-white p-4 rounded shadow-sm d-flex flex-column gap-3"
+                id="route_mid_city_cont"
+              >
+                <h2 class="fs-3">Route Mid Cities</h2>
+                <button
+                  id="add_mid_city_form_trigger_btn"
+                  class="btn btn-primary align-self-end"
+                  data-bs-toggle="modal"
+                  data-bs-target="#centeredModal"
+                >
+                  &plus; Add Mid Cities
+                </button>
+                <table
+                  class="border rounded table-responsive w-100"
+                  id="route_mid_city_table"
+                ></table>
+              </div>
+              <div
+                class="bg-white p-4 rounded shadow-sm d-flex flex-column gap-3"
+                id="route_weekday_cont"
+              >
+                <h2 class="fs-3">Route Weekdays</h2>
+                <button
+                  id="add_bus_route_weekday_form_trigger_btn"
+                  class="btn btn-primary align-self-end"
+                  data-bs-toggle="modal"
+                  data-bs-target="#centeredModalB"
+                >
+                  &plus; Route Weekdays
+                </button>
+                <table
+                  class="border rounded table-responsive w-100"
+                  id="bus_route_weekday_table"
+                ></table>
+              </div>
+            </div>
+
+            <!-- Rest of your existing content -->
+            <footer class="container mt-4 mb-4">
+              <!-- Your existing fare factor and table content here -->
+            </footer>
+          </div>
         </div>
       </main>
     </div>

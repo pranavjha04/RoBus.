@@ -13,10 +13,18 @@
       </c:otherwise>
    </c:choose>
    >
+   <style>
+    .logo-img {
+        max-height: 36px;     
+        width: auto;          
+        object-fit: contain;  
+        display: block;       
+    }
+
+   </style>
    <img
       src="static/media/images/logo.png"
       alt="logo"
-      style="height: 36px"
-      class="object-fit-cover"
+      class="logo-img"
    />
 </a>
