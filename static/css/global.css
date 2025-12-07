@@ -11,6 +11,7 @@ html {
 }
 
 body {
+  overflow: hidden;
 }
 .wrapper {
   height: calc(100vh - 70px);

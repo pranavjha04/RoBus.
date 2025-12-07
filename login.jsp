@@ -1,22 +1,21 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:if test="${
+<c:if
+  test="${
             not empty sessionScope.operator
-            or not empty sessionScope.user}">
+            or not empty sessionScope.user}"
+>
   <c:redirect url="/" />
 </c:if>
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <c:import url="essential_page_import.jsp" />
     <title>Login</title>
   </head>
-
+  sddddddddddddddddddd
   <body class="d-flex flex-column bg-light vh-100">
-    <c:import url="welcome_navbar.jsp" />
     <section
       class="d-flex align-items-center justify-content-center px-3 flex-grow-1"
     >
