@@ -85,6 +85,7 @@ prefix="e" uri="bts" %>
                   class="form-control"
                   name="journey_date"
                   id="journey_date"
+                  value="${e:currentDate()}"
                   min="${e:currentDate()}"
                   required
                 />
