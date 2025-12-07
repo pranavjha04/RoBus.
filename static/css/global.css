@@ -376,3 +376,7 @@ tbody tr {
   background-color: #f8d7da;
   border-color: #e29aa3;
 }
+
+#swapper {
+  transition: all 0.25s ease-out;
+}

@@ -1,6 +1,6 @@
 <%@ taglib prefix="e" uri="bts" %>
 
-<form action="search_buses.do" method="get">
+<form id="search_bus_form">
   <div class="row g-3 align-items-end">
     <div class="col-md-4">
       <label for="from" class="form-label fw-semibold">From</label>
@@ -16,8 +16,8 @@
           autocomplete="off"
         />
         <ul
-          id="from-suggestions"
-          class="list-group position-absolute w-100 bg-white border-top-0 border rounded shadow-sm top-100 z-3 overflow-y-auto"
+          id="from_suggestion"
+          class="list-group d-none position-absolute w-100 bg-white border-top-0 border rounded shadow-sm top-100 z-3 overflow-y-auto"
         >
           <li
             type="button"
@@ -48,12 +48,11 @@
     <div class="col-md-1 d-flex justify-content-center">
       <button
         type="button"
-        class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center"
-        id="swapBtn"
-        aria-label="Swap From and To locations"
+        class="btn btn-primary rounded-circle d-flex align-items-center fw-bold text-center justify-content-center"
+        id="swapper"
         style="width: 48px; height: 48px"
       >
-        <i class="bi bi-arrow-left-right"></i>
+        &LeftArrowRightArrow;
       </button>
     </div>
 
@@ -71,8 +70,8 @@
           autocomplete="off"
         />
         <ul
-          id="to-suggestions"
-          class="list-group position-absolute w-100 bg-white border border-top-0 rounded shadow-sm top-100 z-3 overflow-y-auto"
+          id="to_suggestion"
+          class="list-group position-absolute d-none w-100 bg-white border border-top-0 rounded shadow-sm top-100 z-3 overflow-y-auto"
         >
           <li
             type="button"
@@ -121,4 +120,5 @@
       </button>
     </div>
   </div>
+  <script type="module" src="static/js/searchBus.js"></script>
 </form>
