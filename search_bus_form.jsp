@@ -9,7 +9,7 @@
         <input
           type="text"
           name="from"
-          id="from"
+        id="from"
           class="form-control"
           placeholder="Leaving from"
           required

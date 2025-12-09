@@ -14,8 +14,7 @@
     <c:import url="essential_page_import.jsp" />
     <title>Login</title>
   </head>
-  sddddddddddddddddddd
-  <body class="d-flex flex-column bg-light vh-100">
+  <body class="d-flex flex-column vh-100">
     <section
       class="d-flex align-items-center justify-content-center px-3 flex-grow-1"
     >
