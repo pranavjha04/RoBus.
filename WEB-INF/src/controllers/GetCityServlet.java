@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 public class GetCityServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
-        if(session.getAttribute("operator") == null || request.getParameter("name") == null) {
+        if(request.getParameter("name") == null) {
             response.getWriter().println("invalid");
             return;
         }
@@ -27,13 +27,21 @@ public class GetCityServlet extends HttpServlet {
         @SuppressWarnings("unchecked")
         ArrayList<City> allCityList = (ArrayList<City>) getServletContext().getAttribute("cities");
 
-        ArrayList<City> prepareCityList = new ArrayList<>();
-        for(City city : allCityList) {
-            if(city.getName().toLowerCase().contains(cityName)) {
-                prepareCityList.add(city);
-            }
-        }
 
-        response.getWriter().println(new Gson().toJson(prepareCityList));
+        if(session.getAttribute("search_city" + cityName) == null) {
+            ArrayList<City> prepareCityList = new ArrayList<>();
+            for(City city : allCityList) {
+                if(city.getName().toLowerCase().contains(cityName)) {
+                    prepareCityList.add(city);
+                }
+            }
+
+            session.setAttribute("search_city" + cityName, prepareCityList);
+        }
+        
+        @SuppressWarnings("unchecked")
+        ArrayList<City> cityList = (ArrayList<City>) session.getAttribute("search_city" + cityName);
+
+        response.getWriter().println(new Gson().toJson(cityList));
     }
 }
