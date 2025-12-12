@@ -1,4 +1,6 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib
+prefix="e" uri="bts" %>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -161,6 +163,34 @@
         background: #0b6b45;
         display: inline-block;
       }
+      /* Suggestion box */
+      .suggestion-box {
+        position: absolute;
+        background: #ffffff;
+        width: 100%;
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid #e2e6ea;
+        border-radius: 12px;
+        margin-top: 2px;
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      }
+
+      .suggestion-item {
+        padding: 10px 14px;
+        cursor: pointer;
+        border-bottom: 1px solid #f1f3f5;
+        font-size: 0.95rem;
+      }
+
+      .suggestion-item:last-child {
+        border-bottom: none;
+      }
+
+      .suggestion-item:hover {
+        background: #f8f9fa;
+      }
     </style>
   </head>
   <body class="d-flex flex-column text-dark min-vh-100">
@@ -255,21 +285,31 @@
             <form class="row g-3 align-items-end">
               <div class="col-md-3">
                 <label for="fromCity" class="form-label fw-medium">From</label>
-                <input
-                  type="text"
-                  class="form-control rounded-pill"
-                  id="fromCity"
-                  placeholder="e.g., Delhi"
-                />
+                <div class="position-relative">
+                  <input
+                    type="text"
+                    class="form-control rounded-pill"
+                    id="from"
+                    value="${param.from}"
+                    placeholder="e.g., Delhi"
+                    onkeyup="showSuggestions(this, 'fromSuggestions')"
+                  />
+                  <div id="fromSuggestions" class="suggestion-box d-none"></div>
+                </div>
               </div>
               <div class="col-md-3">
                 <label for="toCity" class="form-label fw-medium">To</label>
-                <input
-                  type="text"
-                  class="form-control rounded-pill"
-                  id="toCity"
-                  placeholder="e.g., Kashmir"
-                />
+                <div class="position-relative">
+                  <input
+                    type="text"
+                    class="form-control rounded-pill"
+                    id="to"
+                    value="${param.to}"
+                    placeholder="e.g., Kashmir"
+                    onkeyup="showSuggestions(this, 'toSuggestions')"
+                  />
+                  <div id="toSuggestions" class="suggestion-box d-none"></div>
+                </div>
               </div>
               <div class="col-md-3">
                 <label for="journeyDate" class="form-label fw-medium"
@@ -278,11 +318,16 @@
                 <input
                   type="date"
                   class="form-control rounded-pill"
-                  id="journeyDate"
+                  id="journey_date"
+                  min="${e:currentDate()}"
+                  value="${param.journey_date}"
                 />
               </div>
               <div class="col-md-3">
-                <button type="submit" class="btn btn-search rounded-pill w-100">
+                <button
+                  type="submit"
+                  class="btn btn-primary rounded-pill w-100"
+                >
                   Search
                 </button>
               </div>

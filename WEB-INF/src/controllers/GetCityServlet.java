@@ -28,7 +28,7 @@ public class GetCityServlet extends HttpServlet {
         ArrayList<City> allCityList = (ArrayList<City>) getServletContext().getAttribute("cities");
 
 
-        if(session.getAttribute("search_city" + cityName) == null) {
+        if(getServletContext().getAttribute("search_city" + cityName) == null) {
             ArrayList<City> prepareCityList = new ArrayList<>();
             for(City city : allCityList) {
                 if(city.getName().toLowerCase().contains(cityName)) {
@@ -36,11 +36,11 @@ public class GetCityServlet extends HttpServlet {
                 }
             }
 
-            session.setAttribute("search_city" + cityName, prepareCityList);
+            getServletContext().setAttribute("search_city" + cityName, prepareCityList);
         }
         
         @SuppressWarnings("unchecked")
-        ArrayList<City> cityList = (ArrayList<City>) session.getAttribute("search_city" + cityName);
+        ArrayList<City> cityList = (ArrayList<City>) getServletContext().getAttribute("search_city" + cityName);
 
         response.getWriter().println(new Gson().toJson(cityList));
     }
