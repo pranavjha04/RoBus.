@@ -292,9 +292,12 @@ prefix="e" uri="bts" %>
                     id="from"
                     value="${param.from}"
                     placeholder="e.g., Delhi"
-                    onkeyup="showSuggestions(this, 'fromSuggestions')"
                   />
-                  <div id="fromSuggestions" class="suggestion-box d-none"></div>
+                  <ul
+                    id="from_suggestion"
+                    class="list-group position-absolute w-100 bg-white border-top-0 border rounded shadow-sm top-100 z-3 overflow-auto d-none"
+                    style="max-height: 200px"
+                  ></ul>
                 </div>
               </div>
               <div class="col-md-3">
@@ -306,9 +309,12 @@ prefix="e" uri="bts" %>
                     id="to"
                     value="${param.to}"
                     placeholder="e.g., Kashmir"
-                    onkeyup="showSuggestions(this, 'toSuggestions')"
                   />
-                  <div id="toSuggestions" class="suggestion-box d-none"></div>
+                  <ul
+                    id="to_suggestion"
+                    class="list-group position-absolute w-100 bg-white border-top-0 border rounded shadow-sm top-100 z-3 overflow-auto d-none"
+                    style="max-height: 200px"
+                  ></ul>
                 </div>
               </div>
               <div class="col-md-3">

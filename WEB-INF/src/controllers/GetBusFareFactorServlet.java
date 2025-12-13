@@ -36,18 +36,18 @@ public class GetBusFareFactorServlet extends HttpServlet {
             }
 
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));
-            if(session.getAttribute("bus_fare_factor_list" + busId) == null) {
+            if(getServletContext().getAttribute("bus_fare_factor_list" + busId) == null) {
                 ArrayList<BusFareFactor> busFareFactorList = BusFareFactor.collectAllRecords(busId, operator.getOperatorId());
                 if(busFareFactorList == null) {
                     throw new IllegalArgumentException("invalid");
                 }
-                session.setAttribute("bus_fare_factor_list" + busId, busFareFactorList);
+                getServletContext().setAttribute("bus_fare_factor_list" + busId, busFareFactorList);
             }
 
             
             if(!isIncludeRequest) {
                 @SuppressWarnings("unchecked")
-                ArrayList<BusFareFactor> list = (ArrayList<BusFareFactor>) session.getAttribute("bus_fare_factor_list" + busId);
+                ArrayList<BusFareFactor> list = (ArrayList<BusFareFactor>) getServletContext().getAttribute("bus_fare_factor_list" + busId);
                 response.getWriter().println(new Gson().toJson(list));
             }
         }

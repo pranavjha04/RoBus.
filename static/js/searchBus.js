@@ -1,4 +1,4 @@
-import { searchCityRequest } from "./service.js";
+import { getScheduleRequest, searchCityRequest } from "./service.js";
 
 const from = document.querySelector("#from");
 const to = document.querySelector("#to");
@@ -132,6 +132,26 @@ toSuggestion.addEventListener("mousedown", selectCityEvent);
 todayBtn.addEventListener("click", () => {
   const today = new Date();
   journeyDate.value = formatDate(today);
+});
+
+searchBusForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  if (
+    !from.value ||
+    !to.value ||
+    !journeyDate.value ||
+    !source.value ||
+    !destination.value
+  )
+    return;
+
+  const response = await getScheduleRequest({
+    source: source.id,
+    destination: destination.id,
+    journey_date: journeyDate.value,
+  });
+  console.log(response);
 });
 
 tomorrowBtn.addEventListener("click", () => {

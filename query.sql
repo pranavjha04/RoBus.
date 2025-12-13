@@ -616,55 +616,37 @@ LEFT JOIN bus_fare_factor bff
 WHERE bff.bus_id IS NULL
 AND b.operator_id = ;
 
-const updateBusView = (busSetting) => {
-  const bus = document.querySelector(".bus");
-  if (!busSetting) {
-    bus.innerHTML = "";
-    return;
-  }
-  const { lsCount, rsCount, rowCount, sleeper, seats } = busSetting;
-  let count = 1;
-  bus.innerHTML = `${Array.from({ length: sleeper ? rowCount : rowCount - 1 })
-    .map((_) => {
-      return `<div class="d-flex align-items-center gap-5 justify-content-between">
-                <div class="d-flex gap-1">
-                   ${Array.from({ length: lsCount })
-                     .map(
-                       (_) =>
-                         `<button class="${
-                           sleeper ? "sleeper_seat" : "seater_seat"
-                         } seat btn">${count++}</button>`
-                     )
-                     .join("")}
-                </div>
-                <div class="d-flex gap-1">
-                     ${Array.from({ length: rsCount })
-                       .map(
-                         (_) =>
-                           `<button class="${
-                             sleeper ? "sleeper_seat" : "seater_seat"
-                           } seat btn">${count++}</button>`
-                       )
-                       .join("")}
-                </div>
-            </div>`;
-    })
-    .join("")}`;
+CREATE TABLE seats
+(
+  seat_id INT AUTO_INCREMENT PRIMARY KEY,
+  seat_number INT NOT NULL,
+  seating_id INT NOT NULL,
+  seat_type BOOLEAN NOT NULL,
+  status_id INT NOT NULL,
+  CONSTRAINT seat_seating FOREIGN KEY (seating_id) REFERENCES seatings(seating_id),
+  CONSTRAINT seat_status FOREIGN KEY (status_id) REFERENCES status(status_id)
+);
 
-  // Back Seats
+CREATE TABLE booked_seats
+(
+  booked_seat_id INT AUTO_INCREMENT PRIMARY KEY,
+  seat_id INT NOT NULL,
+  booking_id INT NOT NULL,
 
-  if (sleeper) return;
+  CONSTRAINT booked_seat_seat_fk FOREIGN KEY (seat_id) REFERENCES seats(seat_id),
+  CONSTRAINT booked_seat_booking_fk FOREIGN KEY (booking_id) REFERENCES bookings(booking_id)
+);
 
-  bus.innerHTML += `<div class="d-flex align-items-center gap-4 ">
-                    <div class="d-flex w-100 gap-1 justify-content-between">
-                        ${Array.from({ length: 5 })
-                          .map(
-                            (_) =>
-                              `<button class="seater_seat btn seat w-100">
-                              ${count++}
-                            </button>`
-                          )
-                          .join("")}
-                    </div>
-                </div>`;
-};
+CREATE TABLE seat_types
+(
+  seat_type_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(25) NOT NULL
+);
+
+ALTER TABLE
+seats
+ADD COLUMN
+seat_type_id INT NOT NULL,
+ADD 
+CONSTRAINT seat_type FOREIGN KEY (seat_type_id) 
+REFERENCES seat_types(seat_type_id);

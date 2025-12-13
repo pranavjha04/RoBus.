@@ -17,3 +17,4 @@ INSERT INTO users
     ?,
     ?
 );
+

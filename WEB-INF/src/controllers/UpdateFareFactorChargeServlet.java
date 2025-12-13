@@ -48,7 +48,7 @@ public class UpdateFareFactorChargeServlet extends HttpServlet {
                 String attributeName = allAttributes.nextElement();
                 if(attributeName.startsWith("bus_fare_factor_list")) {
                     @SuppressWarnings("unchecked")
-                    ArrayList<BusFareFactor> list = (ArrayList<BusFareFactor>) session.getAttribute(attributeName);
+                    ArrayList<BusFareFactor> list = (ArrayList<BusFareFactor>) getServletContext().getAttribute(attributeName);
 
                     for(BusFareFactor next : list) {
                         if(next.getOperatorTicketFare().getOperatorTicketFareId().equals(operatorTicketFareId)) {

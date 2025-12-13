@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.ServletContext;
 
 import java.util.ArrayList;
 
@@ -28,6 +29,7 @@ public class AddSeatingServlet extends HttpServlet {
             return;
         }
         Operator operator = (Operator) session.getAttribute("operator");
+        ServletContext context = getServletContext();
 
         if(request.getParameter("bus_id") != null && request.getParameter("deck") != null) {
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));
@@ -90,17 +92,17 @@ public class AddSeatingServlet extends HttpServlet {
         }
         
         String cachedSeatingListAttribute = "seatingList" + busId;
-        if(session.getAttribute(cachedSeatingListAttribute) == null) {
+        if(context.getAttribute(cachedSeatingListAttribute) == null) {
             request.getRequestDispatcher("get_seating.do").include(request, response);
 
-            if(session.getAttribute(cachedSeatingListAttribute) == null) {
+            if(context.getAttribute(cachedSeatingListAttribute) == null) {
                 response.getWriter().println("invalid");
                 return;
             }
         }      
 
         @SuppressWarnings("unchecked")
-        ArrayList<Seating> seatingList = (ArrayList<Seating>) session.getAttribute(cachedSeatingListAttribute);
+        ArrayList<Seating> seatingList = (ArrayList<Seating>) context.getAttribute(cachedSeatingListAttribute);
 
         Boolean isUpdatable = false;
         if(activeBus.getDoubleDecker()) {
@@ -126,7 +128,7 @@ public class AddSeatingServlet extends HttpServlet {
         }
 
         seating.setSeatingId(generatedId);
-        session.removeAttribute(cachedSeatingListAttribute);
+        context.removeAttribute(cachedSeatingListAttribute);
         response.getWriter().println(new Gson().toJson(seating));
 
     } 

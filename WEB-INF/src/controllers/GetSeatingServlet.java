@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
+import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class GetSeatingServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         String requestURLPath = request.getServletPath().substring(1);
+        ServletContext context = getServletContext();
 
         try {
             if(session.getAttribute("operator") == null || request.getParameter("bus_id") == null) {
@@ -33,7 +35,7 @@ public class GetSeatingServlet extends HttpServlet {
 
             String cachedAttribute = "seatingList" + busId;
 
-            if(session.getAttribute(cachedAttribute) == null) {
+            if(context.getAttribute(cachedAttribute) == null) {
                 ArrayList<Seating> seatingList = Seating.collectRecords(busId, operatorId);
 
                 if(seatingList == null) {
@@ -63,13 +65,12 @@ public class GetSeatingServlet extends HttpServlet {
                         break;
                 }
 
-                session.setAttribute(cachedAttribute, seatingList);
+                context.setAttribute(cachedAttribute, seatingList);
             }
             
             if(!requestURLPath.equals("add_seating.do")) {
                 @SuppressWarnings("unchecked")
-                ArrayList<Seating> seatingList = (ArrayList<Seating>) session.getAttribute(cachedAttribute);
-
+                ArrayList<Seating> seatingList = (ArrayList<Seating>) context.getAttribute(cachedAttribute);
                 response.getWriter().println(new Gson().toJson(seatingList));
             }
         }

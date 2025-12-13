@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.ServletException;
+import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class UpdateSeatingServlet extends HttpServlet {
     static final String[] acceptedParams = {"lsCount", "rsCount", "seats", "rowCount", "deck", "sleeper", "bus_id", "seating_id"};
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
+        ServletContext context = getServletContext();
 
         if(session.getAttribute("operator") == null) {
             response.getWriter().println("invalid");
@@ -64,7 +66,7 @@ public class UpdateSeatingServlet extends HttpServlet {
             return;
         }
         else {
-            session.removeAttribute("seatingList" + busId);
+            context.removeAttribute("seatingList" + busId);
         }
         response.getWriter().println(new Gson().toJson(seating));
     }
