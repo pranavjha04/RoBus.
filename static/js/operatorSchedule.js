@@ -27,6 +27,12 @@ const formatDate = (d) => {
   return d.toISOString().split("T")[0];
 };
 
+const clearCache = () => {
+  for (const props in cache) {
+    cache[props] = {};
+  }
+};
+
 const resetFilter = () => {
   [...filterNavContainer.children].forEach((node) => {
     node.classList.remove("btn-primary");
@@ -229,3 +235,10 @@ const init = () => {
 };
 
 init();
+
+window.addEventListener("pageshow", (e) => {
+  if (e.persisted) {
+    clearCache();
+    updateDateRange();
+  }
+});

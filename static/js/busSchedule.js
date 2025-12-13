@@ -97,6 +97,15 @@ const clearForm = () => {
   arrivalTime.value = "";
 };
 
+const clearCache = () => {
+  cache.upcoming = {};
+  cache.ongoing = {};
+  cache.completed = {};
+  cache.cancelled = {};
+  cache.availableRouteCache = {};
+  cache.driverCache = null;
+};
+
 const enableForm = () => {
   [
     additionalCharges,
@@ -710,7 +719,7 @@ dateRangePrev.addEventListener("click", () => {
   updateDateRange();
 });
 
-window.addEventListener("DOMContentLoaded", async () => {
+const init = async () => {
   try {
     if (sessionStorage.getItem("activeBus") == null) {
       history.back();
@@ -727,5 +736,14 @@ window.addEventListener("DOMContentLoaded", async () => {
     toast.error(err.message);
     PageLoading.stopLoading();
     PageError.showOperatorError();
+  }
+};
+
+init();
+
+window.addEventListener("pageshow", (e) => {
+  if (e.persisted) {
+    clearCache();
+    updateDateRange();
   }
 });
