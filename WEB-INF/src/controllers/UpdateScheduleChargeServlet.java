@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.ServletContext;
 
 import java.io.IOException;
 
@@ -28,6 +29,7 @@ public class UpdateScheduleChargeServlet extends HttpServlet {
             response.sendRedirect("/bts");
             return;
         }
+        ServletContext context = getServletContext();
         try {
             for(String next : acceptedParams) {
                 if(request.getParameter(next) == null) {
@@ -88,9 +90,9 @@ public class UpdateScheduleChargeServlet extends HttpServlet {
                 throw new IllegalArgumentException("Invalid Request");
             } 
 
-            if(session.getAttribute("bus_fare_factor_list" + busId) == null) {
+            if(context.getAttribute("bus_fare_factor_list" + busId) == null) {
                 request.getRequestDispatcher("get_bus_fare_factors.do").include(request, response);
-                if(session.getAttribute("bus_fare_factor_list" + busId) == null) {
+                if(context.getAttribute("bus_fare_factor_list" + busId) == null) {
                     throw new IllegalArgumentException("Invalid Request");
                 }
             }

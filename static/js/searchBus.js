@@ -1,4 +1,5 @@
 import { getScheduleRequest, searchCityRequest } from "./service.js";
+import { toast } from "./toast.js";
 
 const from = document.querySelector("#from");
 const to = document.querySelector("#to");
@@ -146,12 +147,16 @@ searchBusForm.addEventListener("submit", async (e) => {
   )
     return;
 
-  const response = await getScheduleRequest({
-    source: source.id,
-    destination: destination.id,
-    journey_date: journeyDate.value,
-  });
-  console.log(response);
+  try {
+    const response = await getScheduleRequest({
+      source: source.value,
+      destination: destination.value,
+      journey_date: journeyDate.value,
+    });
+    console.log(response);
+  } catch (err) {
+    toast.error(err.message);
+  }
 });
 
 tomorrowBtn.addEventListener("click", () => {

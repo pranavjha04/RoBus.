@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
+import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
@@ -30,6 +31,7 @@ public class AddBusScheduleServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
+        ServletContext context = getServletContext();
         if(session.getAttribute("operator") == null) {
             response.sendRedirect("/bts");
             return;
@@ -96,9 +98,9 @@ public class AddBusScheduleServlet extends HttpServlet {
             /* -------- BUS END -------- */
 
             /* -------- TOTAL CHARGES START -------- */
-            if(session.getAttribute("bus_fare_factor_list" + busId) == null) {
+            if(context.getAttribute("bus_fare_factor_list" + busId) == null) {
                 request.getRequestDispatcher("get_bus_fare_factors.do").include(request, response);
-                if(session.getAttribute("bus_fare_factor_list" + busId) == null) {
+                if(context.getAttribute("bus_fare_factor_list" + busId) == null) {
                     throw new IllegalArgumentException("Invalid Request");
                 }
             }
@@ -110,7 +112,7 @@ public class AddBusScheduleServlet extends HttpServlet {
             }
 
             @SuppressWarnings("unchecked")
-            ArrayList<BusFareFactor> busFareFactorList = (ArrayList<BusFareFactor>) session.getAttribute("bus_fare_factor_list"+ busId);
+            ArrayList<BusFareFactor> busFareFactorList = (ArrayList<BusFareFactor>) context.getAttribute("bus_fare_factor_list"+ busId);
 
             @SuppressWarnings("unchecked")
             ArrayList<BusRouteWeekday> busRouteWeekdayList = (ArrayList<BusRouteWeekday>) session.getAttribute("bus_route_weekday_list" + operatorRouteId);

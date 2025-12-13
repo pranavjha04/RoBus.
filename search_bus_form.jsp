@@ -1,6 +1,6 @@
 <%@ taglib prefix="e" uri="bts" %>
 
-<form id="search_bus_form" accept="post" action="search_result.do">
+<form id="search_bus_form">
   <div class="row g-3 align-items-end">
     <div class="col-md-4">
       <label for="from" class="form-label fw-semibold">From</label>

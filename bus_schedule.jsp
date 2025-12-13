@@ -381,10 +381,12 @@ prefix="e" uri="bts" %>
                   </div>
                 </div>
 
-                <table
-                  class="border rounded table-responsive border-bottom-0"
-                  id="schedule_table"
-                ></table>
+                <div class="bg-white p-4 rounded shadow-sm d-flex flex-column justify-content-center">
+                  <table
+                    class="border rounded table-responsive border-bottom-0"
+                    id="schedule_table"
+                  ></table>
+                </div>
               </div>
 
               <footer class="container mt-4 mb-4"></footer>

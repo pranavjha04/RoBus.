@@ -138,7 +138,7 @@ const updateDateRange = () => {
 
   dateRangeContainer.innerHTML = "";
 
-  Array.from({ length: 6 }).forEach((_, i) => {
+  Array.from({ length: 7 }).forEach((_, i) => {
     const currDate = new Date(startDate);
     currDate.setDate(startDate.getDate() + i);
     const isInRange = formatDate(currDate) === formatDate(todayDate);

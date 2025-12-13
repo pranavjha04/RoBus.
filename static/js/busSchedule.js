@@ -198,10 +198,8 @@ const updateRouteSelect = (routeList = []) => {
 };
 
 const updateDriverListDisplay = (driverList = []) => {
-  console.log(driverList);
   if (!driverList.length) {
     disableElements(driverSelect);
-    console.log(driverList);
     driverSelect.disabled = true;
     driverSelectContainer.innerHTML = "";
     driverSelect.textContent = "No Drivers are available";
@@ -338,7 +336,7 @@ const updateDateRange = () => {
 
   dateRangeContainer.innerHTML = "";
 
-  Array.from({ length: 6 }).forEach((_, i) => {
+  Array.from({ length: 7 }).forEach((_, i) => {
     const currDate = new Date(startDate);
     currDate.setDate(startDate.getDate() + i);
     const isInRange = formatDate(currDate) === formatDate(todayDate);
@@ -402,7 +400,6 @@ journeyDate.addEventListener("blur", (e) => {
 
 showAvailableRouteBtn.addEventListener("click", async () => {
   const weekday = new Date(journeyDate.value).getDay();
-  console.log(weekday);
   try {
     if (!cache.availableRouteCache[weekday]) {
       disableForm();
@@ -412,7 +409,6 @@ showAvailableRouteBtn.addEventListener("click", async () => {
       }
       if (response === "internal" || !response)
         throw new Error("Internal Server Error");
-      console.log(response);
       cache.availableRouteCache[weekday] = JSON.parse(response);
 
       cache.availableRouteCache[weekday].forEach(({ operatorRoute }) => {
@@ -479,7 +475,6 @@ routeSelectContainer.addEventListener("mousedown", async (e) => {
   );
 
   totalCharge.value = 180 + fixed + perPersonPerKm;
-  console.log(!cache.driverCache);
 
   try {
     if (!cache.driverCache) {
@@ -664,10 +659,10 @@ scheduleTable.addEventListener("click", async (e) => {
     const activeDateString = [year, month, day].join("-");
     const activeFilter =
       filterNavContainer.querySelector(".btn-primary").dataset.type;
+    console.log(cache[activeFilter]);
     const activeDate = cache[activeFilter][activeDateString]?.find(
       (schedule) => schedule.scheduleId === +scheduleId
     );
-
     if (!activeDate) return;
 
     sessionStorage.setItem("activeSchedule", JSON.stringify(activeDate));

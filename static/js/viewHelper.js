@@ -784,8 +784,8 @@ export class ViewHelper {
   }
 
   static getScheduleTableHeading() {
-    return `<thead>
-                <tr class="border border-bottom text-center">
+    return `<thead class="border border-bottom text-center table table-responsive" style="background-color: rgb(248, 249, 250)">
+                <tr>
                   <th class="p-3">Timings</th>
                   <th class="p-3">Route</th>
                   <th class="p-3">Bus</th>
@@ -812,7 +812,7 @@ export class ViewHelper {
     const currDate = new Date(journeyDate);
 
     return ` <tr class="border border-bottom text-center" data-schedule-id=${scheduleId} data-day=${currDate
-      .getDay()
+      .getDate()
       .toString()
       .padStart(2, "0")} data-month=${(currDate.getMonth() + 1)
       .toString()

@@ -736,7 +736,7 @@ export const getScheduleRequest = async (params) => {
   const queryParams = createURLParams(params);
   const res = await fetch(`get_schedule.do?${queryParams.toString()}`);
   if (!res.ok) throw new Error("Internal Server Error");
-  
+
   const data = await res.text();
   return data.trim();
 };

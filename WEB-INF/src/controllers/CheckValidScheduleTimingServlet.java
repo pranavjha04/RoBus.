@@ -58,10 +58,12 @@ public class CheckValidScheduleTimingServlet extends HttpServlet {
             }
 
             if(session.getAttribute(CACHE_ATTRIBUTE) == null) {
+                request.setAttribute("bus_id", busId);
                 request.getRequestDispatcher("get_upcoming_bus_schedule.do").include(request, response);
                 if(session.getAttribute(CACHE_ATTRIBUTE) == null) {
                     throw new IllegalArgumentException("Invalid Request");
                 }
+                request.removeAttribute("bus_id");
             }
             
             @SuppressWarnings("unchecked")
