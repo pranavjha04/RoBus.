@@ -822,8 +822,8 @@ export class ViewHelper {
         .toString()
         .padStart(2, "0")} data-year=${currDate.getFullYear()}>
                   <td class="p-3">${getFormattedTime(
-                    arrivalTime
-                  )} → ${getFormattedTime(departureTime)}</td>
+                    departureTime
+                  )} → ${getFormattedTime(arrivalTime)}</td>
                   <td class="d-flex align-items-center text-center justify-content-center">
                     <div
                       class="p-3 text-center d-flex flex-column align-items-center justify-content-center"

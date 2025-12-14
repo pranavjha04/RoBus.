@@ -1,5 +1,7 @@
+import { PageLoading } from "./pageLoading.js";
 import { getScheduleRequest, searchCityRequest } from "./service.js";
 import { toast } from "./toast.js";
+import { createURLParams } from "./util.js";
 
 const from = document.querySelector("#from");
 const to = document.querySelector("#to");
@@ -13,6 +15,8 @@ const destination = document.querySelector("#destination");
 const submitBtn = document.querySelector("#submit");
 const todayBtn = document.querySelector("#today_date");
 const tomorrowBtn = document.querySelector("#tomorrow_date");
+
+const APP_URL = "http://localhost:8080/bts";
 
 const cache = {};
 
@@ -144,17 +148,32 @@ searchBusForm.addEventListener("submit", async (e) => {
     !journeyDate.value ||
     !source.value ||
     !destination.value
-  )
+  ) {
+    console.log("he");
     return;
+  }
 
   try {
+    PageLoading.startLoading();
     const response = await getScheduleRequest({
       source: source.value,
       destination: destination.value,
       journey_date: journeyDate.value,
     });
-    console.log(response);
+    if (response === "invalid") throw new Error("Invalid Request");
+    const searchResult = JSON.parse(response);
+    sessionStorage.setItem("searchResult", JSON.stringify(searchResult));
+    const urlParams = createURLParams({
+      from: from.value,
+      to: to.value,
+      journey_date: journeyDate.value,
+      source: source.value,
+      destination: destination.value,
+    });
+    PageLoading.stopLoading();
+    window.location.href = `${APP_URL}/search_results.do?${urlParams.toString()}`;
   } catch (err) {
+    PageLoading.stopLoading();
     toast.error(err.message);
   }
 });
@@ -163,4 +182,8 @@ tomorrowBtn.addEventListener("click", () => {
   const d = new Date();
   d.setDate(d.getDate() + 1);
   journeyDate.value = formatDate(d);
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+  PageLoading.stopLoading();
 });

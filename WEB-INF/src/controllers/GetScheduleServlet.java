@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.Time;
 
+import java.time.LocalTime;
+
 import java.util.ArrayList;
 
 import models.Schedule;
@@ -31,7 +33,6 @@ public class GetScheduleServlet extends HttpServlet {
         "source", "destination", "journey_date"
     };
 
-    @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
@@ -40,8 +41,7 @@ public class GetScheduleServlet extends HttpServlet {
                 AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestURL);
 
         ServletContext context = getServletContext();
-        Time currTime = new Time(System.currentTimeMillis());
-
+        LocalTime currTime = LocalTime.now();
         try {
             if (isIncludeRequest) {
                 for (String p : acceptedParametersList) {
@@ -90,13 +90,21 @@ public class GetScheduleServlet extends HttpServlet {
 
                 ArrayList<Schedule> filteredScheduleList = new ArrayList<>();
 
+                System.out.println(scheduleList);
+
                 for (Schedule next : scheduleList) {
                     if (next.getDepartureTime()
                             .toLocalTime()
-                            .isAfter(currTime.toLocalTime())) {
+                            .isAfter(currTime)) {
                         filteredScheduleList.add(next);
                     }
+
+                    
+                    System.out.println(currTime);
+                    System.out.println(next.getDepartureTime().toLocalTime());
                 }
+
+                System.out.println(filteredScheduleList);
 
                 for (Schedule next : filteredScheduleList) {
 
@@ -179,7 +187,6 @@ public class GetScheduleServlet extends HttpServlet {
         }
     }
 
-    @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         HttpSession session = request.getSession();

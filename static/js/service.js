@@ -740,3 +740,13 @@ export const getScheduleRequest = async (params) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const logoutRequest = async () => {
+  const res = await fetch(`logout.do`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+
+  return data.trim();
+};

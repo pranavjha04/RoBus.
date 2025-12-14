@@ -17,7 +17,7 @@
         />
         <ul
           id="from_suggestion"
-          class="list-group position-absolute w-100 bg-white border-top-0 border rounded shadow-sm top-100 z-3 overflow-auto"
+          class="list-group position-absolute w-100 bg-white border-top-0 border rounded shadow-sm top-100 z-3 overflow-auto d-none"
           style="max-height: 200px"
         ></ul>
       </div>
@@ -49,7 +49,7 @@
         />
         <ul
           id="to_suggestion"
-          class="list-group position-absolute w-100 bg-white border border-top-0 rounded shadow-sm top-100 z-3 overflow-auto"
+          class="list-group position-absolute w-100 bg-white border border-top-0 rounded shadow-sm top-100 z-3 overflow-auto d-none"
           style="max-height: 200px"
         ></ul>
       </div>

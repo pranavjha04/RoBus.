@@ -761,6 +761,8 @@ public class Schedule {
                     user
                 );
 
+                bus.setOperator(operator);
+
                 Schedule schedule = new Schedule(
                     rs.getInt("sch.schedule_id"),
                     rs.getDate("sch.journey_date"),

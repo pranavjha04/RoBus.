@@ -1,4 +1,30 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<div class="modal fade" tabindex="-1" id="logoutModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Logout</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to logout?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-primary" id="logout_btn">
+          Yes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <nav
   class="navbar navbar-light bg-white border-bottom px-4 p-1 gap-2 position-sticky top-0"
@@ -33,26 +59,12 @@
         />
       </svg>
     </button>
+
     <button
       class="bg-transparent border-0 focus-ring"
       style="transition: all 0.3s"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        fill="#0d6efd"
-        class="bi bi-moon-fill"
-        viewBox="0 0 16 16"
-      >
-        <path
-          d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"
-        />
-      </svg>
-    </button>
-    <button
-      class="bg-transparent border-0 focus-ring"
-      style="transition: all 0.3s"
+      data-bs-toggle="modal"
+      data-bs-target="#logoutModal"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -73,4 +85,5 @@
       </svg>
     </button>
   </div>
+  <script type="module" src="static/js/logout.js"></script>
 </nav>

@@ -193,6 +193,7 @@ prefix="e" uri="bts" %>
       }
     </style>
   </head>
+  <c:import url="essential_page_display.jsp" />
   <body class="d-flex flex-column text-dark min-vh-100">
     <c:import url="welcome_navbar.jsp" />
     <section class="container-fluid px-3 mt-4">
@@ -290,6 +291,7 @@ prefix="e" uri="bts" %>
                     type="text"
                     class="form-control rounded-pill"
                     id="from"
+                    name="from"
                     value="${param.from}"
                     placeholder="e.g., Delhi"
                   />
@@ -307,6 +309,7 @@ prefix="e" uri="bts" %>
                     type="text"
                     class="form-control rounded-pill"
                     id="to"
+                    name="to"
                     value="${param.to}"
                     placeholder="e.g., Kashmir"
                   />
@@ -325,6 +328,7 @@ prefix="e" uri="bts" %>
                   type="date"
                   class="form-control rounded-pill"
                   id="journey_date"
+                  name="journey_date"
                   min="${e:currentDate()}"
                   value="${param.journey_date}"
                 />
@@ -337,6 +341,13 @@ prefix="e" uri="bts" %>
                   Search
                 </button>
               </div>
+
+              <input type="hidden" name="source" value="${param.source}" />
+              <input
+                type="hidden"
+                name="destination"
+                value="${param.destination}"
+              />
             </form>
           </div>
 
@@ -509,4 +520,5 @@ prefix="e" uri="bts" %>
       }
     }
   </script>
+  <script type="module" src="static/js/searchResult.js"></script>
 </html>

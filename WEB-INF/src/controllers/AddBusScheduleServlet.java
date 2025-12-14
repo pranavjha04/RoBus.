@@ -118,9 +118,13 @@ public class AddBusScheduleServlet extends HttpServlet {
             ArrayList<BusRouteWeekday> busRouteWeekdayList = (ArrayList<BusRouteWeekday>) session.getAttribute("bus_route_weekday_list" + operatorRouteId);
             
             int distance = 0;
+            Integer source = null;
+            Integer destination = null;
             for(BusRouteWeekday next : busRouteWeekdayList) {
                 if(next.getBusRouteWeekdayId().equals(busRouteWeekdayId)) {
                     distance = next.getOperatorRoute().getRoute().getDistance();
+                    source = next.getOperatorRoute().getRoute().getSource().getCityId();
+                    destination = next.getOperatorRoute().getRoute().getDestination().getCityId();
                     break;
                 }
             }
@@ -161,6 +165,8 @@ public class AddBusScheduleServlet extends HttpServlet {
                 "upcoming" + busId + "schedule_list" + journeyDate.toString()
             };
 
+            context.removeAttribute("upcoming_schedule_" + source + "_" + destination + "_" + journeyDate);
+            
             for(String attribute : clearCahceAttributeList) {
                 session.removeAttribute(attribute);
             }

@@ -79,6 +79,7 @@
       }
     </style>
   </head>
+  <c:import url="essential_page_display.jsp" />
 
   <body class="bg-light" style="overflow: scroll">
     <!-- EMAIL VERIFICATION ALERT -->

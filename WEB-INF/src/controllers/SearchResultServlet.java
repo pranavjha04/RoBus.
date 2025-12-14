@@ -9,7 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 
 
-@WebServlet("/search_result.do")
+@WebServlet("/search_results.do")
 public class SearchResultServlet extends HttpServlet {
     private static String[] acceptedParameterList = {"from", "to", "source", "destination", "journey_date"};
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
