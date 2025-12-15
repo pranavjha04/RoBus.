@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
+import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
@@ -30,6 +31,8 @@ public class UpdateScheduleStatusServlet extends HttpServlet {
             response.sendRedirect("/bts");
             return;
         }
+
+        ServletContext context = getServletContext();
 
         Operator operator = (Operator) session.getAttribute("operator");
 
@@ -87,6 +90,9 @@ public class UpdateScheduleStatusServlet extends HttpServlet {
                         // agr incoming nahi hai toh exception throw
                         throw new IllegalArgumentException("Invalid Request");
                     } 
+
+                    Integer source = currSchedule.getBusRouteWeekday().getOperatorRoute().getRoute().getSource().getCityId();
+                    Integer destination = currSchedule.getBusRouteWeekday().getOperatorRoute().getRoute().getDestination().getCityId();
                     
                     // driver set to inactive
                     request.setAttribute("driver_id", currSchedule.getDriver().getDriverId());
@@ -103,12 +109,13 @@ public class UpdateScheduleStatusServlet extends HttpServlet {
                     boolean isScheduleUpdate = Schedule.updateStatus(scheduleId, 6, operator.getOperatorId());
                     if(!isScheduleUpdate) throw new IllegalArgumentException("Invalid Request");
 
-                    // clear the session
+                    // clear the session and cache
                     final String[] removeCacheList = {ALL_INCOMING_SCHEDULE_LIST, BUS_INCOMING_SCHEDULE_LIST, ALL_CANCELLED_SCHEDULE_LIST, BUS_CANCELLED_SCHEDULE_LIST};
 
                     for(String next : removeCacheList) {
                         session.removeAttribute(next);
                     }
+                    context.removeAttribute("upcoming_schedule_" + source + "_" + destination + "_" + journeyDate);
 
                     @SuppressWarnings("unchecked")
                     ArrayList<Status> statusList = (ArrayList<Status>) getServletContext().getAttribute("statusList");
@@ -119,7 +126,8 @@ public class UpdateScheduleStatusServlet extends HttpServlet {
                             break;
                         }
                     }
-    
+
+                    
                     response.getWriter().println(new Gson().toJson(currSchedule));
                     break;
                 } 

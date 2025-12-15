@@ -149,7 +149,6 @@ searchBusForm.addEventListener("submit", async (e) => {
     !source.value ||
     !destination.value
   ) {
-    console.log("he");
     return;
   }
 

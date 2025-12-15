@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import models.Schedule;
 import models.BusFareFactor;
 import models.Seating;
+import models.OperatorRoute;
+import models.OperatorRouteMidCity;
 
 import utils.AppUtil;
 
@@ -37,6 +39,7 @@ public class GetScheduleServlet extends HttpServlet {
             throws IOException, ServletException {
 
         String requestURLPath = request.getServletPath().substring(1);
+        HttpSession session = request.getSession();
         boolean isIncludeRequest =
                 AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestURL);
 
@@ -97,8 +100,16 @@ public class GetScheduleServlet extends HttpServlet {
                             .toLocalTime()
                             .isAfter(currTime)) {
                         filteredScheduleList.add(next);
-                    }
 
+                        OperatorRoute operatorRoute = next.getBusRouteWeekday().getOperatorRoute();
+                        int operatorRouteId = operatorRoute.getOperatorRouteId();
+                    
+                        ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = OperatorRouteMidCity.collectAllRecords(operatorRouteId, next.getBus().getOperator().getOperatorId());
+
+                        operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
+
+                        context.setAttribute("operator_route_midcities" + operatorRouteId, operatorRouteMidCityList);
+                    }
                     
                     System.out.println(currTime);
                     System.out.println(next.getDepartureTime().toLocalTime());

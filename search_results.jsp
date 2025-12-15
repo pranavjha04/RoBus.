@@ -107,6 +107,20 @@ prefix="e" uri="bts" %>
         background-color: #d7e7ff;
       }
 
+      .decker-btn {
+        background-color: #ffe9d6;
+        color: #d46a1f;
+        border: none;
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .decker-btn:hover {
+        background-color: #fee0c7;
+      }
+
       /* Amenities List */
       .amenities-list {
         background-color: #f4f8ff;
@@ -145,15 +159,6 @@ prefix="e" uri="bts" %>
         padding: 0.35rem 0.75rem;
         border-radius: 20px;
         font-size: 0.85rem;
-      }
-      .layout-badge {
-        background: #ffe9d6; /* very light peach */
-        color: #d46a1f; /* soft orange text */
-        padding: 6px 16px;
-        border-radius: 30px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        border: 1px solid #ffd2b0;
       }
 
       .layout-dot {
@@ -352,7 +357,7 @@ prefix="e" uri="bts" %>
           </div>
 
           <form class="mb-4">
-            <p class="mb-2 fw-medium">6 Results Found</p>
+            <p class="mb-2 fw-medium" id="total_result">6 Results Found</p>
             <div class="d-flex flex-wrap gap-2 align-items-center">
               <select class="form-select w-auto rounded-pill">
                 <option selected disabled>Sort by Price</option>
@@ -366,68 +371,7 @@ prefix="e" uri="bts" %>
               </select>
             </div>
           </form>
-          <ul class="list-unstyled">
-            <li class="bus-card mb-4 bg-white">
-              <div
-                class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4 p-4"
-              >
-                <!-- LEFT SIDE (Title + Badges + Amenity Button) -->
-                <div class="flex-grow-1">
-                  <h5 class="fw-bold mb-2">Jai Mata Di Travels</h5>
-
-                  <!-- Always visible seat layout -->
-                  <span class="layout-badge">2 + 1</span>
-
-                  <!-- Amenities Button -->
-                  <button
-                    class="amenities-btn mt-2"
-                    onclick="toggleAmenities(this)"
-                  >
-                    View Amenities
-                  </button>
-
-                  <!-- Amenities List (Hidden by default) -->
-                  <div class="amenities-list">
-                    <span class="amenity-item">AC</span>
-                    <span class="amenity-item">Sleeper</span>
-                    <span class="amenity-item">Charging Point</span>
-                    <span class="amenity-item">Blanket</span>
-                    <span class="amenity-item">Reading Light</span>
-                    <span class="amenity-item">Water Bottle</span>
-                  </div>
-                </div>
-
-                <!-- MIDDLE SECTION (Timing) -->
-                <div class="d-flex align-items-center gap-4">
-                  <div class="text-center">
-                    <p class="mb-1 fw-bold fs-5">10:00 AM</p>
-                    <small class="text-muted">Delhi</small>
-                  </div>
-
-                  <div class="text-center">
-                    <div class="duration-line my-2"></div>
-                    <small class="text-muted fw-medium">3h 00m</small>
-                  </div>
-
-                  <div class="text-center">
-                    <p class="mb-1 fw-bold fs-5">1:00 PM</p>
-                    <small class="text-muted">Kashmir</small>
-                  </div>
-                </div>
-
-                <!-- RIGHT SECTION (Price + Button) -->
-                <div class="text-md-end d-flex flex-column align-items-md-end">
-                  <div class="price fs-4 fw-bold mb-1">&#x20B9;850</div>
-                  <span class="seats-available mb-2">29 Seats Available</span>
-                  <a
-                    href="#"
-                    class="btn btn-primary rounded-pill px-4 py-2 fw-medium"
-                    >Book Seats</a
-                  >
-                </div>
-              </div>
-            </li>
-          </ul>
+          <ul class="list-unstyled" id="search_result_container"></ul>
         </main>
       </div>
     </section>

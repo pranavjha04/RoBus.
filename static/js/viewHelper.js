@@ -935,4 +935,114 @@ export class ViewHelper {
                   ).format(currDate)}</span>
                 </button>`;
   }
+
+  static getSearchResultRow(result) {
+    const {
+      scheduleId,
+      totalCharges,
+      bus,
+      arrivalTime,
+      departureTime,
+      busRouteWeekday,
+      seaterSeatsBooked,
+      sleeperSeatsBooked,
+    } = result;
+    const { operator, seatingList, busFareFactorList } = bus;
+    const { operatorRoute } = busRouteWeekday;
+    const totalDuration = operatorRoute.operatorRouteMidCities.reduce(
+      (acc, curr) => {
+        return acc + curr.haltingTime;
+      },
+      operatorRoute.route.duration
+    );
+    const totalSeats = seatingList.reduce((acc, curr) => {
+      return acc + curr.seats;
+    }, 0);
+    const bookedSeats = sleeperSeatsBooked + seaterSeatsBooked;
+    return `  <li class="bus-card mb-4 bg-white">
+              <div
+                class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4 p-4"
+              >
+                <!-- LEFT SIDE (Title + Badges + Amenity Button) -->
+                <div class="flex-grow-1">
+                  <h5 class="fw-bold mb-2">${operator.fullName}</h5>
+
+                  <!-- Always visible seat layout -->
+                  <button class="decker-btn mt-2">${
+                    bus.doubleDecker ? "Double" : "Single"
+                  } Decker</button>
+
+                  <!-- Amenities Button -->
+                  <button
+                    class="amenities-btn mt-2"
+                    onclick="toggleAmenities(this)"
+                  >
+                    View Amenities
+                  </button>
+
+                  <!-- Amenities List (Hidden by default) -->
+                  <div class="amenities-list">
+                    ${busFareFactorList
+                      .map(({ operatorTicketFare }) => {
+                        const { fareFactor } = operatorTicketFare;
+                        return `<span class="amenity-item">${fareFactor.name}</span>`;
+                      })
+                      .join("")}
+                    
+                  </div>
+                </div>
+
+                <!-- MIDDLE SECTION (Timing) -->
+                <div class="d-flex align-items-center gap-3">
+                  <div class="text-center">
+                    <p class="mb-1 fw-bold fs-5">${getFormattedTime(
+                      departureTime
+                    )}</p>
+                    <div class="d-flex flex-column gap-0">
+                    <span class="text-secondary fs-5 mb-0">${
+                      operatorRoute.route.source.name
+                    }</span>
+                      <small class="text-secondary small">
+                      ${operatorRoute.route.source.state.name}
+                    </small>
+                    </div>
+                  </div>
+
+                  <div class="text-center">
+                    <div class="duration-line my-2"></div>
+                    <small class="text-muted fw-medium">${getFormatedDuration(
+                      totalDuration
+                    )}</small>
+                  </div>
+
+                  <div class="text-center">
+                    <p class="mb-1 fw-bold fs-5">${getFormattedTime(
+                      arrivalTime
+                    )}</p>
+                    <div class="d-flex flex-column gap-0">
+                    <span class="text-secondary fs-5 mb-0">${
+                      operatorRoute.route.destination.name
+                    }</span>
+                      <small class="text-secondary small">
+                      ${operatorRoute.route.destination.state.name}
+                    </small>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- RIGHT SECTION (Price + Button) -->
+                <div class="text-md-end d-flex flex-column align-items-md-end">
+                  <div class="price fs-4 fw-bold mb-1">&#x20B9;${totalCharges}</div>
+                  <span class="seats-available mb-2">${
+                    totalSeats - bookedSeats
+                  } Seats Available</span>
+                  <a
+                    href="#"
+                    class="btn btn-primary rounded-pill px-4 py-2 fw-medium"
+                    >Book Seats</a
+                  >
+                </div>
+              </div>
+            </li>`;
+  }
 }

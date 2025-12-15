@@ -33,7 +33,7 @@ public class GetOperatorRouteMidCitiesServlet extends HttpServlet {
         String requestURLPath = request.getServletPath().substring(1);
         boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
         try {
-            if(session.getAttribute("operator") == null) {
+            if(session.getAttribute("operator") == null && !requestURLPath.equals("get_schedule.do")) {
                 throw new IllegalArgumentException("Invalid Request");
             }
             Operator operator = (Operator) session.getAttribute("operator");
