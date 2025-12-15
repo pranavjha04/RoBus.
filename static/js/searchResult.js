@@ -7,10 +7,11 @@ import { ViewHelper } from "./viewHelper.js";
 const searchResultContainer = document.querySelector(
   "#search_result_container"
 );
-const totalResultContainer = document.querySelector("#total_result");
-const sortPrice = document.querySelector("#sort_price");
-const sortSeats = document.querySelector("#sort_seat");
 
+//
+const totalResultContainer = document.querySelector("#total_result");
+
+// search
 const from = document.querySelector("#from");
 const to = document.querySelector("#to");
 const fromSuggestion = document.querySelector("#from_suggestion");
@@ -21,21 +22,34 @@ const source = document.querySelector("#source");
 const destination = document.querySelector("#destination");
 const submitBtn = document.querySelector("#submit");
 
+// filters
+const sortPrice = document.querySelector("#sort_price");
+const sortSeats = document.querySelector("#sort_seat");
+const ac = document.querySelectorAll(".ac");
+const nonAc = document.querySelectorAll(".nac");
+const seater = document.querySelectorAll(".seater");
+const sleeper = document.querySelectorAll(".sleeper");
+const sortDeparture = document.querySelectorAll(".sort-departure");
+
 const cache = {};
 
 const modal = {
   searchResults: [],
 };
 
-const formatDate = (date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
-
 const resetFilter = () => {
   sortPrice.value = sortSeats.value = "";
+};
+
+const disableFilter = () => {
+  document.querySelectorAll(".filter").forEach((node) => {
+    node.disabled = true;
+  });
+};
+const enableFilter = () => {
+  document.querySelectorAll(".filter").forEach((node) => {
+    node.disabled = true;
+  });
 };
 
 const displaySearchResult = (list = []) => {
@@ -49,7 +63,10 @@ const displaySearchResult = (list = []) => {
           <p>Please try another date or route.</p>
         </div>
       </div>`;
+
+    disableFilter();
   } else {
+    enableFilter();
     searchResultContainer.innerHTML = modal.searchResults
       .map(ViewHelper.getSearchResultRow)
       .join("");
@@ -138,6 +155,31 @@ sortSeats.addEventListener("change", (e) => {
   }
 });
 
+sortDeparture.forEach((dep) => {
+  dep.addEventListener("change", (e) => {
+    const value = e.target.value;
+
+    switch (value) {
+      case "low": {
+        break;
+      }
+      case "high": {
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  });
+});
+
+ac.forEach((node) => {
+  node.addEventListener('click', (e) => {
+    const filterResult = modal.searchResults.filter(())
+  })
+})
+
+//*********************SEARCH************************* */
 const selectCityEvent = (e) => {
   const li = e.target.closest("li");
   if (!li) return;
@@ -245,14 +287,17 @@ searchBusForm.addEventListener("submit", async (e) => {
 
   try {
     PageLoading.startLoading();
+    disableFilter();
     const response = await getScheduleRequest({
       source: source.value,
       destination: destination.value,
       journey_date: journeyDate.value,
     });
     if (response === "invalid") throw new Error("Invalid Request");
-    const searchResult = JSON.parse(response);
+    const searchResult = (modal.searchResults = JSON.parse(response));
     sessionStorage.setItem("searchResult", JSON.stringify(searchResult));
+
+    displaySearchResult(searchResult);
     const urlParams = {
       from: from.value,
       to: to.value,
@@ -268,9 +313,6 @@ searchBusForm.addEventListener("submit", async (e) => {
     for (const prop in urlParams) {
       url.set(prop, urlParams[prop]);
     }
-    console.log(url.toString());
-
-    // ✅ NO RELOAD
     window.history.replaceState(
       {},
       "",
@@ -279,8 +321,11 @@ searchBusForm.addEventListener("submit", async (e) => {
   } catch (err) {
     PageLoading.stopLoading();
     toast.error(err.message);
+  } finally {
+    enableFilter();
   }
 });
+/**************************SEARCH END **************************** */
 
 const init = () => {
   try {

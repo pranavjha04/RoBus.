@@ -212,7 +212,7 @@ prefix="e" uri="bts" %>
               <div class="d-flex align-items-center gap-2">
                 <input
                   type="radio"
-                  class="btn-check"
+                  class="btn-check filter ac"
                   name="bus_type_ac"
                   id="ac"
                   autocomplete="off"
@@ -224,7 +224,7 @@ prefix="e" uri="bts" %>
                 >
                 <input
                   type="radio"
-                  class="btn-check"
+                  class="btn-check filter nac"
                   name="bus_type_ac"
                   id="non_ac"
                   autocomplete="off"
@@ -238,7 +238,7 @@ prefix="e" uri="bts" %>
               <div class="d-flex align-items-center gap-2">
                 <input
                   type="radio"
-                  class="btn-check"
+                  class="btn-check filter seater"
                   name="bus_type_seat"
                   id="seater"
                   autocomplete="off"
@@ -250,7 +250,7 @@ prefix="e" uri="bts" %>
                 >
                 <input
                   type="radio"
-                  class="btn-check"
+                  class="btn-check filter sleeper"
                   name="bus_type_seat"
                   id="sleeper"
                   autocomplete="off"
@@ -261,8 +261,8 @@ prefix="e" uri="bts" %>
                   >Sleeper</label
                 >
               </div>
-              <select class="form-select rounded-pill">
-                <option selected disabled>Sort by Departure</option>
+              <select class="form-select rounded-pill filter sort-departure">
+                <option selected>Sort by Departure</option>
                 <option value="low">Early</option>
                 <option value="high">Late</option>
               </select>
@@ -290,7 +290,7 @@ prefix="e" uri="bts" %>
             <h5 class="fw-bold mb-4 text-primary">Search Buses</h5>
             <form class="row g-3 align-items-end" id="search_bus_form">
               <div class="col-md-3">
-                <label for="fromCity" class="form-label fw-medium">From</label>
+                <label for="from" class="form-label fw-medium">From</label>
                 <div class="position-relative">
                   <input
                     type="text"
@@ -308,7 +308,7 @@ prefix="e" uri="bts" %>
                 </div>
               </div>
               <div class="col-md-3">
-                <label for="toCity" class="form-label fw-medium">To</label>
+                <label for="to" class="form-label fw-medium">To</label>
                 <div class="position-relative">
                   <input
                     type="text"
@@ -326,7 +326,7 @@ prefix="e" uri="bts" %>
                 </div>
               </div>
               <div class="col-md-3">
-                <label for="journeyDate" class="form-label fw-medium"
+                <label for="journey_date" class="form-label fw-medium"
                   >Journey Date</label
                 >
                 <input
@@ -366,12 +366,18 @@ prefix="e" uri="bts" %>
           <form class="mb-4">
             <p class="mb-2 fw-medium" id="total_result">6 Results Found</p>
             <div class="d-flex flex-wrap gap-2 align-items-center">
-              <select class="form-select w-auto rounded-pill" id="sort_price">
+              <select
+                class="form-select w-auto rounded-pill filter"
+                id="sort_price"
+              >
                 <option selected>Sort by Price</option>
                 <option value="low">Low to High</option>
                 <option value="high">High to Low</option>
               </select>
-              <select class="form-select w-auto rounded-pill" id="sort_seat">
+              <select
+                class="form-select w-auto rounded-pill filter"
+                id="sort_seat"
+              >
                 <option selected>Sort by Seats</option>
                 <option value="low">Low to High</option>
                 <option value="high">High to Low</option>
@@ -399,7 +405,7 @@ prefix="e" uri="bts" %>
           <div class="d-flex align-items-center gap-2">
             <input
               type="radio"
-              class="btn-check"
+              class="btn-check filter ac"
               name="bus_type_ac"
               id="ac-mobile"
               autocomplete="off"
@@ -411,8 +417,8 @@ prefix="e" uri="bts" %>
             >
             <input
               type="radio"
-              class="btn-check"
-              name="bus_type_ac"
+              class="btn-check filter"
+              name="bus_type_ac nac"
               id="non_ac-mobile"
               autocomplete="off"
             />
@@ -425,7 +431,7 @@ prefix="e" uri="bts" %>
           <div class="d-flex align-items-center gap-2">
             <input
               type="radio"
-              class="btn-check"
+              class="btn-check filter seater"
               name="bus_type_seat"
               id="seater-mobile"
               autocomplete="off"
@@ -437,7 +443,7 @@ prefix="e" uri="bts" %>
             >
             <input
               type="radio"
-              class="btn-check"
+              class="btn-check filter sleeper"
               name="bus_type_seat"
               id="sleeper-mobile"
               autocomplete="off"
@@ -448,8 +454,8 @@ prefix="e" uri="bts" %>
               >Sleeper</label
             >
           </div>
-          <select class="form-select rounded-pill">
-            <option selected disabled>Sort by Departure</option>
+          <select class="form-select rounded-pill filter sort-departure">
+            <option selected>Sort by Departure</option>
             <option value="low">Early</option>
             <option value="high">Late</option>
           </select>
