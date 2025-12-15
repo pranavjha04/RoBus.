@@ -288,7 +288,7 @@ prefix="e" uri="bts" %>
           <!-- Added Search Form Above Results -->
           <div class="search-form">
             <h5 class="fw-bold mb-4 text-primary">Search Buses</h5>
-            <form class="row g-3 align-items-end">
+            <form class="row g-3 align-items-end" id="search_bus_form">
               <div class="col-md-3">
                 <label for="fromCity" class="form-label fw-medium">From</label>
                 <div class="position-relative">
@@ -341,15 +341,22 @@ prefix="e" uri="bts" %>
               <div class="col-md-3">
                 <button
                   type="submit"
+                  id="submit"
                   class="btn btn-primary rounded-pill w-100"
                 >
                   Search
                 </button>
               </div>
 
-              <input type="hidden" name="source" value="${param.source}" />
               <input
                 type="hidden"
+                name="source"
+                value="${param.source}"
+                id="source"
+              />
+              <input
+                type="hidden"
+                id="destination"
                 name="destination"
                 value="${param.destination}"
               />
@@ -359,13 +366,13 @@ prefix="e" uri="bts" %>
           <form class="mb-4">
             <p class="mb-2 fw-medium" id="total_result">6 Results Found</p>
             <div class="d-flex flex-wrap gap-2 align-items-center">
-              <select class="form-select w-auto rounded-pill">
-                <option selected disabled>Sort by Price</option>
+              <select class="form-select w-auto rounded-pill" id="sort_price">
+                <option selected>Sort by Price</option>
                 <option value="low">Low to High</option>
                 <option value="high">High to Low</option>
               </select>
-              <select class="form-select w-auto rounded-pill">
-                <option selected disabled>Sort by Seats</option>
+              <select class="form-select w-auto rounded-pill" id="sort_seat">
+                <option selected>Sort by Seats</option>
                 <option value="low">Low to High</option>
                 <option value="high">High to Low</option>
               </select>

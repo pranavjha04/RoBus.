@@ -2,6 +2,7 @@ import { PageLoading } from "./pageLoading.js";
 import { getScheduleRequest, searchCityRequest } from "./service.js";
 import { toast } from "./toast.js";
 import { createURLParams } from "./util.js";
+import { APP_URL } from "./helper.js";
 
 const from = document.querySelector("#from");
 const to = document.querySelector("#to");
@@ -15,8 +16,6 @@ const destination = document.querySelector("#destination");
 const submitBtn = document.querySelector("#submit");
 const todayBtn = document.querySelector("#today_date");
 const tomorrowBtn = document.querySelector("#tomorrow_date");
-
-const APP_URL = "http://localhost:8080/bts";
 
 const cache = {};
 
