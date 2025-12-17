@@ -27,20 +27,16 @@ const sortPrice = document.querySelector("#sort_price");
 const sortSeats = document.querySelector("#sort_seat");
 const ac = document.querySelectorAll(".ac");
 const seater = document.querySelectorAll(".seat");
-
 const sortDeparture = document.querySelectorAll(".sort-departure");
-
 const acRadio = document.querySelector('input[name="bus_type_ac"]');
+const clearFilterBtn = document.querySelector("#clear_filter");
+
 const cache = {};
-let isFilterApplied = false;
+let filterApplicable = false;
 
 const modal = {
   searchResults: [],
   currState: [],
-};
-
-const resetFilter = () => {
-  sortPrice.value = sortSeats.value = "";
 };
 
 const disableFilter = () => {
@@ -54,10 +50,28 @@ const enableFilter = () => {
   });
 };
 
+const clearFilter = () => {
+  document.querySelectorAll("input[type='radio']").forEach((node) => {
+    node.checked = false;
+  });
+  document.querySelectorAll("select").forEach((node) => {
+    node.value = "";
+  });
+
+  modal.currState = [...modal.searchResults];
+  displaySearchResult(modal.currState);
+};
+
 const displaySearchResult = (list = []) => {
   if (!(list instanceof Array)) throw new Error("Invalid List");
 
+  if (filterApplicable) {
+    enableFilter();
+  } else {
+    disableFilter();
+  }
   totalResultContainer.textContent = `${list.length} Results Found`;
+
   if (list.length === 0) {
     searchResultContainer.innerHTML = `<div class="d-flex align-items-center justify-content-center">
         <div class="no-bus-card">
@@ -65,11 +79,7 @@ const displaySearchResult = (list = []) => {
           <p>Please try another date or route.</p>
         </div>
       </div>`;
-    if (!isFilterApplied) {
-      disableFilter();
-    }
   } else {
-    enableFilter();
     searchResultContainer.innerHTML = list
       .map(ViewHelper.getSearchResultRow)
       .join("");
@@ -325,7 +335,6 @@ const searchBusEvent = async (e) => {
     submitBtn.disabled = true;
     searchCityRequest(value, (response) => {
       cache[value] = response === "invalid" ? [] : JSON.parse(response);
-      isFilterApplied = cache[value].length > 0;
       displaySearchRouteResult(targetContainer, cache[value]);
     });
     submitBtn.disabled = false;
@@ -355,6 +364,16 @@ to.addEventListener("input", searchBusEvent);
 fromSuggestion.addEventListener("mousedown", selectCityEvent);
 toSuggestion.addEventListener("mousedown", selectCityEvent);
 
+clearFilterBtn.addEventListener("click", (e) => {
+  if (!filterApplicable) {
+    e.target.disabled = true;
+    return;
+  }
+
+  e.target.disabled = false;
+  clearFilter();
+});
+
 searchBusForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -378,9 +397,10 @@ searchBusForm.addEventListener("submit", async (e) => {
     });
     if (response === "invalid") throw new Error("Invalid Request");
     const searchResult = (modal.searchResults = JSON.parse(response));
+    filterApplicable = modal.searchResults.length > 0;
     sessionStorage.setItem("searchResult", JSON.stringify(searchResult));
-
     displaySearchResult(searchResult);
+
     const urlParams = {
       from: from.value,
       to: to.value,
@@ -403,9 +423,8 @@ searchBusForm.addEventListener("submit", async (e) => {
     );
   } catch (err) {
     PageLoading.stopLoading();
+    disableFilter();
     toast.error(err.message);
-  } finally {
-    enableFilter();
   }
 });
 /**************************SEARCH END **************************** */
@@ -414,9 +433,7 @@ const init = () => {
   try {
     PageLoading.stopLoading();
     modal.searchResults = JSON.parse(sessionStorage.getItem("searchResult"));
-    if (modal.searchResults.length) {
-      isFilterApplied = true;
-    }
+    filterApplicable = modal.searchResults.length > 0;
     displaySearchResult(modal.searchResults);
   } catch (err) {
     toast.error(err.message);

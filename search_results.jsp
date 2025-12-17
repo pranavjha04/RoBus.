@@ -267,7 +267,7 @@ prefix="e" uri="bts" %>
                 >
               </div>
               <select class="form-select rounded-pill filter sort-departure">
-                <option selected>Sort by Departure</option>
+                <option selected value="">Sort by Departure</option>
                 <option value="low">Early</option>
                 <option value="high">Late</option>
               </select>
@@ -368,14 +368,14 @@ prefix="e" uri="bts" %>
             </form>
           </div>
 
-          <form class="mb-4">
+          <div class="mb-4">
             <p class="mb-2 fw-medium" id="total_result">6 Results Found</p>
             <div class="d-flex flex-wrap gap-2 align-items-center">
               <select
                 class="form-select w-auto rounded-pill filter"
                 id="sort_price"
               >
-                <option selected>Sort by Price</option>
+                <option selected value="">Sort by Price</option>
                 <option value="low">Low to High</option>
                 <option value="high">High to Low</option>
               </select>
@@ -383,12 +383,20 @@ prefix="e" uri="bts" %>
                 class="form-select w-auto rounded-pill filter"
                 id="sort_seat"
               >
-                <option selected>Sort by Seats</option>
+                <option selected value="">Sort by Seats</option>
                 <option value="low">Low to High</option>
                 <option value="high">High to Low</option>
               </select>
+              <button
+                class="btn btn-secondary rounded-pill ms-auto filter"
+                id="clear_filter"
+                disabled
+                type="button"
+              >
+                <i class="bi bi-trash"></i> Clear Filters
+              </button>
             </div>
-          </form>
+          </div>
           <ul class="list-unstyled" id="search_result_container"></ul>
         </main>
       </div>
@@ -464,7 +472,7 @@ prefix="e" uri="bts" %>
             >
           </div>
           <select class="form-select rounded-pill filter sort-departure">
-            <option selected>Sort by Departure</option>
+            <option selected value="">Sort by Departure</option>
             <option value="low">Early</option>
             <option value="high">Late</option>
           </select>
