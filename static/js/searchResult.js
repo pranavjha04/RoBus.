@@ -26,12 +26,13 @@ const submitBtn = document.querySelector("#submit");
 const sortPrice = document.querySelector("#sort_price");
 const sortSeats = document.querySelector("#sort_seat");
 const ac = document.querySelectorAll(".ac");
-const nonAc = document.querySelectorAll(".nac");
-const seater = document.querySelectorAll(".seater");
-const sleeper = document.querySelectorAll(".sleeper");
+const seater = document.querySelectorAll(".seat");
+
 const sortDeparture = document.querySelectorAll(".sort-departure");
 
+const acRadio = document.querySelector('input[name="bus_type_ac"]');
 const cache = {};
+let isFilterApplied = false;
 
 const modal = {
   searchResults: [],
@@ -48,7 +49,7 @@ const disableFilter = () => {
 };
 const enableFilter = () => {
   document.querySelectorAll(".filter").forEach((node) => {
-    node.disabled = true;
+    node.disabled = false;
   });
 };
 
@@ -63,14 +64,80 @@ const displaySearchResult = (list = []) => {
           <p>Please try another date or route.</p>
         </div>
       </div>`;
-
-    disableFilter();
+    if (!isFilterApplied) {
+      disableFilter();
+    }
   } else {
     enableFilter();
-    searchResultContainer.innerHTML = modal.searchResults
+    searchResultContainer.innerHTML = list
       .map(ViewHelper.getSearchResultRow)
       .join("");
   }
+};
+const getActiveFilters = () => {
+  return {
+    acType:
+      document.querySelector('input[name="bus_type_ac"]:checked')?.value ||
+      null,
+
+    seatType:
+      document.querySelector('input[name="bus_type_seat"]:checked')?.value ||
+      null,
+  };
+};
+
+const amenityFilterRecord = (targetAmenity, exclude = false) => {
+  return modal.searchResults.filter(({ bus }) => {
+    const hasAmenity = bus.busFareFactorList.some(
+      ({ operatorTicketFare }) =>
+        operatorTicketFare.fareFactor.name === targetAmenity
+    );
+
+    return exclude ? !hasAmenity : hasAmenity;
+  });
+};
+
+const seaterFilterRecord = (list, isSleeper) => {
+  return list.filter(({ bus }) => {
+    const isValid = bus.seatingList.some((seating) => {
+      return seating.sleeper === isSleeper;
+    });
+
+    return isValid;
+  });
+};
+
+const applyFilter = (type = null, seating = null) => {
+  let filterResult = [...modal.searchResults];
+  switch (type) {
+    case "ac": {
+      filterResult = amenityFilterRecord("Air Conditioning");
+      break;
+    }
+    case "non_ac": {
+      filterResult = amenityFilterRecord("Air Conditioning", true);
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+
+  switch (seating) {
+    case "seater": {
+      filterResult = seaterFilterRecord(filterResult, false);
+      break;
+    }
+    case "sleeper": {
+      filterResult = seaterFilterRecord(filterResult, true);
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+
+  displaySearchResult(filterResult);
 };
 
 sortPrice.addEventListener("change", (e) => {
@@ -173,11 +240,17 @@ sortDeparture.forEach((dep) => {
   });
 });
 
+const sideFilterEvent = () => {
+  const { acType, seatType } = getActiveFilters();
+  applyFilter(acType, seatType);
+};
+
 ac.forEach((node) => {
-  node.addEventListener('click', (e) => {
-    const filterResult = modal.searchResults.filter(())
-  })
-})
+  node.addEventListener("input", sideFilterEvent);
+});
+seater.forEach((node) => {
+  node.addEventListener("input", sideFilterEvent);
+});
 
 //*********************SEARCH************************* */
 const selectCityEvent = (e) => {

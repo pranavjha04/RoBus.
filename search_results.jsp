@@ -213,51 +213,56 @@ prefix="e" uri="bts" %>
                 <input
                   type="radio"
                   class="btn-check filter ac"
+                  value="ac"
                   name="bus_type_ac"
-                  id="ac"
+                  id="ac_lg"
                   autocomplete="off"
                 />
                 <label
                   class="btn btn-outline-primary flex-fill rounded-pill"
-                  for="ac"
+                  for="ac_lg"
                   >AC</label
                 >
                 <input
                   type="radio"
-                  class="btn-check filter nac"
+                  class="btn-check filter ac"
+                  value="non_ac"
                   name="bus_type_ac"
-                  id="non_ac"
+                  id="nac_lg"
                   autocomplete="off"
                 />
                 <label
                   class="btn btn-outline-secondary flex-fill rounded-pill"
-                  for="non_ac"
+                  for="nac_lg"
                   >Non AC</label
                 >
               </div>
+
               <div class="d-flex align-items-center gap-2">
                 <input
                   type="radio"
-                  class="btn-check filter seater"
+                  class="btn-check filter seater seat"
                   name="bus_type_seat"
-                  id="seater"
+                  value="seater"
+                  id="seater_lg"
                   autocomplete="off"
                 />
                 <label
                   class="btn btn-outline-success flex-fill rounded-pill"
-                  for="seater"
+                  for="seater_lg"
                   >Seater</label
                 >
                 <input
                   type="radio"
-                  class="btn-check filter sleeper"
+                  class="btn-check filter sleeper seat"
                   name="bus_type_seat"
-                  id="sleeper"
+                  value="sleeper"
+                  id="sleeper_sm"
                   autocomplete="off"
                 />
                 <label
                   class="btn btn-outline-warning flex-fill rounded-pill"
-                  for="sleeper"
+                  for="sleeper_sm"
                   >Sleeper</label
                 >
               </div>
@@ -406,51 +411,55 @@ prefix="e" uri="bts" %>
             <input
               type="radio"
               class="btn-check filter ac"
+              value="ac"
               name="bus_type_ac"
-              id="ac-mobile"
+              id="ac_sm"
               autocomplete="off"
             />
             <label
               class="btn btn-outline-primary flex-fill rounded-pill"
-              for="ac-mobile"
+              for="ac_sm"
               >AC</label
             >
             <input
               type="radio"
-              class="btn-check filter"
-              name="bus_type_ac nac"
-              id="non_ac-mobile"
+              class="btn-check filter ac"
+              name="bus_type_ac"
+              value="non_ac"
+              id="nac_sm"
               autocomplete="off"
             />
             <label
               class="btn btn-outline-secondary flex-fill rounded-pill"
-              for="non_ac-mobile"
+              for="nac_sm"
               >Non AC</label
             >
           </div>
           <div class="d-flex align-items-center gap-2">
             <input
               type="radio"
-              class="btn-check filter seater"
+              class="btn-check filter seater seat"
               name="bus_type_seat"
-              id="seater-mobile"
+              value="seater"
+              id="seater_sm"
               autocomplete="off"
             />
             <label
               class="btn btn-outline-success flex-fill rounded-pill"
-              for="seater-mobile"
+              for="seater_sm"
               >Seater</label
             >
             <input
               type="radio"
-              class="btn-check filter sleeper"
+              class="btn-check filter sleeper seat"
               name="bus_type_seat"
-              id="sleeper-mobile"
+              id="sleeper_sm"
+              value="sleeper"
               autocomplete="off"
             />
             <label
               class="btn btn-outline-warning flex-fill rounded-pill"
-              for="sleeper-mobile"
+              for="sleeper_sm"
               >Sleeper</label
             >
           </div>

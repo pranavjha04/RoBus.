@@ -31,8 +31,10 @@ public class GetWeekdayRouteServlet extends HttpServlet {
             Operator operator = (Operator) session.getAttribute("operator");
             int operatorId = operator.getOperatorId();
 
+            System.out.println(weekdayId + 1);
             if(session.getAttribute("weekday_route_list" + weekdayId) == null) {
-                ArrayList<BusRouteWeekday> routeWeekdayList = BusRouteWeekday.collectWeekdayAvailableRouteList(weekdayId + 1,operatorId);
+                ArrayList<BusRouteWeekday> routeWeekdayList = BusRouteWeekday.collectWeekdayAvailableRouteList(weekdayId,operatorId);
+
                 if(routeWeekdayList == null) {
                     throw new IllegalArgumentException("Invalid Request");
                 }

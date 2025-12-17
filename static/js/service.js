@@ -536,7 +536,7 @@ export const deleteBusRouteWeekdayRequest = async (params) => {
 
 export const collectWeekdayRoutes = async (weekday_id) => {
   const params = createURLParams({
-    weekday_id: weekday_id,
+    weekday_id
   });
   const res = await fetch(`get_weekday_route.do?${params.toString()}`);
   if (!res.ok) throw new Error("Internal Server Error");
