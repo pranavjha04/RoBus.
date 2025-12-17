@@ -10,10 +10,11 @@
     .bus {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 10px;
+      gap: 8px;
       padding: 12px;
-      min-width: 220px;
-      max-width: fit-content;
+      min-width: 260px;
+      width: 260px;
+      max-width: 260px;
     }
 
     .bus-row {
@@ -21,15 +22,15 @@
 
     .seater_seat {
       width: 30px;
-      aspect-ratio: 2 / 1;
+      height: 35px;
     }
 
     .sleeper_seat {
       width: 40px;
-      aspect-ratio: 1 / 2;
+      height: 80px;
     }
     .seat {
-      border: 2px solid #198754;
+      border: 1px solid #198754;
       border-radius: 6px;
       display: flex;
       align-items: center;
