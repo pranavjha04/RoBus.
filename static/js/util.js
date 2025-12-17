@@ -288,3 +288,13 @@ export const getSplittedTime = (timeString) => {
     return [+split[0], +split[1], +split[2], ""];
   }
 };
+
+export const toMinutes = (time12) => {
+  const [time, meridian] = time12.split(" ");
+  let [h, m, s] = time.split(":").map(Number);
+
+  if (meridian === "PM" && h !== 12) h += 12;
+  if (meridian === "AM" && h === 12) h = 0;
+
+  return h * 60 + m;
+};

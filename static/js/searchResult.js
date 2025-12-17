@@ -1,7 +1,7 @@
 import { PageLoading } from "./pageLoading.js";
 import { searchCityRequest, getScheduleRequest } from "./service.js";
 import { toast } from "./toast.js";
-import { createURLParams } from "./util.js";
+import { createURLParams, toMinutes } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
 const searchResultContainer = document.querySelector(
@@ -36,6 +36,7 @@ let isFilterApplied = false;
 
 const modal = {
   searchResults: [],
+  currState: [],
 };
 
 const resetFilter = () => {
@@ -228,9 +229,17 @@ sortDeparture.forEach((dep) => {
 
     switch (value) {
       case "low": {
+        const filterResult = [...modal.searchResults].sort(
+          (a, b) => toMinutes(a.departureTime) - toMinutes(b.departureTime)
+        );
+        displaySearchResult(filterResult);
         break;
       }
       case "high": {
+        const filterResult = [...modal.searchResults].sort(
+          (a, b) => toMinutes(b.departureTime) - toMinutes(a.departureTime)
+        );
+        displaySearchResult(filterResult);
         break;
       }
       default: {
@@ -316,6 +325,7 @@ const searchBusEvent = async (e) => {
     submitBtn.disabled = true;
     searchCityRequest(value, (response) => {
       cache[value] = response === "invalid" ? [] : JSON.parse(response);
+      isFilterApplied = cache[value].length > 0;
       displaySearchRouteResult(targetContainer, cache[value]);
     });
     submitBtn.disabled = false;
@@ -404,7 +414,9 @@ const init = () => {
   try {
     PageLoading.stopLoading();
     modal.searchResults = JSON.parse(sessionStorage.getItem("searchResult"));
-    console.log(modal);
+    if (modal.searchResults.length) {
+      isFilterApplied = true;
+    }
     displaySearchResult(modal.searchResults);
   } catch (err) {
     toast.error(err.message);
@@ -413,9 +425,5 @@ const init = () => {
     history.back();
   }
 };
-
-window.addEventListener("beforeunload", (e) => {
-  console.log("hell");
-});
 
 init();
