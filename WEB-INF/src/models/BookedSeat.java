@@ -1,7 +1,7 @@
 package models;
 
 public class BookedSeat {
-
+    
     private Integer bookedSeatId;
     private Integer seatNumber;
     private Booking booking;
@@ -16,7 +16,7 @@ public class BookedSeat {
         this.booking = booking;
         this.seating = seating;
     }
-    
+
     public Integer getBookedSeatId() {
         return bookedSeatId;
     }
