@@ -616,32 +616,16 @@ LEFT JOIN bus_fare_factor bff
 WHERE bff.bus_id IS NULL
 AND b.operator_id = ;
 
-CREATE TABLE seats
-(
-  seat_id INT AUTO_INCREMENT PRIMARY KEY,
-  seat_number INT NOT NULL,
-  seating_id INT NOT NULL,
-  seat_type BOOLEAN NOT NULL,
-  status_id INT NOT NULL,
-  CONSTRAINT seat_seating FOREIGN KEY (seating_id) REFERENCES seatings(seating_id),
-  CONSTRAINT seat_status FOREIGN KEY (status_id) REFERENCES status(status_id)
-);
-
 CREATE TABLE booked_seats
 (
   booked_seat_id INT AUTO_INCREMENT PRIMARY KEY,
-  seat_id INT NOT NULL,
   booking_id INT NOT NULL,
-
-  CONSTRAINT booked_seat_seat_fk FOREIGN KEY (seat_id) REFERENCES seats(seat_id),
-  CONSTRAINT booked_seat_booking_fk FOREIGN KEY (booking_id) REFERENCES bookings(booking_id)
+  seat_number INT NOT NULL,
+  seating_id INT NOT NULL,
+  CONSTRAINT booked_seat_booking FOREIGN KEY (booking_id) REFERENCES bookings(booking_id),
+  CONSTRAINT booked_seat_seating FOREIGN KEY (seating_id) REFERENCES seatings(seating_id)
 );
 
-CREATE TABLE seat_types
-(
-  seat_type_id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(25) NOT NULL
-);
 
 ALTER TABLE
 seats

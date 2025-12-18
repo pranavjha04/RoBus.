@@ -22,7 +22,6 @@ import models.RouteMidCity;
 import models.Manufacturer;
 import models.Weekday;
 import models.Status;
-import models.SeatType;
 
 
 @WebListener
@@ -75,9 +74,5 @@ public class AppListener implements ServletContextListener {
         System.out.println("-------- Status Config Starting --------");
         ArrayList<Status> statusList = Status.collectAllRecords();
         context.setAttribute("statusList", statusList);
-
-        System.out.println("-------- Seating Type Config Starting --------");
-        ArrayList<SeatType> seatTypeList = SeatType.collectAllRecords();
-        context.setAttribute("seatTypeList", seatTypeList);
     }
 }

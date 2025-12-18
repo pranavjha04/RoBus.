@@ -1,21 +1,22 @@
 package models;
 
 public class BookedSeat {
+
     private Integer bookedSeatId;
-    private Seat seat;
+    private Integer seatNumber;
     private Booking booking;
+    private Seating seating;
 
     public BookedSeat() {
     }
 
-    public BookedSeat(Integer bookedSeatId, Seat seat, Booking booking) {
-        this(seat, booking);
+    public BookedSeat(Integer bookedSeatId, Integer seatNumber, Booking booking, Seating seating) {
         this.bookedSeatId = bookedSeatId;
-    }
-    public BookedSeat(Seat seat, Booking booking) {
-        this.seat = seat;
+        this.seatNumber = seatNumber;
         this.booking = booking;
+        this.seating = seating;
     }
+    
     public Integer getBookedSeatId() {
         return bookedSeatId;
     }
@@ -24,12 +25,12 @@ public class BookedSeat {
         this.bookedSeatId = bookedSeatId;
     }
 
-    public Seat getSeat() {
-        return seat;
+    public Integer getSeatNumber() {
+        return seatNumber;
     }
 
-    public void setSeat(Seat seat) {
-        this.seat = seat;
+    public void setSeatNumber(Integer seatNumber) {
+        this.seatNumber = seatNumber;
     }
 
     public Booking getBooking() {
@@ -38,5 +39,13 @@ public class BookedSeat {
 
     public void setBooking(Booking booking) {
         this.booking = booking;
+    }
+
+    public Seating getSeating() {
+        return seating;
+    }
+
+    public void setSeating(Seating seating) {
+        this.seating = seating;
     }
 }
