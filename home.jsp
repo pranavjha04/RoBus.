@@ -94,7 +94,14 @@
     </c:if>
 
     <!-- NAVBAR -->
-    <c:import url="welcome_navbar.jsp" />
+    <c:choose>
+      <c:when test="${empty sessionScope.user}">
+        <c:import url="welcome_navbar.jsp" />
+      </c:when>
+      <c:otherwise>
+        <c:import url="logged_navbar.jsp" />
+      </c:otherwise>
+    </c:choose>
 
     <!-- HERO -->
     <section class="hero-section d-flex align-items-center">

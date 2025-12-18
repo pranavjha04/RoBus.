@@ -626,11 +626,3 @@ CREATE TABLE booked_seats
   CONSTRAINT booked_seat_seating FOREIGN KEY (seating_id) REFERENCES seatings(seating_id)
 );
 
-
-ALTER TABLE
-seats
-ADD COLUMN
-seat_type_id INT NOT NULL,
-ADD 
-CONSTRAINT seat_type FOREIGN KEY (seat_type_id) 
-REFERENCES seat_types(seat_type_id);

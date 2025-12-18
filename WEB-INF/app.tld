@@ -29,6 +29,11 @@
       <function-class>elfuncs.CurrentDateElFunc</function-class>
       <function-signature>java.lang.String currentDate()</function-signature>
     </function>
+    <function>
+      <name>activeURL</name>
+      <function-class>elfuncs.ActiveURLElFunc</function-class>
+      <function-signature>java.lang.String activeURL(javax.servlet.http.HttpServletRequest)</function-signature>
+    </function>
 
     <tag>
         <name>layout</name>

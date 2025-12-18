@@ -61,7 +61,6 @@ public class OperatorDashboardLayoutTagHandler extends SimpleTagSupport {
         out.println("  <div></div>");
         out.println("</aside>");
 
-        // Render the body content
         JspFragment frag = getJspBody();
         if (frag != null) {
             frag.invoke(out);
