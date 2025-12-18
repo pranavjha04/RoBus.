@@ -10,7 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 
 @WebServlet("/manage_profile.do")
-public class OperatorDashboardServlet extends HttpServlet {
+public class ManageProfileServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         HttpSession session = request.getSession();
