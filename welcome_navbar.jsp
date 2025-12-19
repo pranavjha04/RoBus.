@@ -31,7 +31,8 @@
 
         <!-- Home -->
         <li class="nav-item">
-          <a class="nav-link active"
+          <a class="nav-link d-flex align-items-center gap-2
+             ${page eq 'home.jsp' ? 'active' : ''}"
              <c:choose>
                <c:when test="${page eq 'home.jsp'}">
                  data-target="hero"
@@ -41,13 +42,14 @@
                </c:otherwise>
              </c:choose>
           >
-            Home
+            <i class="bi bi-house-door"></i>
+            <span>Home</span>
           </a>
         </li>
 
         <!-- Search Buses -->
         <li class="nav-item">
-          <a class="nav-link"
+          <a class="nav-link d-flex align-items-center gap-2"
              <c:choose>
                <c:when test="${page eq 'home.jsp' or page eq 'search_results.jsp'}">
                  data-target="search_bus_form"
@@ -57,13 +59,14 @@
                </c:otherwise>
              </c:choose>
           >
-            Search Buses
+            <i class="bi bi-search"></i>
+            <span>Search Buses</span>
           </a>
         </li>
 
         <!-- Services -->
         <li class="nav-item">
-          <a class="nav-link"
+          <a class="nav-link d-flex align-items-center gap-2"
              <c:choose>
                <c:when test="${page eq 'home.jsp'}">
                  data-target="service"
@@ -73,13 +76,14 @@
                </c:otherwise>
              </c:choose>
           >
-            Services
+            <i class="bi bi-gear"></i>
+            <span>Services</span>
           </a>
         </li>
 
         <!-- Operators -->
         <li class="nav-item">
-          <a class="nav-link"
+          <a class="nav-link d-flex align-items-center gap-2"
              <c:choose>
                <c:when test="${page eq 'home.jsp'}">
                  data-target="operator"
@@ -89,13 +93,14 @@
                </c:otherwise>
              </c:choose>
           >
-            Operators
+            <i class="bi bi-building"></i>
+            <span>Operators</span>
           </a>
         </li>
 
         <!-- Help -->
         <li class="nav-item">
-          <a class="nav-link"
+          <a class="nav-link d-flex align-items-center gap-2"
              <c:choose>
                <c:when test="${page eq 'home.jsp'}">
                  data-target="help"
@@ -105,7 +110,8 @@
                </c:otherwise>
              </c:choose>
           >
-            Help
+            <i class="bi bi-question-circle"></i>
+            <span>Help</span>
           </a>
         </li>
 
@@ -116,125 +122,156 @@
         <button
           class="btn bts-auth-btn d-flex align-items-center gap-2"
           data-bs-toggle="dropdown"
-          aria-expanded="false"
         >
           <i class="bi bi-person-fill"></i>
           <span>Login / Sign Up</span>
         </button>
 
-        <ul class="dropdown-menu dropdown-menu-end bts-auth-dropdown">
-          <li><a class="dropdown-item" href="/bts/login.do">Login</a></li>
-          <li><a class="dropdown-item" href="/bts/signup.do">Sign Up</a></li>
-        </ul>
+        <ul class="dropdown-menu dropdown-menu-end bts-auth-dropdown p-0">
+
+        <!-- Login -->
+        <li>
+          <c:choose>
+            <c:when test="${page eq 'login.jsp'}">
+              <a class="dropdown-item border-bottom rounded-top-3 active">
+                Login
+              </a>
+            </c:when>
+            <c:otherwise>
+              <a class="dropdown-item border-bottom rounded-top-3"
+                href="/bts/login.do">
+                Login
+              </a>
+            </c:otherwise>
+          </c:choose>
+        </li>
+
+        <!-- Sign Up -->
+        <li>
+          <c:choose>
+            <c:when test="${page eq 'signup.jsp'}">
+              <a class="dropdown-item rounded-bottom-3 active">
+                Sign Up
+              </a>
+            </c:when>
+            <c:otherwise>
+              <a class="dropdown-item rounded-bottom-3"
+                href="/bts/signup.do">
+                Sign Up
+              </a>
+            </c:otherwise>
+          </c:choose>
+        </li>
+
+      </ul>
+
+
       </div>
 
     </div>
   </div>
 </nav>
 
-
 <style>
-  /* --- General Navbar Styling --- */
-  .bts-navbar {
-    /* Use min-height so the bar can expand when the mobile menu opens */
-    min-height: 72px;
-    background-color: #ffffff !important;
-    z-index: 1050; /* Ensures it stays above page content */
-  }
 
-  /* Center menu spacing */
-  .bts-nav-links {
-    gap: 30px;
-  }
+.bts-navbar {
+  min-height: 72px;
+  background-color: #fff !important;
+  z-index: 1050;
+}
 
-  /* Nav link styling */
-  .bts-nav-links .nav-link {
-    font-weight: 500;
-    color: #212529;
-    padding: 6px 0;
-    position: relative;
-  }
+.bts-navbar a {
+  cursor: pointer;
+}
 
-  /* Underline animation */
-  .bts-nav-links .nav-link::after {
-    content: "";
-    position: absolute;
-    bottom: -6px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background-color: var(--bs-primary);
-    transition: width 0.25s ease;
-  }
+.bts-nav-links {
+  gap: 24px;
+}
 
-  .bts-nav-links .nav-link:hover::after,
-  .bts-nav-links .nav-link.active::after {
-    width: 100%;
-  }
+.bts-nav-links .nav-link {
+  font-weight: 500;
+  color: #212529;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: background-color .2s ease, color .2s ease;
+}
 
-  .bts-nav-links .nav-link.active {
-    color: var(--bs-primary);
-  }
+.bts-nav-links .nav-link i {
+  font-size: 1rem;
+  opacity: 0.85;
+}
 
-  /* --- Login / Signup Button --- */
-  .bts-auth-btn {
-    border: 1px solid #dee2e6;
+/* Hover */
+.bts-nav-links .nav-link:hover {
+  background-color: #f1f3f5;
+  color: #212529;
+}
+
+/* Active */
+.bts-nav-links .nav-link.active {
+  background-color: #e7f0ff;
+  color: var(--bs-primary);
+}
+
+.bts-nav-links .nav-link.active i {
+  color: var(--bs-primary);
+}
+
+/* --- Login Button --- */
+.bts-auth-btn {
+  border: 1px solid #dee2e6;
+  background-color: #fff;
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-weight: 500;
+  transition: all .2s ease;
+}
+
+.bts-auth-btn i {
+  color: var(--bs-primary);
+}
+
+.bts-auth-btn:hover {
+  border-color: var(--bs-primary);
+  background-color: #f5f8ff;
+}
+
+/* Dropdown */
+.bts-auth-dropdown {
+  border-radius: 12px;
+  min-width: 160px;
+  border: none;
+  box-shadow: 0 10px 25px rgba(0,0,0,.1);
+}
+
+.bts-auth-dropdown .dropdown-item {
+  padding: 12px 16px;
+  font-weight: 500;
+}
+
+.bts-auth-dropdown .dropdown-item:hover {
+  background-color: #f1f5ff;
+  color: var(--bs-primary);
+}
+
+/* Mobile */
+@media (max-width: 991.98px) {
+  .navbar-collapse {
     background-color: #fff;
-    border-radius: 999px;
-    padding: 8px 18px;
-    font-weight: 500;
-    color: #212529;
-    transition: all 0.2s ease;
-  }
-
-  .bts-auth-btn i {
-    font-size: 1.1rem;
-    color: var(--bs-primary);
-  }
-
-  .bts-auth-btn:hover {
-    border-color: var(--bs-primary);
-    background-color: #f5f8ff;
-  }
-
-  /* --- Dropdown Menu Styling --- */
-  .bts-auth-dropdown {
+    padding: 20px;
+    margin-top: 10px;
     border-radius: 12px;
-    padding: 8px 0;
-    min-width: 160px;
-    border: none;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px rgba(0,0,0,.15);
   }
 
-  .bts-auth-dropdown .dropdown-item {
-    font-weight: 500;
-    padding: 10px 16px;
+  .bts-nav-links {
+    gap: 8px;
+    margin-bottom: 20px;
   }
 
-  .bts-auth-dropdown .dropdown-item:hover {
-    background-color: #f1f5ff;
-    color: var(--bs-primary);
+  .bts-auth-btn {
+    width: 100%;
+    justify-content: center;
   }
-
-  @media (max-width: 991.98px) {
-    .navbar-collapse {
-      background-color: #ffffff;
-
-      padding: 20px;
-
-      margin-top: 10px;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    }
-
-    .bts-nav-links {
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .bts-auth-btn {
-      width: 100%;
-      justify-content: center;
-    }
-  }
+}
 </style>

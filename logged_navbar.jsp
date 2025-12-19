@@ -1,8 +1,9 @@
-<%@ taglib prefix="e" uri="bts" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="e" uri="bts" %> <%@ taglib prefix="c"
+uri="http://java.sun.com/jsp/jstl/core" %>
 
+<!-- Logout Modal -->
 <div class="modal fade" tabindex="-1" id="logoutModal">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Confirm Logout</h5>
@@ -10,19 +11,16 @@
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
-          aria-label="Close"
         ></button>
       </div>
       <div class="modal-body">
         <p>Are you sure you want to logout?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Close
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
         </button>
-        <button type="button" class="btn btn-primary" id="logout_btn">
-          Yes
-        </button>
+        <button class="btn btn-danger" id="logout_btn">Logout</button>
       </div>
     </div>
   </div>
@@ -30,83 +28,88 @@
 
 <c:set var="page" value="${e:activeURL(pageContext.request)}" />
 
-<nav class="navbar navbar-expand-lg bg-white shadow-sm bts-navbar sticky-top position-sticky">
+<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
   <div class="container">
-
     <!-- Logo -->
     <a class="navbar-brand" href="/bts">
-      <img src="static/media/images/logo.png" alt="Logo" height="42" />
+      <img src="static/media/images/logo.png" height="42" />
     </a>
 
     <!-- Mobile Toggle -->
     <button
       class="navbar-toggler"
-      type="button"
       data-bs-toggle="collapse"
-      data-bs-target="#btsNavbarLoggedIn"
-      aria-controls="btsNavbarLoggedIn"
-      aria-expanded="false"
+      data-bs-target="#btsNavbar"
     >
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="btsNavbarLoggedIn">
-
-      <ul class="navbar-nav ms-auto bts-nav-links align-items-lg-center">
-
+    <div class="collapse navbar-collapse" id="btsNavbar">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
         <!-- Home -->
         <li class="nav-item">
-          <a class="nav-link ${page eq 'home.jsp' ? 'active' : ''}"
-            <c:choose>
-              <c:when test="${page eq 'home.jsp'}">
-                data-target="hero"
-              </c:when>
-              <c:otherwise>
-                href="/bts"
-              </c:otherwise>
-            </c:choose>
+          <a
+            class="nav-link d-flex align-items-center gap-2 ${page eq 'home.jsp' ? 'active' : ''}"
+            href="/bts"
           >
-            Home
+            <i class="bi bi-house-door"></i>
+            <span>Home</span>
           </a>
         </li>
 
-        <!-- Search Buses -->
+        <!-- Search -->
         <li class="nav-item">
-          <a class="nav-link"
-            <c:choose>
-              <c:when test="${page eq 'home.jsp' or page eq 'search_results.jsp'}">
-                data-target="search_bus_form"
-              </c:when>
-              <c:otherwise>
-                href="/bts"
-              </c:otherwise>
-            </c:choose>
-          >
-            Search Buses
+          <a class="nav-link d-flex align-items-center gap-2" href="/bts">
+            <i class="bi bi-search"></i>
+            <span>Search Buses</span>
           </a>
         </li>
 
-        <!-- Manage Bookings -->
+        <!-- Bookings -->
         <li class="nav-item">
-          <a class="nav-link ${page eq 'bookings.jsp' ? 'active' : ''}"
-             href="/bts/manage_bookings.do">
-            Manage Bookings
+          <a
+            class="nav-link d-flex align-items-center gap-2 ${page eq 'bookings.jsp' ? 'active' : ''}"
+            href="/bts/manage_bookings.do"
+          >
+            <i class="bi bi-ticket-perforated"></i>
+            <span>Manage Bookings</span>
           </a>
         </li>
+
+        <!-- Operator -->
+        <c:if test="${sessionScope.user.userType.userTypeId eq 2}">
+          <li class="nav-item">
+            <a
+              class="nav-link d-flex align-items-center gap-2"
+              href="/bts/operator_accounts.do"
+            >
+              <i class="bi bi-building"></i>
+              <span>Operator Accounts</span>
+            </a>
+          </li>
+        </c:if>
+
+        <!-- Driver -->
+        <c:if test="${sessionScope.user.userType.userTypeId eq 3}">
+          <li class="nav-item">
+            <a
+              class="nav-link d-flex align-items-center gap-2"
+              href="/bts/manage_schedules.do"
+            >
+              <i class="bi bi-calendar2-check"></i>
+              <span>Schedules</span>
+            </a>
+          </li>
+        </c:if>
 
         <!-- Help -->
         <li class="nav-item">
-          <a class="nav-link ${page eq 'help.jsp' ? 'active' : ''}"
-            <c:choose>
-              <c:when test="${page eq 'home.jsp'}">
-                data-target="help"
-              </c:when>
-              <c:otherwise>
-                href="/bts/help.do"
-              </c:otherwise>
-            </c:choose>
+          <a
+            class="nav-link d-flex align-items-center gap-2"
+            href="/bts/help.do"
           >
-            Help
+            <i class="bi bi-question-circle"></i>
+            <span>Help</span>
           </a>
         </li>
 
@@ -115,94 +118,103 @@
           <button
             class="btn bts-user-btn d-flex align-items-center gap-2"
             data-bs-toggle="dropdown"
-            aria-expanded="false"
           >
             <img
               src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
               class="bts-avatar"
             />
-            <span class="d-none d-lg-inline fw-medium">
-              ${sessionScope.user.fullName}
-            </span>
+            <span class="d-none d-lg-inline"
+              >${sessionScope.user.fullName}</span
+            >
             <i class="bi bi-chevron-down small"></i>
           </button>
 
-          <ul class="dropdown-menu dropdown-menu-end bts-user-dropdown">
-            <li>
-              <a class="dropdown-item" href="/bts/manage_profile.do">
-                <i class="bi bi-person me-2"></i>Profile
-              </a>
+          <ul class="dropdown-menu dropdown-menu-end bts-user-dropdown p-0">
+            <li class="border-bottom">
+              <c:choose>
+                <c:when test="${page eq manage_profile.jsp}">
+                  <a
+                    class="dropdown-item p-2 rounded rounded-4 rounded-bottom-0"
+                  >
+                    <i class="bi bi-person me-2"></i>Profile
+                  </a>
+                </c:when>
+                <c:otherwise>
+                  <a
+                    class="dropdown-item p-2 rounded rounded-4 rounded-bottom-0"
+                    href="/bts/manage_profile.do"
+                  >
+                    <i class="bi bi-person me-2"></i>Profile
+                  </a>
+                </c:otherwise>
+              </c:choose>
             </li>
-            <li><hr class="dropdown-divider" /></li>
             <li>
-              <button role="button" class="dropdown-item text-danger" 
-              data-bs-toggle="modal"
-              data-bs-target="#logoutModal">
+              <button
+                class="dropdown-item text-danger p-2 rounded rounded-4 rounded-top-0"
+                data-bs-toggle="modal"
+                data-bs-target="#logoutModal"
+              >
                 <i class="bi bi-box-arrow-right me-2"></i>Logout
               </button>
             </li>
           </ul>
         </li>
-
       </ul>
     </div>
   </div>
-  <script type="module" src="static/js/logout.js"></script>
 </nav>
+
+<script type="module" src="static/js/logout.js"></script>
+
 <style>
-  /* User button styles (keep your existing ones) */
-  .bts-user-btn {
-    border: 1px solid #dee2e6;
-    background-color: #fff;
-    border-radius: 999px;
-    padding: 6px 12px;
+  /* Nav links */
+  .navbar .nav-link {
     font-weight: 500;
     color: #212529;
-    transition: all 0.2s ease;
+    padding: 8px 14px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
-  .bts-user-btn:hover {
-    border-color: var(--bs-primary);
-    background-color: #f5f8ff;
+  .navbar .nav-link i {
+    font-size: 1rem;
+    opacity: 0.85;
+  }
+
+  /* Hover */
+  .navbar .nav-link:hover {
+    background-color: #f1f3f5;
+    color: #212529;
+  }
+
+  /* Active */
+  .navbar .nav-link.active {
+    background-color: #e7f0ff;
+    color: var(--bs-primary);
+  }
+
+  .navbar .nav-link.active i {
+    color: var(--bs-primary);
+  }
+
+  /* User button */
+  .bts-user-btn {
+    border: 1px solid #dee2e6;
+    background: #fff;
+    border-radius: 999px;
+    padding: 6px 12px;
   }
 
   .bts-avatar {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    object-fit: cover;
   }
 
+  /* Dropdown */
   .bts-user-dropdown {
     border-radius: 12px;
     padding: 8px 0;
-    min-width: 180px;
-  }
-
-  .bts-user-dropdown .dropdown-item {
-    font-weight: 500;
-    padding: 10px 16px;
-  }
-
-  .bts-user-dropdown .dropdown-item:hover {
-    background-color: #f1f5ff;
-    color: var(--bs-primary);
-  }
-
-  /* Navbar link styles */
-  .bts-nav-links .nav-link {
-    font-weight: 500;
-    color: #212529;
-    transition: color 0.2s ease;
-  }
-
-  /* Active link: primary blue */
-  .bts-nav-links .nav-link.active {
-    color: var(--bs-primary) !important;
-  }
-
-  /* Hover effect: lighter/blurred primary */
-  .bts-nav-links .nav-link:hover {
-    color: rgba(var(--bs-primary-rgb), 0.7); /* 70% opacity primary */
   }
 </style>

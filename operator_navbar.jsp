@@ -1,6 +1,8 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="e" uri="bts" %> <%@ taglib prefix="c"
+uri="http://java.sun.com/jsp/jstl/core" %>
+<!-- Logout Modal -->
 <div class="modal fade" tabindex="-1" id="logoutModal">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Confirm Logout</h5>
@@ -8,82 +10,151 @@
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
-          aria-label="Close"
         ></button>
       </div>
       <div class="modal-body">
         <p>Are you sure you want to logout?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Close
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
         </button>
-        <button type="button" class="btn btn-primary" id="logout_btn">
-          Yes
-        </button>
+        <button class="btn btn-danger" id="logout_btn">Logout</button>
       </div>
     </div>
   </div>
 </div>
 
-<nav
-  class="navbar navbar-light bg-white border-bottom px-4 p-1 gap-2 position-sticky top-0"
-  style="z-index: 1030"
->
-  <div
-    class="ms-auto d-flex align-items-center gap-2 focus-ring-info p-1 rounded-5"
-  >
-    <img
-      src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
-      class="rounded-circle border border"
-      style="width: 50px; height: 50px; object-fit: contain"
-      alt="User"
-    />
-    <span class="fs-5 fw-medium">${sessionScope.operator.fullName}</span>
-  </div>
-  <div class="d-flex align-items-center gap-2">
-    <button
-      class="bg-transparent border-0 focus-ring"
-      style="transition: all 0.3s"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="28"
-        height="28"
-        fill="#0d6efd"
-        class="bi bi-person"
-        viewBox="0 0 16 16"
-      >
-        <path
-          d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"
-        />
-      </svg>
-    </button>
+<c:set var="page" value="${e:activeURL(pageContext.request)}" />
 
-    <button
-      class="bg-transparent border-0 focus-ring"
-      style="transition: all 0.3s"
-      data-bs-toggle="modal"
-      data-bs-target="#logoutModal"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="28"
-        height="28"
-        fill="#0d6efd"
-        class="bi bi-box-arrow-right"
-        viewBox="0 0 16 16"
+<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
+  <div class="container d-flex justify-content-between align-items-center">
+    <a class="navbar-brand mb-0" href="/bts">
+      <img src="static/media/images/logo.png" height="42" />
+    </a>
+
+    <div class="d-flex align-items-center gap-2">
+      <a
+        class="nav-link d-flex align-items-center gap-2 ${page eq 'help.jsp' ? 'active' : ''}"
+        href="/bts/help.do"
       >
-        <path
-          fill-rule="evenodd"
-          d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"
-        />
-        <path
-          fill-rule="evenodd"
-          d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"
-        />
-      </svg>
-    </button>
+        <i class="bi bi-question-circle"></i>
+        <span class="d-none d-sm-inline">Help</span>
+      </a>
+
+      <div class="dropdown">
+        <button
+          class="btn bts-user-btn d-flex align-items-center gap-2"
+          data-bs-toggle="dropdown"
+        >
+          <img
+            src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
+            class="bts-avatar"
+          />
+          <span class="fw-medium d-none d-lg-inline">
+            ${sessionScope.operator.fullName}
+          </span>
+          <i class="bi bi-chevron-down small"></i>
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-end bts-user-dropdown p-0">
+          <li>
+            <c:choose>
+              <c:when test="${page eq 'manage_profile.jsp'}">
+                <a class="dropdown-item border-bottom">
+                  <i class="bi bi-person me-2"></i>Profile
+                </a>
+              </c:when>
+              <c:otherwise>
+                <a
+                  class="dropdown-item border-bottom rounded rounded-bottom-0 rounded-4"
+                  href="/bts/manage_profile.do"
+                >
+                  <i class="bi bi-person me-2"></i>Profile
+                </a>
+              </c:otherwise>
+            </c:choose>
+          </li>
+          <li>
+            <button
+              class="dropdown-item text-danger rounded rounded-top-0 rounded-4"
+              data-bs-toggle="modal"
+              data-bs-target="#logoutModal"
+            >
+              <i class="bi bi-box-arrow-right me-2"></i>Logout
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
-  <script type="module" src="static/js/logout.js"></script>
 </nav>
+<script type="module" src="static/js/logout.js"></script>
+<style>
+  .navbar .nav-link {
+    font-weight: 500;
+    color: #212529;
+    padding: 8px 8px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .navbar .nav-link i {
+    font-size: 1rem;
+    opacity: 0.85;
+  }
+
+  .navbar .nav-link:hover {
+    background-color: #f1f3f5;
+    color: #212529;
+  }
+
+  .navbar .nav-link.active {
+    background-color: #e7f0ff;
+    color: var(--bs-primary);
+  }
+
+  .navbar .nav-link.active i {
+    color: var(--bs-primary);
+  }
+
+  .navbar .container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .bts-user-btn {
+    border: 1px solid #dee2e6;
+    background: #fff;
+    border-radius: 999px;
+    padding: 6px 12px;
+    transition: all 0.2s ease;
+  }
+
+  .bts-user-btn:hover {
+    border-color: var(--bs-primary);
+    background-color: #f5f8ff;
+  }
+
+  .bts-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+
+  .bts-user-dropdown {
+    border-radius: 12px;
+    padding: 8px 0;
+    min-width: 180px;
+  }
+
+  .bts-user-dropdown .dropdown-item {
+    font-weight: 500;
+    padding: 10px 16px;
+  }
+
+  .bts-user-dropdown .dropdown-item:hover {
+    background-color: #f1f5ff;
+    color: var(--bs-primary);
+  }
+</style>
