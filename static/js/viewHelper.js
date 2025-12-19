@@ -959,7 +959,7 @@ export class ViewHelper {
       return acc + curr.seats;
     }, 0);
     const bookedSeats = sleeperSeatsBooked + seaterSeatsBooked;
-    return `  <li class="bus-card mb-4 bg-white">
+    return `  <li class="bus-card mb-4 bg-white" data-schedule-id="${scheduleId}">
               <div
                 class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4 p-4"
               >
@@ -1039,10 +1039,9 @@ export class ViewHelper {
                   <span class="seats-available mb-2">${
                     totalSeats - bookedSeats
                   } Seats Available</span>
-                  <a
-                    href="#"
-                    class="btn btn-primary rounded-pill px-4 py-2 fw-medium"
-                    >Book Seats</a
+                  <button
+                    class="btn btn-primary rounded-pill px-4 py-2 fw-medium book"
+                    >Book Seats</button
                   >
                 </div>
               </div>

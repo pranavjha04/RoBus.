@@ -1,3 +1,4 @@
+import { APP_URL } from "./helper.js";
 import { PageLoading } from "./pageLoading.js";
 import { searchCityRequest, getScheduleRequest } from "./service.js";
 import { toast } from "./toast.js";
@@ -28,7 +29,6 @@ const sortSeats = document.querySelector("#sort_seat");
 const ac = document.querySelectorAll(".ac");
 const seater = document.querySelectorAll(".seat");
 const sortDeparture = document.querySelectorAll(".sort-departure");
-const acRadio = document.querySelector('input[name="bus_type_ac"]');
 const clearFilterBtn = document.querySelector("#clear_filter");
 
 const cache = {};
@@ -323,7 +323,6 @@ const displaySearchRouteResult = (container, list) => {
       .join("")}`;
   }
 };
-
 const searchBusEvent = async (e) => {
   const target = e.target;
   const value = target.value;
@@ -428,6 +427,34 @@ searchBusForm.addEventListener("submit", async (e) => {
   }
 });
 /**************************SEARCH END **************************** */
+
+searchResultContainer.addEventListener("click", (e) => {
+  const target = e.target.closest("button");
+  if (!target || !target.classList.contains("book")) return;
+  const targetScheduleId = target.closest("li")?.dataset?.scheduleId;
+  if (!targetScheduleId || isNaN(+targetScheduleId)) return;
+
+  const targetSchedule = modal.searchResults.find(
+    (schedule) => schedule.scheduleId === +targetScheduleId
+  );
+
+  if (!targetSchedule) return;
+
+  sessionStorage.setItem("activeSchedule", JSON.stringify(targetSchedule));
+  const urlParams = {
+    from: from.value,
+    to: to.value,
+    journey_date: journeyDate.value,
+    source: source.value,
+    destination: destination.value,
+  };
+
+  const url = new URLSearchParams(window.location.search);
+  for (const prop in urlParams) {
+    url.set(prop, urlParams[prop]);
+  }
+  window.location.href = `${APP_URL}/book_ticket.do?${url.toString()}`;
+});
 
 const init = () => {
   try {

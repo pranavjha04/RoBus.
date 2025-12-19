@@ -55,7 +55,13 @@ public class LoginServlet extends HttpServlet {
                             session.removeAttribute("operator");
                         }
                         session.setAttribute("user", user);
-                        response.sendRedirect("/bts");
+                        String redirectURL = "/bts";
+                        if(request.getParameter("from") != null) {
+                            System.out.println("Jell");
+                            redirectURL += "/search_results.do?" + request.getQueryString();
+                        }
+
+                        response.sendRedirect(redirectURL);
                         return;
                     }
                 }
