@@ -947,7 +947,7 @@ export class ViewHelper {
       seaterSeatsBooked,
       sleeperSeatsBooked,
     } = result;
-    const { operator, seatingList, busFareFactorList } = bus;
+    const { operator, seatingList, busFareFactorList, busNumber } = bus;
     const { operatorRoute } = busRouteWeekday;
     const totalDuration = operatorRoute.operatorRouteMidCities.reduce(
       (acc, curr) => {
@@ -965,7 +965,10 @@ export class ViewHelper {
               >
                 <!-- LEFT SIDE (Title + Badges + Amenity Button) -->
                 <div class="flex-grow-1">
-                  <h5 class="fw-bold mb-2">${operator.fullName}</h5>
+                  <div class="d-flex flex-column gap-1">
+                      <h4 class="fw-bold">${operator.fullName}</h4>
+                      <span class='small text-muted fw-semibold'>${busNumber}</span>
+                    </div>
 
                   <!-- Always visible seat layout -->
                   <button class="decker-btn mt-2">${

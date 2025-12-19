@@ -162,12 +162,8 @@
             </c:otherwise>
           </c:choose>
         </li>
-
       </ul>
-
-
       </div>
-
     </div>
   </div>
 </nav>
