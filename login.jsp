@@ -81,7 +81,6 @@
             </div>
           </form>
 
-          <!-- ✅ Forgot Password outside form -->
           <p class="text-center small mb-2">
             <a
               href="forgot-password.do"
@@ -92,7 +91,6 @@
             </a>
           </p>
 
-          <!-- ✅ Create account also outside form -->
           <p class="text-muted text-center small mb-0">
             New here?
             <a

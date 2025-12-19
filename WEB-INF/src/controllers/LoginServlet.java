@@ -58,7 +58,7 @@ public class LoginServlet extends HttpServlet {
                         String redirectURL = "/bts";
                         if(request.getParameter("from") != null) {
                             System.out.println("Jell");
-                            redirectURL += "/search_results.do?" + request.getQueryString();
+                            redirectURL += "/book_ticket.do?" + request.getQueryString();
                         }
 
                         response.sendRedirect(redirectURL);
