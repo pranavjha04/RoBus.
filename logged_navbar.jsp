@@ -1,7 +1,38 @@
 <%@ taglib prefix="e" uri="bts" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<nav class="navbar navbar-expand-lg bg-white shadow-sm bts-navbar">
+<div class="modal fade" tabindex="-1" id="logoutModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Logout</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to logout?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-primary" id="logout_btn">
+          Yes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<c:set var="page" value="${e:activeURL(pageContext.request)}" />
+
+<nav class="navbar navbar-expand-lg bg-white shadow-sm bts-navbar sticky-top position-sticky">
   <div class="container">
+
     <!-- Logo -->
     <a class="navbar-brand" href="/bts">
       <img src="static/media/images/logo.png" alt="Logo" height="42" />
@@ -20,19 +51,63 @@
     </button>
 
     <div class="collapse navbar-collapse" id="btsNavbarLoggedIn">
-      <!-- Right Navigation -->
+
       <ul class="navbar-nav ms-auto bts-nav-links align-items-lg-center">
+
+        <!-- Home -->
         <li class="nav-item">
-          <a class="nav-link active" href="/bts">Home</a>
+          <a class="nav-link ${page eq 'home.jsp' ? 'active' : ''}"
+            <c:choose>
+              <c:when test="${page eq 'home.jsp'}">
+                data-target="hero"
+              </c:when>
+              <c:otherwise>
+                href="/bts"
+              </c:otherwise>
+            </c:choose>
+          >
+            Home
+          </a>
         </li>
+
+        <!-- Search Buses -->
         <li class="nav-item">
-          <a class="nav-link" href="">Search Buses</a>
+          <a class="nav-link"
+            <c:choose>
+              <c:when test="${page eq 'home.jsp' or page eq 'search_results.jsp'}">
+                data-target="search_bus_form"
+              </c:when>
+              <c:otherwise>
+                href="/bts"
+              </c:otherwise>
+            </c:choose>
+          >
+            Search Buses
+          </a>
         </li>
+
+        <!-- Manage Bookings -->
         <li class="nav-item">
-          <a class="nav-link" href="/bts/bookings">Manage Bookings</a>
+          <a class="nav-link ${page eq 'bookings.jsp' ? 'active' : ''}"
+             href="/bts/manage_bookings.do">
+            Manage Bookings
+          </a>
         </li>
+
+        <!-- Help -->
         <li class="nav-item">
-          <a class="nav-link" href="/bts/help">Help</a>
+          <a class="nav-link ${page eq 'help.jsp' ? 'active' : ''}"
+            <c:choose>
+              <c:when test="${page eq 'home.jsp'}">
+                data-target="help"
+              </c:when>
+              <c:otherwise>
+                href="/bts/help.do"
+              </c:otherwise>
+            </c:choose>
+          >
+            Help
+          </a>
         </li>
 
         <!-- User Dropdown -->
@@ -44,7 +119,6 @@
           >
             <img
               src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
-              alt="Profile"
               class="bts-avatar"
             />
             <span class="d-none d-lg-inline fw-medium">
@@ -55,23 +129,26 @@
 
           <ul class="dropdown-menu dropdown-menu-end bts-user-dropdown">
             <li>
-              <a class="dropdown-item" href="/bts/profile">
+              <a class="dropdown-item" href="/bts/manage_profile.do">
                 <i class="bi bi-person me-2"></i>Profile
               </a>
             </li>
             <li><hr class="dropdown-divider" /></li>
             <li>
-              <a class="dropdown-item text-danger" href="/bts/logout">
+              <button role="button" class="dropdown-item text-danger" 
+              data-bs-toggle="modal"
+              data-bs-target="#logoutModal">
                 <i class="bi bi-box-arrow-right me-2"></i>Logout
-              </a>
+              </button>
             </li>
           </ul>
         </li>
+
       </ul>
     </div>
   </div>
+  <script type="module" src="static/js/logout.js"></script>
 </nav>
-
 <style>
   /* User button styles (keep your existing ones) */
   .bts-user-btn {

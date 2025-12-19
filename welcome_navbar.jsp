@@ -123,8 +123,8 @@
         </button>
 
         <ul class="dropdown-menu dropdown-menu-end bts-auth-dropdown">
-          <li><a class="dropdown-item" href="login.do">Login</a></li>
-          <li><a class="dropdown-item" href="signup.do">Sign Up</a></li>
+          <li><a class="dropdown-item" href="/bts/login.do">Login</a></li>
+          <li><a class="dropdown-item" href="/bts/signup.do">Sign Up</a></li>
         </ul>
       </div>
 

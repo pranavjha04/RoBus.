@@ -10,7 +10,6 @@ const logoutRequestHandler = async () => {
     Object.keys(sessionStorage).forEach((key) => {
       sessionStorage.removeItem(key);
     });
-
     window.location.href = APP_URL;
   } catch (err) {
     toast.error(err.message);
