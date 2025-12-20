@@ -19,8 +19,10 @@ public class Bus implements Cloneable {
     private Boolean doubleDecker;
     private Status status;
     private Operator operator;
+
     private ArrayList<BusFareFactor> busFareFactorList;
     private ArrayList<Seating> seatingList;
+    private ArrayList<BusImage> busImageList;
 
     public Bus(String busNumber, Manufacturer manufacturer, Boolean doubleDecker, Status status) {
         this.busNumber = busNumber;
@@ -214,9 +216,11 @@ public class Bus implements Cloneable {
                         rs.getString("status_name")
                     )
                 );
-
+                
                 busList.add(bus);
             }
+
+            con.close();
         }
         catch(SQLException e) {
             e.printStackTrace();
@@ -325,6 +329,14 @@ public class Bus implements Cloneable {
     @Override
     public Bus clone() {
         return new Bus(getBusId(), getBusNumber(), getManufacturer(), getDoubleDecker(), getStatus());
+    }
+
+    public void setBusImageList(ArrayList<BusImage> busImageList) {
+        this.busImageList = busImageList;
+    }
+    
+    public ArrayList<BusImage> getBusImageList() {
+        return this.busImageList;
     }
 
     public void setBusFareFactorList(ArrayList<BusFareFactor> busFareFactorList) {

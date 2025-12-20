@@ -22,6 +22,7 @@ import models.BusFareFactor;
 import models.Seating;
 import models.OperatorRoute;
 import models.OperatorRouteMidCity;
+import models.BusImage;
 
 import utils.AppUtil;
 
@@ -110,12 +111,7 @@ public class GetScheduleServlet extends HttpServlet {
 
                         context.setAttribute("operator_route_midcities" + operatorRouteId, operatorRouteMidCityList);
                     }
-                    
-                    System.out.println(currTime);
-                    System.out.println(next.getDepartureTime().toLocalTime());
                 }
-
-                System.out.println(filteredScheduleList);
 
                 for (Schedule next : filteredScheduleList) {
 
@@ -124,6 +120,7 @@ public class GetScheduleServlet extends HttpServlet {
 
                     String FARE_CACHE_KEY = "bus_fare_factor_" + busId;
                     String SEATING_CACHE_KEY = "bus_seating_" + busId;
+                    String BUS_IMAGE_CACHE_KEY = "bus_images" + busId;
 
                     @SuppressWarnings("unchecked")
                     ArrayList<BusFareFactor> fareList =
@@ -150,8 +147,9 @@ public class GetScheduleServlet extends HttpServlet {
                     }
 
                     next.getBus().setBusFareFactorList(
-                            new ArrayList<>(fareList)
+                        new ArrayList<>(fareList)
                     );
+
 
                     @SuppressWarnings("unchecked")
                     ArrayList<Seating> seatingList =
@@ -178,7 +176,37 @@ public class GetScheduleServlet extends HttpServlet {
                     }
 
                     next.getBus().setSeatingList(
-                            new ArrayList<>(seatingList)
+                        new ArrayList<>(seatingList)
+                    );
+
+                    // now get the busImages
+
+                    @SuppressWarnings("unchecked")
+                    ArrayList<BusImage> busImageList =
+                            (ArrayList<BusImage>) context.getAttribute(BUS_IMAGE_CACHE_KEY);
+
+                    if (busImageList == null) {
+                        synchronized (context) {
+                            busImageList =
+                                    (ArrayList<BusImage>) context.getAttribute(BUS_IMAGE_CACHE_KEY);
+
+                            if (busImageList == null) {
+                                busImageList =
+                                        BusImage.collectAllRecords(busId, operatorId);
+
+                                if (busImageList == null)
+                                    throw new IllegalArgumentException("Invalid Operation");
+
+                                context.setAttribute(
+                                        BUS_IMAGE_CACHE_KEY,
+                                        new ArrayList<>(busImageList)
+                                );
+                            }
+                        }
+                    }
+
+                    next.getBus().setBusImageList(
+                        new ArrayList<>(busImageList)
                     );
                 }
 

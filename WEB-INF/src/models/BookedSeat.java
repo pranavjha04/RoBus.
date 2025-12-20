@@ -1,5 +1,15 @@
 package models;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.SQLException;
+
+import java.util.ArrayList;
+
+import utils.DBManager;
+
 public class BookedSeat {
     
     private Integer bookedSeatId;
@@ -15,6 +25,11 @@ public class BookedSeat {
         this.seatNumber = seatNumber;
         this.booking = booking;
         this.seating = seating;
+    }
+
+    public static ArrayList<BusImage> collectAllRecords(int scheduleId, int operatorId) {
+        ArrayList<BusImage> list = new ArrayList<>();
+        return list;
     }
 
     public Integer getBookedSeatId() {

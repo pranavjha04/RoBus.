@@ -1038,6 +1038,12 @@ export class ViewHelper {
                   >
                     View Amenities
                   </button>
+                  <button
+                    class="midcities-btn mt-2"
+                    type='midcity'
+                  >
+                    View Mid Cities
+                  </button>
 
                   <!-- Amenities List (Hidden by default) -->
                   <div class="amenities-list">
@@ -1103,7 +1109,7 @@ export class ViewHelper {
                 </div>
                 <div class='bus-container d-flex align-items-center justify-content-center w-100 mb-3 d-none'>
                 <div class="d-flex gap-2 align-items-center">
-                    ${seatingList.map((seating) => {
+                    ${seatingList?.map((seating) => {
                       return `<div class="border rounded-5 border-primary">
                                 <div
                                   class="d-flex align-items-center justify-content-between py-2 px-2 border-bottom border-primary"

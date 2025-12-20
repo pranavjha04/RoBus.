@@ -28,6 +28,8 @@ public class Schedule {
     private Bus bus;
     private Driver driver;
     private BusRouteWeekday busRouteWeekday;
+    
+    private ArrayList<BookedSeat> bookedSeatList;
 
     public Schedule(Integer scheduleId, Date journeyDate, Time departureTime,
                     Time arrivalTime,
@@ -938,4 +940,13 @@ public class Schedule {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    public ArrayList<BookedSeat> getBookedSeatList() {
+        return bookedSeatList;
+    }
+
+    public void setBookedSeatList(ArrayList<BookedSeat> bookedSeatList) {
+        this.bookedSeatList = bookedSeatList;
+    }
+
 }

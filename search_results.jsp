@@ -107,6 +107,10 @@ prefix="e" uri="bts" %>
         background-color: #d7e7ff;
       }
 
+      .midcities-btn {
+        ba
+      }
+
       .decker-btn {
         background-color: #ffe9d6;
         color: #d46a1f;
