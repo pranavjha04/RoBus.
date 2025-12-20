@@ -1080,9 +1080,9 @@ export class ViewHelper {
     }, 0);
     let counter = { count: 1 };
     const bookedSeats = sleeperSeatsBooked + seaterSeatsBooked;
-    return `  <li class="bus-card mb-4 bg-white " data-schedule-id="${scheduleId}">
+    return `  <li class="bus-card mb-2 pb-3 bg-white" data-schedule-id="${scheduleId}">
               <div
-                class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4 p-4"
+                class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4 p-3"
               >
                 <!-- LEFT SIDE (Title + Badges + Amenity Button) -->
                 <div class="flex-grow-1">
@@ -1145,20 +1145,20 @@ export class ViewHelper {
                 </div>
                 </div>
                 <!-- Always visible seat layout -->
-                <div class='p-3'>
-                <button class="decker-btn mt-2">${
+                <div class='px-3 '>
+                <button class="decker-btn">${
                   bus.doubleDecker ? "Double" : "Single"
                 } Decker</button>
 
                 <!-- Amenities Button -->
                 <button
                 data-type='amenities'
-                  class="amenities-btn mt-2"
+                  class="amenities-btn"
                 >
                   View Amenities
                 </button>
                 <button
-                  class="midcities-btn mt-2"
+                  class="midcities-btn"
                   data-type='midcity'
                 >
                   View Mid Cities
@@ -1182,7 +1182,7 @@ export class ViewHelper {
                   </div>
                 </div>
 
-                <div class='bus-container d-flex align-items-center justify-content-center w-100 mb-3 d-none'>
+                <div class='bus-container d-flex align-items-center justify-content-center w-100 mt-2 d-none'>
                 <div class="d-flex gap-2 align-items-center">
                     ${seatingList?.map((seating) => {
                       return `<div class="border rounded-5 border-primary">
