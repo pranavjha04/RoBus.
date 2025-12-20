@@ -14,6 +14,8 @@ import {
   getFormatedDuration,
   readOnlyElements,
   removeReadOnlyElements,
+  formateTime,
+  convertTo24Hour
 } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
@@ -202,16 +204,6 @@ const convertTo24Hour = (time12h) => {
   }
 
   return `${hours.toString().padStart(2, "0")}:${minutes}:${seconds}`;
-};
-
-const formateTime = (date) => {
-  const time = new Intl.DateTimeFormat(navigator.language, {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  }).format(date);
-
-  return time;
 };
 
 const updateOverViewContainer = () => {

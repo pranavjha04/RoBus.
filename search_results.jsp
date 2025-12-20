@@ -108,7 +108,18 @@ prefix="e" uri="bts" %>
       }
 
       .midcities-btn {
-        ba
+        background-color: oklch(89.4% 0.057 293.283);
+        color: oklch(49.1% 0.27 292.581);
+        border: none;
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .midcities-btn:hover {
+        background-color: oklch(89.4% 0.057 293.283);
       }
 
       .decker-btn {
@@ -131,7 +142,6 @@ prefix="e" uri="bts" %>
         border-radius: 10px;
         padding: 0.8rem;
         margin-top: 0.8rem;
-        display: none;
         animation: fadeSlide 0.3s ease;
       }
 
@@ -211,9 +221,6 @@ prefix="e" uri="bts" %>
         max-width: 260px;
       }
 
-      .bus-row {
-      }
-
       .seater_seat {
         width: 30px;
         height: 35px;
@@ -241,10 +248,6 @@ prefix="e" uri="bts" %>
       input[type="number"]::-webkit-inner-spin-button {
         -webkit-appearance: none;
         margin: 0;
-      }
-
-      input[type="number"] {
-        -moz-appearance: textfield;
       }
 
       .side-bar {
@@ -568,17 +571,5 @@ prefix="e" uri="bts" %>
     <%-- ####################### FILTER SIDE BAR END #######################
     --%>
   </body>
-  <script>
-    function toggleAmenities(btn) {
-      const list = btn.nextElementSibling;
-      if (list.style.display === "block") {
-        list.style.display = "none";
-        btn.innerText = "View Amenities";
-      } else {
-        list.style.display = "block";
-        btn.innerText = "Hide Amenities";
-      }
-    }
-  </script>
   <script type="module" src="static/js/searchResult.js"></script>
 </html>

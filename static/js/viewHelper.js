@@ -1,4 +1,9 @@
-import { getFormatedDuration, getFormattedTime } from "./util.js";
+import {
+  convertTo24Hour,
+  formateTime,
+  getFormatedDuration,
+  getFormattedTime,
+} from "./util.js";
 
 export class ViewHelper {
   static getFareFactorBody(factor) {
@@ -991,6 +996,66 @@ export class ViewHelper {
     return busDiagram;
   }
 
+  static getRouteTimeLineContainer(schedule) {
+    const { busRouteWeekday, journeyDate, departureTime, arrivalTime } =
+      schedule;
+    const { route, operatorRouteMidCities } = busRouteWeekday.operatorRoute;
+    const { source, destination, distance: routeDistance } = route;
+
+    const startDate = new Date(journeyDate);
+
+    const departure24h = convertTo24Hour(departureTime);
+    const [startHours, startMins, startSecs] = departure24h.split(":");
+    startDate.setHours(+startHours, +startMins, +startSecs, 0);
+
+    let result = ViewHelper.getRouteTimeLine(
+      source,
+      true,
+      routeDistance,
+      formateTime(startDate)
+    );
+
+    let sumHaltingTime = 0;
+    result += [...operatorRouteMidCities]
+      .sort(
+        (a, b) =>
+          a.routeMidCity.distanceFromSource - b.routeMidCity.distanceFromSource
+      )
+      .map((midCity) => {
+        const { routeMidCity, haltingTime } = midCity;
+        sumHaltingTime += haltingTime;
+
+        const currDate = new Date(startDate.getTime());
+        currDate.setTime(
+          startDate.getTime() +
+            (routeMidCity.durationFromSource + sumHaltingTime) * 60000
+        );
+
+        return ViewHelper.getMidCityRouteTimeLine(
+          routeMidCity,
+          haltingTime,
+          formateTime(currDate)
+        );
+      })
+      .join("");
+
+    const totalDuration = operatorRouteMidCities.reduce((acc, curr) => {
+      return acc + curr.haltingTime;
+    }, route.duration);
+
+    const endDate = new Date(startDate);
+    endDate.setTime(startDate.getTime() + totalDuration * 60000);
+
+    result += ViewHelper.getRouteTimeLine(
+      destination,
+      false,
+      routeDistance,
+      formateTime(endDate)
+    );
+
+    return result;
+  }
+
   static getSearchResultRow(result) {
     const {
       scheduleId,
@@ -1026,36 +1091,7 @@ export class ViewHelper {
                       <span class='small text-muted fw-semibold'>${busNumber}</span>
                     </div>
 
-                  <!-- Always visible seat layout -->
-                  <button class="decker-btn mt-2">${
-                    bus.doubleDecker ? "Double" : "Single"
-                  } Decker</button>
-
-                  <!-- Amenities Button -->
-                  <button
-                    class="amenities-btn mt-2"
-                    onclick="toggleAmenities(this)"
-                  >
-                    View Amenities
-                  </button>
-                  <button
-                    class="midcities-btn mt-2"
-                    type='midcity'
-                  >
-                    View Mid Cities
-                  </button>
-
-                  <!-- Amenities List (Hidden by default) -->
-                  <div class="amenities-list">
-                    ${busFareFactorList
-                      .map(({ operatorTicketFare }) => {
-                        const { fareFactor } = operatorTicketFare;
-                        return `<span class="amenity-item">${fareFactor.name}</span>`;
-                      })
-                      .join("")}
-                    
-                  </div>
-                </div>
+                                  </div>
 
                 <!-- MIDDLE SECTION (Timing) -->
                 <div class="d-flex align-items-center gap-3">
@@ -1102,11 +1138,50 @@ export class ViewHelper {
                     totalSeats - bookedSeats
                   } Seats Available</span>
                   <button
-                    class="btn btn-primary rounded-pill px-4 py-2 fw-medium book"
+                    class="btn btn-primary rounded-pill px-4 py-2 fw-medium"
+                    data-type='book'
                     >Select Seats</button
                   >
                 </div>
                 </div>
+                <!-- Always visible seat layout -->
+                <div class='p-3'>
+                <button class="decker-btn mt-2">${
+                  bus.doubleDecker ? "Double" : "Single"
+                } Decker</button>
+
+                <!-- Amenities Button -->
+                <button
+                data-type='amenities'
+                  class="amenities-btn mt-2"
+                >
+                  View Amenities
+                </button>
+                <button
+                  class="midcities-btn mt-2"
+                  data-type='midcity'
+                >
+                  View Mid Cities
+                </button>
+
+                <!-- Amenities List (Hidden by default) -->
+                <div class="amenities-list d-none">
+                  ${busFareFactorList
+                    .map(({ operatorTicketFare }) => {
+                      const { fareFactor } = operatorTicketFare;
+                      return `<span class="amenity-item">${fareFactor.name}</span>`;
+                    })
+                    .join("")}
+                  
+                </div>
+
+                <div
+                    class="d-flex flex-column align-items-start pt-4 time-line d-none"
+                  >
+                  ${ViewHelper.getRouteTimeLineContainer(result)}
+                  </div>
+                </div>
+
                 <div class='bus-container d-flex align-items-center justify-content-center w-100 mb-3 d-none'>
                 <div class="d-flex gap-2 align-items-center">
                     ${seatingList?.map((seating) => {
@@ -1185,9 +1260,7 @@ export class ViewHelper {
                 </div>
                 
 
-                </div>
-
-                    
+                </div>                
                 </div>              
             </li>`;
   }

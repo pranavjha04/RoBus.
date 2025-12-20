@@ -6,16 +6,6 @@ prefix="e" uri="bts" %>
   <head>
     <c:import url="essential_page_import.jsp" />
     <title>Manage Bus Schedule</title>
-    <style>
-      .warning {
-        border: 1px solid #ff8c00;
-        color: #ff8c00;
-      }
-      .violet {
-        border: 1px solid #8a2be2;
-        color: #8a2be2;
-      }
-    </style>
   </head>
   <body class="">
     <c:import url="essential_page_display.jsp" />

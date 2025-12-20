@@ -158,6 +158,15 @@ tbody tr {
   width: 35px;
   padding: 6.5px;
 }
+
+.warning {
+  border: 1px solid #ff8c00;
+  color: #ff8c00;
+}
+.violet {
+  border: 1px solid #8a2be2;
+  color: #8a2be2;
+}
 @keyframes l3 {
   to {
     transform: rotate(1turn);

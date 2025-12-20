@@ -298,3 +298,28 @@ export const toMinutes = (time12) => {
 
   return h * 60 + m;
 };
+
+export const formateTime = (date) => {
+  const time = new Intl.DateTimeFormat(navigator.language, {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  }).format(date);
+
+  return time;
+};
+
+export const convertTo24Hour = (time12h) => {
+  const [time, modifier] = time12h.split(" ");
+  let [hours, minutes, seconds] = time.split(":");
+
+  if (hours === "12") {
+    hours = "00";
+  }
+
+  if (modifier === "PM") {
+    hours = parseInt(hours, 10) + 12;
+  }
+
+  return `${hours.toString().padStart(2, "0")}:${minutes}:${seconds}`;
+};

@@ -430,27 +430,66 @@ searchBusForm.addEventListener("submit", async (e) => {
 
 searchResultContainer.addEventListener("click", (e) => {
   const target = e.target.closest("button");
-  if (!target || !target.classList.contains("book")) return;
+  if (!target) return;
 
   const targetParent = target.closest("li");
   if (!targetParent) return;
-  const targetScheduleId = target.closest("li")?.dataset?.scheduleId;
-  if (!targetScheduleId || isNaN(+targetScheduleId)) return;
 
-  const targetSchedule = modal.searchResults.find(
-    (schedule) => schedule.scheduleId === +targetScheduleId
-  );
+  const { type } = target.dataset;
 
-  const busContainer = targetParent.querySelector(".bus-container");
-  if (!busContainer) return;
+  switch (type) {
+    case "amenities": {
+      target.classList.toggle("activa");
+      targetParent.querySelector(".amenities-list")?.classList.toggle("d-none");
+      targetParent
+        .querySelector(".amenities-list")
+        ?.scrollIntoView({ behavior: "smooth" });
 
-  busContainer.classList.toggle("d-none");
-  busContainer.scrollIntoView({ behavior: "smooth" });
+      if (target.classList.contains("activa")) {
+        target.textContent = "Hide Amenities";
+      } else {
+        target.textContent = "View Amenities";
+      }
+      break;
+    }
+    case "midcity": {
+      target.classList.toggle("activa");
+      targetParent.querySelector(".time-line")?.classList.toggle("d-none");
+      targetParent
+        .querySelector(".time-line")
+        ?.scrollIntoView({ behavior: "smooth" });
 
-  if (busContainer.classList.contains("d-none")) {
-    target.textContent = "Select Seats";
-  } else {
-    target.textContent = "Close Panel";
+      if (target.classList.contains("activa")) {
+        target.textContent = "Hide Mid Cities";
+      } else {
+        target.textContent = "View Mid Cities";
+      }
+      break;
+    }
+    case "book": {
+      const targetScheduleId = target.closest("li")?.dataset?.scheduleId;
+      if (!targetScheduleId || isNaN(+targetScheduleId)) return;
+
+      const targetSchedule = modal.searchResults.find(
+        (schedule) => schedule.scheduleId === +targetScheduleId
+      );
+
+      const busContainer = targetParent.querySelector(".bus-container");
+      if (!busContainer) return;
+
+      busContainer.classList.toggle("d-none");
+      busContainer.scrollIntoView({ behavior: "smooth" });
+
+      if (busContainer.classList.contains("d-none")) {
+        target.textContent = "Select Seats";
+      } else {
+        target.textContent = "Close Panel";
+      }
+      break;
+    }
+    default: {
+      break;
+    }
   }
 });
 
