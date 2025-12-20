@@ -196,6 +196,88 @@ prefix="e" uri="bts" %>
       .suggestion-item:hover {
         background: #f8f9fa;
       }
+
+      .bus {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 12px;
+        min-width: 260px;
+        width: 260px;
+        max-width: 260px;
+      }
+
+      .bus-row {
+      }
+
+      .seater_seat {
+        width: 30px;
+        height: 35px;
+      }
+
+      .sleeper_seat {
+        width: 40px;
+        height: 80px;
+      }
+      .seat {
+        border: 1px solid #198754;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .seat:hover {
+        background-color: #198754;
+        color: white;
+      }
+
+      input[type="number"]::-webkit-outer-spin-button,
+      input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+
+      .side-bar {
+        max-width: 400px;
+      }
+
+      .link {
+        gap: 5px;
+        transition: all 0.3s;
+        &:hover {
+          margin-left: 10px;
+        }
+      }
+
+      .active {
+        background-color: #0d6efd;
+      }
+      .active:hover {
+        background-color: #084aae;
+      }
+
+      .inactive:hover {
+        background-color: #cfe2ff;
+        color: rgb(36, 36, 36);
+      }
+
+      .seat.booked {
+        background-color: #adb5bd;
+        border-color: #adb5bd;
+        cursor: not-allowed;
+      }
+
+      .seat.selected {
+        background-color: #0d6efd;
+        color: #fff;
+        border-color: #0d6efd;
+      }
     </style>
   </head>
   <c:import url="essential_page_display.jsp" />

@@ -111,17 +111,17 @@ const updateBusView = (busSeating) => {
   if (sleeper) return;
 
   busDiagram.innerHTML += `<div class="d-flex align-items-center gap-4 ">
-                    <div class="d-flex w-100 gap-1 justify-content-between">
-                        ${Array.from({ length: 5 })
-                          .map(
-                            (_) =>
-                              `<button class="seater_seat btn seat w-100">
-                              ${count++}
-                            </button>`
-                          )
-                          .join("")}
-                    </div>
-                </div>`;
+                              <div class="d-flex w-100 gap-1 justify-content-between">
+                                  ${Array.from({ length: 5 })
+                                    .map(
+                                      (_) =>
+                                        `<button class="seater_seat btn seat w-100">
+                                        ${count++}
+                                      </button>`
+                                    )
+                                    .join("")}
+                              </div>
+                          </div>`;
 };
 
 const updateBusForm = (busSeating = { ...initialSeatingFormState }) => {

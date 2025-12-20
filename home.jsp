@@ -79,9 +79,9 @@
       }
     </style>
   </head>
-  <c:import url="essential_page_display.jsp" />
 
   <body class="bg-light" style="overflow: scroll">
+    <c:import url="essential_page_display.jsp" />
     <!-- EMAIL VERIFICATION ALERT -->
     <c:if test="${not empty sessionScope.user}">
       <c:if test="${sessionScope.user.status.statusId eq 2}">

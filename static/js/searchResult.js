@@ -431,6 +431,9 @@ searchBusForm.addEventListener("submit", async (e) => {
 searchResultContainer.addEventListener("click", (e) => {
   const target = e.target.closest("button");
   if (!target || !target.classList.contains("book")) return;
+
+  const targetParent = target.closest("li");
+  if (!targetParent) return;
   const targetScheduleId = target.closest("li")?.dataset?.scheduleId;
   if (!targetScheduleId || isNaN(+targetScheduleId)) return;
 
@@ -438,22 +441,17 @@ searchResultContainer.addEventListener("click", (e) => {
     (schedule) => schedule.scheduleId === +targetScheduleId
   );
 
-  if (!targetSchedule) return;
+  const busContainer = targetParent.querySelector(".bus-container");
+  if (!busContainer) return;
 
-  sessionStorage.setItem("activeSchedule", JSON.stringify(targetSchedule));
-  const urlParams = {
-    from: from.value,
-    to: to.value,
-    journey_date: journeyDate.value,
-    source: source.value,
-    destination: destination.value,
-  };
+  busContainer.classList.toggle("d-none");
+  busContainer.scrollIntoView({ behavior: "smooth" });
 
-  const url = new URLSearchParams(window.location.search);
-  for (const prop in urlParams) {
-    url.set(prop, urlParams[prop]);
+  if (busContainer.classList.contains("d-none")) {
+    target.textContent = "Select Seats";
+  } else {
+    target.textContent = "Close Panel";
   }
-  window.location.href = `${APP_URL}/book_ticket.do?${url.toString()}`;
 });
 
 const init = () => {

@@ -936,6 +936,61 @@ export class ViewHelper {
                 </button>`;
   }
 
+  static getBusSeatingDiagram(seating, counter) {
+    const { lsCount, rsCount, rowCount, sleeper, seats, seatingId } = seating;
+    let busDiagram = `${Array.from({
+      length: sleeper ? rowCount : rowCount - 1,
+    })
+      .map((_) => {
+        return `<div class="d-flex align-items-center gap-5 justify-content-between" data-seating-id="${seatingId}">
+                <div class="d-flex gap-1">
+                   ${Array.from({ length: lsCount })
+                     .map(
+                       (_) =>
+                         `<button class="${
+                           sleeper ? "sleeper_seat" : "seater_seat"
+                         } seat btn" data-seat-number=${
+                           counter.count
+                         }>${counter.count++}</button>`
+                     )
+                     .join("")}
+                </div>
+                <div class="d-flex gap-1">
+                     ${Array.from({ length: rsCount })
+                       .map(
+                         (_) =>
+                           `<button class="${
+                             sleeper ? "sleeper_seat" : "seater_seat"
+                           } seat btn" data-value=${
+                             counter.count
+                           }>${counter.count++}</button>`
+                       )
+                       .join("")}
+                </div>
+            </div>`;
+      })
+      .join("")}`;
+
+    // Back Seats
+
+    if (sleeper) return busDiagram;
+
+    busDiagram += `<div class="d-flex align-items-center gap-4 ">
+                              <div class="d-flex w-100 gap-1 justify-content-between">
+                                  ${Array.from({ length: 5 })
+                                    .map(
+                                      (_) =>
+                                        `<button class="seater_seat btn seat w-100">
+                                        ${counter.count++}
+                                      </button>`
+                                    )
+                                    .join("")}
+                              </div>
+                          </div>`;
+
+    return busDiagram;
+  }
+
   static getSearchResultRow(result) {
     const {
       scheduleId,
@@ -958,8 +1013,9 @@ export class ViewHelper {
     const totalSeats = seatingList.reduce((acc, curr) => {
       return acc + curr.seats;
     }, 0);
+    let counter = { count: 1 };
     const bookedSeats = sleeperSeatsBooked + seaterSeatsBooked;
-    return `  <li class="bus-card mb-4 bg-white" data-schedule-id="${scheduleId}">
+    return `  <li class="bus-card mb-4 bg-white " data-schedule-id="${scheduleId}">
               <div
                 class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4 p-4"
               >
@@ -1034,17 +1090,99 @@ export class ViewHelper {
                 </div>
 
                 <!-- RIGHT SECTION (Price + Button) -->
-                <div class="text-md-end d-flex flex-column align-items-md-end">
+                <div class="text-md-end d-flex flex-column align-items-md-en">
                   <div class="price fs-4 fw-bold mb-1">&#x20B9;${totalCharges}</div>
                   <span class="seats-available mb-2">${
                     totalSeats - bookedSeats
                   } Seats Available</span>
                   <button
                     class="btn btn-primary rounded-pill px-4 py-2 fw-medium book"
-                    >Book Seats</button
+                    >Select Seats</button
                   >
                 </div>
-              </div>
+                </div>
+                <div class='bus-container d-flex align-items-center justify-content-center w-100 mb-3 d-none'>
+                <div class="d-flex gap-2 align-items-center">
+                    ${seatingList.map((seating) => {
+                      return `<div class="border rounded-5 border-primary">
+                                <div
+                                  class="d-flex align-items-center justify-content-between py-2 px-2 border-bottom border-primary"
+                                >
+                                  <div class="d-flex flex-column align-items-center">
+                                    
+                                    <span class='fw-semibold'>${
+                                      seating.deck ? "Upper" : "Lower"
+                                    } Deck</span>
+                                  </div>
+                                  <div class="d-flex flex-column align-items-center ${
+                                    seating.deck ? `opacity-0` : ""
+                                  }">
+                                    <img
+                                      src="static/media/images/steering_wheel.svg"
+                                      style="width: 30px; height: 30px"
+                                    />
+                                    <span>Driver</span>
+                                  </div>
+                                </div>
+                                <div class="bus">
+                                    ${ViewHelper.getBusSeatingDiagram(
+                                      seating,
+                                      counter
+                                    )}
+                                  </div>
+                              </div>`;
+                    })}
+
+                  <!-- Seat Info + Action Panel -->
+                  <div class="border rounded-4 p-3 mt-3 bg-white shadow-sm action-panel" >
+
+                  <!-- Seat Legend -->
+                  <div class="d-flex flex-wrap gap-3 mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="seat seater_seat"></div>
+                      <span class="small fw-medium">Seater</span>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="seat sleeper_seat"></div>
+                      <span class="small fw-medium">Sleeper</span>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="seat seater_seat booked"></div>
+                      <span class="small fw-medium">Booked</span>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="seat seater_seat selected"></div>
+                      <span class="small fw-medium">Selected</span>
+                    </div>
+                  </div>
+
+                  <!-- Selected Seats -->
+                  <div class="d-flex justify-content-between align-items-center select-seat-container">
+                    <div>
+                      <div class="fw-semibold">Selected Seats</div>
+                      <div id="selectedSeats" class="text-primary fw-bold">
+                        None
+                      </div>
+                    </div>
+                    
+                    <button
+                      id="confirmBookingBtn"
+                      class="btn btn-primary rounded-pill px-4"
+                      disabled
+                    >
+                      Confirm Booking
+                    </button>
+                  </div>
+                </div>
+                
+
+                </div>
+
+                    
+                </div>              
             </li>`;
   }
 }
