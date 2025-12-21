@@ -31,7 +31,8 @@ public class GetWeekdayRouteServlet extends HttpServlet {
             Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
             Operator operator = (Operator) session.getAttribute("operator");
             int operatorId = operator.getOperatorId();
-
+            
+            @SuppressWarnings("deprecation")
             int weekdayId = journeyDate.getDay() + 1;
             if(session.getAttribute("weekday_route_list" + weekdayId) == null) {
                 ArrayList<BusRouteWeekday> routeWeekdayList = BusRouteWeekday.collectWeekdayAvailableRouteList(weekdayId,operatorId);

@@ -23,6 +23,7 @@ import models.Seating;
 import models.OperatorRoute;
 import models.OperatorRouteMidCity;
 import models.BusImage;
+import models.BookedSeat;
 
 import utils.AppUtil;
 
@@ -121,6 +122,7 @@ public class GetScheduleServlet extends HttpServlet {
                     String FARE_CACHE_KEY = "bus_fare_factor_" + busId;
                     String SEATING_CACHE_KEY = "bus_seating_" + busId;
                     String BUS_IMAGE_CACHE_KEY = "bus_images" + busId;
+                    String SCHEDULE_BOOKED_SEAT_CACHE_KEY = "booked_schedule" + next.getScheduleId();
 
                     @SuppressWarnings("unchecked")
                     ArrayList<BusFareFactor> fareList =
@@ -128,9 +130,6 @@ public class GetScheduleServlet extends HttpServlet {
 
                     if (fareList == null) {
                         synchronized (context) {
-                            fareList =
-                                    (ArrayList<BusFareFactor>) context.getAttribute(FARE_CACHE_KEY);
-
                             if (fareList == null) {
                                 fareList =
                                         BusFareFactor.collectAllRecords(busId, operatorId);
@@ -157,9 +156,6 @@ public class GetScheduleServlet extends HttpServlet {
 
                     if (seatingList == null) {
                         synchronized (context) {
-                            seatingList =
-                                    (ArrayList<Seating>) context.getAttribute(SEATING_CACHE_KEY);
-
                             if (seatingList == null) {
                                 seatingList =
                                         Seating.collectRecords(busId, operatorId);
@@ -187,9 +183,6 @@ public class GetScheduleServlet extends HttpServlet {
 
                     if (busImageList == null) {
                         synchronized (context) {
-                            busImageList =
-                                    (ArrayList<BusImage>) context.getAttribute(BUS_IMAGE_CACHE_KEY);
-
                             if (busImageList == null) {
                                 busImageList =
                                         BusImage.collectAllRecords(busId, operatorId);
@@ -208,6 +201,29 @@ public class GetScheduleServlet extends HttpServlet {
                     next.getBus().setBusImageList(
                         new ArrayList<>(busImageList)
                     );
+
+                    @SuppressWarnings("unchecked")
+                    ArrayList<BookedSeat> bookedSeatList =
+                            (ArrayList<BookedSeat>) context.getAttribute(SCHEDULE_BOOKED_SEAT_CACHE_KEY);
+
+                    if (bookedSeatList == null) {
+                        synchronized (context) {
+                            if (bookedSeatList == null) {
+                                bookedSeatList =
+                                        BookedSeat.collectAllRecords(next.getScheduleId());
+
+                                if (bookedSeatList == null)
+                                    throw new IllegalArgumentException("Invalid Operation");
+
+                                context.setAttribute(
+                                        SCHEDULE_BOOKED_SEAT_CACHE_KEY,
+                                        new ArrayList<>(bookedSeatList)
+                                );
+                            }
+                        }
+                    }
+
+                    next.setBookedSeatList(bookedSeatList);
                 }
 
                 Gson gson = new Gson();

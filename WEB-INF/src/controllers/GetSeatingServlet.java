@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import models.Seating;
 import models.Operator;
 
+import utils.AppUtil;
+
 import com.google.gson.Gson;
 
 @WebServlet("/get_seating.do")
@@ -42,29 +44,7 @@ public class GetSeatingServlet extends HttpServlet {
                     throw new IllegalArgumentException("Internal or Invalid Request");
                 }
 
-                switch(seatingList.size()) {
-                    case 1 : {
-                        Seating firstSeating = seatingList.get(0);
-                        if(firstSeating.getDeck()) {
-                            seatingList.set(0, null);
-                            seatingList.add(firstSeating);
-                        }
-                        break;
-                    }
-                    case 2 : {
-                        Seating firstSeating = seatingList.get(0);
-                        Seating secondSeating = seatingList.get(1);
-
-                        if(firstSeating.getDeck()) {
-                            seatingList.set(0, secondSeating);
-                            seatingList.set(1, firstSeating);
-                        }
-                        break;
-                    }
-                    default : 
-                        break;
-                }
-
+                AppUtil.formateSeatingRecord(seatingList);
                 context.setAttribute(cachedAttribute, seatingList);
             }
             
