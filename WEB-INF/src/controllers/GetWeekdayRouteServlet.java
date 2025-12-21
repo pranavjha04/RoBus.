@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import java.sql.Date;
 
 import models.Operator;
 import models.BusRouteWeekday;
@@ -27,11 +28,11 @@ public class GetWeekdayRouteServlet extends HttpServlet {
         }
         
         try {
-            int weekdayId = Integer.parseInt(request.getParameter("weekday_id"));
+            Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
             Operator operator = (Operator) session.getAttribute("operator");
             int operatorId = operator.getOperatorId();
 
-            System.out.println(weekdayId + 1);
+            int weekdayId = journeyDate.getDay() + 1;
             if(session.getAttribute("weekday_route_list" + weekdayId) == null) {
                 ArrayList<BusRouteWeekday> routeWeekdayList = BusRouteWeekday.collectWeekdayAvailableRouteList(weekdayId,operatorId);
 

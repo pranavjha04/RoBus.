@@ -411,7 +411,7 @@ CREATE TABLE weekdays (
 );
 
 INSERT INTO weekdays(name) VALUES 
-('Monday'), ('Tuesday'), ('Wednesday'), ('Thursday'), ('Friday'), ('Saturday'), ('Sunday');
+('Sunday'), ('Monday'), ('Tuesday'), ('Wednesday'), ('Thursday'), ('Friday'), ('Saturday');
 
 CREATE TABLE bus_route_weekdays (
     bus_route_weekday_id INT AUTO_INCREMENT,

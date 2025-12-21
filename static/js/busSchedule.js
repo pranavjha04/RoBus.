@@ -412,7 +412,7 @@ showAvailableRouteBtn.addEventListener("click", async () => {
   try {
     if (!cache.availableRouteCache[weekday]) {
       disableForm();
-      const response = await collectWeekdayRoutes(weekday);
+      const response = await collectWeekdayRoutes(journeyDate.value);
       if (response === "invalid") {
         throw new Error("Invalid Request");
       }
