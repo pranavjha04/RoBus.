@@ -230,7 +230,7 @@ prefix="e" uri="bts" %>
         height: 80px;
       }
       .seat {
-        border: 1px solid #0d6efd;
+        border: 1px solid #0b6b45;
         border-radius: 6px;
         display: flex;
         align-items: center;
@@ -239,7 +239,7 @@ prefix="e" uri="bts" %>
       }
 
       .seat:hover {
-        background-color: #0066ff;
+        background-color: #0b6b45;
         color: white;
       }
 
@@ -280,9 +280,9 @@ prefix="e" uri="bts" %>
       }
 
       .seat.selected {
-        background-color: #0d6efd;
+        background-color: #0b6b45;
         color: #fff;
-        border-color: #0d6efd;
+        border-color: #0b6b45;
       }
     </style>
   </head>
