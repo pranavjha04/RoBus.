@@ -953,6 +953,8 @@ export class ViewHelper {
                      .map(
                        (_) =>
                          `<button
+                          data-type="seat"
+                          data-seat-number="${counter.count}"
                           ${
                             bookedSeatList.some(
                               (bookedSeat) =>
@@ -970,7 +972,7 @@ export class ViewHelper {
                            )
                              ? "booked"
                              : ""
-                         }" data-seat-number=${counter.count}
+                         }"
                          
                          >${counter.count++}</button>`
                      )
@@ -980,11 +982,19 @@ export class ViewHelper {
                      ${Array.from({ length: rsCount })
                        .map(
                          (_) =>
-                           `<button class="${
-                             sleeper ? "sleeper_seat" : "seater_seat"
-                           } seat btn" data-value=${
-                             counter.count
-                           }>${counter.count++}</button>`
+                           `<button
+                            data-type="seat"
+                            data-seat-number="${counter.count}"
+                            class="${
+                              sleeper ? "sleeper_seat" : "seater_seat"
+                            } seat btn ${
+                             bookedSeatList.some(
+                               (bookedSeat) =>
+                                 bookedSeat.seatNumber === counter.count
+                             )
+                               ? "booked"
+                               : ""
+                           }">${counter.count++}</button>`
                        )
                        .join("")}
                 </div>
@@ -1001,7 +1011,17 @@ export class ViewHelper {
                                   ${Array.from({ length: 5 })
                                     .map(
                                       (_) =>
-                                        `<button class="seater_seat btn seat w-100">
+                                        `<button data-type="seat" data-seat-number="${
+                                          counter.count
+                                        }" class="seater_seat btn seat w-100" ${
+                                          bookedSeatList.some(
+                                            (bookedSeat) =>
+                                              bookedSeat.seatNumber ===
+                                              counter.count
+                                          )
+                                            ? "disabled"
+                                            : ""
+                                        }>
                                         ${counter.count++}
                                       </button>`
                                     )
@@ -1277,7 +1297,6 @@ export class ViewHelper {
                   </div>
                 </div>
                 
-
                 </div>                
                 </div>              
             </li>`;

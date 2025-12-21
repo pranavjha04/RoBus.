@@ -467,13 +467,6 @@ searchResultContainer.addEventListener("click", (e) => {
       break;
     }
     case "book": {
-      const targetScheduleId = target.closest("li")?.dataset?.scheduleId;
-      if (!targetScheduleId || isNaN(+targetScheduleId)) return;
-
-      const targetSchedule = modal.searchResults.find(
-        (schedule) => schedule.scheduleId === +targetScheduleId
-      );
-
       const busContainer = targetParent.querySelector(".bus-container");
       if (!busContainer) return;
 
@@ -485,6 +478,23 @@ searchResultContainer.addEventListener("click", (e) => {
       } else {
         target.textContent = "Close Panel";
       }
+
+      break;
+    }
+    case "seat": {
+      if (target.classList.contains("booked")) break;
+      target.classList.toggle("selected");
+      const targetBus = target.closest("[data-seating-id]");
+      const targetScheduleId = targetBus.dataset?.seatingId;
+      const seatNumber = target.dataset?.seatNumber;
+      if (
+        !targetScheduleId ||
+        isNaN(+targetScheduleId) ||
+        !seatNumber ||
+        isNaN(+seatNumber)
+      )
+        break;
+
       break;
     }
     default: {
