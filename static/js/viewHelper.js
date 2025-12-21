@@ -941,7 +941,7 @@ export class ViewHelper {
                 </button>`;
   }
 
-  static getBusSeatingDiagram(seating, counter) {
+  static getBusSeatingDiagram(seating, counter, bookedSeatList) {
     const { lsCount, rsCount, rowCount, sleeper, seats, seatingId } = seating;
     let busDiagram = `${Array.from({
       length: sleeper ? rowCount : rowCount - 1,
@@ -952,11 +952,27 @@ export class ViewHelper {
                    ${Array.from({ length: lsCount })
                      .map(
                        (_) =>
-                         `<button class="${
-                           sleeper ? "sleeper_seat" : "seater_seat"
-                         } seat btn" data-seat-number=${
-                           counter.count
-                         }>${counter.count++}</button>`
+                         `<button
+                          ${
+                            bookedSeatList.some(
+                              (bookedSeat) =>
+                                bookedSeat.seatNumber === counter.count
+                            )
+                              ? "disabled"
+                              : ""
+                          }
+                          class="${
+                            sleeper ? "sleeper_seat" : "seater_seat"
+                          } seat btn ${
+                           bookedSeatList.some(
+                             (bookedSeat) =>
+                               bookedSeat.seatNumber === counter.count
+                           )
+                             ? "booked"
+                             : ""
+                         }" data-seat-number=${counter.count}
+                         
+                         >${counter.count++}</button>`
                      )
                      .join("")}
                 </div>
@@ -1066,6 +1082,7 @@ export class ViewHelper {
       busRouteWeekday,
       seaterSeatsBooked,
       sleeperSeatsBooked,
+      bookedSeatList,
     } = result;
     const { operator, seatingList, busFareFactorList, busNumber } = bus;
     const { operatorRoute } = busRouteWeekday;
@@ -1208,7 +1225,8 @@ export class ViewHelper {
                                 <div class="bus">
                                     ${ViewHelper.getBusSeatingDiagram(
                                       seating,
-                                      counter
+                                      counter,
+                                      bookedSeatList
                                     )}
                                   </div>
                               </div>`;
