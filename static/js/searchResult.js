@@ -495,6 +495,12 @@ searchResultContainer.addEventListener("click", (e) => {
       )
         break;
 
+      if (target.classList.contains("seater_seat")) {
+      } else if (target.classList.contains("sleeper_seat")) {
+      }
+      else {
+        
+      }
       break;
     }
     default: {

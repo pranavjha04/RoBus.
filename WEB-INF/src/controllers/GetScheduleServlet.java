@@ -93,26 +93,48 @@ public class GetScheduleServlet extends HttpServlet {
                     }
                 }
 
+        
                 ArrayList<Schedule> filteredScheduleList = new ArrayList<>();
+                
+                Date todayDate = new Date(System.currentTimeMillis());
+    
+                for (Schedule next : scheduleList) {
+
+                    boolean allow = false;
+
+                    if (next.getJourneyDate().after(todayDate)) {
+                        allow = true;
+                    }
+                    else if (next.getJourneyDate().equals(todayDate)) {
+                        if (next.getDepartureTime().toLocalTime().isAfter(currTime)) {
+                            allow = true;
+                        }
+                    }
+
+                    if (!allow) continue;
+
+                    filteredScheduleList.add(next);
+
+                    OperatorRoute operatorRoute =
+                            next.getBusRouteWeekday().getOperatorRoute();
+
+                    int operatorRouteId = operatorRoute.getOperatorRouteId();
+
+                    ArrayList<OperatorRouteMidCity> operatorRouteMidCityList =
+                            OperatorRouteMidCity.collectAllRecords(
+                                    operatorRouteId,
+                                    next.getBus().getOperator().getOperatorId()
+                            );
+
+                    operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
+                    context.setAttribute(
+                            "operator_route_midcities_" + operatorRouteId,
+                            operatorRouteMidCityList
+                    );
+                }
 
                 System.out.println(scheduleList);
 
-                for (Schedule next : scheduleList) {
-                    if (next.getDepartureTime()
-                            .toLocalTime()
-                            .isAfter(currTime)) {
-                        filteredScheduleList.add(next);
-
-                        OperatorRoute operatorRoute = next.getBusRouteWeekday().getOperatorRoute();
-                        int operatorRouteId = operatorRoute.getOperatorRouteId();
-                    
-                        ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = OperatorRouteMidCity.collectAllRecords(operatorRouteId, next.getBus().getOperator().getOperatorId());
-
-                        operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
-
-                        context.setAttribute("operator_route_midcities" + operatorRouteId, operatorRouteMidCityList);
-                    }
-                }
 
                 for (Schedule next : filteredScheduleList) {
 

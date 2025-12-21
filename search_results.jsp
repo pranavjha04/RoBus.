@@ -166,7 +166,6 @@ prefix="e" uri="bts" %>
         }
       }
 
-      /* Seat Layout Badge (always visible) */
       .badge-layout {
         background-color: #20c997;
         color: white;
@@ -231,7 +230,7 @@ prefix="e" uri="bts" %>
         height: 80px;
       }
       .seat {
-        border: 1px solid #198754;
+        border: 1px solid #0d6efd;
         border-radius: 6px;
         display: flex;
         align-items: center;
@@ -240,7 +239,7 @@ prefix="e" uri="bts" %>
       }
 
       .seat:hover {
-        background-color: #198754;
+        background-color: #0066ff;
         color: white;
       }
 
