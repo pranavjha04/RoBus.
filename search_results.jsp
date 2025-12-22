@@ -236,11 +236,25 @@ prefix="e" uri="bts" %>
         align-items: center;
         justify-content: center;
         cursor: pointer;
+        background-color: transparent;
+        color: #0b6b45;
+        transition: background-color 0.2s ease, color 0.2s ease;
       }
 
       .seat:hover {
+        background-color: #d1e7dd;
+        color: #0b6b45;
+      }
+
+      .seat:active {
         background-color: #0b6b45;
-        color: white;
+        color: #ffffff;
+      }
+
+      .seat.selected {
+        background-color: #0b6b45;
+        color: #ffffff;
+        border-color: #0b6b45;
       }
 
       input[type="number"]::-webkit-outer-spin-button,

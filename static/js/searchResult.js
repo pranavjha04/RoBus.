@@ -271,11 +271,11 @@ const updateSelectedSeatContainer = (targetParent, list) => {
   const selectedSeatContainer = targetParent.querySelector(
     ".selected-seat-container"
   );
-  console.log(list);
+  const selectedSeatInfo = targetParent.querySelector(".selected-seat-info");
   const totalCharge = list.reduce((acc, curr) => acc + curr.totalCharge, 0);
   totolChargeContainer.querySelector("span").textContent =
     "₹" + new Intl.NumberFormat("en-IN").format(totalCharge);
-  targetParent.querySelector(".selected-seat-info").innerHTML =
+  selectedSeatInfo.innerHTML =
     list.length === 0
       ? `<div class="text-secondary fw-semibold mb-1">
           No seats selected
@@ -283,13 +283,22 @@ const updateSelectedSeatContainer = (targetParent, list) => {
         <div class="text-muted small">
           Please select seats to continue booking
         </div>`
-      : `<span>${list.length} Selected Seats</span>`;
+      : `<span class='fw-semibold me-auto text-muted'>${list.length} Selected Seats</span>`;
 
   if (list.length === 0) {
+    selectedSeatInfo.classList.add("bg-light", "border", "p-4", "text-center");
+    selectedSeatInfo.classList.remove("mb-2", "text-start");
     confirmBookingBtn.disabled = true;
     selectedSeatContainer.innerHTML = "";
     totolChargeContainer.classList.add("d-none");
   } else {
+    selectedSeatInfo.classList.remove(
+      "bg-light",
+      "border",
+      "p-4",
+      "text-center"
+    );
+    selectedSeatInfo.classList.add("mb-2", "text-start");
     totolChargeContainer.classList.remove("d-none");
     confirmBookingBtn.disabled = false;
     selectedSeatContainer.innerHTML = `${list
@@ -301,7 +310,11 @@ const updateSelectedSeatContainer = (targetParent, list) => {
           <div>
             <div class="fw-semibold text-dark">
               Seat ${seat.seatNumber}
-              <span class="badge bg-primary-subtle text-primary ms-2">
+              <span class="ms-2 fw-medium badge ${
+                seat.isSleeper
+                  ? "bg-danger-subtle text-danger"
+                  : "bg-primary-subtle text-primary"
+              } ">
                 ${seat.isSleeper ? "Sleeper" : "Seater"}
               </span>
             </div>
@@ -555,7 +568,6 @@ searchResultContainer.addEventListener("click", (e) => {
       const targetScheduleId = targetParent.dataset.scheduleId;
       const isSleeper = target.classList.contains("sleeper_seat");
       const isSelected = target.classList.contains("selected");
-      console.log(isSelected);
 
       const seatNumber = target.dataset?.seatNumber;
       if (
@@ -611,7 +623,9 @@ searchResultContainer.addEventListener("click", (e) => {
       const seatNumber =
         target.closest("[data-seat-number]")?.dataset.seatNumber;
 
-      console.log(targetScheduleId);
+      targetParent
+        .querySelector(`[data-seat-number="${seatNumber}"]`)
+        .classList.remove("selected");
       modal.selectedSeat[targetScheduleId] = modal.selectedSeat[
         +targetScheduleId
       ].filter((seat) => seat.seatNumber !== +seatNumber);
