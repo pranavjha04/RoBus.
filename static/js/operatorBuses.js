@@ -245,6 +245,11 @@ const init = async () => {
   await handleBusRecords(true);
 };
 
-window.addEventListener("DOMContentLoaded", () => {
-  init();
+init();
+
+window.addEventListener("pageshow", async (e) => {
+  if (e.persisted) {
+    model.busList = [];
+    await handleBusRecords(true);
+  }
 });

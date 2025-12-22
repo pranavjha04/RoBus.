@@ -3,7 +3,6 @@ import { PageLoading } from "./pageLoading.js";
 import {
   addSeatingRequest,
   collectSeatingRecordRequest,
-  deleteFareFactorRequest,
   updateSeatingRequest,
 } from "./service.js";
 import { toast } from "./toast.js";
@@ -417,7 +416,7 @@ window.addEventListener("DOMContentLoaded", () => {
   try {
     modal.activeBus = JSON.parse(sessionStorage.getItem("activeBus"));
     if (!modal.activeBus.doubleDecker) {
-      deckContainer.querySelector("[data-type]").remove();
+      deckContainer.classList.add("d-none");
     }
     handleCollectSeatingRequest();
     PageLoading.stopLoading();

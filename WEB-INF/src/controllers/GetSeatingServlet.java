@@ -23,7 +23,6 @@ import com.google.gson.Gson;
 public class GetSeatingServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
-        String requestURLPath = request.getServletPath().substring(1);
         ServletContext context = getServletContext();
 
         try {
@@ -48,31 +47,13 @@ public class GetSeatingServlet extends HttpServlet {
                 context.setAttribute(cachedAttribute, seatingList);
             }
             
-            if(!requestURLPath.equals("add_seating.do")) {
-                @SuppressWarnings("unchecked")
-                ArrayList<Seating> seatingList = (ArrayList<Seating>) context.getAttribute(cachedAttribute);
-                response.getWriter().println(new Gson().toJson(seatingList));
-            }
+            @SuppressWarnings("unchecked")
+            ArrayList<Seating> seatingList = (ArrayList<Seating>) context.getAttribute(cachedAttribute);
+            response.getWriter().println(new Gson().toJson(seatingList));
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
-            if(!requestURLPath.equals("add_seating.do")) {
-                response.getWriter().println("invalid");
-            }
-            return;
-        }
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        HttpSession session = request.getSession();
-        if(session.getAttribute("operator") == null) {
-            response.sendRedirect("/bts");
-            return;
-        }
-
-        String requestURLPath = request.getServletPath().substring(1);
-        if(requestURLPath.equals("add_seating.do")) {
-            doGet(request, response);
+            response.getWriter().println("invalid");
             return;
         }
     }

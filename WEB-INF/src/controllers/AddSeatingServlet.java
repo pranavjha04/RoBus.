@@ -9,14 +9,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletContext;
 
 import java.util.ArrayList;
-
 import java.io.IOException;
 
 import com.google.gson.Gson;
 
 import models.Seating;
 import models.Bus;
+import models.Status;
 import models.Operator;
+
+import utils.AppUtil;
 
 @WebServlet("/add_seating.do")
 public class AddSeatingServlet extends HttpServlet {
@@ -70,6 +72,8 @@ public class AddSeatingServlet extends HttpServlet {
             return;
         }
 
+        System.out.println(generatedId);
+
         Bus activeBus = null;
         if(session.getAttribute("busList") != null) {
             @SuppressWarnings("unchecked")
@@ -84,26 +88,17 @@ public class AddSeatingServlet extends HttpServlet {
         }
         if(activeBus == null) {
             activeBus = Bus.getRecord(busId, operator.getOperatorId());
-        }
-
-        if(activeBus == null) {
-            response.getWriter().println("internal");
-            return;
-        }
-        
-        String cachedSeatingListAttribute = "seatingList" + busId;
-        if(context.getAttribute(cachedSeatingListAttribute) == null) {
-            request.getRequestDispatcher("get_seating.do").include(request, response);
-
-            if(context.getAttribute(cachedSeatingListAttribute) == null) {
-                response.getWriter().println("invalid");
+            if(activeBus == null) {
+                response.getWriter().println("internal");
                 return;
             }
-        }      
+        }
+    
 
-        @SuppressWarnings("unchecked")
-        ArrayList<Seating> seatingList = (ArrayList<Seating>) context.getAttribute(cachedSeatingListAttribute);
+        ArrayList<Seating> seatingList = Seating.collectRecords(busId, operator.getOperatorId());
+        AppUtil.formateSeatingRecord(seatingList);
 
+        context.setAttribute("seatingList" + busId, seatingList);
         Boolean isUpdatable = false;
         if(activeBus.getDoubleDecker()) {
             if(seatingList.size() == 2) {
@@ -122,13 +117,12 @@ public class AddSeatingServlet extends HttpServlet {
                 response.getWriter().println("internal");
                 return;
             }
-            else {
-                session.removeAttribute("busList");
-            }
+            
         }
 
+        
         seating.setSeatingId(generatedId);
-        context.removeAttribute(cachedSeatingListAttribute);
+        session.removeAttribute("busList");
         response.getWriter().println(new Gson().toJson(seating));
 
     } 

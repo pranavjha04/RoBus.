@@ -124,6 +124,7 @@ public class Seating {
 
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
+                System.out.println("Inside Seating Class");
                 Seating seating = new Seating(
                     rs.getInt("seating_id"),
                     rs.getInt("ls_count"),

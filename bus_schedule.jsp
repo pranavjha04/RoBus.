@@ -381,7 +381,9 @@ prefix="e" uri="bts" %>
                   </div>
                 </div>
 
-                <div class="bg-white p-4 rounded shadow-sm d-flex flex-column justify-content-center">
+                <div
+                  class="bg-white p-4 rounded shadow-sm d-flex flex-column justify-content-center"
+                >
                   <table
                     class="border rounded table-responsive border-bottom-0"
                     id="schedule_table"
