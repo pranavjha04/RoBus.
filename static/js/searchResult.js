@@ -260,6 +260,25 @@ sortDeparture.forEach((dep) => {
   });
 });
 
+const updateBusInfoShow = (container, target) => {
+  container.querySelector(".a");
+
+  [".amenities-list", ".time-line", ".bus-container", ".images-list"].forEach(
+    (className) => {
+      const curr = document.querySelector(className);
+      if (target.classList !== curr.classList) {
+        curr.classList.add("d-none");
+      }
+    }
+  );
+  target.classList.toggle("d-none");
+
+  container.querySelector(`[data-type="amenities"]`).textContent = "Amenities";
+  container.querySelector(`[data-type="midcity"]`).textContent = "Mid Cities";
+  container.querySelector(`[data-type="images"]`).textContent = "Bus Images";
+  container.querySelector(`[data-type="book"]`).textContent = "Select Seats";
+};
+
 const sideFilterEvent = () => {
   const { acType, seatType } = getActiveFilters();
   applyFilter(acType, seatType);
@@ -526,10 +545,10 @@ searchResultContainer.addEventListener("click", (e) => {
   switch (type) {
     case "amenities": {
       target.classList.toggle("activa");
-      targetParent.querySelector(".amenities-list")?.classList.toggle("d-none");
-      targetParent
-        .querySelector(".amenities-list")
-        ?.scrollIntoView({ behavior: "smooth" });
+      updateBusInfoShow(
+        targetParent,
+        targetParent.querySelector(".amenities-list")
+      );
 
       if (target.classList.contains("activa")) {
         target.textContent = "Hide Amenities";
@@ -540,10 +559,7 @@ searchResultContainer.addEventListener("click", (e) => {
     }
     case "midcity": {
       target.classList.toggle("activa");
-      targetParent.querySelector(".time-line")?.classList.toggle("d-none");
-      targetParent
-        .querySelector(".time-line")
-        ?.scrollIntoView({ behavior: "smooth" });
+      updateBusInfoShow(targetParent, targetParent.querySelector(".time-line"));
 
       if (target.classList.contains("activa")) {
         target.textContent = "Hide Mid Cities";
@@ -554,10 +570,7 @@ searchResultContainer.addEventListener("click", (e) => {
     }
     case "book": {
       const busContainer = targetParent.querySelector(".bus-container");
-      if (!busContainer) return;
-
-      busContainer.classList.toggle("d-none");
-      busContainer.scrollIntoView({ behavior: "smooth" });
+      updateBusInfoShow(targetParent, busContainer);
 
       if (busContainer.classList.contains("d-none")) {
         target.textContent = "Select Seats";
@@ -568,10 +581,7 @@ searchResultContainer.addEventListener("click", (e) => {
     }
     case "images": {
       const imageContainer = targetParent.querySelector(".images-list");
-      if (!imageContainer) return;
-
-      imageContainer.classList.toggle("d-none");
-      imageContainer.scrollIntoView({ behavior: "smooth" });
+      updateBusInfoShow(targetParent, imageContainer);
 
       if (imageContainer.classList.contains("d-none")) {
         target.textContent = "Bus Images";
