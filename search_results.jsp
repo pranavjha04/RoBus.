@@ -122,21 +122,52 @@ prefix="e" uri="bts" %>
         background-color: oklch(89.4% 0.057 293.283);
       }
 
-      .decker-btn {
+      .decker {
         background-color: #ffe9d6;
         color: #d46a1f;
+        border: 1px solid #f5c7a3;
+        padding: 0.2rem 0.55rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+        cursor: default;
+      }
+
+      .images-list {
+        margin-top: 0.5rem;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        padding: 0.35rem 0.75rem;
+        gap: 1rem;
+      }
+
+      .images-list img {
+        width: 300px;
+        height: 300px;
+        max-width: 300px;
+        max-height: 300px;
+      }
+
+      .show-images-btn {
+        background-color: #e6f7f1;
+        color: #0f766e;
         border: none;
         padding: 0.35rem 0.75rem;
         border-radius: 20px;
         font-size: 0.85rem;
         cursor: pointer;
-        transition: background 0.2s;
-      }
-      .decker-btn:hover {
-        background-color: #fee0c7;
+        transition: background 0.2s, transform 0.15s;
       }
 
-      /* Amenities List */
+      .show-images-btn:hover {
+        background-color: #d1f2e7;
+        transform: translateY(-1px);
+      }
+
       .amenities-list {
         background-color: #f4f8ff;
         border-radius: 10px;

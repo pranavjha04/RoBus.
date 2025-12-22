@@ -513,6 +513,15 @@ searchResultContainer.addEventListener("click", (e) => {
   if (!targetParent) return;
 
   const { type } = target.dataset;
+  const targetScheduleId =
+    target.closest("[data-schedule-id]")?.dataset.scheduleId;
+
+  const targetSchedule = modal.searchResults.find(
+    (schedule) => schedule.scheduleId === +targetScheduleId
+  );
+
+  if (!targetScheduleId || isNaN(targetScheduleId)) return;
+  if (!targetSchedule) return;
 
   switch (type) {
     case "amenities": {
@@ -525,7 +534,7 @@ searchResultContainer.addEventListener("click", (e) => {
       if (target.classList.contains("activa")) {
         target.textContent = "Hide Amenities";
       } else {
-        target.textContent = "View Amenities";
+        target.textContent = "Amenities";
       }
       break;
     }
@@ -539,7 +548,7 @@ searchResultContainer.addEventListener("click", (e) => {
       if (target.classList.contains("activa")) {
         target.textContent = "Hide Mid Cities";
       } else {
-        target.textContent = "View Mid Cities";
+        target.textContent = "Mid Cities";
       }
       break;
     }
@@ -553,9 +562,22 @@ searchResultContainer.addEventListener("click", (e) => {
       if (busContainer.classList.contains("d-none")) {
         target.textContent = "Select Seats";
       } else {
-        target.textContent = "Close Panel";
+        target.textContent = "Hide Seats";
       }
+      break;
+    }
+    case "images": {
+      const imageContainer = targetParent.querySelector(".images-list");
+      if (!imageContainer) return;
 
+      imageContainer.classList.toggle("d-none");
+      imageContainer.scrollIntoView({ behavior: "smooth" });
+
+      if (imageContainer.classList.contains("d-none")) {
+        target.textContent = "Bus Images";
+      } else {
+        target.textContent = "Hide Images";
+      }
       break;
     }
     case "seat": {
@@ -565,7 +587,6 @@ searchResultContainer.addEventListener("click", (e) => {
       const targetBus = target.closest("[data-seating-id]");
       const targetSeatingId = targetBus.dataset?.seatingId;
 
-      const targetScheduleId = targetParent.dataset.scheduleId;
       const isSleeper = target.classList.contains("sleeper_seat");
       const isSelected = target.classList.contains("selected");
 
@@ -573,17 +594,11 @@ searchResultContainer.addEventListener("click", (e) => {
       if (
         !targetSeatingId ||
         isNaN(+targetSeatingId) ||
-        !targetScheduleId ||
-        isNaN(+targetScheduleId) ||
         !seatNumber ||
         isNaN(+seatNumber)
       )
         break;
 
-      const targetSchedule = modal.searchResults.find(
-        (schedule) => schedule.scheduleId === +targetScheduleId
-      );
-      if (!targetSchedule) break;
       const targetSeating = targetSchedule.bus.seatingList.find(
         (seating) => seating.seatingId === +targetSeatingId
       );
@@ -618,14 +633,12 @@ searchResultContainer.addEventListener("click", (e) => {
       break;
     }
     case "remove": {
-      const targetScheduleId =
-        target.closest("[data-schedule-id]")?.dataset.scheduleId;
       const seatNumber =
         target.closest("[data-seat-number]")?.dataset.seatNumber;
 
       targetParent
         .querySelector(`[data-seat-number="${seatNumber}"]`)
-        .classList.remove("selected");
+        ?.classList.remove("selected");
       modal.selectedSeat[targetScheduleId] = modal.selectedSeat[
         +targetScheduleId
       ].filter((seat) => seat.seatNumber !== +seatNumber);
@@ -634,6 +647,23 @@ searchResultContainer.addEventListener("click", (e) => {
         targetParent,
         modal.selectedSeat[targetScheduleId]
       );
+      break;
+    }
+    case "confirm": {
+      if (
+        !modal.selectedSeat[targetScheduleId] ||
+        modal.selectedSeat[targetScheduleId].length === 0
+      ) {
+        break;
+      }
+      sessionStorage.setItem(
+        "selectedSeatList",
+        JSON.stringify(modal.selectedSeat[targetScheduleId])
+      );
+      sessionStorage.setItem("activeSchedule", JSON.stringify(targetSchedule));
+
+      window.location.href = `${APP_URL}/confirm_booking.do`;
+      break;
     }
     default: {
       break;

@@ -1106,7 +1106,14 @@ export class ViewHelper {
       seaterFare,
       bookedSeatList,
     } = result;
-    const { operator, seatingList, busFareFactorList, busNumber } = bus;
+    const {
+      busId,
+      operator,
+      seatingList,
+      busFareFactorList,
+      busNumber,
+      busImageList,
+    } = bus;
     const { operatorRoute } = busRouteWeekday;
     const totalDuration = operatorRoute.operatorRouteMidCities.reduce(
       (acc, curr) => {
@@ -1128,6 +1135,9 @@ export class ViewHelper {
                   <div class="d-flex flex-column gap-1">
                       <h4 class="fw-bold">${operator.fullName}</h4>
                       <span class='small text-muted fw-semibold'>${busNumber}</span>
+                      <span class="decker text-start me-auto">${
+                        bus.doubleDecker ? "Double" : "Single"
+                      } Decker</span>
                     </div>
 
                                   </div>
@@ -1187,22 +1197,26 @@ export class ViewHelper {
                 </div>
                 <!-- Always visible seat layout -->
                 <div class='px-3 '>
-                <button class="decker-btn">${
-                  bus.doubleDecker ? "Double" : "Single"
-                } Decker</button>
+                
 
                 <!-- Amenities Button -->
                 <button
                 data-type='amenities'
                   class="amenities-btn"
                 >
-                  View Amenities
+                  Amenities
                 </button>
                 <button
                   class="midcities-btn"
                   data-type='midcity'
                 >
-                  View Mid Cities
+                  Mid Cities & Timeline
+                </button>
+                <button
+                  class="show-images-btn"
+                  data-type='images'
+                >
+                  Bus Images
                 </button>
 
                 <!-- Amenities List (Hidden by default) -->
@@ -1221,6 +1235,15 @@ export class ViewHelper {
                   >
                   ${ViewHelper.getRouteTimeLineContainer(result)}
                   </div>
+                </div>
+
+                <div class="images-list d-none">
+                  ${busImageList
+                    .map(({ pic }) => {
+                      return `<img class='rounded-2 object-fit-cover image' src="show_image.do?target=bus&id=${busId}&name=${pic}"/>`;
+                    })
+                    .join("")}
+                  
                 </div>
 
                 <div class='bus-container d-flex align-items-center justify-content-center w-100 mt-2 d-none'>
@@ -1297,13 +1320,8 @@ export class ViewHelper {
         </div>
       </div>
 
-
-      <!-- Seat List -->
       <div class="seat-list d-flex flex-column gap-2 mb-3 pe-1 selected-seat-container">
-
-        <!-- Seat Item -->
       </div>
-
 
   <!-- Footer -->
   <div class="d-flex justify-content-between align-items-center total-charges d-none">
@@ -1315,6 +1333,7 @@ export class ViewHelper {
     <button
       
       class="btn btn-primary ms-auto rounded-pill px-4  confirm-booking-btn"
+      data-type='confirm'
     >
       Confirm Booking
     </button>

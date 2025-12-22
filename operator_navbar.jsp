@@ -48,8 +48,8 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           data-bs-toggle="dropdown"
         >
           <img
-            src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
-            class="bts-avatar"
+            src="show_image.do?target=operator&id=${sessionScope.operator.operatorId}&name=${sessionScope.operator.logo}"
+            class="bts-avatar object-fit-cover"
           />
           <span class="fw-medium d-none d-lg-inline">
             ${sessionScope.operator.fullName}
