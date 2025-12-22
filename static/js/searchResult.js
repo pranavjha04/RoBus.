@@ -37,6 +37,7 @@ let filterApplicable = false;
 const modal = {
   searchResults: [],
   currState: [],
+  selectedSeat: {},
 };
 
 const disableFilter = () => {
@@ -264,6 +265,69 @@ const sideFilterEvent = () => {
   applyFilter(acType, seatType);
 };
 
+const updateSelectedSeatContainer = (targetParent, list) => {
+  const totolChargeContainer = targetParent.querySelector(".total-charges");
+  const confirmBookingBtn = targetParent.querySelector(".confirm-booking-btn");
+  const selectedSeatContainer = targetParent.querySelector(
+    ".selected-seat-container"
+  );
+  console.log(list);
+  const totalCharge = list.reduce((acc, curr) => acc + curr.totalCharge, 0);
+  totolChargeContainer.querySelector("span").textContent =
+    "₹" + new Intl.NumberFormat("en-IN").format(totalCharge);
+  targetParent.querySelector(".selected-seat-info").innerHTML =
+    list.length === 0
+      ? `<div class="text-secondary fw-semibold mb-1">
+          No seats selected
+        </div>
+        <div class="text-muted small">
+          Please select seats to continue booking
+        </div>`
+      : `<span>${list.length} Selected Seats</span>`;
+
+  if (list.length === 0) {
+    confirmBookingBtn.disabled = true;
+    selectedSeatContainer.innerHTML = "";
+    totolChargeContainer.classList.add("d-none");
+  } else {
+    totolChargeContainer.classList.remove("d-none");
+    confirmBookingBtn.disabled = false;
+    selectedSeatContainer.innerHTML = `${list
+      .map((seat) => {
+        return `<div class="d-flex justify-content-between align-items-center border rounded-3 p-2" data-seat-number=${
+          seat.seatNumber
+        }>
+
+          <div>
+            <div class="fw-semibold text-dark">
+              Seat ${seat.seatNumber}
+              <span class="badge bg-primary-subtle text-primary ms-2">
+                ${seat.isSleeper ? "Sleeper" : "Seater"}
+              </span>
+            </div>
+            <div class="text-secondary small">
+              ${seat.deck ? "Upper" : "Lower"} Deck
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center gap-3">
+            <div class="fw-semibold text-dark">₹${seat.totalCharge}</div>
+
+            <button
+              class="btn btn-sm btn-outline-danger rounded-circle d-flex align-items-center justify-content-center"
+              style="width: 32px; height: 32px;"
+              data-type='remove'
+            >
+              <i class="bi bi-trash3"></i>
+            </button>
+          </div>
+        </div>
+        `;
+      })
+      .join("")}`;
+  }
+};
+
 ac.forEach((node) => {
   node.addEventListener("input", sideFilterEvent);
 });
@@ -483,11 +547,20 @@ searchResultContainer.addEventListener("click", (e) => {
     }
     case "seat": {
       if (target.classList.contains("booked")) break;
+
       target.classList.toggle("selected");
       const targetBus = target.closest("[data-seating-id]");
-      const targetScheduleId = targetBus.dataset?.seatingId;
+      const targetSeatingId = targetBus.dataset?.seatingId;
+
+      const targetScheduleId = targetParent.dataset.scheduleId;
+      const isSleeper = target.classList.contains("sleeper_seat");
+      const isSelected = target.classList.contains("selected");
+      console.log(isSelected);
+
       const seatNumber = target.dataset?.seatNumber;
       if (
+        !targetSeatingId ||
+        isNaN(+targetSeatingId) ||
         !targetScheduleId ||
         isNaN(+targetScheduleId) ||
         !seatNumber ||
@@ -495,13 +568,58 @@ searchResultContainer.addEventListener("click", (e) => {
       )
         break;
 
-      if (target.classList.contains("seater_seat")) {
-      } else if (target.classList.contains("sleeper_seat")) {
+      const targetSchedule = modal.searchResults.find(
+        (schedule) => schedule.scheduleId === +targetScheduleId
+      );
+      if (!targetSchedule) break;
+      const targetSeating = targetSchedule.bus.seatingList.find(
+        (seating) => seating.seatingId === +targetSeatingId
+      );
+      if (!targetSeating) break;
+      if (!modal.selectedSeat[targetScheduleId]) {
+        modal.selectedSeat[targetScheduleId] = [];
       }
-      else {
-        
+
+      if (isSelected) {
+        const newSeat = {
+          seatNumber: +seatNumber,
+          isSleeper,
+          deck: targetSeating.deck,
+          totalCharge:
+            targetSchedule.totalCharges +
+            (isSleeper
+              ? targetSchedule.sleeperFare
+              : targetSchedule.seaterFare),
+        };
+
+        modal.selectedSeat[targetScheduleId].push(newSeat);
+      } else {
+        modal.selectedSeat[targetScheduleId] = modal.selectedSeat[
+          +targetScheduleId
+        ].filter((seat) => seat.seatNumber !== +seatNumber);
       }
+
+      updateSelectedSeatContainer(
+        targetParent,
+        modal.selectedSeat[targetScheduleId]
+      );
       break;
+    }
+    case "remove": {
+      const targetScheduleId =
+        target.closest("[data-schedule-id]")?.dataset.scheduleId;
+      const seatNumber =
+        target.closest("[data-seat-number]")?.dataset.seatNumber;
+
+      console.log(targetScheduleId);
+      modal.selectedSeat[targetScheduleId] = modal.selectedSeat[
+        +targetScheduleId
+      ].filter((seat) => seat.seatNumber !== +seatNumber);
+
+      updateSelectedSeatContainer(
+        targetParent,
+        modal.selectedSeat[targetScheduleId]
+      );
     }
     default: {
       break;

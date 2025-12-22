@@ -15,7 +15,7 @@ import {
   readOnlyElements,
   removeReadOnlyElements,
   formateTime,
-  convertTo24Hour
+  convertTo24Hour,
 } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
@@ -189,21 +189,6 @@ const extraChargeHandler = (target, type) => {
     totalCharges.value = +totalCharges.value + value;
     prevValue.totalCharges = +totalCharges.value;
   }
-};
-
-const convertTo24Hour = (time12h) => {
-  const [time, modifier] = time12h.split(" ");
-  let [hours, minutes, seconds] = time.split(":");
-
-  if (hours === "12") {
-    hours = "00";
-  }
-
-  if (modifier === "PM") {
-    hours = parseInt(hours, 10) + 12;
-  }
-
-  return `${hours.toString().padStart(2, "0")}:${minutes}:${seconds}`;
 };
 
 const updateOverViewContainer = () => {

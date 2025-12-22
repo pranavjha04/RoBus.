@@ -95,19 +95,25 @@ public class GetScheduleServlet extends HttpServlet {
 
         
                 ArrayList<Schedule> filteredScheduleList = new ArrayList<>();
+
                 
                 Date todayDate = new Date(System.currentTimeMillis());
+                System.out.println(todayDate);
     
                 for (Schedule next : scheduleList) {
 
                     boolean allow = false;
 
+                        System.out.println(next.getJourneyDate() + "-" + todayDate);
                     if (next.getJourneyDate().after(todayDate)) {
                         allow = true;
                     }
-                    else if (next.getJourneyDate().equals(todayDate)) {
+                    else if (next.getJourneyDate().toString().equals(todayDate.toString())) {
                         if (next.getDepartureTime().toLocalTime().isAfter(currTime)) {
                             allow = true;
+                        }
+                        else {
+                            System.out.println("wowowow");
                         }
                     }
 

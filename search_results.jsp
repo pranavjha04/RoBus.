@@ -284,6 +284,19 @@ prefix="e" uri="bts" %>
         color: #fff;
         border-color: #0b6b45;
       }
+      .seat-list {
+        max-height: 330px;
+        overflow-y: auto;
+      }
+
+      .seat-list::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .seat-list::-webkit-scrollbar-thumb {
+        background-color: #ced4da;
+        border-radius: 10px;
+      }
     </style>
   </head>
   <c:import url="essential_page_display.jsp" />

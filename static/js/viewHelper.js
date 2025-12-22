@@ -947,7 +947,7 @@ export class ViewHelper {
       length: sleeper ? rowCount : rowCount - 1,
     })
       .map((_) => {
-        return `<div class="d-flex align-items-center gap-5 justify-content-between" data-seating-id="${seatingId}">
+        return `<div class="d-flex align-items-center gap-5 justify-content-between" >
                 <div class="d-flex gap-1">
                    ${Array.from({ length: lsCount })
                      .map(
@@ -1102,6 +1102,8 @@ export class ViewHelper {
       busRouteWeekday,
       seaterSeatsBooked,
       sleeperSeatsBooked,
+      sleeperFare,
+      seaterFare,
       bookedSeatList,
     } = result;
     const { operator, seatingList, busFareFactorList, busNumber } = bus;
@@ -1170,7 +1172,9 @@ export class ViewHelper {
 
                 <!-- RIGHT SECTION (Price + Button) -->
                 <div class="text-md-end d-flex flex-column align-items-md-en">
-                  <div class="price fs-4 fw-bold mb-1">&#x20B9;${totalCharges}</div>
+                  <div class="price fs-4 fw-bold mb-1">&#x20B9;${
+                    totalCharges - seaterFare - sleeperFare
+                  }</div>
                   <span class="seats-available mb-2">${
                     totalSeats - bookedSeats
                   } Seats Available</span>
@@ -1242,7 +1246,9 @@ export class ViewHelper {
                                     <span>Driver</span>
                                   </div>
                                 </div>
-                                <div class="bus">
+                                <div class="bus" data-seating-id="${
+                                  seating.seatingId
+                                }">
                                     ${ViewHelper.getBusSeatingDiagram(
                                       seating,
                                       counter,
@@ -1279,23 +1285,43 @@ export class ViewHelper {
                   </div>
 
                   <!-- Selected Seats -->
-                  <div class="d-flex justify-content-between align-items-center select-seat-container">
-                    <div>
-                      <div class="fw-semibold">Selected Seats</div>
-                      <div id="selectedSeats" class="text-primary fw-bold">
-                        None
-                      </div>
-                    </div>
-                    
-                    <button
-                      id="confirmBookingBtn"
-                      class="btn btn-primary rounded-pill px-4"
-                      disabled
-                    >
-                      Confirm Booking
-                    </button>
-                  </div>
-                </div>
+                  <div class="select-seat-container bg-white border rounded-4 p-3 shadow-sm">
+
+      <!-- Header -->
+      <div class="selected-seat-info text-center border rounded-4 p-4 bg-light">
+        <div class="text-secondary fw-semibold mb-1">
+          No seats selected
+        </div>
+        <div class="text-muted small">
+          Please select seats to continue booking
+        </div>
+      </div>
+
+
+      <!-- Seat List -->
+      <div class="seat-list d-flex flex-column gap-2 mb-3 pe-1 selected-seat-container">
+
+        <!-- Seat Item -->
+      </div>
+
+
+  <!-- Footer -->
+  <div class="d-flex justify-content-between align-items-center total-charges d-none">
+    <div>
+      <div class="text-muted small">Total Price</div>
+      <span class="fs-5 fw-bold text-primary">₹0</span>
+    </div>
+
+    <button
+      
+      class="btn btn-primary ms-auto rounded-pill px-4  confirm-booking-btn"
+    >
+      Confirm Booking
+    </button>
+  </div>
+
+</div>
+
                 
                 </div>                
                 </div>              
