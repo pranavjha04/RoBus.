@@ -4,16 +4,9 @@ prefix="e" uri="bts" %>
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <c:import url="essential_page_import.jsp" />
     <title>Bus Search</title>
     <style>
-      /* Custom styles for improved UI */
-      body {
-        background-color: #f8f9fa; /* Softer light background */
-        overflow: scroll;
-      }
       .navbar {
         background-color: #007bff; /* Primary blue for navbar */
       }
@@ -245,7 +238,7 @@ prefix="e" uri="bts" %>
         display: grid;
         grid-template-columns: 1fr;
         gap: 8px;
-        padding: 12px;
+        padding: 16px;
         min-width: 260px;
         width: 260px;
         max-width: 260px;
@@ -330,7 +323,7 @@ prefix="e" uri="bts" %>
         border-color: #0b6b45;
       }
       .seat-list {
-        max-height: 330px;
+        max-height: 300px;
         overflow-y: auto;
       }
 
@@ -345,8 +338,17 @@ prefix="e" uri="bts" %>
     </style>
   </head>
   <c:import url="essential_page_display.jsp" />
-  <body class="d-flex flex-column text-dark min-vh-100">
-    <c:import url="welcome_navbar.jsp" />
+  <body
+    class="d-flex flex-column text-dark min-vh-100 bg-white overflow-y-scroll"
+  >
+    <c:choose>
+      <c:when test="${empty sessionScope.user}">
+        <c:import url="welcome_navbar.jsp" />
+      </c:when>
+      <c:otherwise>
+        <c:import url="logged_navbar.jsp" />
+      </c:otherwise>
+    </c:choose>
     <section class="container-fluid px-3 mt-4">
       <div class="row g-4">
         <aside class="col-lg-3 d-none d-lg-block">
