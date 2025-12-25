@@ -544,27 +544,26 @@ searchResultContainer.addEventListener("click", (e) => {
 
   switch (type) {
     case "amenities": {
+      const aminityContainer = targetParent.querySelector(".amenities-list");
       target.classList.toggle("activa");
-      updateBusInfoShow(
-        targetParent,
-        targetParent.querySelector(".amenities-list")
-      );
+      updateBusInfoShow(targetParent, aminityContainer);
 
-      if (target.classList.contains("activa")) {
-        target.textContent = "Hide Amenities";
-      } else {
+      if (aminityContainer.classList.contains("d-none")) {
         target.textContent = "Amenities";
+      } else {
+        target.textContent = "Hide Amenities";
       }
       break;
     }
     case "midcity": {
+      const timeLineContainer = targetParent.querySelector(".time-line");
       target.classList.toggle("activa");
-      updateBusInfoShow(targetParent, targetParent.querySelector(".time-line"));
+      updateBusInfoShow(targetParent, timeLineContainer);
 
-      if (target.classList.contains("activa")) {
-        target.textContent = "Hide Mid Cities";
-      } else {
+      if (timeLineContainer.classList.contains("d-none")) {
         target.textContent = "Mid Cities";
+      } else {
+        target.textContent = "Hide Mid Cities";
       }
       break;
     }

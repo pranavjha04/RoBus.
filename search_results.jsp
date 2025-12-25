@@ -133,18 +133,25 @@ prefix="e" uri="bts" %>
       .images-list {
         margin-top: 0.5rem;
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         padding: 0.35rem 0.75rem;
         gap: 1rem;
+        animation: fadeSlide 0.3s ease;
       }
 
-      .images-list img {
-        width: 300px;
-        height: 300px;
-        max-width: 300px;
-        max-height: 300px;
+      .image-list img {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: 12px;
+        background-color: #f1f5f9;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
       }
 
+      .image-list img:hover {
+        transform: scale(1.03);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      }
       .show-images-btn {
         background-color: #e6f7f1;
         color: #0f766e;
@@ -177,17 +184,6 @@ prefix="e" uri="bts" %>
         font-size: 0.85rem;
         display: inline-block;
         margin: 4px;
-      }
-
-      @keyframes fadeSlide {
-        from {
-          opacity: 0;
-          transform: translateY(-5px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
       }
 
       .badge-layout {
@@ -334,6 +330,12 @@ prefix="e" uri="bts" %>
       .seat-list::-webkit-scrollbar-thumb {
         background-color: #ced4da;
         border-radius: 10px;
+      }
+
+      .time-line,
+      .bus-container,
+      #search_result_containe {
+        animation: fadeSlide 0.3s ease;
       }
     </style>
   </head>

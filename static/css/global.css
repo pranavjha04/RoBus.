@@ -227,6 +227,16 @@ tbody tr {
     grid-template-columns: repeat(3, 1fr);
   }
 }
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 .toast-container {
   position: fixed;

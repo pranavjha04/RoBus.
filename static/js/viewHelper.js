@@ -436,7 +436,7 @@ export class ViewHelper {
     return `<div
                 class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4 ${
                   isSource && "border-start"
-                } pb-2 border-black"
+                } pb-2 border-secondary-subtle"
               >
                 <div
                   style="
@@ -499,7 +499,7 @@ export class ViewHelper {
 
   static getMidCityRouteTimeLine(city, haltingTime, time) {
     return `  <div
-                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4 border-start pb-2 border-black"
+                class="d-flex flex-column align-items-center justify-content-center gap-1 position-relative px-4 border-start pb-2 border-secondary-subtle"
               >
                 <div
                   style="
@@ -1126,7 +1126,7 @@ export class ViewHelper {
     }, 0);
     let counter = { count: 1 };
     const bookedSeats = sleeperSeatsBooked + seaterSeatsBooked;
-    return `  <li class="bus-card mb-2 pb-3 bg-white" data-schedule-id="${scheduleId}">
+    return `  <li class="bus-card mb-2 pb-3 bg-white border" data-schedule-id="${scheduleId}">
               <div
                 class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4 p-3"
               >
