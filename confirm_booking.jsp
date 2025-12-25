@@ -1,5 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<c:if test="${empty sessionScope.user}">
+  <c:redirect url="login.do?back_url='confirm_booking.do'" />
+</c:if>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -239,6 +243,14 @@
         <section
           class="col-lg-8 d-flex flex-column gap-3 journey-info-container"
         >
+          <span
+            class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link"
+            style="cursor: pointer"
+            onclick="history.back()"
+          >
+            <span>&larr;</span>
+            <span>Back</span>
+          </span>
           <!-- ROUTE SUMMARY -->
           <div
             class="route-card p-3 border border-end-0 border-top-0 border-bottom-0 border-4 border-primary"
@@ -349,17 +361,26 @@
         </section>
 
         <!-- RIGHT SECTION -->
-        <section class="col-lg-4">
+        <form class="col-lg-4">
+          <div class="seat-container"></div>
+          <input type="hidden" name="schedule_id" />
+          <input type="hidden" name="total_fare" />
+          <input type="hidden" name="booking_date" />
+          <input type="hidden" name="user_id" />
           <div class="card-soft p-4 sticky-pay">
             <div class="section-title">Fare Summary</div>
 
             <div class="info-row">
-              <span>Base Fare</span>
+              <span>2x Seater</span>
               <span>&#8377; 200</span>
             </div>
 
             <div class="info-row">
-              <span>Seat Fare</span>
+              <span>3x Sleeper</span>
+              <span>&#8377; 400</span>
+            </div>
+            <div class="info-row">
+              <span>Additional Charges</span>
               <span>&#8377; 400</span>
             </div>
 
@@ -373,15 +394,8 @@
             <button class="btn btn-primary w-100 rounded-pill py-2 mt-3">
               Confirm &amp; Pay
             </button>
-
-            <p class="text-muted small text-center mt-3">
-              By continuing, you agree to our
-              <a href="#">Terms</a>
-              &amp;
-              <a href="#">Cancellation Policy</a>.
-            </p>
           </div>
-        </section>
+        </form>
       </div>
     </main>
 

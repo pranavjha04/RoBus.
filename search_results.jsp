@@ -130,12 +130,12 @@ prefix="e" uri="bts" %>
         cursor: default;
       }
 
-      .images-list {
-        margin-top: 0.5rem;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        padding: 0.35rem 0.75rem;
+      .image-list {
+        margin-top: 0.75rem;
+        display: flex;
+        align-items: center;
         gap: 1rem;
+        padding: 0.5rem;
         animation: fadeSlide 0.3s ease;
       }
 
