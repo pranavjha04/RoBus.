@@ -284,14 +284,17 @@ const sideFilterEvent = () => {
   applyFilter(acType, seatType);
 };
 
-const updateSelectedSeatContainer = (targetParent, list) => {
+const updateSelectedSeatContainer = (targetParent, list, targetSchedule) => {
   const totolChargeContainer = targetParent.querySelector(".total-charges");
   const confirmBookingBtn = targetParent.querySelector(".confirm-booking-btn");
   const selectedSeatContainer = targetParent.querySelector(
     ".selected-seat-container"
   );
   const selectedSeatInfo = targetParent.querySelector(".selected-seat-info");
-  const totalCharge = list.reduce((acc, curr) => acc + curr.totalCharge, 0);
+  const totalCharge = list.reduce(
+    (acc, curr) => acc + curr.totalCharge,
+    targetSchedule.additionalCharges
+  );
   totolChargeContainer.querySelector("span").textContent =
     "₹" + new Intl.NumberFormat("en-IN").format(totalCharge);
   selectedSeatInfo.innerHTML =
@@ -625,7 +628,8 @@ searchResultContainer.addEventListener("click", (e) => {
             targetSchedule.totalCharges +
             (isSleeper
               ? targetSchedule.sleeperFare
-              : targetSchedule.seaterFare),
+              : targetSchedule.seaterFare) -
+            targetSchedule.additionalCharges,
         };
 
         modal.selectedSeat[targetScheduleId].push(newSeat);
@@ -637,7 +641,8 @@ searchResultContainer.addEventListener("click", (e) => {
 
       updateSelectedSeatContainer(
         targetParent,
-        modal.selectedSeat[targetScheduleId]
+        modal.selectedSeat[targetScheduleId],
+        targetSchedule
       );
       break;
     }

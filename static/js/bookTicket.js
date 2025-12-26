@@ -17,7 +17,15 @@ const selectedSeatContainer = document.querySelector(
   ".selected-seat-container"
 );
 const driverInfoContainer = document.querySelector(".driver-info-container");
-const paymentConfirmForm = document.querySelector("#book_confirm_form");
+const bookingFareInfoContainer = document.querySelector(
+  ".booking-fare-info-container"
+);
+
+const scheduleId = document.querySelector("#schedule_id");
+const totalFare = document.querySelector("#total_fare");
+const bookingDate = document.querySelector("#booking_date");
+const userId = document.querySelector("#user_id");
+const bookTicketForm = document.querySelector("#book-ticket-form");
 
 const modal = {
   activeSchedule: null,
@@ -128,7 +136,6 @@ const displaySelectedSeatContainer = () => {
     })
     .join("")}`;
 };
-
 const displayDriverInfoContainer = () => {
   const { driver } = modal.activeSchedule;
   const { licenceNumber, user } = driver;
@@ -136,6 +143,59 @@ const displayDriverInfoContainer = () => {
   driverInfoContainer.querySelector(".driver-name").textContent = user.fullName;
   driverInfoContainer.querySelector(".licence-no").textContent = licenceNumber;
   driverInfoContainer.querySelector(".contact").textContent = user.contact;
+};
+
+const displayTotalFareSummery = () => {
+  const { selectedSeats, activeSchedule } = modal;
+  console.log(selectedSeats);
+
+  const sleeperSeats = selectedSeats.filter((seat) => seat.isSleeper);
+  const seaterSeats = selectedSeats.filter((seat) => !seat.isSleeper);
+  const totalFare = selectedSeats.reduce(
+    (acc, curr) => acc + curr.totalCharge,
+    activeSchedule.additionalCharges
+  );
+
+  bookingFareInfoContainer.innerHTML = "";
+  if (sleeperSeats.length) {
+    console.log("ehll");
+    const total = sleeperSeats.reduce((acc, curr) => acc + curr.totalCharge, 0);
+    bookingFareInfoContainer.innerHTML += `<div class="info-row">
+                <span>${sleeperSeats.length}x Sleeper</span>
+                <span>₹ ${total}</span>
+              </div>`;
+  }
+  if (seaterSeats.length) {
+    const total = seaterSeats.reduce((acc, curr) => acc + curr.totalCharge, 0);
+    console.log(total);
+    bookingFareInfoContainer.innerHTML += `<div class="info-row">
+                <span>${seaterSeats.length}x Seater</span>
+                <span>₹ ${total}</span>
+              </div>`;
+  }
+
+  if (activeSchedule.additionalCharges) {
+    bookingFareInfoContainer.innerHTML += `<div class="info-row">
+                <span>Additional Charges</span>
+                <span>₹ ${activeSchedule.additionalCharges}</span>
+              </div>`;
+  }
+
+  bookingFareInfoContainer.innerHTML += `<div class="divider"></div>`;
+
+  bookingFareInfoContainer.innerHTML += `<div class="info-row fw-semibold fs-5">
+                <span>Total Payable</span>
+                <span class="text-primary total-amount">₹ ${totalFare}</span>
+              </div>`;
+};
+
+const insertBookingFormFields = () => {
+  const { selectedSeats, activeSchedule } = modal;
+  const totalFare = selectedSeats.reduce(
+    (acc, curr) => acc + curr.totalCharge,
+    activeSchedule.additionalCharges
+  );
+  bookingDate.value = new Date();
 };
 
 busOperatorInfoContainer.addEventListener("click", (e) => {
@@ -197,6 +257,8 @@ const init = () => {
     displayRouteTimeLineContainer();
     displaySelectedSeatContainer();
     displayDriverInfoContainer();
+    displayTotalFareSummery();
+    insertBookingFormFields();
   } catch (err) {
     console.error(err.message);
   }

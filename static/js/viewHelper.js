@@ -1105,6 +1105,7 @@ export class ViewHelper {
       sleeperFare,
       seaterFare,
       bookedSeatList,
+      additionalCharges,
     } = result;
     const {
       busId,
@@ -1183,7 +1184,7 @@ export class ViewHelper {
                 <!-- RIGHT SECTION (Price + Button) -->
                 <div class="text-md-end d-flex flex-column align-items-md-en">
                   <div class="price fs-4 fw-bold mb-1">&#x20B9;${
-                    totalCharges - seaterFare - sleeperFare
+                    totalCharges - seaterFare - sleeperFare - additionalCharges
                   }</div>
                   <span class="seats-available mb-2">${
                     totalSeats - bookedSeats

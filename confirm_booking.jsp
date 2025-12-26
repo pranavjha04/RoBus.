@@ -361,34 +361,17 @@
         </section>
 
         <!-- RIGHT SECTION -->
-        <form class="col-lg-4">
+        <form class="col-lg-4" id="book-ticket-form">
           <div class="seat-container"></div>
-          <input type="hidden" name="schedule_id" />
-          <input type="hidden" name="total_fare" />
-          <input type="hidden" name="booking_date" />
-          <input type="hidden" name="user_id" />
-          <div class="card-soft p-4 sticky-pay">
+          <input type="hidden" name="schedule_id" id="schedule_id" />
+          <input type="hidden" name="total_fare" id="total_fare" />
+          <input type="hidden" name="booking_date" id="booking_date" />
+          <input type="hidden" name="user_id" id="user_id" />
+          <div class="card-soft p-4 sticky-pay X">
             <div class="section-title">Fare Summary</div>
 
-            <div class="info-row">
-              <span>2x Seater</span>
-              <span>&#8377; 200</span>
-            </div>
-
-            <div class="info-row">
-              <span>3x Sleeper</span>
-              <span>&#8377; 400</span>
-            </div>
-            <div class="info-row">
-              <span>Additional Charges</span>
-              <span>&#8377; 400</span>
-            </div>
-
-            <div class="divider"></div>
-
-            <div class="info-row fw-semibold fs-5">
-              <span>Total Payable</span>
-              <span class="text-primary">&#8377; 600</span>
+            <div class="booking-fare-info-container">
+              <div class="divider"></div>
             </div>
 
             <button class="btn btn-primary w-100 rounded-pill py-2 mt-3">
