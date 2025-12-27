@@ -1,8 +1,14 @@
 import { toast } from "./toast.js";
 import { PageLoading } from "./pageLoading.js";
 import { PageError } from "./pageError.js";
-import { convertTo24Hour, formateTime, getFormatedDuration } from "./util.js";
+import {
+  convertTo24Hour,
+  createURLParams,
+  formateTime,
+  getFormatedDuration,
+} from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
+import { bookTicketFormRequest } from "./service.js";
 
 // containers
 const journeyInfoContainer = document.querySelector(".journey-info-container");
@@ -23,9 +29,11 @@ const bookingFareInfoContainer = document.querySelector(
 
 const scheduleId = document.querySelector("#schedule_id");
 const totalFare = document.querySelector("#total_fare");
-const bookingDate = document.querySelector("#booking_date");
-const userId = document.querySelector("#user_id");
+
+const journeyDateValue = document.querySelector("#journey_date");
 const bookTicketForm = document.querySelector("#book-ticket-form");
+const source = document.querySelector("#source");
+const destination = document.querySelector("#destination");
 
 const modal = {
   activeSchedule: null,
@@ -39,6 +47,16 @@ const timeFormateWrapper = (time) => {
   date.setHours(+hours, +mins, 0, 0);
 
   return formateTime(date);
+};
+
+const formattedDate = (value) => {
+  const date = new Date(value);
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 };
 
 const displayJourneyInfoContainer = () => {
@@ -191,11 +209,25 @@ const displayTotalFareSummery = () => {
 
 const insertBookingFormFields = () => {
   const { selectedSeats, activeSchedule } = modal;
-  const totalFare = selectedSeats.reduce(
+  const calculatedTotalFare = selectedSeats.reduce(
     (acc, curr) => acc + curr.totalCharge,
     activeSchedule.additionalCharges
   );
-  bookingDate.value = new Date();
+  journeyDateValue.value = formattedDate(activeSchedule.journeyDate);
+  console.log(journeyDateValue.value);
+  console.log(formattedDate(activeSchedule.journeyDate));
+  scheduleId.value = activeSchedule.scheduleId;
+  totalFare.value = calculatedTotalFare;
+  source.value =
+    activeSchedule.busRouteWeekday.operatorRoute.route.source.cityId;
+  destination.value =
+    activeSchedule.busRouteWeekday.operatorRoute.route.destination.cityId;
+  selectedSeats.forEach(({ seatNumber, totalCharge, isSleeper }) => {
+    const input = `<input type='hidden' name='seat' value='${seatNumber}_${
+      isSleeper ? 1 : 0
+    }_${totalCharge}'>`;
+    bookTicketForm.innerHTML += input;
+  });
 };
 
 busOperatorInfoContainer.addEventListener("click", (e) => {
@@ -236,6 +268,24 @@ busOperatorInfoContainer.addEventListener("click", (e) => {
     default: {
       break;
     }
+  }
+});
+
+bookTicketForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try {
+    if (
+      !scheduleId.value ||
+      !totalFare.value ||
+      !source.value ||
+      !destination.value
+    )
+      throw new Error("Invalid Request");
+    const params = createURLParams(new FormData(bookTicketForm));
+    const response = await bookTicketFormRequest(params);
+    console.log(response);
+  } catch (err) {
+    toast.error(err.message);
   }
 });
 

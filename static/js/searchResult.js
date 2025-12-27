@@ -624,12 +624,15 @@ searchResultContainer.addEventListener("click", (e) => {
           seatNumber: +seatNumber,
           isSleeper,
           deck: targetSeating.deck,
+
           totalCharge:
-            targetSchedule.totalCharges +
+            targetSchedule.totalCharges -
+            targetSchedule.sleeperFare -
+            targetSchedule.seaterFare -
+            targetSchedule.additionalCharges +
             (isSleeper
               ? targetSchedule.sleeperFare
-              : targetSchedule.seaterFare) -
-            targetSchedule.additionalCharges,
+              : targetSchedule.seaterFare),
         };
 
         modal.selectedSeat[targetScheduleId].push(newSeat);

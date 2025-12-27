@@ -750,3 +750,13 @@ export const logoutRequest = async () => {
 
   return data.trim();
 };
+
+export const bookTicketFormRequest = async (params) => {
+  const res = await fetch(`book_ticket.do?${params.toString()}`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+
+  return data.trim();
+};

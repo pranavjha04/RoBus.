@@ -365,8 +365,9 @@
           <div class="seat-container"></div>
           <input type="hidden" name="schedule_id" id="schedule_id" />
           <input type="hidden" name="total_fare" id="total_fare" />
-          <input type="hidden" name="booking_date" id="booking_date" />
-          <input type="hidden" name="user_id" id="user_id" />
+          <input type="hidden" name="journey_date" id="journey_date" />
+          <input type="hidden" name="source" id="source" />
+          <input type="hidden" name="destination" id="destination" />
           <div class="card-soft p-4 sticky-pay X">
             <div class="section-title">Fare Summary</div>
 

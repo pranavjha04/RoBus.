@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.SQLException;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import utils.DBManager;
 
@@ -15,16 +15,44 @@ public class BookedSeat {
     private Integer bookedSeatId;
     private Integer seatNumber;
     private Booking booking;
-    private Seating seating;
 
     public BookedSeat() {
     }
 
-    public BookedSeat(Integer bookedSeatId, Booking booking, Integer seatingNumber, Seating seating) {
+    public BookedSeat(Integer bookedSeatId, Booking booking, Integer seatingNumber) {
         this.bookedSeatId = bookedSeatId;
         this.seatNumber = seatNumber;
         this.booking = booking;
-        this.seating = seating;
+    }
+
+    public static boolean addRecordMultiple(int bookingId, List<Integer> selectedSeatNumberList) {
+        boolean flag = false;
+        
+    }
+
+    public static boolean checkRecordExistBySeatNumber(int seatNumber) {
+        boolean flag = false;
+
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "SELECT * FROM booked_seats " +
+                        "WHERE seat_number=?";
+            
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, seatNumber);
+
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
     }
 
     public static ArrayList<BookedSeat> collectAllRecords(int scheduleId) {
@@ -56,7 +84,6 @@ public class BookedSeat {
                         "JOIN cities d ON r.destination = d.city_id " +
                         "JOIN states ds ON d.state_id = ds.state_id " +
                         "JOIN status st ON st.status_id = opr.status_id " +
-                        "JOIN seatings seat ON seat.bus_id = b.bus_id " +
                         "WHERE bks.schedule_id=?";
             
             PreparedStatement ps = con.prepareStatement(query);
@@ -177,22 +204,10 @@ public class BookedSeat {
                     schedule
                 );
 
-                Seating seating = new Seating(
-                    rs.getInt("seating_id"),
-                    rs.getInt("ls_count"),
-                    rs.getInt("rs_count"),
-                    rs.getInt("seats"),
-                    rs.getInt("row_count"),
-                    rs.getBoolean("deck"),
-                    rs.getBoolean("sleeper")
-                );
-
-
                 BookedSeat bookedSeat = new BookedSeat(
                     rs.getInt("booked_seat_id"),
                     booking, 
                     rs.getInt("seat_number"),
-                    seating
                 );
 
                 list.add(bookedSeat);

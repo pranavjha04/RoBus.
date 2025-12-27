@@ -16,7 +16,6 @@ import utils.DBManager;
 public class Booking {
     private Integer bookingId;
     private Integer totalFare;
-    private String transactionPic;
     private Date bookingDate;
     private User user;
     private Schedule schedule;
@@ -34,6 +33,36 @@ public class Booking {
 
     public Booking() {
 
+    }
+
+    public static int addRecord(int scheduleId, int totalFare, int userId) {
+        int generatedId = -1;
+
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "INSERT INTO bookings " +
+                        "(schedule_id, total_fare, user_id, booking_date) " +
+                        "VALUES (?,?,?,CURDATE())";
+
+            PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, scheduleId);
+            ps.setInt(2, totalFare);
+            ps.setInt(3, userId);
+
+            if(ps.executeUpdate() > 0) {
+                ResultSet rs = ps.getGeneratedKeys();
+                if(rs.next()) {
+                    generatedId = rs.getInt(1);
+                }
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
     }
 
     public ArrayList<Booking> collectAllRecords(int userId) {
@@ -236,14 +265,6 @@ public class Booking {
 
     public Date getBookingDate() {
         return bookingDate;
-    }
-
-    public void setTransactionPic(String transactionPic) {
-        this.transactionPic = transactionPic;
-    }
-
-    public String getTransactionPic() {
-        return transactionPic;
     }
 
     public void setTotalFare(Integer totalFare) {
