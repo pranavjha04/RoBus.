@@ -310,7 +310,10 @@ prefix="e" uri="bts" %>
       .seat.booked {
         background-color: #adb5bd;
         border-color: #adb5bd;
+        color: rgb(34, 34, 34);
         cursor: not-allowed;
+        animation: none;
+        transition: none;
       }
 
       .seat.selected {
@@ -470,7 +473,6 @@ prefix="e" uri="bts" %>
                     class="form-control rounded-pill"
                     id="to"
                     name="to"
-                    value="${param.to}"
                     placeholder="e.g., Kashmir"
                   />
                   <ul
@@ -490,7 +492,14 @@ prefix="e" uri="bts" %>
                   id="journey_date"
                   name="journey_date"
                   min="${e:currentDate()}"
-                  value="${param.journey_date}"
+                    <c:choose>
+                      <c:when test="${empty param.journey_date}">
+                        value="${e:currentDate()}"
+                      </c:when>
+                      <c:otherwise>
+                        value="${param.journey_date}"
+                      </c:otherwise>
+                    </c:choose>
                 />
               </div>
               <div class="col-md-3">

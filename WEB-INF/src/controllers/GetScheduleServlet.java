@@ -98,22 +98,16 @@ public class GetScheduleServlet extends HttpServlet {
 
                 
                 Date todayDate = new Date(System.currentTimeMillis());
-                System.out.println(todayDate);
     
                 for (Schedule next : scheduleList) {
 
                     boolean allow = false;
-
-                        System.out.println(next.getJourneyDate() + "-" + todayDate);
                     if (next.getJourneyDate().after(todayDate)) {
                         allow = true;
                     }
                     else if (next.getJourneyDate().toString().equals(todayDate.toString())) {
                         if (next.getDepartureTime().toLocalTime().isAfter(currTime)) {
                             allow = true;
-                        }
-                        else {
-                            System.out.println("wowowow");
                         }
                     }
 
@@ -138,9 +132,6 @@ public class GetScheduleServlet extends HttpServlet {
                             operatorRouteMidCityList
                     );
                 }
-
-                System.out.println(scheduleList);
-
 
                 for (Schedule next : filteredScheduleList) {
 

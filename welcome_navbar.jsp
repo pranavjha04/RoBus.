@@ -51,11 +51,11 @@
         <li class="nav-item">
           <a class="nav-link d-flex align-items-center gap-2"
              <c:choose>
-               <c:when test="${page eq 'home.jsp' or page eq 'search_results.jsp'}">
+               <c:when test="${page eq 'search_results.jsp'}">
                  data-target="search_bus_form"
                </c:when>
                <c:otherwise>
-                 href="/bts"
+                 href="/bts/search_results.do"
                </c:otherwise>
              </c:choose>
           >

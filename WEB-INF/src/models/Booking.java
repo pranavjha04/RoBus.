@@ -60,9 +60,9 @@ public class Booking {
         }
         catch(SQLException e) {
             e.printStackTrace();
-            flag = false;
+            generatedId = -1;
         }
-        return flag;
+        return generatedId;
     }
 
     public ArrayList<Booking> collectAllRecords(int userId) {

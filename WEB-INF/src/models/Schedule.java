@@ -58,6 +58,32 @@ public class Schedule {
 
     }
 
+    public static boolean updateSeatsBooked(int scheduleId, int seaterSeatsBooked, int sleeperSeatsBooked) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "UPDATE schedules " +
+                        "SET seater_seats_booked=?, sleeper_seats_booked=? " +
+                        "WHERE schedule_id=?";
+
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, seaterSeatsBooked);
+            ps.setInt(2, sleeperSeatsBooked);
+            ps.setInt(3, scheduleId);
+
+            if(ps.executeUpdate() > 0) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
+    }
+
     public static boolean updateStatus(int scheduleId, int statusId, int operatorId) {
         boolean flag = false;
         try {

@@ -125,13 +125,18 @@ public class BookTicketServlet extends HttpServlet {
             // check if it's fare charge
             int baseFair = schedule.getTotalCharges() - schedule.getSeaterFare() - schedule.getSleeperFare() - schedule.getAdditionalCharges(); 
             int currTotalCharges = schedule.getAdditionalCharges();
+            int sleeperCount = 0;
+            int seaterCount = 0;
 
             // 3) validate totalFare;
+
             for(int seatNumber : selectedSeats.keySet()) {
                 Pair<Integer, Integer> details = selectedSeats.get(seatNumber);
                 boolean isSleeper = details.getFirst() == 1;
                 int currFair = details.getSecond();
                 int targetFair = baseFair + (isSleeper ? schedule.getSleeperFare() : schedule.getSeaterFare());
+                if(isSleeper) sleeperCount++;
+                else seaterCount++;
 
                 if(targetFair != currFair) {
                     throw new IllegalArgumentException("Seat Charge is invalid");
@@ -141,8 +146,6 @@ public class BookTicketServlet extends HttpServlet {
             }
             
             if(currTotalCharges != totalFare) throw new IllegalArgumentException("Total Charge is not valid");
-
-        
             // add record in bookings
             int newBookingId = Booking.addRecord(scheduleId, totalFare, activeUser.getUserId());
             
@@ -150,10 +153,22 @@ public class BookTicketServlet extends HttpServlet {
 
 
             // 3) add record in bookedSeats
-            boolean areSeatingsInserted = BookedSeat.addRecordMultiple(newBookingId, new ArrayList<>(selectedSeats.keySet()), )
-            boolean is
-            /* DB */
-            // 1) update schedule booked or booking sleeper or booked seater seats
+            boolean areSeatingsInserted = BookedSeat.addRecordMultiple(newBookingId, new ArrayList<>(selectedSeats.keySet()));
+            if(!areSeatingsInserted) throw new IllegalArgumentException("Invalid Booking Seat");
+
+            // 4) update schedule booked or booking sleeper or booked seater seats
+            boolean isUpdated = Schedule.updateSeatsBooked(scheduleId,  schedule.getSeaterSeatsBooked() + seaterCount, schedule.getSleeperSeatsBooked() + sleeperCount);
+
+            if(isUpdated) {
+                schedule.setSeaterSeatsBooked(schedule.getSeaterSeatsBooked() + seaterCount);
+                schedule.setSeaterSeatsBooked(schedule.getSleeperSeatsBooked() + sleeperCount);
+            }
+            else {
+                throw new IllegalArgumentException("Invalid Seats Booked updation");
+            }
+
+            schedule.setBookedSeatList(BookedSeat.collectAllRecords(scheduleId));
+            response.getWriter().println("ok");
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();

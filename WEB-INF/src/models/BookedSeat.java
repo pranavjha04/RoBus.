@@ -7,6 +7,8 @@ import java.sql.Statement;
 import java.sql.SQLException;
 
 import java.util.List;
+import java.util.ArrayList;
+
 
 import utils.DBManager;
 
@@ -21,13 +23,42 @@ public class BookedSeat {
 
     public BookedSeat(Integer bookedSeatId, Booking booking, Integer seatingNumber) {
         this.bookedSeatId = bookedSeatId;
-        this.seatNumber = seatNumber;
         this.booking = booking;
+        this.seatNumber = seatingNumber;
     }
 
     public static boolean addRecordMultiple(int bookingId, List<Integer> selectedSeatNumberList) {
         boolean flag = false;
-        
+        StringBuilder helper = new StringBuilder();
+        for(Integer seatNumber : selectedSeatNumberList) {
+            helper.append("(?,?),");
+        }
+        helper.deleteCharAt(helper.length() - 1);
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "INSERT INTO booked_seats "  +
+                        "(booking_id, seat_number) " +
+                        "VALUES " +
+                        helper.toString();
+            PreparedStatement ps = con.prepareStatement(query);
+
+            int countHelper = 1;
+            for(Integer seatNumber : selectedSeatNumberList) {
+                ps.setInt(countHelper++, bookingId);
+                ps.setInt(countHelper++, seatNumber);
+            }
+
+            if(ps.executeUpdate() == selectedSeatNumberList.size()) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = true;
+        }
+        return flag;
     }
 
     public static boolean checkRecordExistBySeatNumber(int seatNumber) {
@@ -200,15 +231,16 @@ public class BookedSeat {
                 Booking booking = new Booking(
                     rs.getInt("bks.booking_id"),
                     rs.getInt("bks.total_fare"),
-                    rs.getDate("bks.journey_date"),
+                    rs.getDate("bks.booking_date"),
                     schedule
                 );
 
                 BookedSeat bookedSeat = new BookedSeat(
-                    rs.getInt("booked_seat_id"),
+                    rs.getInt("bkst.booked_seat_id"),
                     booking, 
-                    rs.getInt("seat_number"),
+                    rs.getInt("bkst.seat_number")
                 );
+                System.out.println(bookedSeat.getSeatNumber());
 
                 list.add(bookedSeat);
             }
@@ -242,13 +274,5 @@ public class BookedSeat {
 
     public void setBooking(Booking booking) {
         this.booking = booking;
-    }
-
-    public Seating getSeating() {
-        return seating;
-    }
-
-    public void setSeating(Seating seating) {
-        this.seating = seating;
     }
 }

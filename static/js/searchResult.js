@@ -691,14 +691,13 @@ searchResultContainer.addEventListener("click", (e) => {
 const init = () => {
   try {
     PageLoading.stopLoading();
-    modal.searchResults = JSON.parse(sessionStorage.getItem("searchResult"));
+    if (sessionStorage.getItem("searchResult")) {
+      modal.searchResults = JSON.parse(sessionStorage.getItem("searchResult"));
+    }
     filterApplicable = modal.searchResults.length > 0;
     displaySearchResult(modal.searchResults);
   } catch (err) {
     toast.error(err.message);
-  }
-  if (!sessionStorage.getItem("searchResult")) {
-    history.back();
   }
 };
 

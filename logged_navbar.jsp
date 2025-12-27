@@ -59,7 +59,10 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 
         <!-- Search -->
         <li class="nav-item">
-          <a class="nav-link d-flex align-items-center gap-2" href="/bts">
+          <a
+            class="nav-link d-flex align-items-center gap-2"
+            href="/search_results.do"
+          >
             <i class="bi bi-search"></i>
             <span>Search Buses</span>
           </a>

@@ -9,6 +9,7 @@ import {
 } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 import { bookTicketFormRequest } from "./service.js";
+import { APP_URL } from "./helper.js";
 
 // containers
 const journeyInfoContainer = document.querySelector(".journey-info-container");
@@ -176,7 +177,6 @@ const displayTotalFareSummery = () => {
 
   bookingFareInfoContainer.innerHTML = "";
   if (sleeperSeats.length) {
-    console.log("ehll");
     const total = sleeperSeats.reduce((acc, curr) => acc + curr.totalCharge, 0);
     bookingFareInfoContainer.innerHTML += `<div class="info-row">
                 <span>${sleeperSeats.length}x Sleeper</span>
@@ -283,7 +283,26 @@ bookTicketForm.addEventListener("submit", async (e) => {
       throw new Error("Invalid Request");
     const params = createURLParams(new FormData(bookTicketForm));
     const response = await bookTicketFormRequest(params);
-    console.log(response);
+    switch (response) {
+      case "ok": {
+        sessionStorage.removeItem("activeSchedule");
+        sessionStorage.removeItem("selectedSeatList");
+        sessionStorage.removeItem("searchResult");
+        window.location.href = `${APP_URL}/manage_bookings.do`;
+        break;
+      }
+      case "invalid": {
+        throw new Error("Invalid Request");
+        break;
+      }
+      case "missing": {
+        throw new Error("Missing Parameter");
+        break;
+      }
+      default: {
+        break;
+      }
+    }
   } catch (err) {
     toast.error(err.message);
   }

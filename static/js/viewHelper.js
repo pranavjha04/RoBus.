@@ -985,6 +985,14 @@ export class ViewHelper {
                            `<button
                             data-type="seat"
                             data-seat-number="${counter.count}"
+                             ${
+                               bookedSeatList.some(
+                                 (bookedSeat) =>
+                                   bookedSeat.seatNumber === counter.count
+                               )
+                                 ? "disabled"
+                                 : ""
+                             }
                             class="${
                               sleeper ? "sleeper_seat" : "seater_seat"
                             } seat btn ${
