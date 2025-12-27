@@ -54,6 +54,7 @@ public class BookTicketServlet extends HttpServlet {
 
             String SCHEDULE_CACHE_KEY =
                         "upcoming_schedule_" + source + "_" + destination + "_" + journeyDate;
+            String SCHEDULE_BOOKED_SEAT_CACHE_KEY = "booked_schedule" + scheduleId;
             
             /* VALIDATION */
             // 1) validate  schedule    
@@ -168,6 +169,23 @@ public class BookTicketServlet extends HttpServlet {
             }
 
             schedule.setBookedSeatList(BookedSeat.collectAllRecords(scheduleId));
+            System.out.print(schedule.getBookedSeatList());
+
+            if(context.getAttribute(SCHEDULE_CACHE_KEY) != null) {
+                @SuppressWarnings("unchecked")
+                ArrayList<Schedule> availableScheduleList = (ArrayList<Schedule>) context.getAttribute(SCHEDULE_CACHE_KEY);
+
+                ArrayList<Schedule> newCacheList = new ArrayList<>();
+                for(Schedule next : availableScheduleList) {
+                    if(next.getScheduleId().equals(schedule.getScheduleId())) {
+                        next.setBookedSeatList(schedule.getBookedSeatList());
+                        break;
+                    }
+                }   
+            }
+
+            context.setAttribute(SCHEDULE_BOOKED_SEAT_CACHE_KEY, schedule.getBookedSeatList());
+
             response.getWriter().println("ok");
         }
         catch(IllegalArgumentException e) {

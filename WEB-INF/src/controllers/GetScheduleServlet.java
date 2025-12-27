@@ -95,8 +95,6 @@ public class GetScheduleServlet extends HttpServlet {
 
         
                 ArrayList<Schedule> filteredScheduleList = new ArrayList<>();
-
-                
                 Date todayDate = new Date(System.currentTimeMillis());
     
                 for (Schedule next : scheduleList) {
