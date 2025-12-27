@@ -185,7 +185,7 @@ public class BookTicketServlet extends HttpServlet {
             }
 
             context.setAttribute(SCHEDULE_BOOKED_SEAT_CACHE_KEY, schedule.getBookedSeatList());
-
+            
             response.getWriter().println("ok");
         }
         catch(IllegalArgumentException e) {

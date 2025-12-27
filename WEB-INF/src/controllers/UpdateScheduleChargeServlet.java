@@ -137,6 +137,29 @@ public class UpdateScheduleChargeServlet extends HttpServlet {
                 currSchedule.setSeaterFare(seaterFare);
                 currSchedule.setSleeperFare(sleeperFare);
                 currSchedule.setTotalCharges(totalCharges);
+                
+                int source = currSchedule.getBusRouteWeekday().getOperatorRoute().getRoute().getSource().getCityId();
+                int destination = currSchedule.getBusRouteWeekday().getOperatorRoute().getRoute().getDestination().getCityId();
+                String SCHEDULE_CACHE_KEY = 
+                        "upcoming_schedule_" + source +  "_" + destination + "_" + currSchedule.getJourneyDate();
+
+                if(context.getAttribute(SCHEDULE_CACHE_KEY) != null) {
+                    @SuppressWarnings("unchecked")
+                    ArrayList<Schedule> allScheduleList = (ArrayList<Schedule>) context.getAttribute(SCHEDULE_CACHE_KEY);
+
+                    for(Schedule next : allScheduleList) {
+                        if(next.getScheduleId().equals(currSchedule.getScheduleId())) {
+                            next = currSchedule;
+
+                            next.setAdditionalCharges(additionalCharges);
+                            next.setSeaterFare(seaterFare);
+                            next.setSleeperFare(sleeperFare);
+                            next.setTotalCharges(totalCharges);
+
+                            break;
+                        }
+                    }
+                }
 
                 response.getWriter().println("ok");
             }
