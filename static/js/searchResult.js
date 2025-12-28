@@ -51,6 +51,21 @@ const enableFilter = () => {
   });
 };
 
+const clearAllSelectedSeatings = () => {
+  modal.selectedSeat = {};
+  document.querySelectorAll(".selected-seat-container").forEach((node) => {
+    node.innerHTML = ``;
+  });
+  document.querySelectorAll(".selected-seat-info").forEach((node) => {
+    node.innerHTML = `<div class="text-secondary fw-semibold mb-1">
+          No seats selected
+        </div>
+        <div class="text-muted small">
+          Please select seats to continue booking
+        </div>`;
+  });
+};
+
 const clearFilter = () => {
   document.querySelectorAll("input[type='radio']").forEach((node) => {
     node.checked = false;
@@ -60,12 +75,13 @@ const clearFilter = () => {
   });
 
   modal.currState = [...modal.searchResults];
+
   displaySearchResult(modal.currState);
 };
 
 const displaySearchResult = (list = []) => {
   if (!(list instanceof Array)) throw new Error("Invalid List");
-
+  clearAllSelectedSeatings();
   if (filterApplicable) {
     enableFilter();
   } else {
@@ -702,3 +718,7 @@ const init = () => {
 };
 
 init();
+
+window.addEventListener("pagehide", () => {
+  sessionStorage.removeItem("searchResult");
+});

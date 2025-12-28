@@ -675,6 +675,10 @@ export class ViewHelper {
                       statusName === "Inactive" &&
                       "text-danger bg-danger-subtle border-danger"
                     }
+                    ${
+                      statusName === "Active" &&
+                      "text-success bg-success-subtle border-success"
+                    }
                     
                     "
                     >${statusName.toUpperCase()}</span

@@ -189,6 +189,7 @@ const handleCollectAllDrivers = async (firstTime = true) => {
     }
     modal.driverList = JSON.parse(response);
     PageLoading.stopLoading();
+    console.log(modal.driverList);
     displayDriverInfo();
     displayDriverStatus();
   } catch (err) {
