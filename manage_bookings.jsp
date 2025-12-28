@@ -54,7 +54,10 @@
         </div>
       </div>
 
-      <div class="businfo gap-2 align-items-center justify-content-between">
+      <div
+        class="businfo gap-2 align-items-center justify-content-between"
+        id="info_container"
+      >
         <div
           class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
         >
@@ -110,34 +113,7 @@
             <p class="mb-1 text-secondary fw-medium" style="font-size: small">
               UPCOMING
             </p>
-            <h5 class="mb-0 fs-5 fw-medium" data-info-name="active">0</h5>
-          </div>
-        </div>
-        <div
-          class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
-        >
-          <div
-            class="bg-info-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="28"
-              height="28"
-              fill="#0dcaf0"
-              class="bi bi-hourglass-split"
-              viewBox="0 0 16 16"
-            >
-              <path
-                d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z"
-              />
-            </svg>
-          </div>
-
-          <div>
-            <p class="mb-1 text-secondary fw-medium" style="font-size: small">
-              ONGOING
-            </p>
-            <h5 class="mb-0 fs-5 fw-medium" data-info-name="ongoing">0</h5>
+            <h5 class="mb-0 fs-5 fw-medium" data-info-name="upcoming">0</h5>
           </div>
         </div>
         <div
@@ -166,7 +142,7 @@
             <p class="mb-1 text-secondary fw-medium" style="font-size: small">
               COMPLETED
             </p>
-            <h5 class="mb-0 fs-5 fw-medium" data-info-name="inActive">0</h5>
+            <h5 class="mb-0 fs-5 fw-medium" data-info-name="completed">0</h5>
           </div>
         </div>
         <div
@@ -195,124 +171,137 @@
             <p class="mb-1 text-secondary fw-medium" style="font-size: small">
               CANCELLED
             </p>
-            <h5 class="mb-0 fs-5 fw-medium" data-info-name="inActive">0</h5>
+            <h5 class="mb-0 fs-5 fw-medium" data-info-name="cancelled">0</h5>
           </div>
         </div>
       </div>
+      <div id="content_wrapper">
+        <div class="d-flex align-items-center gap-1 mt-4">
+          <button class="btn btn-primary px-4 rounded-pill" data-type="all">
+            All Bookings
+          </button>
+          <button
+            class="btn btn-outline-primary px-4 rounded-pill"
+            data-type="upcoming"
+          >
+            Upcoming
+          </button>
+          <button
+            class="btn btn-outline-primary px-4 rounded-pill"
+            data-type="completed"
+          >
+            Completed
+          </button>
+          <button
+            class="btn btn-outline-primary px-4 rounded-pill"
+            data-type="cancelled"
+          >
+            Cancelled
+          </button>
+        </div>
 
-      <div class="d-flex align-items-center gap-1 mt-4">
-        <button class="btn btn-primary px-4 rounded-pill">All Bookings</button>
-        <button class="btn btn-outline-primary px-4 rounded-pill">
-          Upcoming
-        </button>
-        <button class="btn btn-outline-primary px-4 rounded-pill">
-          Ongoing
-        </button>
-        <button class="btn btn-outline-primary px-4 rounded-pill">
-          Completed
-        </button>
-        <button class="btn btn-outline-primary px-4 rounded-pill">
-          Cancelled
-        </button>
-      </div>
-
-      <div class="booking-container mt-4 d-flex flex-column gap-2">
-        <div class="card ticket-card shadow-sm rounded-4 mb-3">
-          <div class="card-body p-3">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <div class="d-flex gap-3">
-                <div
-                  class="bg-primary bg-opacity-10 rounded-4 d-flex align-items-center justify-content-center"
-                  style="width: 50px; height: 50px"
-                >
-                  <i class="bi bi-bus-front-fill fs-3 text-primary"></i>
-                </div>
-                <div>
-                  <h5 class="mb-0 fw-bold text-dark">
-                    New York &rightarrow; Boston
-                  </h5>
-                  <div class="d-flex align-items-center gap-2">
-                    <span class="text-muted small">Greyhound Express</span>
-                    <span class="text-muted small">&bull;</span>
-                    <span class="text-muted small">Booking ID: 28</span>
-                    <span class="text-muted small">&bull;</span>
-                    <span class="text-muted small"
-                      >Bus Number: MP20 KH 4857</span
-                    >
-                  </div>
-                </div>
-              </div>
-              <span
-                class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2 fw-semibold"
+        <div class="mt-4 d-flex flex-column gap-2" id="booking_list_container">
+          <div class="card ticket-card shadow-sm rounded-4 mb-3">
+            <div class="card-body p-3">
+              <div
+                class="d-flex justify-content-between align-items-start mb-2"
               >
-                Upcoming
-              </span>
-            </div>
-
-            <div class="row g-1 mb-1">
-              <div class="col-md-6">
-                <div class="row">
-                  <div class="col-6">
-                    <span class="label-muted">Booking Date</span>
-                    <div class="d-flex align-items-center gap-2">
-                      <i class="bi bi-calendar-check text-secondary"></i>
-                      <span class="fw-semibold">Jan 12, 2025</span>
-                    </div>
+                <div class="d-flex gap-3">
+                  <div
+                    class="bg-primary bg-opacity-10 rounded-4 d-flex align-items-center justify-content-center"
+                    style="width: 50px; height: 50px"
+                  >
+                    <i class="bi bi-bus-front-fill fs-3 text-primary"></i>
                   </div>
-                  <div class="col-6">
-                    <span class="label-muted">Journey Date</span>
+                  <div>
+                    <h5 class="mb-0 fw-bold text-dark">
+                      New York &rightarrow; Boston
+                    </h5>
                     <div class="d-flex align-items-center gap-2">
-                      <i class="bi bi-calendar2-event-fill text-primary"></i>
-                      <span class="fw-semibold text-primary">Jan 15, 2025</span>
+                      <span class="text-muted small">Greyhound Express</span>
+                      <span class="text-muted small">&bull;</span>
+                      <span class="text-muted small">Booking ID: 28</span>
+                      <span class="text-muted small">&bull;</span>
+                      <span class="text-muted small"
+                        >Bus Number: MP20 KH 4857</span
+                      >
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div class="col-md-6">
-                <div class="row">
-                  <div class="col-6">
-                    <span class="label-muted">Schedule</span>
-                    <div class="d-flex align-items-center gap-2">
-                      <i class="bi bi-clock-fill text-secondary"></i>
-                      <span class="fw-semibold">08:00 AM</span>
-                      &dash;
-                      <span class="fw-semibold">12:00 AM</span>
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <span class="label-muted">Seats</span>
-                    <div class="d-flex flex-wrap gap-1">
-                      <span class="seat-badge">1</span>
-                      <span class="seat-badge">2</span>
-                      <span class="seat-badge">3</span>
-                      <span class="seat-badge">5</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <hr
-              class="my-3 opacity-50"
-              style="border-top: 2px dashed #dee2e6"
-            />
-
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <span class="label-muted">Total Paid</span>
-                <div class="fw-bold fs-4 text-dark">&#8377;2,375</div>
-              </div>
-
-              <div class="d-flex align-items-center gap-2">
-                <button
-                  class="btn btn-outline-danger border-2 rounded-pill px-4"
+                <span
+                  class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2 fw-semibold"
                 >
-                  Cancel
-                </button>
-                <button class="btn btn-primary rounded-pill px-4 shadow-sm">
-                  View Ticket
-                </button>
+                  Upcoming
+                </span>
+              </div>
+
+              <div class="row g-1 mb-1">
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="col-6">
+                      <span class="label-muted">Booking Date</span>
+                      <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-calendar-check text-secondary"></i>
+                        <span class="fw-semibold">Jan 12, 2025</span>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <span class="label-muted">Journey Date</span>
+                      <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-calendar2-event-fill text-primary"></i>
+                        <span class="fw-semibold text-primary"
+                          >Jan 15, 2025</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="col-6">
+                      <span class="label-muted">Schedule</span>
+                      <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-clock-fill text-secondary"></i>
+                        <span class="fw-semibold">08:00 AM</span>
+                        &dash;
+                        <span class="fw-semibold">12:00 AM</span>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <span class="label-muted">Seats</span>
+                      <div class="d-flex flex-wrap gap-1">
+                        <span class="seat-badge">1</span>
+                        <span class="seat-badge">2</span>
+                        <span class="seat-badge">3</span>
+                        <span class="seat-badge">5</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <hr
+                class="my-3 opacity-50"
+                style="border-top: 2px dashed #dee2e6"
+              />
+
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <span class="label-muted">Total Paid</span>
+                  <div class="fw-bold fs-4 text-dark">&#8377;2,375</div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                  <button
+                    class="btn btn-outline-danger border-2 rounded-pill px-4"
+                  >
+                    Cancel
+                  </button>
+                  <button class="btn btn-primary rounded-pill px-4 shadow-sm">
+                    View Ticket
+                  </button>
+                </div>
               </div>
             </div>
           </div>

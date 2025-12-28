@@ -27,22 +27,20 @@ public class GetAllBookingServlet extends HttpServlet {
             return;
         }
         User user = (User) session.getAttribute("user");
-        int userId = user.getUserId();
-        String cacheKey = "allBookingList";
+        ArrayList<Booking> bookingList = (ArrayList<Booking>)  Booking.collectAllRecords(user.getUserId());
 
-        if(session.getAttribute(cacheKey) == null) {
-            ArrayList<Booking> bookingList = Booking.collectAllRecords(userId);
+        for(Booking next : bookingList) {
+            String cache = next.getBookingId() + "bookedSeats";
+            if(session.getAttribute(cache) == null) {
+                ArrayList<BookedSeat> list = BookedSeat.collectAllRecordsByBooking(next.getBookingId());
+                session.setAttribute(cache, list);
+            } 
 
-            for(Booking next : bookingList) {
-                next.setBookedSeatList(BookedSeat.collectAllRecordsByBooking(next.getBookingId()));
-            }
-
-            session.setAttribute(cacheKey, bookingList);
+            @SuppressWarnings("unchecked")
+            ArrayList<BookedSeat> list = (ArrayList<BookedSeat>) session.getAttribute(cache);
+            next.setBookedSeatList(list);
         }
-
-        @SuppressWarnings("unchecked")
-        ArrayList<Booking> bookingList = (ArrayList<Booking>) session.getAttribute(cacheKey);
-
+        
         response.getWriter().println(new Gson().toJson(bookingList));
     }
 }

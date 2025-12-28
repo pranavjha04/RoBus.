@@ -689,7 +689,7 @@ export class ViewHelper {
                   <button
                     class="btn manage-icon border-primary-subtle py-2 px-2"
                   >
-                    <img
+                    <img-
                       src="static/media/images/edit_sm_blue.svg"
                       width="18"
                       height="18"
@@ -1358,5 +1358,119 @@ export class ViewHelper {
                 </div>                
                 </div>              
             </li>`;
+  }
+
+  static getManageBookingHTML(booking) {
+    const { bookigId, bookedSeatList, schedule } = booking;
+
+    const { busRouteWeekday, bus, departureTime, arrivalTime } = schedule;
+    const { busNumber, operator } = bus;
+    const { operatorRoute } = busRouteWeekday;
+    const { route } = operatorRoute;
+    const { source, destination } = route;
+    return `<div class="card ticket-card shadow-sm rounded-4 mb-3">
+            <div class="card-body p-3">
+              <div
+                class="d-flex justify-content-between align-items-start mb-2"
+              >
+                <div class="d-flex gap-3">
+                  <div
+                    class="bg-primary bg-opacity-10 rounded-4 d-flex align-items-center justify-content-center"
+                    style="width: 50px; height: 50px"
+                  >
+                    <i class="bi bi-bus-front-fill fs-3 text-primary"></i>
+                  </div>
+                  <div>
+                    <h5 class="mb-0 fw-bold text-dark">
+                      ${source.name} &rightarrow; ${destination.name}
+                    </h5>
+                    <div class="d-flex align-items-center gap-2">
+                      <span class="text-muted small">${operator.fullName}</span>
+                      <span class="text-muted small">&bull;</span>
+                      <span class="text-muted small">Booking ID: ${bookigId}{</span>
+                      <span class="text-muted small">&bull;</span>
+                      <span class="text-muted small"
+                        >Bus Number: ${busNumber}</span
+                      >
+                    </div>
+                  </div>
+                </div>
+                <span
+                  class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2 fw-semibold"
+                >
+                  Upcoming
+                </span>
+              </div>
+
+              <div class="row g-1 mb-1">
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="col-6">
+                      <span class="label-muted">Booking Date</span>
+                      <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-calendar-check text-secondary"></i>
+                        <span class="fw-semibold">Jan 12, 2025</span>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <span class="label-muted">Journey Date</span>
+                      <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-calendar2-event-fill text-primary"></i>
+                        <span class="fw-semibold text-primary"
+                          >Jan 15, 2025</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="col-6">
+                      <span class="label-muted">Schedule</span>
+                      <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-clock-fill text-secondary"></i>
+                        <span class="fw-semibold">08:00 AM</span>
+                        &dash;
+                        <span class="fw-semibold">12:00 AM</span>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <span class="label-muted">Seats</span>
+                      <div class="d-flex flex-wrap gap-1">
+                        <span class="seat-badge">1</span>
+                        <span class="seat-badge">2</span>
+                        <span class="seat-badge">3</span>
+                        <span class="seat-badge">5</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <hr
+                class="my-3 opacity-50"
+                style="border-top: 2px dashed #dee2e6"
+              />
+
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <span class="label-muted">Total Paid</span>
+                  <div class="fw-bold fs-4 text-dark">&#8377;2,375</div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                  <button
+                    class="btn btn-outline-danger border-2 rounded-pill px-4"
+                  >
+                    Cancel
+                  </button>
+                  <button class="btn btn-primary rounded-pill px-4 shadow-sm">
+                    View Ticket
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>`;
   }
 }

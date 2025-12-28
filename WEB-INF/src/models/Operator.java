@@ -58,6 +58,12 @@ public class Operator implements Cloneable {
         this.user = user.clone();
     }
 
+    public Operator(String fullName, String contact, String email) {
+        this.fullName = fullName;
+        this.contact = contact;
+        this.email = email;
+    }
+
     public Operator() {
     }
 

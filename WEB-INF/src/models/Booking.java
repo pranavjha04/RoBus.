@@ -19,12 +19,14 @@ public class Booking {
     private Date bookingDate;
     private User user;
     private Schedule schedule;
+    private Status status;
     
     private ArrayList<BookedSeat> bookedSeatList;
 
-    public Booking(Integer bookingId, Integer totalFare, Date bookingDate, User user, Schedule schedule) {
+    public Booking(Integer bookingId, Integer totalFare, Date bookingDate, User user, Schedule schedule, Status status) {
         this(bookingId, totalFare, bookingDate, schedule);
         this.user = user;
+        this.status = status;
     }
     public Booking(Integer bookingId, Integer totalFare, Date bookingDate, Schedule schedule) {
         this.bookingId = bookingId;
@@ -36,6 +38,30 @@ public class Booking {
     public Booking() {
 
     }
+
+    public static boolean updateAllStatusBySchedule(int scheduleId, int statusId) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "UPDATE bookings " +
+                        "SET status_id=? " +
+                        "WHERE schedule_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setInt(1, statusId);
+            ps.setInt(2, scheduleId);
+
+            ps.executeUpdate();
+            flag = true;
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
+    } 
 
     public static int addRecord(int scheduleId, int totalFare, int userId) {
         int generatedId = -1;
@@ -85,6 +111,8 @@ public class Booking {
                         "JOIN buses b ON sch.bus_id = b.bus_id " + 
                         "JOIN status bs ON b.status_id = bs.status_id " +
                         "JOIN manufacturers m ON b.manufacturer_id = m.manufacturer_id " +
+                        // operators
+                        "JOIN operators o ON b.operator_id = o.operator_id " +
                         // drivers
                         "JOIN drivers dr ON sch.driver_id = dr.driver_id " +
                         "JOIN users u ON dr.user_id = u.user_id " +
@@ -99,7 +127,9 @@ public class Booking {
                         "JOIN states ss ON s.state_id = ss.state_id " +
                         "JOIN cities d ON r.destination = d.city_id " +
                         "JOIN states ds ON d.state_id = ds.state_id " +
-                        "JOIN status st ON st.status_id = opr.status_id " +
+                        "JOIN status st ON st.status_id = opr.status_id " + 
+                        // status
+                        "JOIN status bkstat ON bks.status_id = bkstat.status_id " +
                         "WHERE bks.user_id=?";
 
             PreparedStatement ps = con.prepareStatement(query);
@@ -205,6 +235,14 @@ public class Booking {
                     )
                 );
 
+                Operator operator = new Operator(
+                    rs.getString("o.full_name"),
+                    rs.getString("o.contact"),
+                    rs.getString("o.email")
+                );
+
+                bus.setOperator(operator);
+
                 Status scheduleStatus = new Status(
                     rs.getInt("schs.status_id"),
                     rs.getString("schs.name")
@@ -227,12 +265,18 @@ public class Booking {
                     scheduleStatus
                 );
 
+                Status bookingStatus = new Status(
+                    rs.getInt("bkstat.status_id"),
+                    rs.getString("bkstat.name")
+                );
+
                 Booking booking = new Booking(
                     rs.getInt("bks.booking_id"),
                     rs.getInt("bks.total_fare"),
                     rs.getDate("bks.booking_date"),
                     user,
-                    schedule
+                    schedule,
+                    bookingStatus 
                 );
 
                 list.add(booking);
@@ -254,6 +298,14 @@ public class Booking {
 
     public ArrayList<BookedSeat> getBookedSeatList() {
         return bookedSeatList;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Status getStatus() {
+        return status;
     }
 
     public void setSchedule(Schedule schedule) {
