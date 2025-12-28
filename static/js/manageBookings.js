@@ -2,10 +2,18 @@ import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import { getAllBookingRequest } from "./service.js";
 import { toast } from "./toast.js";
+import { ViewHelper } from "./viewHelper.js";
+
+const infoContainer = document.querySelector("#info_container");
+const filterContainer = document.querySelector("#filter_container");
+const bookingListContainer = document.querySelector("#booking_list_container");
 
 const modal = {
   bookingList: [],
 };
+
+const enableFilter = () => {};
+const disableFilter = () => {};
 
 const displayInfoContainer = () => {};
 const displayBookingList = (list) => {};
