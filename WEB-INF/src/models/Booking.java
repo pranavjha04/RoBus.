@@ -19,6 +19,8 @@ public class Booking {
     private Date bookingDate;
     private User user;
     private Schedule schedule;
+    
+    private ArrayList<BookedSeat> bookedSeatList;
 
     public Booking(Integer bookingId, Integer totalFare, Date bookingDate, User user, Schedule schedule) {
         this(bookingId, totalFare, bookingDate, schedule);
@@ -65,7 +67,7 @@ public class Booking {
         return generatedId;
     }
 
-    public ArrayList<Booking> collectAllRecords(int userId) {
+    public static ArrayList<Booking> collectAllRecords(int userId) {
         ArrayList<Booking> list = new ArrayList<>();
 
         try {
@@ -98,7 +100,7 @@ public class Booking {
                         "JOIN cities d ON r.destination = d.city_id " +
                         "JOIN states ds ON d.state_id = ds.state_id " +
                         "JOIN status st ON st.status_id = opr.status_id " +
-                        "WHERE usr.user_id=?";
+                        "WHERE bks.user_id=?";
 
             PreparedStatement ps = con.prepareStatement(query);
             ps.setInt(1, userId);
@@ -228,7 +230,7 @@ public class Booking {
                 Booking booking = new Booking(
                     rs.getInt("bks.booking_id"),
                     rs.getInt("bks.total_fare"),
-                    rs.getDate("bks.journey_date"),
+                    rs.getDate("bks.booking_date"),
                     user,
                     schedule
                 );
@@ -240,7 +242,18 @@ public class Booking {
         catch(SQLException e) {
             e.printStackTrace();
         }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
         return list;
+    }
+
+    public void setBookedSeatList(ArrayList<BookedSeat> bookedSeatList) {
+        this.bookedSeatList = bookedSeatList;
+    }
+
+    public ArrayList<BookedSeat> getBookedSeatList() {
+        return bookedSeatList;
     }
 
     public void setSchedule(Schedule schedule) {

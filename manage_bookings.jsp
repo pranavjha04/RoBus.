@@ -11,111 +11,38 @@
     <title>Manage Bookings | TravelEase</title>
 
     <style>
-      :root {
-        --primary-soft: #f0f4ff;
-        --border-color: #eef0f2;
-      }
-
-      body {
-        letter-spacing: -0.01em;
-      }
-
-      /* Enhanced Card Styling */
-      .stat-card {
-        border: 1px solid var(--border-color);
-        border-radius: 16px;
-        background: #ffffff;
-        padding: 1.25rem;
-        transition: transform 0.2s ease;
-      }
-
-      .stat-card:hover {
-        transform: translateY(-3px);
-      }
-
-      .booking-card {
-        border: 1px solid var(--border-color);
-        border-radius: 20px;
-        background: #ffffff;
-        padding: 1.5rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      .ticket-card {
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05) !important;
         position: relative;
-        overflow: hidden;
       }
 
-      .booking-card:hover {
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-        border-color: #d1d9e6;
-      }
-
-      /* Left Accent Border on Hover */
-      .booking-card::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 4px;
-        background: transparent;
-        transition: background 0.3s;
-      }
-      .booking-card:hover::before {
-        background: #0d6efd;
-      }
-
-      /* Status Badges */
-      .badge-status {
+      .label-muted {
         font-size: 0.7rem;
-        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        padding: 0.5rem 1rem;
-        border-radius: 50px;
+        letter-spacing: 0.8px;
+        font-weight: 700;
+        color: #9da4a9;
+        margin-bottom: 4px;
+        display: block;
       }
 
-      .confirmed {
-        background: #e6fcf5;
-        color: #0ca678;
-      }
-      .cancelled {
-        background: #fff5f5;
-        color: #fa5252;
-      }
-      .completed {
-        background: #f0f4ff;
-        color: #339af0;
-      }
-
-      /* Typography & Utilities */
-      .route-text {
-        font-size: 1.1rem;
+      .seat-badge {
+        background: #e9ecef;
+        color: #495057;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 0.85rem;
         font-weight: 600;
-        color: #212529;
-      }
-
-      .meta-text {
-        font-size: 0.875rem;
-        color: #6c757d;
-      }
-
-      .btn-action {
-        border-radius: 10px;
-        font-weight: 500;
-        padding: 0.5rem 1rem;
-        transition: 0.2s;
-      }
-
-      .search-filter-bar {
-        border-radius: 16px;
-        border: 1px solid var(--border-color) !important;
       }
     </style>
   </head>
 
-  <body class="bg-light min-vh-100">
+  <body class="bg-light min-vh-100 overflow-y-scroll">
+    <c:import url="essential_page_display.jsp" />
     <c:import url="logged_navbar.jsp" />
 
-    <div class="container py-5 gap-3">
+    <div class="container py-5 gap-3" id="pageWrapper">
       <div
         class="page-header pb-4 d-flex justify-content-between align-items-end"
       >
@@ -190,6 +117,33 @@
           class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
         >
           <div
+            class="bg-info-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="28"
+              height="28"
+              fill="#0dcaf0"
+              class="bi bi-hourglass-split"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z"
+              />
+            </svg>
+          </div>
+
+          <div>
+            <p class="mb-1 text-secondary fw-medium" style="font-size: small">
+              ONGOING
+            </p>
+            <h5 class="mb-0 fs-5 fw-medium" data-info-name="ongoing">0</h5>
+          </div>
+        </div>
+        <div
+          class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
+        >
+          <div
             class="bg-success-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
           >
             <svg
@@ -247,11 +201,12 @@
       </div>
 
       <div class="d-flex align-items-center gap-1 mt-4">
-        <button class="btn btn-outline-primary px-4 rounded-pill">
-          All Bookings
-        </button>
+        <button class="btn btn-primary px-4 rounded-pill">All Bookings</button>
         <button class="btn btn-outline-primary px-4 rounded-pill">
           Upcoming
+        </button>
+        <button class="btn btn-outline-primary px-4 rounded-pill">
+          Ongoing
         </button>
         <button class="btn btn-outline-primary px-4 rounded-pill">
           Completed
@@ -261,61 +216,10 @@
         </button>
       </div>
 
-      <div>
-        <style>
-          .ticket-card {
-            transition: all 0.3s ease;
-            border: 1px solid rgba(0, 0, 0, 0.05) !important;
-            position: relative;
-          }
-
-          /* Subtle ticket notches on the sides */
-          .ticket-card::before,
-          .ticket-card::after {
-            content: "";
-            position: absolute;
-            top: 72%;
-            width: 20px;
-            height: 20px;
-            background-color: #f8f9fa; /* Match your page background color */
-            border-radius: 50%;
-            z-index: 1;
-          }
-          .ticket-card::before {
-            left: -10px;
-          }
-          .ticket-card::after {
-            right: -10px;
-          }
-
-          .ticket-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1) !important;
-          }
-
-          .label-muted {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-weight: 700;
-            color: #9da4a9;
-            margin-bottom: 4px;
-            display: block;
-          }
-
-          .seat-badge {
-            background: #e9ecef;
-            color: #495057;
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 600;
-          }
-        </style>
-
+      <div class="booking-container mt-4 d-flex flex-column gap-2">
         <div class="card ticket-card shadow-sm rounded-4 mb-3">
-          <div class="card-body p-4">
-            <div class="d-flex justify-content-between align-items-start mb-4">
+          <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-start mb-2">
               <div class="d-flex gap-3">
                 <div
                   class="bg-primary bg-opacity-10 rounded-4 d-flex align-items-center justify-content-center"
@@ -324,11 +228,17 @@
                   <i class="bi bi-bus-front-fill fs-3 text-primary"></i>
                 </div>
                 <div>
-                  <h5 class="mb-0 fw-bold text-dark">New York to Boston</h5>
+                  <h5 class="mb-0 fw-bold text-dark">
+                    New York &rightarrow; Boston
+                  </h5>
                   <div class="d-flex align-items-center gap-2">
                     <span class="text-muted small">Greyhound Express</span>
                     <span class="text-muted small">&bull;</span>
-                    <span class="text-muted small">ID: BK-NY2401</span>
+                    <span class="text-muted small">Booking ID: 28</span>
+                    <span class="text-muted small">&bull;</span>
+                    <span class="text-muted small"
+                      >Bus Number: MP20 KH 4857</span
+                    >
                   </div>
                 </div>
               </div>
@@ -339,7 +249,7 @@
               </span>
             </div>
 
-            <div class="row g-4 mb-2">
+            <div class="row g-1 mb-1">
               <div class="col-md-6">
                 <div class="row">
                   <div class="col-6">
@@ -366,6 +276,8 @@
                     <div class="d-flex align-items-center gap-2">
                       <i class="bi bi-clock-fill text-secondary"></i>
                       <span class="fw-semibold">08:00 AM</span>
+                      &dash;
+                      <span class="fw-semibold">12:00 AM</span>
                     </div>
                   </div>
                   <div class="col-6">
@@ -382,28 +294,23 @@
             </div>
 
             <hr
-              class="my-4 opacity-50"
+              class="my-3 opacity-50"
               style="border-top: 2px dashed #dee2e6"
             />
 
             <div class="d-flex justify-content-between align-items-center">
               <div>
                 <span class="label-muted">Total Paid</span>
-                <div class="fw-bold fs-4 text-dark">
-                  $180.00
-                  <span class="text-muted fs-6 fw-normal">($45 x 4)</span>
-                </div>
+                <div class="fw-bold fs-4 text-dark">&#8377;2,375</div>
               </div>
 
               <div class="d-flex align-items-center gap-2">
                 <button
-                  class="btn btn-outline-danger border-2 rounded-pill px-4 fw-bold btn-sm"
+                  class="btn btn-outline-danger border-2 rounded-pill px-4"
                 >
                   Cancel
                 </button>
-                <button
-                  class="btn btn-primary rounded-pill px-4 fw-bold btn-sm shadow-sm"
-                >
+                <button class="btn btn-primary rounded-pill px-4 shadow-sm">
                   View Ticket
                 </button>
               </div>
@@ -413,6 +320,6 @@
       </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="static/js/manageBookings.js"></script>
   </body>
 </html>

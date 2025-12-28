@@ -760,3 +760,10 @@ export const bookTicketFormRequest = async (params) => {
 
   return data.trim();
 };
+
+export const getAllBookingRequest = async () => {
+  const res = await fetch(`get_all_booking.do`);
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
