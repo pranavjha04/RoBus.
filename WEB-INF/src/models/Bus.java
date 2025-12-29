@@ -25,10 +25,14 @@ public class Bus implements Cloneable {
     private ArrayList<BusImage> busImageList;
 
     public Bus(String busNumber, Manufacturer manufacturer, Boolean doubleDecker, Status status) {
-        this.busNumber = busNumber;
+        this(busNumber, doubleDecker);
         this.manufacturer = new Manufacturer(manufacturer.getManufacturerId(), manufacturer.getName());
-        this.doubleDecker = doubleDecker;
         this.status = new Status(status.getStatusId(), status.getName());
+    }
+
+    public Bus(String busNumber, Boolean doubleDecker) {
+        this.busNumber = busNumber;
+        this.doubleDecker = doubleDecker;
     }
 
     public Bus(Integer busId, String busNumber, Manufacturer manufacturer, Boolean doubleDecker, Status status) {

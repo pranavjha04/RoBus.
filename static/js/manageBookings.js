@@ -51,7 +51,7 @@ const bookingListFetching = async (firstTime = false) => {
 const displayInfoContainer = () => {
   const bookingList = modal.bookingList;
 
-  const filters = bookingList.reduce(
+  const info = bookingList.reduce(
     (acc, curr) => {
       switch (curr.status.name) {
         case "Upcoming": {
@@ -76,9 +76,9 @@ const displayInfoContainer = () => {
     }
   );
 
-  for (const prop in filters) {
+  for (const prop in info) {
     infoContainer.querySelector(`[data-info-name="${prop}"]`).textContent =
-      filters[prop];
+      info[prop];
   }
 };
 

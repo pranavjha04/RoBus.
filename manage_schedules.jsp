@@ -14,10 +14,178 @@
       .bg-purple-subtle {
         background-color: rgba(111, 66, 193, 0.12);
       }
+      :root {
+        --trip-bg: #ffffff;
+        --trip-primary: #0061ff;
+        --trip-success: #198754;
+        --trip-danger: #dc3545;
+        --trip-text: #0f172a;
+        --trip-muted: #64748b;
+      }
+
+      .aesthetic-card {
+        background: var(--trip-bg);
+        border-radius: 28px;
+        padding: 24px 30px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.02);
+      }
+
+      /* Status Left-Borders */
+      .card-ongoing {
+        border-left: 6px solid var(--trip-primary);
+      }
+      .card-upcoming {
+        border-left: 6px solid var(--trip-success);
+      }
+      .card-completed {
+        opacity: 0.85;
+        background: #f8fafc;
+        border-left: 6px solid #cbd5e1;
+      }
+      .card-cancelled {
+        opacity: 0.8;
+        background: #fff5f5;
+        border-left: 6px solid var(--trip-danger);
+      }
+
+      /* Section 1: Icon & Primary Info */
+      .bus-identity {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        min-width: 280px;
+      }
+
+      .icon-box {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f1f5f9;
+        color: var(--trip-text);
+        flex-shrink: 0;
+      }
+
+      /* Section 2: The Ticket Timeline (From Image) */
+      .timeline-container {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        gap: 25px;
+        flex: 1;
+        justify-content: center;
+        padding: 0 20px;
+      }
+
+      .time-bold {
+        font-weight: 850;
+        font-size: 1.3rem;
+        color: var(--trip-text);
+        margin: 0;
+        line-height: 1;
+      }
+      .city-name {
+        font-weight: 500;
+        font-size: 1.1rem;
+        color: var(--trip-muted);
+        margin: 4px 0 2px 0;
+      }
+      .state-name {
+        font-size: 0.8rem;
+        color: #94a3b8;
+        margin: 0;
+        font-weight: 500;
+      }
+
+      .duration-bridge {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 100px;
+      }
+      .dash-line {
+        width: 100%;
+        border-top: 2px dashed #cbd5e1;
+        margin-bottom: 6px;
+      }
+      .duration-text {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--trip-text);
+        white-space: nowrap;
+      }
+
+      /* Section 3: Data Blocks */
+      .divider-v {
+        width: 1px;
+        height: 45px;
+        background: #f1f5f9;
+        margin: 0 15px;
+      }
+
+      .data-block {
+        min-width: 120px;
+      }
+      .label-tiny {
+        font-size: 0.65rem;
+        font-weight: 800;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 2px;
+      }
+      .val-bold {
+        font-weight: 700;
+        color: var(--trip-text);
+        font-size: 0.95rem;
+        margin: 0;
+      }
+
+      /* Section 4: Actions */
+      .btn-trip {
+        border-radius: 14px;
+        padding: 12px 20px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        border: none;
+        min-width: 150px;
+        transition: 0.2s;
+      }
+      .btn-primary-fill {
+        background: var(--trip-primary);
+        color: white;
+        box-shadow: 0 4px 12px rgba(0, 97, 255, 0.2);
+      }
+      .btn-success-fill {
+        background: var(--trip-success);
+        color: white;
+        box-shadow: 0 4px 12px rgba(25, 135, 84, 0.2);
+      }
+
+      @media (max-width: 1200px) {
+        .aesthetic-card {
+          flex-wrap: wrap;
+        }
+        .timeline-container {
+          flex: 100%;
+          order: 3;
+          margin-top: 20px;
+          border-top: 1px solid #f1f5f9;
+          padding-top: 20px;
+        }
+      }
     </style>
     <title>Manage Schedules</title>
   </head>
   <body class="bg-light min-vh-100 overflow-y-scroll">
+    <c:import url="essential_page_display.jsp" />
     <c:import url="logged_navbar.jsp" />
     <div class="container py-5 gap-3" id="pageWrapper">
       <div
@@ -214,177 +382,7 @@
           </button>
         </div>
 
-        <style>
-          :root {
-            --trip-bg: #ffffff;
-            --trip-primary: #0061ff;
-            --trip-success: #198754;
-            --trip-danger: #dc3545;
-            --trip-text: #0f172a;
-            --trip-muted: #64748b;
-          }
-
-          .aesthetic-card {
-            background: var(--trip-bg);
-            border-radius: 28px;
-            padding: 24px 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
-            display: flex;
-            align-items: center;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(0, 0, 0, 0.02);
-          }
-
-          /* Status Left-Borders */
-          .card-ongoing {
-            border-left: 6px solid var(--trip-primary);
-          }
-          .card-upcoming {
-            border-left: 6px solid var(--trip-success);
-          }
-          .card-completed {
-            opacity: 0.85;
-            background: #f8fafc;
-            border-left: 6px solid #cbd5e1;
-          }
-          .card-cancelled {
-            opacity: 0.8;
-            background: #fff5f5;
-            border-left: 6px solid var(--trip-danger);
-          }
-
-          /* Section 1: Icon & Primary Info */
-          .bus-identity {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            min-width: 280px;
-          }
-
-          .icon-box {
-            width: 56px;
-            height: 56px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f1f5f9;
-            color: var(--trip-text);
-            flex-shrink: 0;
-          }
-
-          /* Section 2: The Ticket Timeline (From Image) */
-          .timeline-container {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            gap: 25px;
-            flex: 1;
-            justify-content: center;
-            padding: 0 20px;
-          }
-
-          .time-bold {
-            font-weight: 850;
-            font-size: 1.3rem;
-            color: var(--trip-text);
-            margin: 0;
-            line-height: 1;
-          }
-          .city-name {
-            font-weight: 500;
-            font-size: 1.1rem;
-            color: var(--trip-muted);
-            margin: 4px 0 2px 0;
-          }
-          .state-name {
-            font-size: 0.8rem;
-            color: #94a3b8;
-            margin: 0;
-            font-weight: 500;
-          }
-
-          .duration-bridge {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 100px;
-          }
-          .dash-line {
-            width: 100%;
-            border-top: 2px dashed #cbd5e1;
-            margin-bottom: 6px;
-          }
-          .duration-text {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--trip-text);
-            white-space: nowrap;
-          }
-
-          /* Section 3: Data Blocks */
-          .divider-v {
-            width: 1px;
-            height: 45px;
-            background: #f1f5f9;
-            margin: 0 15px;
-          }
-
-          .data-block {
-            min-width: 120px;
-          }
-          .label-tiny {
-            font-size: 0.65rem;
-            font-weight: 800;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            margin-bottom: 2px;
-          }
-          .val-bold {
-            font-weight: 700;
-            color: var(--trip-text);
-            font-size: 0.95rem;
-            margin: 0;
-          }
-
-          /* Section 4: Actions */
-          .btn-trip {
-            border-radius: 14px;
-            padding: 12px 20px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            border: none;
-            min-width: 150px;
-            transition: 0.2s;
-          }
-          .btn-primary-fill {
-            background: var(--trip-primary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 97, 255, 0.2);
-          }
-          .btn-success-fill {
-            background: var(--trip-success);
-            color: white;
-            box-shadow: 0 4px 12px rgba(25, 135, 84, 0.2);
-          }
-
-          @media (max-width: 1200px) {
-            .aesthetic-card {
-              flex-wrap: wrap;
-            }
-            .timeline-container {
-              flex: 100%;
-              order: 3;
-              margin-top: 20px;
-              border-top: 1px solid #f1f5f9;
-              padding-top: 20px;
-            }
-          }
-        </style>
-
-        <div id="booking_list_container">
+        <div id="schedule_list_container" class="mt-4 d-flex flex-column gap-2">
           <div class="aesthetic-card card-ongoing">
             <div class="bus-identity">
               <div class="icon-box"><i class="bi bi-bus-front fs-3"></i></div>
@@ -545,5 +543,6 @@
         </div>
       </div>
     </div>
+    <script type="module" src="static/js/manageDriverSchedule.js"></script>
   </body>
 </html>
