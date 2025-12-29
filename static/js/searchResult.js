@@ -2,7 +2,7 @@ import { APP_URL } from "./helper.js";
 import { PageLoading } from "./pageLoading.js";
 import { searchCityRequest, getScheduleRequest } from "./service.js";
 import { toast } from "./toast.js";
-import { createURLParams, toMinutes } from "./util.js";
+import { toMinutes } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
 const searchResultContainer = document.querySelector(

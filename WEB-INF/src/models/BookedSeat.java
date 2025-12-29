@@ -27,6 +27,48 @@ public class BookedSeat {
         this.seatNumber = seatingNumber;
     }
 
+    public static boolean deleteAllBySchedule(int scheduleId) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "DELETE FROM booked_seats bs " +
+                        "JOIN bookings b ON b.booking_id = bs.booking_id " +
+                        "WHERE b.schedule_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, scheduleId);
+
+            ps.executeUpdate();
+            flag = true;
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
+    }
+    public static boolean deleteAllByBooking(int bookingId) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "DELETE FROM booked_seats " +
+                        "WHERE booking_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, bookingId);
+
+            ps.executeUpdate();
+            flag = true;
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
+    }
+
     public static boolean addRecordMultiple(int bookingId, List<Integer> selectedSeatNumberList) {
         boolean flag = false;
         StringBuilder helper = new StringBuilder();

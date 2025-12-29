@@ -35,9 +35,36 @@
         font-size: 0.85rem;
         font-weight: 600;
       }
+
+      #booking_list_container,
+      .ticket-card {
+        animation: fadeSlide 0.3s ease;
+      }
     </style>
   </head>
-
+  <div class="modal fade" tabindex="-1" id="cancelBookingModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirm Logout</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to cancel booking?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <button class="btn btn-danger" id="cancel_btn">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <body class="bg-light min-vh-100 overflow-y-scroll">
     <c:import url="essential_page_display.jsp" />
     <c:import url="logged_navbar.jsp" />
@@ -176,7 +203,10 @@
         </div>
       </div>
       <div id="content_wrapper">
-        <div class="d-flex align-items-center gap-1 mt-4">
+        <div
+          class="justify-content-end d-flex align-items-center gap-1 mt-4"
+          id="filter_container"
+        >
           <button class="btn btn-primary px-4 rounded-pill" data-type="all">
             All Bookings
           </button>
@@ -200,112 +230,10 @@
           </button>
         </div>
 
-        <div class="mt-4 d-flex flex-column gap-2" id="booking_list_container">
-          <div class="card ticket-card shadow-sm rounded-4 mb-3">
-            <div class="card-body p-3">
-              <div
-                class="d-flex justify-content-between align-items-start mb-2"
-              >
-                <div class="d-flex gap-3">
-                  <div
-                    class="bg-primary bg-opacity-10 rounded-4 d-flex align-items-center justify-content-center"
-                    style="width: 50px; height: 50px"
-                  >
-                    <i class="bi bi-bus-front-fill fs-3 text-primary"></i>
-                  </div>
-                  <div>
-                    <h5 class="mb-0 fw-bold text-dark">
-                      New York &rightarrow; Boston
-                    </h5>
-                    <div class="d-flex align-items-center gap-2">
-                      <span class="text-muted small">Greyhound Express</span>
-                      <span class="text-muted small">&bull;</span>
-                      <span class="text-muted small">Booking ID: 28</span>
-                      <span class="text-muted small">&bull;</span>
-                      <span class="text-muted small"
-                        >Bus Number: MP20 KH 4857</span
-                      >
-                    </div>
-                  </div>
-                </div>
-                <span
-                  class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2 fw-semibold"
-                >
-                  Upcoming
-                </span>
-              </div>
-
-              <div class="row g-1 mb-1">
-                <div class="col-md-6">
-                  <div class="row">
-                    <div class="col-6">
-                      <span class="label-muted">Booking Date</span>
-                      <div class="d-flex align-items-center gap-2">
-                        <i class="bi bi-calendar-check text-secondary"></i>
-                        <span class="fw-semibold">Jan 12, 2025</span>
-                      </div>
-                    </div>
-                    <div class="col-6">
-                      <span class="label-muted">Journey Date</span>
-                      <div class="d-flex align-items-center gap-2">
-                        <i class="bi bi-calendar2-event-fill text-primary"></i>
-                        <span class="fw-semibold text-primary"
-                          >Jan 15, 2025</span
-                        >
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <div class="row">
-                    <div class="col-6">
-                      <span class="label-muted">Schedule</span>
-                      <div class="d-flex align-items-center gap-2">
-                        <i class="bi bi-clock-fill text-secondary"></i>
-                        <span class="fw-semibold">08:00 AM</span>
-                        &dash;
-                        <span class="fw-semibold">12:00 AM</span>
-                      </div>
-                    </div>
-                    <div class="col-6">
-                      <span class="label-muted">Seats</span>
-                      <div class="d-flex flex-wrap gap-1">
-                        <span class="seat-badge">1</span>
-                        <span class="seat-badge">2</span>
-                        <span class="seat-badge">3</span>
-                        <span class="seat-badge">5</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <hr
-                class="my-3 opacity-50"
-                style="border-top: 2px dashed #dee2e6"
-              />
-
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <span class="label-muted">Total Paid</span>
-                  <div class="fw-bold fs-4 text-dark">&#8377;2,375</div>
-                </div>
-
-                <div class="d-flex align-items-center gap-2">
-                  <button
-                    class="btn btn-outline-danger border-2 rounded-pill px-4"
-                  >
-                    Cancel
-                  </button>
-                  <button class="btn btn-primary rounded-pill px-4 shadow-sm">
-                    View Ticket
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div
+          class="mt-4 d-flex flex-column gap-2"
+          id="booking_list_container"
+        ></div>
       </div>
     </div>
 

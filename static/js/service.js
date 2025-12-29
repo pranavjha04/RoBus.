@@ -767,3 +767,12 @@ export const getAllBookingRequest = async () => {
   const data = await res.text();
   return data.trim();
 };
+
+export const cancelBookingRequest = async (params) => {
+  const res = await fetch(`cancel_booking.do?${params.toString()}`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};

@@ -1,16 +1,51 @@
+import { ModalHandler } from "./modalHandler.js";
 import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
-import { getAllBookingRequest } from "./service.js";
+import { cancelBookingRequest, getAllBookingRequest } from "./service.js";
 import { toast } from "./toast.js";
+import { createURLParams } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
 const infoContainer = document.querySelector("#info_container");
 const filterContainer = document.querySelector("#filter_container");
 const contentWrapper = document.querySelector("#pageWrapper");
 const bookingListContainer = document.querySelector("#booking_list_container");
+const cancelBookingBtn = document.querySelector("#cancel_btn");
+const cancelBookingModal = document.querySelector("#cancelBookingModal");
 
 const modal = {
   bookingList: [],
+  activeBookingId: null,
+};
+
+const disableFilter = () => {
+  [...filterContainer.children].forEach((child) => {
+    child.disabled = true;
+  });
+};
+
+const enableFilter = () => {
+  [...filterContainer.children].forEach((child) => {
+    child.disabled = false;
+  });
+};
+
+const startLoading = () => {
+  disableFilter();
+  bookingListContainer.innerHTML = `<div class="mt-5 justify-content-center align-self-center">
+                                        <div class="mt-5 loader"></div>
+                                      </div>`;
+};
+
+const bookingListFetching = async (firstTime = false) => {
+  if (!firstTime) startLoading();
+  try {
+    const response = await getAllBookingRequest();
+    if (response === "invalid") throw new Error("Invalid Reques");
+    modal.bookingList = JSON.parse(response);
+  } catch (err) {
+    if (firstTime) throw new Error(err.message);
+  }
 };
 
 const displayInfoContainer = () => {
@@ -85,6 +120,7 @@ const displayBookingList = (list) => {
     displayEmptyBookingPage();
     return;
   }
+  enableFilter();
 
   if (list.length === 0) {
     bookingListContainer.innerHTML = `
@@ -113,15 +149,114 @@ const displayBookingList = (list) => {
   </div>
   `;
   } else {
-    bookingListContainer.innerHTML = ViewHelper.
+    bookingListContainer.innerHTML = list
+      .map(ViewHelper.getManageBookingHTML)
+      .join("");
   }
 };
 
+const getFilteresList = (callback) => {
+  const filterResultList = [...modal.bookingList].filter(callback);
+  displayBookingList(filterResultList);
+};
+
+filterContainer.addEventListener("click", (e) => {
+  const button = e.target.closest("button");
+  if (
+    !button ||
+    !button.dataset.type ||
+    button.classList.contains("btn-primary")
+  )
+    return;
+
+  const type = button.dataset.type;
+  [...filterContainer.children].forEach((child) => {
+    child.classList.remove("btn-primary");
+    child.classList.add("btn-outline-primary");
+  });
+
+  button.classList.add("btn-primary");
+  button.classList.remove("btn-outline-primary");
+
+  switch (type) {
+    case "all": {
+      displayBookingList(modal.bookingList);
+      break;
+    }
+    case "upcoming": {
+      getFilteresList(({ status }) => status.name === "Upcoming");
+      break;
+    }
+    case "completed": {
+      getFilteresList(({ status }) => status.name === "Completed");
+      break;
+    }
+    case "cancelled": {
+      getFilteresList(({ status }) => status.name === "Cancelled");
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+});
+
+bookingListContainer.addEventListener("click", (e) => {
+  const target = e.target.closest("button");
+  if (!target || !target.dataset.type) return;
+
+  const type = target.dataset.type;
+  const targetBookingId =
+    target.closest("[data-booking-id]")?.dataset?.bookingId;
+  if (!targetBookingId || isNaN(+targetBookingId)) return;
+
+  switch (type) {
+    case "cancel": {
+      modal.activeBookingId = +targetBookingId;
+      break;
+    }
+    case "ticket": {
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+});
+
+cancelBookingBtn.addEventListener("click", async () => {
+  if (!modal.activeBookingId) return;
+
+  try {
+    const queryParams = createURLParams({
+      booking_id: modal.activeBookingId,
+    });
+    const response = await cancelBookingRequest(queryParams);
+    if (response === "ok") {
+      modal.activeBookingId = null;
+      toast.success("Booking cancelled Sucessfully");
+      await bookingListFetching();
+      displayInfoContainer();
+      displayBookingList(modal.bookingList);
+    } else {
+      throw new Error("Invalid Request");
+    }
+  } catch (err) {
+    toast.error(err.message);
+    displayBookingList(modal.bookingList);
+  } finally {
+    ModalHandler.hide(cancelBookingModal);
+  }
+});
+
+cancelBookingModal.addEventListener("hide.bs.modal", () => {
+  modal.activeBookingId = null;
+});
+
 const init = async () => {
   try {
-    const response = await getAllBookingRequest();
-    if (response === "invalid") throw new Error("Invalid Reques");
-    modal.bookingList = JSON.parse(response);
+    disableFilter();
+    await bookingListFetching(true);
     console.log(modal);
     displayInfoContainer();
     displayEmptyBookingPage();

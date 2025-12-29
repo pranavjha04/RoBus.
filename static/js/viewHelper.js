@@ -1361,14 +1361,28 @@ export class ViewHelper {
   }
 
   static getManageBookingHTML(booking) {
-    const { bookigId, bookedSeatList, schedule } = booking;
+    const {
+      bookingId,
+      bookedSeatList,
+      schedule,
+      status,
+      bookingDate,
+      totalFare,
+    } = booking;
 
-    const { busRouteWeekday, bus, departureTime, arrivalTime } = schedule;
+    const { busRouteWeekday, bus, departureTime, arrivalTime, journeyDate } =
+      schedule;
     const { busNumber, operator } = bus;
     const { operatorRoute } = busRouteWeekday;
     const { route } = operatorRoute;
     const { source, destination } = route;
-    return `<div class="card ticket-card shadow-sm rounded-4 mb-3">
+
+    const formattedDate = (date) => {
+      return new Intl.DateTimeFormat(navigator.language, {
+        dateStyle: "medium",
+      }).format(new Date(date));
+    };
+    return `<div class="card ticket-card shadow-sm rounded-4 mb-3" data-booking-id="${bookingId}">
             <div class="card-body p-3">
               <div
                 class="d-flex justify-content-between align-items-start mb-2"
@@ -1387,19 +1401,41 @@ export class ViewHelper {
                     <div class="d-flex align-items-center gap-2">
                       <span class="text-muted small">${operator.fullName}</span>
                       <span class="text-muted small">&bull;</span>
-                      <span class="text-muted small">Booking ID: ${bookigId}{</span>
-                      <span class="text-muted small">&bull;</span>
+                      <span class="text-muted small">Booking ID: ${bookingId}</span>
                       <span class="text-muted small"
                         >Bus Number: ${busNumber}</span
                       >
                     </div>
                   </div>
                 </div>
-                <span
-                  class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2 fw-semibold"
+                ${
+                  status.name === "Upcoming"
+                    ? `<span
+                  class="badge rounded-pill border-warning border bg-warning bg-opacity-10 text-warning px-3 py-2 fw-medium"
                 >
                   Upcoming
-                </span>
+                </span>`
+                    : ""
+                }
+                ${
+                  status.name === "Completed"
+                    ? `<span
+                  class="badge rounded-pill border border-success bg-success bg-opacity-10 text-success px-3 py-2 fw-medium"
+                >
+                  Completed
+                </span>`
+                    : ""
+                }
+                ${
+                  status.name === "Cancelled"
+                    ? `<span
+                  class="badge rounded-pill border border-danger bg-danger bg-opacity-10 text-danger px-3 py-2 fw-medium"
+                >
+                  Cancelled
+                </span>`
+                    : ""
+                }
+                
               </div>
 
               <div class="row g-1 mb-1">
@@ -1409,15 +1445,17 @@ export class ViewHelper {
                       <span class="label-muted">Booking Date</span>
                       <div class="d-flex align-items-center gap-2">
                         <i class="bi bi-calendar-check text-secondary"></i>
-                        <span class="fw-semibold">Jan 12, 2025</span>
+                        <span class="fw-semibold">${formattedDate(
+                          bookingDate
+                        )}</span>
                       </div>
                     </div>
                     <div class="col-6">
                       <span class="label-muted">Journey Date</span>
                       <div class="d-flex align-items-center gap-2">
-                        <i class="bi bi-calendar2-event-fill text-primary"></i>
-                        <span class="fw-semibold text-primary"
-                          >Jan 15, 2025</span
+                        <i class="bi bi-calendar2-event-fill "></i>
+                        <span class="fw-semibold"
+                          >${formattedDate(journeyDate)}</span
                         >
                       </div>
                     </div>
@@ -1430,18 +1468,24 @@ export class ViewHelper {
                       <span class="label-muted">Schedule</span>
                       <div class="d-flex align-items-center gap-2">
                         <i class="bi bi-clock-fill text-secondary"></i>
-                        <span class="fw-semibold">08:00 AM</span>
+                        <span class="fw-semibold">${getFormattedTime(
+                          departureTime
+                        )}</span>
                         &dash;
-                        <span class="fw-semibold">12:00 AM</span>
+                        <span class="fw-semibold">${getFormattedTime(
+                          arrivalTime
+                        )}</span>
                       </div>
                     </div>
                     <div class="col-6">
                       <span class="label-muted">Seats</span>
                       <div class="d-flex flex-wrap gap-1">
-                        <span class="seat-badge">1</span>
-                        <span class="seat-badge">2</span>
-                        <span class="seat-badge">3</span>
-                        <span class="seat-badge">5</span>
+                        ${bookedSeatList
+                          .map(
+                            ({ seatNumber }) =>
+                              `<span class="seat-badge">${seatNumber}</span>`
+                          )
+                          .join("")}
                       </div>
                     </div>
                   </div>
@@ -1456,16 +1500,25 @@ export class ViewHelper {
               <div class="d-flex justify-content-between align-items-center">
                 <div>
                   <span class="label-muted">Total Paid</span>
-                  <div class="fw-bold fs-4 text-dark">&#8377;2,375</div>
+                  <div class="fw-bold fs-4 text-dark">₹ ${new Intl.NumberFormat(
+                    "en-IN"
+                  ).format(totalFare)}</div>
                 </div>
 
                 <div class="d-flex align-items-center gap-2">
-                  <button
+                  ${
+                    status.name === "Upcoming"
+                      ? `<button
                     class="btn btn-outline-danger border-2 rounded-pill px-4"
+                    data-type='cancel'
+                    data-bs-toggle="modal"
+                    data-bs-target="#cancelBookingModal"
                   >
                     Cancel
-                  </button>
-                  <button class="btn btn-primary rounded-pill px-4 shadow-sm">
+                  </button>`
+                      : ""
+                  }
+                  <button class="btn btn-primary rounded-pill px-4 shadow-sm" data-type='ticket'>
                     View Ticket
                   </button>
                 </div>
