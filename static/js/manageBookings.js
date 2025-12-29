@@ -76,8 +76,6 @@ const displayInfoContainer = () => {
     }
   );
 
-  console.log(filters);
-
   for (const prop in filters) {
     infoContainer.querySelector(`[data-info-name="${prop}"]`).textContent =
       filters[prop];
@@ -257,7 +255,6 @@ const init = async () => {
   try {
     disableFilter();
     await bookingListFetching(true);
-    console.log(modal);
     displayInfoContainer();
     displayEmptyBookingPage();
     displayBookingList(modal.bookingList);

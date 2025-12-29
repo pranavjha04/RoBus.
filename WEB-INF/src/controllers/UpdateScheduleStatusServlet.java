@@ -20,7 +20,6 @@ import models.Schedule;
 import models.Status;
 import models.Driver;
 import models.Booking;
-import models.BookedSeat;
 
 
 @WebServlet("/update_schedule_status.do")
@@ -114,10 +113,6 @@ public class UpdateScheduleStatusServlet extends HttpServlet {
                     // now jo bookings mei ye jo schedule hai usko cancel kard
                     boolean isBookingStatusUpdated = Booking.updateAllStatusBySchedule(scheduleId, 6);
                     if(!isBookingStatusUpdated) throw new IllegalArgumentException("Internal Server Error");
-
-                    // now jo booked seats hai unko htado database mei load km hoga
-                    boolean areBookedSeatDeleted = BookedSeat.deleteAllBySchedule(scheduleId);
-                    if(!areBookedSeatDeleted) throw new IllegalArgumentException("Internal Server Error");
 
                     // clear the session and cache
                     final String[] removeCacheList = {ALL_INCOMING_SCHEDULE_LIST, BUS_INCOMING_SCHEDULE_LIST, ALL_CANCELLED_SCHEDULE_LIST, BUS_CANCELLED_SCHEDULE_LIST};

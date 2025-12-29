@@ -109,8 +109,9 @@ public class BookedSeat {
         try {
             Connection con = DBManager.getConnection();
             String query = 
-                        "SELECT * FROM booked_seats " +
-                        "WHERE seat_number=?";
+                        "SELECT * FROM booked_seats bs " + 
+                        "JOIN bookings b ON b.booking_id = bs.booking_id " +
+                        "WHERE seat_number=? AND b.status_id=11";
             
             PreparedStatement ps = con.prepareStatement(query);
             ps.setInt(1, seatNumber);
@@ -157,7 +158,7 @@ public class BookedSeat {
                         "JOIN cities d ON r.destination = d.city_id " +
                         "JOIN states ds ON d.state_id = ds.state_id " +
                         "JOIN status st ON st.status_id = opr.status_id " +
-                        "WHERE bks.schedule_id=?";
+                        "WHERE bks.schedule_id=? AND bks.status_id=11";
             
             PreparedStatement ps = con.prepareStatement(query);
 

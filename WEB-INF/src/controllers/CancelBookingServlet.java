@@ -5,13 +5,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.ServletException;
+import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
 
 import exceptions.MissingParameterException;
 
-import models.BookedSeat;
 import models.Booking;
 import models.User;
 
@@ -24,6 +24,8 @@ public class CancelBookingServlet extends HttpServlet {
             response.sendRedirect("/bts");
             return;
         }
+
+        ServletContext context = getServletContext();
 
         try {
             for(String next : acceptedParameterList) {
@@ -41,16 +43,11 @@ public class CancelBookingServlet extends HttpServlet {
                 throw new IllegalArgumentException("Invalid Request");
             }
 
-            // ab cancel kardo
-            boolean areBookedSeatDeleted = BookedSeat.deleteAllByBooking(bookingId);
-            if(!areBookedSeatDeleted) throw new IllegalArgumentException("Invalid Request");
-
-            // clear booked seat cache
-            session.removeAttribute(targetBooking.getBookingId() + "bookedSeats");
-
             // update booking status to cancelled
             boolean isBookingStatusUpdated = Booking.updateStatus(bookingId, 6);
             if(!isBookingStatusUpdated) throw new IllegalArgumentException("Internal Server Error");
+
+            context.removeAttribute("booked_schedule" + targetBooking.getSchedule().getScheduleId());
             response.getWriter().println("ok");
         }
         catch(IllegalArgumentException e) {
