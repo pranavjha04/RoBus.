@@ -64,6 +64,11 @@ public class Operator implements Cloneable {
         this.email = email;
     }
 
+    public Operator(int operatorId, String fullName, String email, String contact) {
+        this(fullName, contact, email);
+        this.operatorId = operatorId;
+    }
+    
     public Operator() {
     }
 

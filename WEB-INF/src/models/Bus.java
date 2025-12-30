@@ -30,6 +30,11 @@ public class Bus implements Cloneable {
         this.status = new Status(status.getStatusId(), status.getName());
     }
 
+    public Bus(String busNumber, Boolean doubleDecker, Operator operator) {
+        this(busNumber, doubleDecker);
+        this.operator = operator;
+    }
+
     public Bus(String busNumber, Boolean doubleDecker) {
         this.busNumber = busNumber;
         this.doubleDecker = doubleDecker;

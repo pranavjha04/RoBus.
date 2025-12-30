@@ -484,6 +484,8 @@ public class Schedule {
                         "JOIN status schs ON sch.status_id = schs.status_id " +
                         // buses
                         "JOIN buses b ON sch.bus_id = b.bus_id " + 
+                        // operator
+                        "JOIN operators o ON b.operator_id = o.operator_id " +
                         // drivers
                         "JOIN drivers dr ON sch.driver_id = dr.driver_id " +
                         "JOIN users u ON dr.user_id = u.user_id " +
@@ -577,7 +579,13 @@ public class Schedule {
                 // bus
                 Bus bus = new Bus(
                     rs.getString("b.bus_number"),
-                    rs.getBoolean("b.double_decker")
+                    rs.getBoolean("b.double_decker"),
+                    new Operator(
+                        rs.getInt("o.operator_id"), 
+                        rs.getString("o.full_name"), 
+                        rs.getString("o.email"), 
+                        rs.getString("o.contact")
+                    )
                 );
 
                 Status scheduleStatus = new Status(

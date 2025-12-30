@@ -53,7 +53,6 @@ public class GetDriverScheduleServlet extends HttpServlet {
 
                 @SuppressWarnings("unchecked")
                 ArrayList<Schedule> list = (ArrayList<Schedule>) session.getAttribute(cache);
-
                 for(Schedule next : list) {
                     OperatorRoute operatorRoute =
                             next.getBusRouteWeekday().getOperatorRoute();
@@ -74,6 +73,7 @@ public class GetDriverScheduleServlet extends HttpServlet {
                     }
                     @SuppressWarnings("unchecked")
                     ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = (ArrayList<OperatorRouteMidCity>) context.getAttribute(OPERATOR_MID_CITY_CACHE);
+                    System.out.println(operatorRouteMidCityList);
                     operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
                 }
                 response.getWriter().println(list);
@@ -82,12 +82,41 @@ public class GetDriverScheduleServlet extends HttpServlet {
                 ArrayList<Schedule> scheduleList = Schedule.getSchedulesByDriverUser(user.getUserId(), journeyDate);
                 if(scheduleList == null) throw new IllegalArgumentException("Invalid Request");
 
+                System.out.println(scheduleList);
+                for(Schedule next : scheduleList) {
+                    OperatorRoute operatorRoute =
+                            next.getBusRouteWeekday().getOperatorRoute();
+
+                    int operatorRouteId = operatorRoute.getOperatorRouteId();
+                    String OPERATOR_MID_CITY_CACHE = "operator_route_midcities_" + operatorRouteId;
+
+                    if(context.getAttribute(OPERATOR_MID_CITY_CACHE) == null) {
+                        ArrayList<OperatorRouteMidCity> operatorRouteMidCityList =
+                                OperatorRouteMidCity.collectAllRecords(
+                                        operatorRouteId,
+                                        next.getBus().getOperator().getOperatorId()
+                                );
+                        
+                        if(operatorRouteMidCityList == null) throw new IllegalArgumentException("Invalid Request");
+                        
+                        context.setAttribute(OPERATOR_MID_CITY_CACHE, operatorRouteMidCityList);
+                    }
+                    @SuppressWarnings("unchecked")
+                    ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = (ArrayList<OperatorRouteMidCity>) context.getAttribute(OPERATOR_MID_CITY_CACHE);
+
+                    System.out.println(operatorRouteMidCityList);
+                    operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
+                }
+
                 response.getWriter().println(new Gson().toJson(scheduleList));
             }
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
             response.getWriter().println("invalid");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
         }
     }
 }

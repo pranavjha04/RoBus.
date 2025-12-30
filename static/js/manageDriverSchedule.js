@@ -214,7 +214,6 @@ const scheduleListFetching = async (firstTime = false) => {
     displayInfoContainer();
     displayScheduleList(modal.schedule[getActiveDate()]);
   } catch (err) {
-    if (firstTime) throw new Error(err.message);
     displayErrorSchedulePage();
   }
 };
