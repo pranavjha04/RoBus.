@@ -1526,4 +1526,82 @@ export class ViewHelper {
             </div>
           </div>`;
   }
+
+  static getDriverScheduleRow({
+    status,
+    scheduleId,
+    bus,
+    departureTime,
+    arrivalTime,
+    busRouteWeekday,
+  }) {
+    const { busNumber } = bus;
+    const { operatorRoute } = busRouteWeekday;
+    return `<div class="aesthetic-card card-${status.name.toLowerCase()}">
+            <div class="bus-identity">
+              <div class="icon-box"><i class="bi bi-bus-front fs-3"></i></div>
+              <div>
+                <div class="label-tiny">Schedule ID: ${scheduleId}</div>
+                <p class="val-bold">${busNumber}</p>
+              </div>
+            </div>
+
+            <div class="data-block text-center">
+            ${
+              status.name === "Upcoming"
+                ? `<span
+                class="badge bg-warning bg-opacity-10 text-warning small border border-warning"
+                >Upcoming</span
+              >`
+                : ""
+            }
+            ${
+              status.name === "Ongoing"
+                ? `<span
+                class="badge bg-purple-subtle bg-opacity-10 text-purple border-purple"
+                >Ongoing</span
+              >`
+                : ""
+            }
+            ${
+              status.name === "Completed"
+                ? `<span
+                class="badge bg-success-subtle bg-opacity-10 text-success border-success border"
+                >Completed</span
+              >`
+                : ""
+            }
+            ${
+              status.name === "Cancelled"
+                ? `<span
+                class="badge bg-danger-subtle bg-opacity-10 text-danger border-danger border"
+                >Cancelled</span
+              >`
+                : ""
+            }
+              
+            </div>
+            <div class="divider-v"></div>
+            <div class="timeline-container">
+              <div class="point">
+                <p class="time-bold">${getFormatedDuration(departureTime)}</p>
+                <p class="city-name">Jabalpur</p>
+                <p class="state-name">Madhya Pradesh</p>
+              </div>
+              <div class="duration-bridge">
+                <div class="dash-line"></div>
+                <span class="duration-text">$</span>
+              </div>
+              <div class="point">
+                <p class="time-bold">${getFormatedDuration(arrivalTime)}</p>
+                <p class="city-name">Sagar</p>
+                <p class="state-name">Madhya Pradesh</p>
+              </div>
+            </div>
+
+            <button class="btn btn-purple px-4 py-2 fw-semibold rounded-pill">
+              End Journey
+            </button>
+          </div>`;
+  }
 }

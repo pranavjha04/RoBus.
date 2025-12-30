@@ -50,10 +50,17 @@ prefix="e" uri="bts" %>
       .norm {
         background: none;
         border: none;
+        transition: all 0.25s ease;
+      }
+      .norm:hover {
+        background-color: rgba(215, 215, 215, 0.477);
       }
       .active {
         background-color: #0d6efd;
         color: white;
+      }
+      .active:hover {
+        background-color: #0451c3;
       }
     </style>
   </head>

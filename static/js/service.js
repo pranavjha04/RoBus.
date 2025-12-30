@@ -777,8 +777,8 @@ export const cancelBookingRequest = async (params) => {
   return data.trim();
 };
 
-export const getDriverScheduleRequest = async () => {
-  const res = await fetch(`get_driver_schedule.do`);
+export const getDriverScheduleRequest = async (params) => {
+  const res = await fetch(`get_driver_schedule.do?${params.toString()}`);
   if (!res.ok) throw new Error("Internal Server Error");
   const data = await res.text();
   return data.trim();

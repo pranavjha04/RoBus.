@@ -182,7 +182,7 @@ public class Driver {
                             "JOIN status s ON u.status_id = s.status_id " +
                             "JOIN user_types ut ON u.user_type_id = ut.user_type_id " +
                             "WHERE operator_id=? AND s.status_id=5";
-            PreparedStatement ps = con.prepareStatement(query);
+            PreparedStatement ps = con.prepareStatement(query);c 
             ps.setInt(1, operatorId);
             ResultSet rs = ps.executeQuery();
 

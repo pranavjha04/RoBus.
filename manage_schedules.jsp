@@ -14,6 +14,32 @@
       .bg-purple-subtle {
         background-color: rgba(111, 66, 193, 0.12);
       }
+      .text-purple {
+        color: #6f42c1;
+      }
+      .border-purple {
+        border: 1px solid #6f42c1;
+      }
+      .btn-purple {
+        --bs-btn-color: #fff;
+        --bs-btn-bg: #6f42c1;
+        --bs-btn-border-color: #6f42c1;
+
+        --bs-btn-hover-color: #fff;
+        --bs-btn-hover-bg: #6035b1;
+        --bs-btn-hover-border-color: #5a32a3;
+
+        --bs-btn-focus-shadow-rgb: 111, 66, 193;
+
+        --bs-btn-active-color: #fff;
+        --bs-btn-active-bg: #5a32a3;
+        --bs-btn-active-border-color: #533096;
+
+        --bs-btn-disabled-color: #fff;
+        --bs-btn-disabled-bg: #6f42c1;
+        --bs-btn-disabled-border-color: #6f42c1;
+      }
+
       :root {
         --trip-bg: #ffffff;
         --trip-primary: #0061ff;
@@ -25,8 +51,8 @@
 
       .aesthetic-card {
         background: var(--trip-bg);
-        border-radius: 28px;
-        padding: 24px 30px;
+        border-radius: 16px;
+        padding: 20px 26px;
         margin-bottom: 20px;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
         display: flex;
@@ -37,15 +63,15 @@
 
       /* Status Left-Borders */
       .card-ongoing {
-        border-left: 6px solid var(--trip-primary);
+        border-left: 6px solid #6f42c1;
       }
       .card-upcoming {
-        border-left: 6px solid var(--trip-success);
+        border-left: 6px solid #ffc107;
       }
       .card-completed {
         opacity: 0.85;
         background: #f8fafc;
-        border-left: 6px solid #cbd5e1;
+        border-left: 6px solid #198754;
       }
       .card-cancelled {
         opacity: 0.8;
@@ -72,8 +98,6 @@
         color: var(--trip-text);
         flex-shrink: 0;
       }
-
-      /* Section 2: The Ticket Timeline (From Image) */
       .timeline-container {
         display: flex;
         align-items: center;
@@ -148,27 +172,6 @@
         margin: 0;
       }
 
-      /* Section 4: Actions */
-      .btn-trip {
-        border-radius: 14px;
-        padding: 12px 20px;
-        font-weight: 700;
-        font-size: 0.85rem;
-        border: none;
-        min-width: 150px;
-        transition: 0.2s;
-      }
-      .btn-primary-fill {
-        background: var(--trip-primary);
-        color: white;
-        box-shadow: 0 4px 12px rgba(0, 97, 255, 0.2);
-      }
-      .btn-success-fill {
-        background: var(--trip-success);
-        color: white;
-        box-shadow: 0 4px 12px rgba(25, 135, 84, 0.2);
-      }
-
       @media (max-width: 1200px) {
         .aesthetic-card {
           flex-wrap: wrap;
@@ -180,6 +183,21 @@
           border-top: 1px solid #f1f5f9;
           padding-top: 20px;
         }
+      }
+      .norm {
+        background: none;
+        border: none;
+        transition: all 0.25s ease;
+      }
+      .norm:hover {
+        background-color: rgba(215, 215, 215, 0.477);
+      }
+      .active {
+        background-color: #0d6efd;
+        color: white;
+      }
+      .active:hover {
+        background-color: #0451c3;
       }
     </style>
     <title>Manage Schedules</title>
@@ -273,11 +291,11 @@
               width="28"
               height="28"
               fill="#6f42c1"
-              class="bi bi-hourglass-bottom"
+              class="bi bi-send-fill"
               viewBox="0 0 16 16"
             >
               <path
-                d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5m2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702s.18.149.5.149.5-.15.5-.15v-.7c0-.701.478-1.236 1.011-1.492A3.5 3.5 0 0 0 11.5 3V2z"
+                d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"
               />
             </svg>
           </div>
@@ -348,6 +366,27 @@
           </div>
         </div>
       </div>
+      <div
+        class="d-flex flex-column gap-2 px-3 py-2 bg-white shadow shadow-sm mt-3"
+      >
+        <div class="d-flex align-items-center justify-content-between w-100">
+          <div>
+            <h4>Select Date</h4>
+          </div>
+
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn bg-secondary-subtle" id="date_range_back">
+              &lt;
+            </button>
+            <span id="date_range_display"></span>
+            <button class="btn bg-secondary-subtle" id="date_range_next">
+              &gt;
+            </button>
+          </div>
+        </div>
+
+        <div class="row" id="date_range"></div>
+      </div>
       <div id="content_wrapper">
         <div
           class="justify-content-end d-flex align-items-center gap-1 mt-4"
@@ -387,23 +426,18 @@
             <div class="bus-identity">
               <div class="icon-box"><i class="bi bi-bus-front fs-3"></i></div>
               <div>
-                <div class="label-tiny">Trip ID: #RT-9921</div>
+                <div class="label-tiny">Schedule ID: 32</div>
                 <p class="val-bold">MH-12-AS-9090</p>
-                <span class="badge bg-primary bg-opacity-10 text-primary small"
-                  >Ongoing Now</span
-                >
               </div>
             </div>
 
-            <div class="divider-v"></div>
-
-            <div class="data-block">
-              <p class="label-tiny">Manifest</p>
-              <p class="val-bold">
-                <i class="bi bi-people-fill me-1"></i> 42 / 50
-              </p>
+            <div class="data-block text-center">
+              <span
+                class="badge bg-purple-subtle bg-opacity-10 text-purple border-purple"
+                >Ongoing</span
+              >
             </div>
-
+            <div class="divider-v"></div>
             <div class="timeline-container">
               <div class="point">
                 <p class="time-bold">08:43 PM</p>
@@ -421,7 +455,9 @@
               </div>
             </div>
 
-            <button class="btn btn-trip btn-primary-fill">End Journey</button>
+            <button class="btn btn-purple px-4 py-2 fw-semibold rounded-pill">
+              End Journey
+            </button>
           </div>
 
           <div class="aesthetic-card card-upcoming">
@@ -430,19 +466,17 @@
               <div>
                 <div class="label-tiny">Trip ID: #RT-5011</div>
                 <p class="val-bold">KA-01-MG-1234</p>
-                <span class="badge bg-success bg-opacity-10 text-success small"
-                  >Scheduled</span
-                >
               </div>
             </div>
 
-            <div class="divider-v"></div>
-
-            <div class="data-block">
-              <p class="label-tiny">Driver</p>
-              <p class="val-bold">Rajesh Kumar</p>
+            <div class="data-block text-center">
+              <span
+                class="badge bg-warning bg-opacity-10 text-warning small border border-warning"
+                >Upcoming</span
+              >
             </div>
 
+            <div class="divider-v"></div>
             <div class="timeline-container">
               <div class="point">
                 <p class="time-bold">10:30 PM</p>
@@ -460,7 +494,9 @@
               </div>
             </div>
 
-            <button class="btn btn-trip btn-success-fill">Start Journey</button>
+            <button class="btn btn-warning px-4 py-2 fw-semibold rounded-pill">
+              Start Journey
+            </button>
           </div>
 
           <div class="aesthetic-card card-completed">
@@ -469,16 +505,21 @@
               <div>
                 <div class="label-tiny">Trip ID: #RT-2210</div>
                 <p class="val-bold">MP-20-HA-4455</p>
-                <p class="text-success small fw-bold mb-0">Completed</p>
               </div>
             </div>
-
+            <div class="data-block text-center">
+              <span
+                class="badge bg-success-subtle bg-opacity-10 text-success border-success border"
+                >Completed</span
+              >
+            </div>
             <div class="divider-v"></div>
 
             <div class="timeline-container">
               <div class="point">
                 <p class="time-bold text-muted">06:00 AM</p>
                 <p class="city-name">Bhopal</p>
+                <p class="state-name">Madhya Pradesh</p>
               </div>
               <div class="duration-bridge">
                 <div class="dash-line"></div>
@@ -487,11 +528,15 @@
               <div class="point">
                 <p class="time-bold text-muted">09:30 AM</p>
                 <p class="city-name">Indore</p>
+                <p class="state-name">Madhya Pradesh</p>
               </div>
             </div>
 
-            <button class="btn btn-trip btn-light border text-muted" disabled>
-              History
+            <button
+              disabled
+              class="btn border px-4 py-2 fw-semibold rounded-pill"
+            >
+              No Actions
             </button>
           </div>
           <div class="aesthetic-card card-cancelled">
@@ -502,19 +547,16 @@
               <div>
                 <div class="label-tiny">Trip ID: #RT-1102</div>
                 <p class="val-bold">UP-32-BZ-5544</p>
-                <span class="badge bg-danger bg-opacity-10 text-danger small"
-                  >Cancelled</span
-                >
               </div>
             </div>
 
-            <div class="divider-v"></div>
-
-            <div class="data-block">
-              <p class="label-tiny">Reason</p>
-              <p class="val-bold text-danger">Mechanical Issue</p>
+            <div class="data-block text-center">
+              <span
+                class="badge bg-danger-subtle bg-opacity-10 text-danger border-danger border"
+                >Cancelled</span
+              >
             </div>
-
+            <div class="divider-v"></div>
             <div class="timeline-container" style="opacity: 0.6">
               <div class="point">
                 <p class="time-bold">04:00 PM</p>
@@ -536,7 +578,10 @@
               </div>
             </div>
 
-            <button class="btn btn-trip btn-light text-muted border" disabled>
+            <button
+              disabled
+              class="btn border px-4 py-2 fw-semibold rounded-pill"
+            >
               No Actions
             </button>
           </div>

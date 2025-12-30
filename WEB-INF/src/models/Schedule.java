@@ -475,7 +475,7 @@ public class Schedule {
         }
         return schedule;
     }
-    public static ArrayList<Schedule> getSchedulesByDriverUser(int driverId) {
+    public static ArrayList<Schedule> getSchedulesByDriverUser(int driverId, Date journeyDate) {
         ArrayList<Schedule> list = new ArrayList<>();
         try {
             Connection con = DBManager.getConnection();
@@ -499,9 +499,10 @@ public class Schedule {
                         "JOIN cities d ON r.destination = d.city_id " +
                         "JOIN states ds ON d.state_id = ds.state_id " +
                         "JOIN status st ON st.status_id = opr.status_id " +
-                        "WHERE u.user_id=?";
+                        "WHERE u.user_id=? AND sch.journey_date=?";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setInt(1, driverId);
+            ps.setDate(2, journeyDate);
 
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
