@@ -26,18 +26,8 @@ public class GetAllDriverServlet extends HttpServlet {
             }   
             Operator operator = (Operator) session.getAttribute("operator");
             Integer operatorId = operator.getOperatorId();
-
-            if(session.getAttribute("driverList") == null) {
-                ArrayList<Driver> driverList = Driver.collectRecords(operatorId);
-                if(driverList == null) {
-                    throw new IllegalArgumentException("Invalid Operation");
-                }
-                
-                session.setAttribute("driverList", driverList);
-            }
             
-            @SuppressWarnings("unchecked")
-            ArrayList<Driver> driverList = (ArrayList<Driver>) session.getAttribute("driverList");
+            ArrayList<Driver> driverList = Driver.collectRecords(operatorId);
             response.getWriter().println(new Gson().toJson(driverList));
 
         }

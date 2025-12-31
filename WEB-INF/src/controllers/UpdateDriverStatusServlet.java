@@ -36,7 +36,6 @@ public class UpdateDriverStatusServlet extends HttpServlet {
             int driverId = -1;
             int statusId = -1;
             Driver driver = null;
-            Status status = null;
 
             if(isIncludeRequest) {
                 if(request.getAttribute("driver_id") == null || request.getAttribute("status_id") == null) throw new IllegalArgumentException("Invalid Request");
@@ -49,57 +48,12 @@ public class UpdateDriverStatusServlet extends HttpServlet {
                 statusId = Integer.parseInt(request.getParameter("status_id"));
             }
 
-            String[] cacheList = {"inactiveDriverList", "activeDriverList"};
-            String sessionAttribute = null;
-            for(String next : cacheList) {
-                if(session.getAttribute(next) != null) {
-                    @SuppressWarnings("unchecked")
-                    ArrayList<Driver> list = (ArrayList<Driver>) session.getAttribute(next);
-                    for(Driver curr : list) {
-                        if(curr.getDriverId().equals(driverId)) {
-                            driver = curr;
-                            break;
-                        }
-                    }
-                    if(driver != null) {
-                        sessionAttribute = next;
-                        break;
-                    }
-                }
-            }
-            
+        
             if(driver == null) {
                 driver = Driver.getRecord(driverId, operator.getOperatorId());
                 if(driver == null) throw new IllegalArgumentException("Invalid Request");
             }
 
-            @SuppressWarnings("unchecked")
-            ArrayList<Status> statusList = (ArrayList<Status>) getServletContext().getAttribute("statusList");
-
-            for(Status next : statusList) {
-                if(next.getStatusId().equals(statusId)) {
-                    status = next;
-                    break;
-                }
-            }
-            if(status == null) throw new IllegalArgumentException("Invalid Request");
-
-            String targetAttribute;
-            switch(status.getName()) {
-                case "Active" : {
-                    targetAttribute = "inactiveDriverList";
-                    break;
-                }
-                case "Inactive" : {
-                    targetAttribute = "activeDriverList";
-                    break;
-                }
-                default : {
-                    throw new IllegalArgumentException("Invalid Request");
-                }
-            }
-        
-            
             request.setAttribute("user_id", driver.getUser().getUserId());
             request.getRequestDispatcher("update_user_status.do").include(request, response);
 
@@ -108,16 +62,6 @@ public class UpdateDriverStatusServlet extends HttpServlet {
                 throw new IllegalArgumentException("Invalid Request");
             }
 
-            driver.getUser().setStatus(status);
-
-            if(sessionAttribute != null) {
-                @SuppressWarnings("unchecked")
-                ArrayList<Driver> list = (ArrayList<Driver>) session.getAttribute(sessionAttribute);
-                final int targetDriverId = driverId;
-                list.removeIf((d) -> d.getDriverId().equals(targetDriverId));
-            }
-
-            session.removeAttribute(targetAttribute);
             if(isIncludeRequest) {
                 request.setAttribute("isUpdated", true);
             }    

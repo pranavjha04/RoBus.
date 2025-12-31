@@ -354,6 +354,25 @@ dateRangeContainer.addEventListener("click", (e) => {
   resetFilter();
   showActiveDateRecord();
 });
+
+scheduleListContainer.addEventListener("click", (e) => {
+  const target = e.target.closest("button");
+  if (!target || !target.closest("[data-schedule-id]")) return;
+
+  const targetScheduleId =
+    target.closest("[data-schedule-id]").dataset.scheduleId;
+  if (!targetScheduleId) return;
+
+  const targetSchedule = modal.schedule[getActiveDate()]?.find(
+    ({ scheduleId }) => scheduleId === +targetScheduleId
+  );
+  if (!targetSchedule) return;
+  const { status } = targetSchedule;
+  if (status.name === "Completed" || status.name === "Cancelled") return;
+
+  
+});
+
 const init = async () => {
   try {
     updateDateRange(true);

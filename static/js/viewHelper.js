@@ -1536,7 +1536,7 @@ export class ViewHelper {
     arrivalTime,
     busRouteWeekday,
   }) {
-    const { busNumber } = bus;
+    const { busNumber, operator } = bus;
     const { operatorRoute } = busRouteWeekday;
     const { route } = operatorRoute;
     const { source, destination } = route;
@@ -1546,12 +1546,15 @@ export class ViewHelper {
       },
       operatorRoute.route.duration
     );
-    return `<div class="aesthetic-card card-${status.name.toLowerCase()}">
+    return `<div class="aesthetic-card  card-${status.name.toLowerCase()}" data-schedule-id="${scheduleId}" data-status="${
+      status.name
+    }">
             <div class="bus-identity">
               <div class="icon-box"><i class="bi bi-bus-front fs-3"></i></div>
               <div>
                 <div class="label-tiny">Schedule ID: ${scheduleId}</div>
                 <p class="val-bold">${busNumber}</p>
+                <span class='text-muted small'>${operator.contact}</span>
               </div>
             </div>
 

@@ -42,74 +42,50 @@ public class GetDriverScheduleServlet extends HttpServlet {
             Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
             Date currDate = new Date(System.currentTimeMillis());
 
-            if(journeyDate.toLocalDate().isBefore(currDate.toLocalDate())) {
-                String cache = "schedule" + journeyDate;
-                if(session.getAttribute(cache) == null) {
-                    ArrayList<Schedule> scheduleList = Schedule.getSchedulesByDriverUser(user.getUserId(), journeyDate);
-                    if(scheduleList == null) throw new IllegalArgumentException("Invalid Request");
+            ArrayList<Schedule> scheduleList = null;
+            boolean isBefore = journeyDate.toLocalDate().isBefore(currDate.toLocalDate());
+            String CACHE_ATTRIBUTE = "schedule" + journeyDate;
 
-                    session.setAttribute(cache, scheduleList);
+            if(isBefore) {
+                if(session.getAttribute(CACHE_ATTRIBUTE) != null) {
+                    @SuppressWarnings("unchecked")
+                    ArrayList<Schedule> list = (ArrayList<Schedule>) session.getAttribute(CACHE_ATTRIBUTE);
+                    scheduleList = list;
+                    response.getWriter().println(scheduleList);
+                    return;
                 }
+            }
 
+            if(scheduleList == null) {
+                scheduleList = Schedule.getSchedulesByDriverUser(user.getUserId(), journeyDate);
+                if(scheduleList == null) throw new IllegalArgumentException("Internal Server Error");
+            }
+            
+            for(Schedule next : scheduleList) {
+                OperatorRoute operatorRoute = next.getBusRouteWeekday().getOperatorRoute();
+
+                int operatorRouteId = operatorRoute.getOperatorRouteId();
+                String OPERATOR_MID_CITY_CACHE = "operator_route_midcities_" + operatorRouteId;
+
+                if(session.getAttribute(OPERATOR_MID_CITY_CACHE) == null) {
+                    ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = 
+                                    OperatorRouteMidCity.collectAllRecords(
+                                        operatorRouteId,
+                                        next.getBus().getOperator().getOperatorId()
+                    );
+                        
+                    if(operatorRouteMidCityList == null) throw new IllegalArgumentException("Invalid Request");
+                        
+                    session.setAttribute(OPERATOR_MID_CITY_CACHE, operatorRouteMidCityList);
+                }
                 @SuppressWarnings("unchecked")
-                ArrayList<Schedule> list = (ArrayList<Schedule>) session.getAttribute(cache);
-                for(Schedule next : list) {
-                    OperatorRoute operatorRoute =
-                            next.getBusRouteWeekday().getOperatorRoute();
+                ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = (ArrayList<OperatorRouteMidCity>) session.getAttribute(OPERATOR_MID_CITY_CACHE);
 
-                    int operatorRouteId = operatorRoute.getOperatorRouteId();
-                    String OPERATOR_MID_CITY_CACHE = "operator_route_midcities_" + operatorRouteId;
-
-                    if(context.getAttribute(OPERATOR_MID_CITY_CACHE) == null) {
-                        ArrayList<OperatorRouteMidCity> operatorRouteMidCityList =
-                                OperatorRouteMidCity.collectAllRecords(
-                                        operatorRouteId,
-                                        next.getBus().getOperator().getOperatorId()
-                                );
-                        
-                        if(operatorRouteMidCityList == null) throw new IllegalArgumentException("Invalid Request");
-                        
-                        context.setAttribute(OPERATOR_MID_CITY_CACHE, operatorRouteMidCityList);
-                    }
-                    @SuppressWarnings("unchecked")
-                    ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = (ArrayList<OperatorRouteMidCity>) context.getAttribute(OPERATOR_MID_CITY_CACHE);
-                    System.out.println(operatorRouteMidCityList);
-                    operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
-                }
-                response.getWriter().println(new Gson().toJson(list));
+                operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
             }
-            else {
-                ArrayList<Schedule> scheduleList = Schedule.getSchedulesByDriverUser(user.getUserId(), journeyDate);
-                if(scheduleList == null) throw new IllegalArgumentException("Invalid Request");
 
-                System.out.println(scheduleList);
-                for(Schedule next : scheduleList) {
-                    OperatorRoute operatorRoute =
-                            next.getBusRouteWeekday().getOperatorRoute();
-
-                    int operatorRouteId = operatorRoute.getOperatorRouteId();
-                    String OPERATOR_MID_CITY_CACHE = "operator_route_midcities_" + operatorRouteId;
-
-                    if(context.getAttribute(OPERATOR_MID_CITY_CACHE) == null) {
-                        ArrayList<OperatorRouteMidCity> operatorRouteMidCityList =
-                                OperatorRouteMidCity.collectAllRecords(
-                                        operatorRouteId,
-                                        next.getBus().getOperator().getOperatorId()
-                                );
-                        
-                        if(operatorRouteMidCityList == null) throw new IllegalArgumentException("Invalid Request");
-                        
-                        context.setAttribute(OPERATOR_MID_CITY_CACHE, operatorRouteMidCityList);
-                    }
-                    @SuppressWarnings("unchecked")
-                    ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = (ArrayList<OperatorRouteMidCity>) context.getAttribute(OPERATOR_MID_CITY_CACHE);
-
-                    System.out.println(operatorRouteMidCityList);
-                    operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
-                }
-
-                response.getWriter().println(new Gson().toJson(scheduleList));
-            }
+            if(isBefore) session.setAttribute(CACHE_ATTRIBUTE, scheduleList);
+            response.getWriter().println(new Gson().toJson(scheduleList));
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();

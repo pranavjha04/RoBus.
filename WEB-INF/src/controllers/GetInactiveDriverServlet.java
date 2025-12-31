@@ -25,30 +25,19 @@ public class GetInactiveDriverServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         String requestURLPath = request.getServletPath().substring(1);
-        Operator operator = (Operator) session.getAttribute("operator");
         boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestURL);
-
         try {
             if(session.getAttribute("operator") == null) {
                 throw new IllegalArgumentException("Invalid Request");
             }
-            final String CACHE_ATTRIBUTE = "inactiveDriverList";
+            Operator operator = (Operator) session.getAttribute("operator");
 
-            if(session.getAttribute(CACHE_ATTRIBUTE) == null) {
-                ArrayList<Driver> driverList = Driver.collectInactiveDrivers(operator.getOperatorId());
-                if(driverList == null) {
-                    throw new IllegalArgumentException("Invalid Request");
-                }
-                else {
-                    session.setAttribute(CACHE_ATTRIBUTE, driverList);
-                }
+            ArrayList<Driver> driverList = Driver.collectInactiveDrivers(operator.getOperatorId());
+            if(driverList == null) {
+                throw new IllegalArgumentException("Invalid Request");
             }
 
-            if(!isIncludeRequest) {
-                @SuppressWarnings("unchecked")  
-                ArrayList<Driver> list = (ArrayList<Driver>) session.getAttribute(CACHE_ATTRIBUTE);
-                response.getWriter().println(new Gson().toJson(list)); 
-            }
+            if(!isIncludeRequest) response.getWriter().println(new Gson().toJson(driverList)); 
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();

@@ -14,46 +14,30 @@ import java.util.ArrayList;
 import models.Operator;
 import models.Driver;
 
+import utils.AppUtil;
+
 import com.google.gson.Gson;
 
 @WebServlet("/get_active_drivers.do")
 public class GetActiveDriverServlet extends HttpServlet {
-    private static String[] acceptedIncludeRequestList = {"add_bus_schedule.do", "check_active_driver.do", "update_schedule_driver.do", "update_schedule_status.do"};
+    private static String[] acceptedIncludeRequestURL = {"add_bus_schedule.do", "check_inactive_driver.do", "update_schedule_driver.do", "update_schedule_status.do"};
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         String requestURLPath = request.getServletPath().substring(1);
-        Operator operator = (Operator) session.getAttribute("operator");
-        boolean isIncludeRequest = false;
-
-        for(String next : acceptedIncludeRequestList) {
-            if(requestURLPath.equals(next)) {
-                isIncludeRequest = true;
-                break;
-            }
-        }
-
+        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestURL);
         try {
             if(session.getAttribute("operator") == null) {
                 throw new IllegalArgumentException("Invalid Request");
             }
-            final String CACHE_ATTRIBUTE = "activeDriverList";
+            Operator operator = (Operator) session.getAttribute("operator");
 
-            if(session.getAttribute(CACHE_ATTRIBUTE) == null) {
-                ArrayList<Driver> driverList = Driver.collectActiveDrivers(operator.getOperatorId());
-                if(driverList == null) {
-                    throw new IllegalArgumentException("Invalid Request");
-                }
-                else {
-                    session.setAttribute(CACHE_ATTRIBUTE, driverList);
-                }
+            ArrayList<Driver> driverList = Driver.collectActiveDrivers(operator.getOperatorId());
+            if(driverList == null) {
+                throw new IllegalArgumentException("Invalid Request");
             }
 
-            if(!isIncludeRequest) {
-                @SuppressWarnings("unchecked")  
-                ArrayList<Driver> list = (ArrayList<Driver>) session.getAttribute(CACHE_ATTRIBUTE);
-                response.getWriter().println(new Gson().toJson(list));   
-            }
+            if(!isIncludeRequest) response.getWriter().println(new Gson().toJson(driverList)); 
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
@@ -68,14 +52,7 @@ public class GetActiveDriverServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String requestURLPath = request.getServletPath().substring(1);
 
-        boolean isIncludeRequest = false;
-        for(String next : acceptedIncludeRequestList) {
-            if(requestURLPath.equals(next)) {
-                isIncludeRequest = true;
-                break;
-            }
-        }
-
+        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestURL);
         if(session.getAttribute("operator") == null || !isIncludeRequest) {
             response.sendRedirect("/bts");
             return;
@@ -85,5 +62,4 @@ public class GetActiveDriverServlet extends HttpServlet {
             doGet(request, response);
         }
     }
-
 }

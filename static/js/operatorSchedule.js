@@ -207,7 +207,6 @@ scheduleTable.addEventListener("click", (e) => {
   const date = [year, month, day].join("-");
   const activeFilter =
     filterNavContainer.querySelector(".btn-primary").dataset.type;
-  console.log(activeFilter, date);
   const activeDate = cache[activeFilter][date]?.find(
     (schedule) => schedule.scheduleId === +scheduleId
   );

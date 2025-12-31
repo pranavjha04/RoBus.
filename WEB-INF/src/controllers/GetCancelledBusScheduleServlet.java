@@ -33,13 +33,8 @@ public class GetCancelledBusScheduleServlet extends HttpServlet {
         boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
 
         try {
-            if(session.getAttribute("operator") == null) {
-                throw new IllegalArgumentException("Invalid Request");   
-            }
-            if(request.getParameter("journey_date") == null) {
-                throw new IllegalArgumentException("Missing Parameter");
-            }
             int busId = -1;
+            
             if(isIncludeRequest) {
                 if(request.getAttribute("bus_id") == null) {
                     throw new IllegalArgumentException("Invalid Request");
@@ -53,43 +48,53 @@ public class GetCancelledBusScheduleServlet extends HttpServlet {
                 busId = Integer.parseInt(request.getParameter("bus_id"));
             }
             if(busId == -1) throw new IllegalArgumentException("Invalid Request");
+
             Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
+            Date currDate = new Date(System.currentTimeMillis());
+
+            boolean isBefore = journeyDate.toLocalDate().isBefore(currDate.toLocalDate());
             Operator operator = (Operator) session.getAttribute("operator");
 
             final String CACHE_ATTRIBUTE = "cancelled" + busId + "schedule_list" + journeyDate.toString();
+            ArrayList<Schedule> scheduleList = null;
 
-            if(session.getAttribute(CACHE_ATTRIBUTE) == null) {
-                ArrayList<Schedule> list = Schedule.collectBusScheduleRecords(journeyDate, busId, operator.getOperatorId(), 6);
-
-                if(list == null) {
-                    throw new IllegalArgumentException("Internal Server Error");
-                }
-                for(Schedule schedule : list) {
-                    OperatorRoute operatorRoute = schedule.getBusRouteWeekday().getOperatorRoute();
-                    int operatorRouteId = operatorRoute.getOperatorRouteId();
-                    String formattedAttribute = "operator_route_midcities" + operatorRouteId;
-                    
-                    if(session.getAttribute(formattedAttribute) == null) {
-                        request.setAttribute("operator_route_id", operatorRouteId);
-                        request.getRequestDispatcher("get_operator_route_mid_cities.do").include(request, response);
-                        if(session.getAttribute(formattedAttribute) == null) {
-                            throw new IllegalArgumentException("Invalid Request");
-                        }
-                        request.removeAttribute("operator_route_id");
-                    }
-
+            if(isBefore) {
+                if(session.getAttribute(CACHE_ATTRIBUTE) != null) {
                     @SuppressWarnings("unchecked")
-                    ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = (ArrayList<OperatorRouteMidCity>) session.getAttribute(formattedAttribute);
-
-                    operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
+                    ArrayList<Schedule> list = (ArrayList<Schedule>) session.getAttribute(CACHE_ATTRIBUTE);
+                    scheduleList = list;
+                    
+                    if(!isIncludeRequest) response.getWriter().println(new Gson().toJson(scheduleList));
+                    return;
                 }
-                session.setAttribute(CACHE_ATTRIBUTE, list);
             }
 
-            if(!isIncludeRequest) {
+            if(scheduleList == null) {
+                scheduleList = Schedule.collectBusScheduleRecords(journeyDate, busId, operator.getOperatorId(), 6);
+                if(scheduleList == null) throw new IllegalArgumentException("Internal Server Error");
+            }
+
+            for(Schedule schedule : scheduleList) {
+                OperatorRoute operatorRoute = schedule.getBusRouteWeekday().getOperatorRoute();
+                int operatorRouteId = operatorRoute.getOperatorRouteId();
+                    String formattedAttribute = "operator_route_midcities" + operatorRouteId;
+                    
+                if(session.getAttribute(formattedAttribute) == null) {
+                    request.setAttribute("operator_route_id", operatorRouteId);
+                    request.getRequestDispatcher("get_operator_route_mid_cities.do").include(request, response);
+                    if(session.getAttribute(formattedAttribute) == null) {
+                        throw new IllegalArgumentException("Invalid Request");
+                    }
+                }
+
                 @SuppressWarnings("unchecked")
-                ArrayList<Schedule> list = (ArrayList<Schedule>) session.getAttribute(CACHE_ATTRIBUTE);
-                response.getWriter().println(new Gson().toJson(list));
+                ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = (ArrayList<OperatorRouteMidCity>) session.getAttribute(formattedAttribute);
+
+                operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
+            }
+            if(isBefore) session.setAttribute(CACHE_ATTRIBUTE, scheduleList);
+            if(!isIncludeRequest) {
+                response.getWriter().println(new Gson().toJson(scheduleList));
             }
         }
         catch(IllegalArgumentException e) {
@@ -98,6 +103,9 @@ public class GetCancelledBusScheduleServlet extends HttpServlet {
                 response.getWriter().println("invalid");
             }
             return;
+        }
+        finally {
+            request.removeAttribute("operator_route_id");
         }
     } 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
