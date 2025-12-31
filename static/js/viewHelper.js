@@ -1382,6 +1382,7 @@ export class ViewHelper {
         dateStyle: "medium",
       }).format(new Date(date));
     };
+
     return `<div class="card ticket-card shadow-sm rounded-4 mb-3" data-booking-id="${bookingId}">
             <div class="card-body p-3">
               <div
@@ -1537,6 +1538,14 @@ export class ViewHelper {
   }) {
     const { busNumber } = bus;
     const { operatorRoute } = busRouteWeekday;
+    const { route } = operatorRoute;
+    const { source, destination } = route;
+    const totalDuration = operatorRoute.operatorRouteMidCities.reduce(
+      (acc, curr) => {
+        return acc + curr.haltingTime;
+      },
+      operatorRoute.route.duration
+    );
     return `<div class="aesthetic-card card-${status.name.toLowerCase()}">
             <div class="bus-identity">
               <div class="icon-box"><i class="bi bi-bus-front fs-3"></i></div>
@@ -1584,24 +1593,47 @@ export class ViewHelper {
             <div class="divider-v"></div>
             <div class="timeline-container">
               <div class="point">
-                <p class="time-bold">${getFormatedDuration(departureTime)}</p>
-                <p class="city-name">Jabalpur</p>
-                <p class="state-name">Madhya Pradesh</p>
+                <p class="time-bold">${getFormattedTime(departureTime)}</p>
+                <p class="city-name">${source.name}</p>
+                <p class="state-name">${source.state.name}</p>
               </div>
               <div class="duration-bridge">
                 <div class="dash-line"></div>
-                <span class="duration-text">$</span>
+                <span class="duration-text">${getFormatedDuration(
+                  totalDuration
+                )}</span>
               </div>
               <div class="point">
-                <p class="time-bold">${getFormatedDuration(arrivalTime)}</p>
-                <p class="city-name">Sagar</p>
-                <p class="state-name">Madhya Pradesh</p>
+                <p class="time-bold">${getFormattedTime(arrivalTime)}</p>
+                <p class="city-name">${destination.name}</p>
+                <p class="state-name">${destination.state.name}</p>
               </div>
             </div>
 
-            <button class="btn btn-purple px-4 py-2 fw-semibold rounded-pill">
+           ${
+             status.name === "Upcoming"
+               ? ` <button class="btn btn-warning px-4 py-2 fw-semibold rounded-pill">
+              Start Journey
+            </button>`
+               : ""
+           }
+           ${
+             status.name === "Ongoing"
+               ? ` <button class="btn btn-purple px-4 py-2 fw-semibold rounded-pill">
               End Journey
-            </button>
+            </button>`
+               : ""
+           }
+           ${
+             status.name === "Completed" || status.name === "Cancelled"
+               ? `<button
+              disabled
+              class="btn border px-4 py-2 fw-semibold rounded-pill"
+            >
+              No Actions
+            </button>`
+               : ""
+           }
           </div>`;
   }
 }

@@ -9,7 +9,6 @@ const infoContainer = document.querySelector("#info_container");
 const scheduleListContainer = document.querySelector(
   "#schedule_list_container"
 );
-const contentWrapper = document.querySelector("#content_wrapper");
 const filterContainer = document.querySelector("#filter_container");
 const dateRangePrev = document.querySelector("#date_range_back");
 const dateRangeText = document.querySelector("#date_range_display");
@@ -36,6 +35,12 @@ const enableFilter = () => {
   });
 };
 
+const resetFilter = () => {
+  [...filterContainer.children].forEach((child) => {
+    child.classList.remove("btn-primary");
+  });
+  filterContainer.firstElementChild.classList.add("btn-primary");
+};
 const startLoading = () => {
   disableFilter();
   scheduleListContainer.innerHTML = `<div class="mt-5 justify-content-center align-self-center">
@@ -51,13 +56,17 @@ const getActiveDate = () => {
 };
 
 const getFilteresList = (callback) => {
-  const filterResultList = [...modal.scheduleList].filter(callback);
+  const filterResultList = [...modal.schedule[getActiveDate()]].filter(
+    callback
+  );
+  console.log(filterResultList);
   displayScheduleList(filterResultList);
 };
 
 const displayEmptySchedulePage = () => {
   if (modal.schedule[getActiveDate()].length !== 0) return;
-  contentWrapper.innerHTML = `<div class="d-flex flex-column align-items-center justify-content-center text-center py-4 px-3">
+  disableFilter();
+  scheduleListContainer.innerHTML = `<div class="d-flex flex-column align-items-center justify-content-center text-center py-4 px-3">
         
         <div class="mb-3">
           <svg width="240" height="120" viewBox="0 0 240 120" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -91,7 +100,8 @@ const displayEmptySchedulePage = () => {
 };
 
 const displayErrorSchedulePage = () => {
-  contentWrapper.innerHTML = `
+  disableFilter();
+  scheduleListContainer.innerHTML = `
 <div class="d-flex flex-column align-items-center justify-content-center text-center py-5 px-3">
     
     <div class="mb-4">
@@ -168,7 +178,6 @@ const displayScheduleList = (list = []) => {
     displayEmptySchedulePage();
     return;
   }
-
   enableFilter();
   if (list.length === 0) {
     scheduleListContainer.innerHTML = `
@@ -197,12 +206,20 @@ const displayScheduleList = (list = []) => {
   </div>
   `;
   } else {
+    scheduleListContainer.innerHTML = list
+      .map(ViewHelper.getDriverScheduleRow)
+      .join("");
   }
 };
 
 const scheduleListFetching = async (firstTime = false) => {
   if (!firstTime) startLoading();
   try {
+    if (modal.schedule[getActiveDate()]) {
+      displayInfoContainer();
+      displayScheduleList(modal.schedule[getActiveDate()]);
+      return;
+    }
     const response = await getDriverScheduleRequest(
       createURLParams({
         journey_date: getActiveDate(),
@@ -214,6 +231,7 @@ const scheduleListFetching = async (firstTime = false) => {
     displayInfoContainer();
     displayScheduleList(modal.schedule[getActiveDate()]);
   } catch (err) {
+    toast.error(err.message);
     displayErrorSchedulePage();
   }
 };
@@ -289,7 +307,7 @@ filterContainer.addEventListener("click", (e) => {
 
   switch (type) {
     case "all": {
-      displayScheduleList(modal.scheduleList);
+      displayScheduleList(modal.schedule[getActiveDate()]);
       break;
     }
     case "upcoming": {
@@ -298,6 +316,7 @@ filterContainer.addEventListener("click", (e) => {
     }
     case "ongoing": {
       getFilteresList(({ status }) => status.name === "Ongoing");
+      break;
     }
     case "completed": {
       getFilteresList(({ status }) => status.name === "Completed");
@@ -321,6 +340,19 @@ dateRangeNext.addEventListener("click", () => {
 dateRangePrev.addEventListener("click", () => {
   range -= 7;
   updateDateRange();
+});
+
+dateRangeContainer.addEventListener("click", (e) => {
+  const target = e.target.closest("button");
+  if (!target || target.classList.contains("active")) return;
+
+  dateRangeContainer.childNodes.forEach((child) => {
+    child.classList.remove("active");
+  });
+
+  target.classList.add("active");
+  resetFilter();
+  showActiveDateRecord();
 });
 const init = async () => {
   try {

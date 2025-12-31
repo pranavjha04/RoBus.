@@ -76,7 +76,7 @@ public class GetDriverScheduleServlet extends HttpServlet {
                     System.out.println(operatorRouteMidCityList);
                     operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
                 }
-                response.getWriter().println(list);
+                response.getWriter().println(new Gson().toJson(list));
             }
             else {
                 ArrayList<Schedule> scheduleList = Schedule.getSchedulesByDriverUser(user.getUserId(), journeyDate);

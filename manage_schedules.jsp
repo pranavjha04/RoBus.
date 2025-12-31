@@ -59,6 +59,7 @@
         align-items: center;
         transition: all 0.3s ease;
         border: 1px solid rgba(0, 0, 0, 0.02);
+        animation: fadeSlide 0.3s ease;
       }
 
       /* Status Left-Borders */
@@ -421,171 +422,10 @@
           </button>
         </div>
 
-        <div id="schedule_list_container" class="mt-4 d-flex flex-column gap-2">
-          <div class="aesthetic-card card-ongoing">
-            <div class="bus-identity">
-              <div class="icon-box"><i class="bi bi-bus-front fs-3"></i></div>
-              <div>
-                <div class="label-tiny">Schedule ID: 32</div>
-                <p class="val-bold">MH-12-AS-9090</p>
-              </div>
-            </div>
-
-            <div class="data-block text-center">
-              <span
-                class="badge bg-purple-subtle bg-opacity-10 text-purple border-purple"
-                >Ongoing</span
-              >
-            </div>
-            <div class="divider-v"></div>
-            <div class="timeline-container">
-              <div class="point">
-                <p class="time-bold">08:43 PM</p>
-                <p class="city-name">Jabalpur</p>
-                <p class="state-name">Madhya Pradesh</p>
-              </div>
-              <div class="duration-bridge">
-                <div class="dash-line"></div>
-                <span class="duration-text">4h 6mins</span>
-              </div>
-              <div class="point">
-                <p class="time-bold">12:49 AM</p>
-                <p class="city-name">Sagar</p>
-                <p class="state-name">Madhya Pradesh</p>
-              </div>
-            </div>
-
-            <button class="btn btn-purple px-4 py-2 fw-semibold rounded-pill">
-              End Journey
-            </button>
-          </div>
-
-          <div class="aesthetic-card card-upcoming">
-            <div class="bus-identity">
-              <div class="icon-box"><i class="bi bi-bus-front fs-3"></i></div>
-              <div>
-                <div class="label-tiny">Trip ID: #RT-5011</div>
-                <p class="val-bold">KA-01-MG-1234</p>
-              </div>
-            </div>
-
-            <div class="data-block text-center">
-              <span
-                class="badge bg-warning bg-opacity-10 text-warning small border border-warning"
-                >Upcoming</span
-              >
-            </div>
-
-            <div class="divider-v"></div>
-            <div class="timeline-container">
-              <div class="point">
-                <p class="time-bold">10:30 PM</p>
-                <p class="city-name">Pune</p>
-                <p class="state-name">Maharashtra</p>
-              </div>
-              <div class="duration-bridge">
-                <div class="dash-line"></div>
-                <span class="duration-text">14h 20mins</span>
-              </div>
-              <div class="point">
-                <p class="time-bold">12:50 PM</p>
-                <p class="city-name">Bangalore</p>
-                <p class="state-name">Karnataka</p>
-              </div>
-            </div>
-
-            <button class="btn btn-warning px-4 py-2 fw-semibold rounded-pill">
-              Start Journey
-            </button>
-          </div>
-
-          <div class="aesthetic-card card-completed">
-            <div class="bus-identity">
-              <div class="icon-box"><i class="bi bi-bus-front fs-3"></i></div>
-              <div>
-                <div class="label-tiny">Trip ID: #RT-2210</div>
-                <p class="val-bold">MP-20-HA-4455</p>
-              </div>
-            </div>
-            <div class="data-block text-center">
-              <span
-                class="badge bg-success-subtle bg-opacity-10 text-success border-success border"
-                >Completed</span
-              >
-            </div>
-            <div class="divider-v"></div>
-
-            <div class="timeline-container">
-              <div class="point">
-                <p class="time-bold text-muted">06:00 AM</p>
-                <p class="city-name">Bhopal</p>
-                <p class="state-name">Madhya Pradesh</p>
-              </div>
-              <div class="duration-bridge">
-                <div class="dash-line"></div>
-                <span class="duration-text">3h 30m</span>
-              </div>
-              <div class="point">
-                <p class="time-bold text-muted">09:30 AM</p>
-                <p class="city-name">Indore</p>
-                <p class="state-name">Madhya Pradesh</p>
-              </div>
-            </div>
-
-            <button
-              disabled
-              class="btn border px-4 py-2 fw-semibold rounded-pill"
-            >
-              No Actions
-            </button>
-          </div>
-          <div class="aesthetic-card card-cancelled">
-            <div class="bus-identity">
-              <div class="icon-box" style="background: #fee2e2; color: #dc2626">
-                <i class="bi bi-bus-front-fill fs-3"></i>
-              </div>
-              <div>
-                <div class="label-tiny">Trip ID: #RT-1102</div>
-                <p class="val-bold">UP-32-BZ-5544</p>
-              </div>
-            </div>
-
-            <div class="data-block text-center">
-              <span
-                class="badge bg-danger-subtle bg-opacity-10 text-danger border-danger border"
-                >Cancelled</span
-              >
-            </div>
-            <div class="divider-v"></div>
-            <div class="timeline-container" style="opacity: 0.6">
-              <div class="point">
-                <p class="time-bold">04:00 PM</p>
-                <p class="city-name">Indore</p>
-                <p class="state-name">Madhya Pradesh</p>
-              </div>
-              <div class="duration-bridge">
-                <div class="dash-line" style="border-color: #f87171"></div>
-                <span
-                  class="duration-text"
-                  style="color: #dc2626; text-decoration: line-through"
-                  >8h 30mins</span
-                >
-              </div>
-              <div class="point">
-                <p class="time-bold">12:30 AM</p>
-                <p class="city-name">Gwalior</p>
-                <p class="state-name">Madhya Pradesh</p>
-              </div>
-            </div>
-
-            <button
-              disabled
-              class="btn border px-4 py-2 fw-semibold rounded-pill"
-            >
-              No Actions
-            </button>
-          </div>
-        </div>
+        <div
+          id="schedule_list_container"
+          class="mt-4 d-flex flex-column gap-2"
+        ></div>
       </div>
     </div>
     <script type="module" src="static/js/manageDriverSchedule.js"></script>
