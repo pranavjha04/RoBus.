@@ -50,49 +50,35 @@ public class GetUpcomingBusScheduleServlet extends HttpServlet {
             if(busId == -1) throw new IllegalArgumentException("Invalid Request");
 
             Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
-            Date currDate = new Date(System.currentTimeMillis());
-
-            boolean isBefore = journeyDate.toLocalDate().isBefore(currDate.toLocalDate());
             Operator operator = (Operator) session.getAttribute("operator");
 
-            final String CACHE_ATTRIBUTE = "upcoming" + busId + "schedule_list" + journeyDate.toString();
-            ArrayList<Schedule> scheduleList = null;
+            ArrayList<Schedule> scheduleList = Schedule.collectBusScheduleRecords(journeyDate, busId, operator.getOperatorId(), 11);
 
-            if(isBefore) {
-                if(session.getAttribute(CACHE_ATTRIBUTE) != null) {
-                    @SuppressWarnings("unchecked")
-                    ArrayList<Schedule> list = (ArrayList<Schedule>) session.getAttribute(CACHE_ATTRIBUTE);
-                    scheduleList = list;
-                    
-                    if(!isIncludeRequest) response.getWriter().println(new Gson().toJson(scheduleList));
-                    return;
-                }
-            }
+            if(scheduleList == null) throw new IllegalArgumentException("Internal Server Error");
 
-            if(scheduleList == null) {
-                scheduleList = Schedule.collectBusScheduleRecords(journeyDate, busId, operator.getOperatorId(), 11);
-                if(scheduleList == null) throw new IllegalArgumentException("Internal Server Error");
-            }
+            for(Schedule next : scheduleList) {
+                OperatorRoute operatorRoute = next.getBusRouteWeekday().getOperatorRoute();
 
-            for(Schedule schedule : scheduleList) {
-                OperatorRoute operatorRoute = schedule.getBusRouteWeekday().getOperatorRoute();
                 int operatorRouteId = operatorRoute.getOperatorRouteId();
-                    String formattedAttribute = "operator_route_midcities" + operatorRouteId;
-                    
-                if(session.getAttribute(formattedAttribute) == null) {
-                    request.setAttribute("operator_route_id", operatorRouteId);
-                    request.getRequestDispatcher("get_operator_route_mid_cities.do").include(request, response);
-                    if(session.getAttribute(formattedAttribute) == null) {
-                        throw new IllegalArgumentException("Invalid Request");
-                    }
-                }
+                String OPERATOR_MID_CITY_CACHE = "operator_route_midcities_" + operatorRouteId;
 
+                if(session.getAttribute(OPERATOR_MID_CITY_CACHE) == null) {
+                    ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = 
+                                    OperatorRouteMidCity.collectAllRecords(
+                                        operatorRouteId,
+                                        operator.getOperatorId()
+                    );
+                        
+                    if(operatorRouteMidCityList == null) throw new IllegalArgumentException("Invalid Request");
+                        
+                    session.setAttribute(OPERATOR_MID_CITY_CACHE, operatorRouteMidCityList);
+                }
                 @SuppressWarnings("unchecked")
-                ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = (ArrayList<OperatorRouteMidCity>) session.getAttribute(formattedAttribute);
+                ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = (ArrayList<OperatorRouteMidCity>) session.getAttribute(OPERATOR_MID_CITY_CACHE);
 
                 operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
             }
-            if(isBefore) session.setAttribute(CACHE_ATTRIBUTE, scheduleList);
+
             if(!isIncludeRequest) {
                 response.getWriter().println(new Gson().toJson(scheduleList));
             }
@@ -103,9 +89,6 @@ public class GetUpcomingBusScheduleServlet extends HttpServlet {
                 response.getWriter().println("invalid");
             }
             return;
-        }
-        finally {
-            request.removeAttribute("operator_route_id");
         }
     } 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

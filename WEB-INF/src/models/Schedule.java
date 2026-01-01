@@ -338,6 +338,8 @@ public class Schedule {
                         "JOIN buses b ON sch.bus_id = b.bus_id " + 
                         "JOIN status bs ON b.status_id = bs.status_id " +
                         "JOIN manufacturers m ON b.manufacturer_id = m.manufacturer_id " +
+                        // operator
+                        "JOIN operators o ON b.operator_id = o.operator_id " +
                         // drivers
                         "JOIN drivers dr ON sch.driver_id = dr.driver_id " +
                         "JOIN users u ON dr.user_id = u.user_id " +
@@ -444,6 +446,13 @@ public class Schedule {
                         rs.getString("bs.name")
                     )
                 );
+
+                bus.setOperator(new Operator(
+                        rs.getInt("o.operator_id"), 
+                        rs.getString("o.full_name"), 
+                        rs.getString("o.email"), 
+                        rs.getString("o.contact")
+                ));
                 Status scheduleStatus = new Status(
                     rs.getInt("schs.status_id"),
                     rs.getString("schs.name")
@@ -475,7 +484,7 @@ public class Schedule {
         }
         return schedule;
     }
-    public static ArrayList<Schedule> getSchedulesByDriverUser(int driverId, Date journeyDate) {
+    public static ArrayList<Schedule> getSchedulesByDriverUser(int userId, Date journeyDate) {
         ArrayList<Schedule> list = new ArrayList<>();
         try {
             Connection con = DBManager.getConnection();
@@ -501,9 +510,9 @@ public class Schedule {
                         "JOIN cities d ON r.destination = d.city_id " +
                         "JOIN states ds ON d.state_id = ds.state_id " +
                         "JOIN status st ON st.status_id = opr.status_id " +
-                        "WHERE u.user_id=? AND sch.journey_date=?";
+                        "WHERE dr.user_id=? AND sch.journey_date=?";
             PreparedStatement ps = con.prepareStatement(query);
-            ps.setInt(1, driverId);
+            ps.setInt(1, userId);
             ps.setDate(2, journeyDate);
 
             ResultSet rs = ps.executeQuery();

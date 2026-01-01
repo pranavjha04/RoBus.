@@ -1,7 +1,7 @@
 class Toast {
   #parentElement;
-  defaultDelay = 3000; // visible time
-  exitDuration = 300; // animation time
+  defaultDelay = 3000;
+  exitDuration = 300;
 
   constructor() {
     this.#parentElement = document.querySelector(".toast-container");
@@ -13,9 +13,17 @@ class Toast {
       el.style.top = "1rem";
       el.style.right = "1rem";
       el.style.zIndex = "9999";
+      el.style.display = "flex";
+      el.style.flexDirection = "column";
+      el.style.gap = "0.5rem";
       document.body.appendChild(el);
       this.#parentElement = el;
     }
+
+    this.#parentElement.addEventListener(
+      "click",
+      this.#removeToastEvent.bind(this)
+    );
   }
 
   #createToast(message, type) {
@@ -25,16 +33,29 @@ class Toast {
     toast.innerHTML = `
       <div class="rht-bar"></div>
       <div class="rht-content">${message}</div>
-      <button class="rht-close">&times;</button>
+      <button class="rht-close" aria-label="Close">&times;</button>
     `;
 
-    toast.querySelector(".rht-close").onclick = () => this.#removeToast(toast);
+    toast.querySelector(".rht-close").onclick = (e) => {
+      e.stopPropagation();
+      this.#removeToast(toast);
+    };
+
     return toast;
   }
 
   #removeToast(el) {
+    if (!el || el.classList.contains("rht-exit")) return;
+
     el.classList.add("rht-exit");
     setTimeout(() => el.remove(), this.exitDuration);
+  }
+
+  #removeToastEvent(e) {
+    const toast = e.target.closest(".rht-toast");
+    if (!toast) return;
+
+    this.#removeToast(toast);
   }
 
   #show(message, type, delay) {
@@ -47,12 +68,15 @@ class Toast {
   success(msg, delay) {
     this.#show(msg, "success", delay);
   }
+
   error(msg, delay) {
     this.#show(msg, "error", delay);
   }
+
   warning(msg, delay) {
     this.#show(msg, "warning", delay);
   }
+
   normal(msg, delay) {
     this.#show(msg, "normal", delay);
   }

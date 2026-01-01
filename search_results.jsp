@@ -238,6 +238,7 @@ prefix="e" uri="bts" %>
         min-width: 260px;
         width: 260px;
         max-width: 260px;
+        justify-content: center;
       }
 
       .seater_seat {

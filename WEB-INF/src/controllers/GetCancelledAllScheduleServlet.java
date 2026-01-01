@@ -42,29 +42,10 @@ public class GetCancelledAllScheduleServlet extends HttpServlet {
             }
 
             Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
-            Date currDate = new Date(System.currentTimeMillis());
             Operator operator = (Operator) session.getAttribute("operator");
 
-            ArrayList<Schedule> scheduleList = null;
-            
-            final String CACHE_ATTRIBUTE = "cancelled_schedule_list" + journeyDate.toString();
-            boolean isBefore = journeyDate.toLocalDate().isBefore(currDate.toLocalDate());
-
-            if(isBefore) {
-                if(session.getAttribute(CACHE_ATTRIBUTE) != null) {
-                    @SuppressWarnings("unchecked")
-                    ArrayList<Schedule> list = (ArrayList<Schedule>) session.getAttribute(CACHE_ATTRIBUTE);
-                    scheduleList = list;
-                    
-                    if(!isIncludeRequest) response.getWriter().println(new Gson().toJson(scheduleList));
-                    return;
-                }
-            }
-
-            if(scheduleList == null) {
-                scheduleList = Schedule.collectAllScheduleRecords(journeyDate, operator.getOperatorId(), 6);
-                if(scheduleList == null) throw new IllegalArgumentException("Internal Server Error");
-            }
+            ArrayList<Schedule> scheduleList = Schedule.collectAllScheduleRecords(journeyDate, operator.getOperatorId(), 6);
+            if(scheduleList == null) throw new IllegalArgumentException("Internal Server Error");
  
             for(Schedule next : scheduleList) {
                 OperatorRoute operatorRoute = next.getBusRouteWeekday().getOperatorRoute();
@@ -89,7 +70,6 @@ public class GetCancelledAllScheduleServlet extends HttpServlet {
                 operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
             }
 
-            if(isBefore) session.setAttribute(CACHE_ATTRIBUTE, scheduleList);
             if(!isIncludeRequest) response.getWriter().println(new Gson().toJson(scheduleList));
         }
         catch(IllegalArgumentException e) {

@@ -52,33 +52,15 @@ public class BookTicketServlet extends HttpServlet {
             int destination = Integer.parseInt(request.getParameter("destination"));
             Map<Integer, Pair> selectedSeats = AppUtil.getFormattedSeatChargeRecord(request.getParameterValues("seat"));
 
-            String SCHEDULE_CACHE_KEY =
-                        "upcoming_schedule_" + source + "_" + destination + "_" + journeyDate;
             String SCHEDULE_BOOKED_SEAT_CACHE_KEY = "booked_schedule" + scheduleId;
             
             /* VALIDATION */
             // 1) validate  schedule    
                 // check if schedule exist also it's status is upcoming
             
-            Schedule schedule = null;
-            if(context.getAttribute(SCHEDULE_CACHE_KEY) != null) {
-                @SuppressWarnings("unchecked")
-                ArrayList<Schedule> scheduleList = (ArrayList<Schedule>) context.getAttribute(SCHEDULE_CACHE_KEY);
+            Schedule schedule = Schedule.getRecordByStatus(scheduleId, 11);
+            if(schedule == null) throw new IllegalArgumentException("Missing Schedule");
 
-                for(Schedule next : scheduleList) {
-                    if(next.getScheduleId().equals(scheduleId)) {
-                        schedule = next;
-                        break;
-                    }
-                }
-                
-            }
-            
-            if(schedule == null) {
-                schedule = Schedule.getRecordByStatus(scheduleId, 11);
-                if(schedule == null) throw new IllegalArgumentException("Missing Schedule");
-            }
-            
             // 2) validate selectedSeats
             // check if it's not already booked
             for(int seatNumber : selectedSeats.keySet()) {
@@ -169,21 +151,6 @@ public class BookTicketServlet extends HttpServlet {
             }
 
             schedule.setBookedSeatList(BookedSeat.collectAllRecords(scheduleId));
-            System.out.print(schedule.getBookedSeatList());
-
-            if(context.getAttribute(SCHEDULE_CACHE_KEY) != null) {
-                @SuppressWarnings("unchecked")
-                ArrayList<Schedule> availableScheduleList = (ArrayList<Schedule>) context.getAttribute(SCHEDULE_CACHE_KEY);
-
-                ArrayList<Schedule> newCacheList = new ArrayList<>();
-                for(Schedule next : availableScheduleList) {
-                    if(next.getScheduleId().equals(schedule.getScheduleId())) {
-                        next.setBookedSeatList(schedule.getBookedSeatList());
-                        break;
-                    }
-                }   
-            }
-
             context.setAttribute(SCHEDULE_BOOKED_SEAT_CACHE_KEY, schedule.getBookedSeatList());
             
             response.getWriter().println("ok");
@@ -197,6 +164,9 @@ public class BookTicketServlet extends HttpServlet {
             e.printStackTrace();
             response.getWriter().println("missing");
             return;
+        }
+        catch(Exception e) {
+            e.printStackTrace();
         }
     }
 }

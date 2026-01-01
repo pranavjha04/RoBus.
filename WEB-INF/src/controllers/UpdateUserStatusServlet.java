@@ -11,11 +11,8 @@ import java.io.IOException;
 
 import models.User;
 
-import utils.AppUtil;
-
 @WebServlet("/update_user_status.do")
 public class UpdateUserStatusServlet extends HttpServlet {
-    private static String[] acceptedIncludeRequestURL = {"update_driver_status.do", "add_bus_schedule.do", "update_schedule_driver.do", "update_schedule_status.do"};
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
@@ -24,61 +21,19 @@ public class UpdateUserStatusServlet extends HttpServlet {
             response.sendRedirect("/bts");
             return;
         }
-        String requestURLPath = request.getServletPath().substring(1);
-        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestURL);
 
-        int userId = -1;
-        int statusId = -1;
         try {
-            if(isIncludeRequest) {
-                if(
-                    request.getAttribute("status_id") != null 
-                    && 
-                    request.getAttribute("user_id") != null
-                ) {
-                    userId = (Integer) request.getAttribute("user_id");
-                    statusId = (Integer) request.getAttribute("status_id");
-                }
-                else {
-                    throw new IllegalArgumentException("Invalid Request");
-                }
-            }
-            else {
-                if(
-                    request.getParameter("status_id") != null 
-                    && 
-                    request.getParameter("user_id") != null
-                ) {
-                    userId = Integer.parseInt(request.getParameter("user_id"));
-                    statusId = Integer.parseInt(request.getParameter("status_id"));
-                }
-                else {
-                    throw new IllegalArgumentException("Invalid Request");
-                }
-            }
-            if(userId == -1 || statusId == -1) throw new IllegalArgumentException("Invalid Request");
+            int userId = Integer.parseInt(request.getParameter("user_id"));
+            int statusId = Integer.parseInt(request.getParameter("status_id"));
 
             boolean isUpdated = User.updateStatus(userId, statusId);
-            if(!isUpdated) {
-                throw new IllegalArgumentException("Invalid Request");
-            }
-            else {
-                if(isIncludeRequest) {
-                    request.setAttribute("isUpdated", true);
-                }
-                else {
-                    response.getWriter().println("ok");
-                }
-            }
+            if(!isUpdated) throw new IllegalArgumentException("Invalid Request");
+
+            response.getWriter().println("ok");
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
-            if(isIncludeRequest) {
-                request.setAttribute("isUpdated", false);
-            }
-            else {
-                response.getWriter().println("invalid");
-            }
+            response.getWriter().println("invalid");
         }
        
     }

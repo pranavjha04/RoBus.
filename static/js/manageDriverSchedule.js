@@ -1,7 +1,10 @@
 import { toast } from "./toast.js";
 import { PageLoading } from "./pageLoading.js";
 import { PageError } from "./pageError.js";
-import { getDriverScheduleRequest } from "./service.js";
+import {
+  getDriverScheduleRequest,
+  updateScheduleStatusRequest,
+} from "./service.js";
 import { ViewHelper } from "./viewHelper.js";
 import { createURLParams } from "./util.js";
 
@@ -38,8 +41,10 @@ const enableFilter = () => {
 const resetFilter = () => {
   [...filterContainer.children].forEach((child) => {
     child.classList.remove("btn-primary");
+    child.classList.add("btn-outline-primary");
   });
   filterContainer.firstElementChild.classList.add("btn-primary");
+  filterContainer.firstElementChild.classList.remove("btn-outline-primary");
 };
 const startLoading = () => {
   disableFilter();
@@ -53,6 +58,10 @@ const getActiveDate = () => {
   const { day, month, year } = activeDate.dataset;
   const formattedDate = [year, month, day].join("-");
   return formattedDate;
+};
+
+const clearActiveDateCache = () => {
+  modal.schedule[getActiveDate()] = null;
 };
 
 const getFilteresList = (callback) => {
@@ -216,6 +225,7 @@ const scheduleListFetching = async (firstTime = false) => {
   if (!firstTime) startLoading();
   try {
     if (modal.schedule[getActiveDate()]) {
+      resetFilter();
       displayInfoContainer();
       displayScheduleList(modal.schedule[getActiveDate()]);
       return;
@@ -355,7 +365,7 @@ dateRangeContainer.addEventListener("click", (e) => {
   showActiveDateRecord();
 });
 
-scheduleListContainer.addEventListener("click", (e) => {
+scheduleListContainer.addEventListener("click", async (e) => {
   const target = e.target.closest("button");
   if (!target || !target.closest("[data-schedule-id]")) return;
 
@@ -370,7 +380,30 @@ scheduleListContainer.addEventListener("click", (e) => {
   const { status } = targetSchedule;
   if (status.name === "Completed" || status.name === "Cancelled") return;
 
-  
+  const paramScheduleHelper = {
+    Upcoming: 12,
+    Ongoing: 13,
+  };
+  try {
+    target.disabled = true;
+    const response = await updateScheduleStatusRequest({
+      schedule_id: +targetScheduleId,
+      status_id: paramScheduleHelper[targetSchedule.status.name],
+      operator_id: targetSchedule.bus.operator.operatorId,
+    });
+    target.disabled = false;
+
+    if (response === "ok") {
+      clearActiveDateCache();
+      showActiveDateRecord();
+    } else {
+      throw new Error("Invalid Request");
+    }
+  } catch (err) {
+    toast.error(err.message);
+  } finally {
+    target.disabled = false;
+  }
 });
 
 const init = async () => {

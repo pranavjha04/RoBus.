@@ -51,27 +51,13 @@ public class CheckValidScheduleTimingServlet extends HttpServlet {
             Time departureTime = Time.valueOf(request.getParameter("departure_time"));
             Time arrivalTime = Time.valueOf(request.getParameter("arrival_time"));
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));  
-            final String CACHE_ATTRIBUTE = "upcoming" + busId + "schedule_list" + journeyDate.toString();
         
             if(!FieldManager.validateScheduleDate(journeyDate.toString())) {
                 throw new IllegalArgumentException("Invalid Date");
             }
 
-            if(session.getAttribute(CACHE_ATTRIBUTE) == null) {
-                request.setAttribute("bus_id", busId);
-                request.getRequestDispatcher("get_upcoming_bus_schedule.do").include(request, response);
-                if(session.getAttribute(CACHE_ATTRIBUTE) == null) {
-                    throw new IllegalArgumentException("Invalid Request");
-                }
-                request.removeAttribute("bus_id");
-            }
-            
-            @SuppressWarnings("unchecked")
-            ArrayList<Schedule> scheduleList = (ArrayList<Schedule>) session.getAttribute(CACHE_ATTRIBUTE);
-
-            if(scheduleList == null) {
-                throw new IllegalArgumentException("Invalid Parameter");
-            }
+            ArrayList<Schedule> scheduleList = Schedule.collectBusScheduleRecords(journeyDate, busId, operator.getOperatorId(), 11);
+            if(scheduleList == null) throw new IllegalArgumentException("Internal Server Error");
             
             for (Schedule schedule : scheduleList) {
                     LocalTime newStart = departureTime.toLocalTime();

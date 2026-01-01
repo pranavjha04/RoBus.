@@ -104,9 +104,9 @@ public class AddBusScheduleServlet extends HttpServlet {
                     throw new IllegalArgumentException("Invalid Request");
                 }
             }
-            if(session.getAttribute("bus_route_weekday_list" + operatorRouteId) == null) {
+            if(context.getAttribute("bus_route_weekday_list" + operatorRouteId) == null) {
                 request.getRequestDispatcher("get_bus_route_weekday_all.do").include(request, response);
-                if(session.getAttribute("bus_route_weekday_list" + operatorRouteId) == null) {
+                if(context.getAttribute("bus_route_weekday_list" + operatorRouteId) == null) {
                     throw new IllegalArgumentException("Invalid Request");
                 }
             }
@@ -115,7 +115,7 @@ public class AddBusScheduleServlet extends HttpServlet {
             ArrayList<BusFareFactor> busFareFactorList = (ArrayList<BusFareFactor>) context.getAttribute("bus_fare_factor_list"+ busId);
 
             @SuppressWarnings("unchecked")
-            ArrayList<BusRouteWeekday> busRouteWeekdayList = (ArrayList<BusRouteWeekday>) session.getAttribute("bus_route_weekday_list" + operatorRouteId);
+            ArrayList<BusRouteWeekday> busRouteWeekdayList = (ArrayList<BusRouteWeekday>) context.getAttribute("bus_route_weekday_list" + operatorRouteId);
             
             int distance = 0;
             Integer source = null;
@@ -152,25 +152,12 @@ public class AddBusScheduleServlet extends HttpServlet {
             if(isDriverStatusUpdated == null || !((Boolean) isDriverStatusUpdated)) {
                 throw new IllegalArgumentException("Invalid Request");
             }
-            
     
             /* -------- ADD QUERY -------- */
             boolean isScheduled = Schedule.addRecord(journeyDate, departureTime, arrivalTime, additionalCharges, sleeperFare, seaterFare, totalCharges, busId, driverId, busRouteWeekdayId);
 
             if(!isScheduled) throw new IllegalArgumentException("Internal Server Error");
 
-            // clear cache
-            String[] clearCahceAttributeList = {
-                "upcoming_schedule_list" + journeyDate.toString(),
-                "upcoming" + busId + "schedule_list" + journeyDate.toString()
-            };
-
-            context.removeAttribute("upcoming_schedule_" + source + "_" + destination + "_" + journeyDate);
-            
-            for(String attribute : clearCahceAttributeList) {
-                session.removeAttribute(attribute);
-            }
-        
             response.getWriter().println("ok");
         }
         catch(IllegalArgumentException e) {

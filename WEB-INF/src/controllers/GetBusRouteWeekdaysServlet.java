@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletException;
+import javax.servlet.ServletContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,25 +27,27 @@ public class GetBusRouteWeekdaysServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String requestURLPath = request.getServletPath().substring(1);
         boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
+        ServletContext context = getServletContext();
 
         try {
             if(session.getAttribute("operator") == null) {
                 throw new IllegalArgumentException("Invalid  Request");
             }
+
             Integer operatorRouteId = Integer.parseInt(request.getParameter("operator_route_id"));
             Operator operator = (Operator) session.getAttribute("operator");
             Integer operatorId = operator.getOperatorId();
 
-            if(session.getAttribute("bus_route_weekday_list" + operatorRouteId) == null) {
+            if(context.getAttribute("bus_route_weekday_list" + operatorRouteId) == null) {
                 ArrayList<BusRouteWeekday> busRouteWeekdayList = BusRouteWeekday.collectAllRecords(operatorRouteId, operatorId);
                 
                 if(busRouteWeekdayList == null) throw new IllegalArgumentException("Invalid");
-                session.setAttribute("bus_route_weekday_list" + operatorRouteId, busRouteWeekdayList);
+                context.setAttribute("bus_route_weekday_list" + operatorRouteId, busRouteWeekdayList);
             }
 
             if(!isIncludeRequest) {
                 @SuppressWarnings("unchecked")
-                ArrayList<BusRouteWeekday> list = (ArrayList<BusRouteWeekday>) session.getAttribute("bus_route_weekday_list" + operatorRouteId);
+                ArrayList<BusRouteWeekday> list = (ArrayList<BusRouteWeekday>) context.getAttribute("bus_route_weekday_list" + operatorRouteId);
                 response.getWriter().println(new Gson().toJson(list));
             }
         }

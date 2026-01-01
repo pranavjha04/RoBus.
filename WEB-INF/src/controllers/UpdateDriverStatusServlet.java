@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import models.Operator;
 import models.Driver;
+import models.User;
 import models.Status;
 
 import utils.AppUtil;
@@ -21,7 +22,7 @@ import com.google.gson.Gson;
 
 @WebServlet("/update_driver_status.do")
 public class UpdateDriverStatusServlet extends HttpServlet {
-    private static String[] acceptedIncludeRequestURL = {"add_bus_schedule.do", "update_schedule_driver.do", "update_schedule_status.do"};
+    private static String[] acceptedIncludeRequestURL = {"add_bus_schedule.do"};
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         if(session.getAttribute("operator") == null) {
@@ -54,13 +55,8 @@ public class UpdateDriverStatusServlet extends HttpServlet {
                 if(driver == null) throw new IllegalArgumentException("Invalid Request");
             }
 
-            request.setAttribute("user_id", driver.getUser().getUserId());
-            request.getRequestDispatcher("update_user_status.do").include(request, response);
-
-            Object obj = request.getAttribute("isUpdated");
-            if(obj == null || !((Boolean) obj)) {
-                throw new IllegalArgumentException("Invalid Request");
-            }
+            boolean isStatusUpdated = User.updateStatus(driver.getUser().getUserId(), statusId); 
+            if(!isStatusUpdated) throw new IllegalArgumentException("Invalid Request");
 
             if(isIncludeRequest) {
                 request.setAttribute("isUpdated", true);
@@ -77,9 +73,6 @@ public class UpdateDriverStatusServlet extends HttpServlet {
             else {
                 response.getWriter().println("invalid");
             }
-        }
-        finally {
-            request.removeAttribute("user_id");
         }
     }
 }

@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 import models.Operator;
 import models.Schedule;
 import models.Status;
-import models.Driver;
+import models.User;
 import models.Booking;
 
 import exceptions.MissingParameterException;
@@ -26,7 +26,7 @@ import exceptions.MissingParameterException;
 
 @WebServlet("/update_schedule_status.do")
 public class UpdateScheduleStatusServlet extends HttpServlet {
-    private static String[] acceptedParametersList = {"journey_date", "schedule_id", "status_id", "bus_id"};
+    private static String[] acceptedParametersList = {"schedule_id", "status_id"};
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         ServletContext context = getServletContext();
@@ -54,68 +54,28 @@ public class UpdateScheduleStatusServlet extends HttpServlet {
                 }
             }
 
-            Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
-            Date currDate = new Date(System.currentTimeMillis());
+
             Integer scheduleId = Integer.parseInt(request.getParameter("schedule_id"));
             Integer statusId = Integer.parseInt(request.getParameter("status_id"));
-            Integer busId = Integer.parseInt(request.getParameter("bus_id"));
-
-            boolean isBefore = journeyDate.toLocalDate().isBefore(currDate.toLocalDate());
+            Schedule currSchedule = Schedule.getRecord(scheduleId, operatorId);
+            if(currSchedule == null) throw new IllegalArgumentException("Invalid Request");
 
             switch(statusId) {
                 case 6 : { // cancelled
-                    final String ALL_INCOMING_SCHEDULE_LIST = "upcoming_schedule_list" + journeyDate.toString();
-                    final String BUS_INCOMING_SCHEDULE_LIST = "upcoming" + busId + "schedule_list" + journeyDate.toString();
-
-                    final String ALL_CANCELLED_SCHEDULE_LIST = "cancelled_schedule_list" + journeyDate.toString();
-                    final String BUS_CANCELLED_SCHEDULE_LIST = "cancelled" + busId + "schedule_list" + journeyDate.toString();
-
-                    Schedule currSchedule = null;
+                    if(request.getParameter("journey_date") == null || request.getParameter("bus_id") == null) {
+                        throw new MissingParameterException();
+                    }
+                    Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
+                    Integer busId = Integer.parseInt(request.getParameter("bus_id"));
                     // cancel tb he kr skte hai jab schedule incoming ho
-    
-                    // first get the schedule from all incoming sources
-                    final String[] cacheList = {ALL_INCOMING_SCHEDULE_LIST, BUS_INCOMING_SCHEDULE_LIST};
-
-                    if(isBefore) {
-                        for(String next : cacheList) {
-                            if(session.getAttribute(next) != null) {
-                                @SuppressWarnings("unchecked")
-                                ArrayList<Schedule> list = (ArrayList<Schedule>) session.getAttribute(next);
-
-                                for(Schedule curr : list) {
-                                    if(curr.getScheduleId().equals(scheduleId)) {
-                                        currSchedule = curr;
-                                        break;
-                                    }
-                                }
-                                if(currSchedule != null) break;
-                            }
-                        }
+                    // check if current is not incoming then throw him out
+                    if(!currSchedule.getStatus().getStatusId().equals(11)) {
+                        throw new IllegalArgumentException("Invalid Schedule");
                     }
 
-                    // check karo agr mil gya toh theek wrna database se lao
-                    if(currSchedule == null) {
-                        currSchedule = Schedule.getRecord(scheduleId, operatorId);
-                        // usme uska status check karo ki wo incoming hai ya nahi
-                        if(currSchedule == null || !currSchedule.getStatus().getStatusId().equals(11))  { // upcoming nahi hai
-                            // agr incoming nahi hai toh exception throw
-                            throw new IllegalArgumentException("Invalid Request");
-                        } 
-                    }
-
-                    Integer source = currSchedule.getBusRouteWeekday().getOperatorRoute().getRoute().getSource().getCityId();
-                    Integer destination = currSchedule.getBusRouteWeekday().getOperatorRoute().getRoute().getDestination().getCityId();
-                    
                     // driver set to inactive
-                    request.setAttribute("driver_id", currSchedule.getDriver().getDriverId());
-                    request.setAttribute("status_id", 5);
-
-                    request.getRequestDispatcher("update_driver_status.do").include(request, response);
-
-                    Object isDriverUpdated = request.getAttribute("isUpdated");
-                    if(isDriverUpdated == null || !((Boolean) isDriverUpdated)) {
-                        throw new IllegalArgumentException("Invalid Request");
-                    }
+                    boolean isDriverStatusUpdated = User.updateStatus(currSchedule.getDriver().getUser().getUserId(), 5);
+                    if(!isDriverStatusUpdated) throw new IllegalArgumentException("Invalid Request");
 
                     // uske baad journey ko cancel kardo
                     boolean isScheduleUpdate = Schedule.updateStatus(scheduleId, 6, operatorId);
@@ -124,17 +84,6 @@ public class UpdateScheduleStatusServlet extends HttpServlet {
                     // now jo bookings mei ye jo schedule hai usko cancel kard
                     boolean isBookingStatusUpdated = Booking.updateAllStatusBySchedule(scheduleId, 6);
                     if(!isBookingStatusUpdated) throw new IllegalArgumentException("Internal Server Error");
-
-
-                    if(isBefore) {
-                        // clear the session and cache
-                        final String[] removeCacheList = {ALL_INCOMING_SCHEDULE_LIST, BUS_INCOMING_SCHEDULE_LIST, ALL_CANCELLED_SCHEDULE_LIST, BUS_CANCELLED_SCHEDULE_LIST};
-                        for(String next : removeCacheList) {
-                            session.removeAttribute(next);
-                        }
-                    }
-
-                    context.removeAttribute("upcoming_schedule_" + source + "_" + destination + "_" + journeyDate);
 
                     @SuppressWarnings("unchecked")
                     ArrayList<Status> statusList = (ArrayList<Status>) context.getAttribute("statusList");
@@ -150,9 +99,39 @@ public class UpdateScheduleStatusServlet extends HttpServlet {
                     break;
                 } 
                 case 12 : { // ongoing 
-                    
+                    // check karo ki upcoming nahi hai then throw krdo
+                    if(!currSchedule.getStatus().getStatusId().equals(11)) {
+                        throw new IllegalArgumentException("Invalid Schedule");
+                    }
+
+                    // schedule status update krdo ongoing mei
+                    boolean isScheduleUpdate = Schedule.updateStatus(scheduleId, 12, operatorId);
+                    if(!isScheduleUpdate) throw new IllegalArgumentException("Invalid Request");
+
+                    // booking status update krdo complete mei
+                    boolean isBookingStatusUpdated = Booking.updateAllStatusBySchedule(scheduleId, 13);
+                    if(!isBookingStatusUpdated) throw new IllegalArgumentException("Internal Server Error");
+
+                    response.getWriter().println("ok");
                     break;
                 } 
+                case 13 : { // completed
+                    // check karo ki ongoing nahi hai then throw krdo
+                    if(!currSchedule.getStatus().getStatusId().equals(12)) {
+                        throw new IllegalArgumentException("Invalid Schedule");
+                    }
+
+                    // schedule status update krdo complete mei
+                    boolean isScheduleUpdate = Schedule.updateStatus(scheduleId, 13, operatorId);
+                    if(!isScheduleUpdate) throw new IllegalArgumentException("Invalid Request");
+
+                    // driver set to inactive
+                    boolean isDriverStatusUpdated = User.updateStatus(currSchedule.getDriver().getUser().getUserId(), 5);
+                    if(!isDriverStatusUpdated) throw new IllegalArgumentException("Invalid Request");
+
+                    response.getWriter().println("ok");
+                    break;
+                }
                 default : {
                     break;
                 }

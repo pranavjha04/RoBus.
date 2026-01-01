@@ -40,26 +40,9 @@ public class GetDriverScheduleServlet extends HttpServlet {
             }
 
             Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
-            Date currDate = new Date(System.currentTimeMillis());
 
-            ArrayList<Schedule> scheduleList = null;
-            boolean isBefore = journeyDate.toLocalDate().isBefore(currDate.toLocalDate());
-            String CACHE_ATTRIBUTE = "schedule" + journeyDate;
-
-            if(isBefore) {
-                if(session.getAttribute(CACHE_ATTRIBUTE) != null) {
-                    @SuppressWarnings("unchecked")
-                    ArrayList<Schedule> list = (ArrayList<Schedule>) session.getAttribute(CACHE_ATTRIBUTE);
-                    scheduleList = list;
-                    response.getWriter().println(scheduleList);
-                    return;
-                }
-            }
-
-            if(scheduleList == null) {
-                scheduleList = Schedule.getSchedulesByDriverUser(user.getUserId(), journeyDate);
-                if(scheduleList == null) throw new IllegalArgumentException("Internal Server Error");
-            }
+            ArrayList<Schedule> scheduleList = Schedule.getSchedulesByDriverUser(user.getUserId(), journeyDate);
+            if(scheduleList == null) throw new IllegalArgumentException("Internal Server Error");
             
             for(Schedule next : scheduleList) {
                 OperatorRoute operatorRoute = next.getBusRouteWeekday().getOperatorRoute();
@@ -83,8 +66,6 @@ public class GetDriverScheduleServlet extends HttpServlet {
 
                 operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
             }
-
-            if(isBefore) session.setAttribute(CACHE_ATTRIBUTE, scheduleList);
             response.getWriter().println(new Gson().toJson(scheduleList));
         }
         catch(IllegalArgumentException e) {

@@ -17,7 +17,7 @@ import utils.AppUtil;
 
 @WebServlet("/check_active_driver.do")
 public class CheckDriverActiveServlet extends HttpServlet {
-    private static String[] acceptedIncludeRequestList = {"add_bus_schedule.do", "update_schedule_driver.do"};
+    private static String[] acceptedIncludeRequestList = {"add_bus_schedule.do"};
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         if(session.getAttribute("operator") == null) {

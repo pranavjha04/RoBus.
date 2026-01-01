@@ -104,7 +104,7 @@
     </c:choose>
 
     <!-- HERO -->
-    <section class="hero-section d-flex align-items-center">
+    <section class="hero-section d-flex align-items-center ">
       <div class="container text-center text-white">
         <h1 class="hero-title">Simple. Fast. Reliable.</h1>
         <p class="hero-subtitle mb-4">

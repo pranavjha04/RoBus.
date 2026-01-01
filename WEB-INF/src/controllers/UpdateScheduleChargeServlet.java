@@ -23,6 +23,7 @@ import utils.FieldManager;
 @WebServlet("/update_schedule_charges.do")
 public class UpdateScheduleChargeServlet extends HttpServlet {
     private static String[] acceptedParams = {"additional_charges", "seater_fare", "sleeper_fare", "total_charges", "schedule_id", "journey_date", "bus_id"};
+
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         if(session.getAttribute("operator") == null) {
@@ -46,50 +47,12 @@ public class UpdateScheduleChargeServlet extends HttpServlet {
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));
             Integer scheduleId = Integer.parseInt(request.getParameter("schedule_id"));
             Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
-            final String ALL_INCOMING_SCHEDULE_LIST = "upcoming_schedule_list" + journeyDate.toString();
-            final String BUS_INCOMING_SCHEDULE_LIST = "upcoming" + busId + "schedule_list" + journeyDate.toString();
-            Schedule currSchedule = null;
-            int targetIndex = -1;
-
-            if(
-                !FieldManager.validateExtraChargeFare(sleeperFare) || 
-                !FieldManager.validateExtraChargeFare(seaterFare) || 
-                !FieldManager.validateExtraChargeFare(additionalCharges)
-            ) {
-                throw new IllegalArgumentException("Invalid Seating Fare");
-            }
-
-            if(session.getAttribute(ALL_INCOMING_SCHEDULE_LIST) != null) {
-                @SuppressWarnings("unchecked")
-                ArrayList<Schedule> dateScheduleList = (ArrayList<Schedule>) session.getAttribute(ALL_INCOMING_SCHEDULE_LIST);   
-                for(Schedule curr : dateScheduleList) {
-                    if(curr.getScheduleId().equals(scheduleId)) {
-                        currSchedule = curr;
-                        break;
-                    }
-                }
-            }
-            else if(session.getAttribute(BUS_INCOMING_SCHEDULE_LIST) != null) {
-                @SuppressWarnings("unchecked")
-                ArrayList<Schedule> dateScheduleList = (ArrayList<Schedule>) session.getAttribute(BUS_INCOMING_SCHEDULE_LIST);   
-                for(Schedule curr : dateScheduleList) {
-                    if(curr.getScheduleId().equals(scheduleId)) {
-                        currSchedule = curr;
-                        break;
-                    }
-                }
-            }
-            else {
-                currSchedule = Schedule.getRecord(scheduleId, operator.getOperatorId());
-            }
-            if(currSchedule == null || !currSchedule.getStatus().getStatusId().equals(11))  { // upcoming nahi hai
-                throw new IllegalArgumentException("Invalid Request");
-            }
+            Schedule currSchedule = Schedule.getRecord(scheduleId, operator.getOperatorId());
 
             if(currSchedule == null || !currSchedule.getStatus().getStatusId().equals(11))  { // upcoming nahi hai
                 throw new IllegalArgumentException("Invalid Request");
-            } 
-
+            }
+        
             if(context.getAttribute("bus_fare_factor_list" + busId) == null) {
                 request.getRequestDispatcher("get_bus_fare_factors.do").include(request, response);
                 if(context.getAttribute("bus_fare_factor_list" + busId) == null) {
@@ -97,18 +60,18 @@ public class UpdateScheduleChargeServlet extends HttpServlet {
                 }
             }
             int operatorRouteId = currSchedule.getBusRouteWeekday().getOperatorRoute().getOperatorRouteId();
-            if(session.getAttribute("bus_route_weekday_list" + operatorRouteId) == null) {
+            if(context.getAttribute("bus_route_weekday_list" + operatorRouteId) == null) {
                 request.getRequestDispatcher("get_bus_route_weekday_all.do").include(request, response);
-                if(session.getAttribute("bus_route_weekday_list" + operatorRouteId) == null) {
+                if(context.getAttribute("bus_route_weekday_list" + operatorRouteId) == null) {
                     throw new IllegalArgumentException("Invalid Request");
                 }
             }
 
             @SuppressWarnings("unchecked")
-            ArrayList<BusFareFactor> busFareFactorList = (ArrayList<BusFareFactor>) session.getAttribute("bus_fare_factor_list"+ busId);
+            ArrayList<BusFareFactor> busFareFactorList = (ArrayList<BusFareFactor>) context.getAttribute("bus_fare_factor_list"+ busId);
 
             @SuppressWarnings("unchecked")
-            ArrayList<BusRouteWeekday> busRouteWeekdayList = (ArrayList<BusRouteWeekday>) session.getAttribute("bus_route_weekday_list" + operatorRouteId);
+            ArrayList<BusRouteWeekday> busRouteWeekdayList = (ArrayList<BusRouteWeekday>) context.getAttribute("bus_route_weekday_list" + operatorRouteId);
             
             int distance = 0;
             for(BusRouteWeekday next : busRouteWeekdayList) {
@@ -119,6 +82,14 @@ public class UpdateScheduleChargeServlet extends HttpServlet {
             }
             if(distance == 0) {
                 throw new IllegalArgumentException("Invalid Bus Route Weekday Id");
+            }
+
+            if(
+                !FieldManager.validateExtraChargeFare(sleeperFare) || 
+                !FieldManager.validateExtraChargeFare(seaterFare) || 
+                !FieldManager.validateExtraChargeFare(additionalCharges)
+            ) {
+                throw new IllegalArgumentException("Invalid Seating Fare");
             }
             
             int targetTotalFareCharges = BusFareFactor.calculateTotalFareCharges(busFareFactorList, distance);
@@ -131,35 +102,6 @@ public class UpdateScheduleChargeServlet extends HttpServlet {
                 boolean isUpdated = Schedule.updateCharges(scheduleId, additionalCharges, seaterFare, sleeperFare, totalCharges, operator.getOperatorId());
 
                 if(!isUpdated) throw new IllegalArgumentException("Invalid Request");
-
-
-                currSchedule.setAdditionalCharges(additionalCharges);
-                currSchedule.setSeaterFare(seaterFare);
-                currSchedule.setSleeperFare(sleeperFare);
-                currSchedule.setTotalCharges(totalCharges);
-                
-                int source = currSchedule.getBusRouteWeekday().getOperatorRoute().getRoute().getSource().getCityId();
-                int destination = currSchedule.getBusRouteWeekday().getOperatorRoute().getRoute().getDestination().getCityId();
-                String SCHEDULE_CACHE_KEY = 
-                        "upcoming_schedule_" + source +  "_" + destination + "_" + currSchedule.getJourneyDate();
-
-                if(context.getAttribute(SCHEDULE_CACHE_KEY) != null) {
-                    @SuppressWarnings("unchecked")
-                    ArrayList<Schedule> allScheduleList = (ArrayList<Schedule>) context.getAttribute(SCHEDULE_CACHE_KEY);
-
-                    for(Schedule next : allScheduleList) {
-                        if(next.getScheduleId().equals(currSchedule.getScheduleId())) {
-                            next = currSchedule;
-
-                            next.setAdditionalCharges(additionalCharges);
-                            next.setSeaterFare(seaterFare);
-                            next.setSleeperFare(sleeperFare);
-                            next.setTotalCharges(totalCharges);
-
-                            break;
-                        }
-                    }
-                }
 
                 response.getWriter().println("ok");
             }
