@@ -22,9 +22,7 @@ public class GetActiveAccountServlet extends HttpServlet {
             return;
         }
 
-        if(accountType.equals("user")) {
-
-        }
+        
         switch(accountType) {
             case "user": 
                 User activeUser = (User) session.getAttribute(accountType);

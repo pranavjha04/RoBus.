@@ -783,3 +783,10 @@ export const getDriverScheduleRequest = async (params) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const getActiveUserRequest = async () => {
+  const res = await fetch(`get_active_user.do`);
+  if (!res.ok) throw new Error("Internal Server Errro");
+  const data = await res.text();
+  return data.trim();
+};

@@ -30,6 +30,15 @@ const enableFilter = () => {
   });
 };
 
+const resetFilter = () => {
+  [...filterContainer.children].forEach((child) => {
+    child.classList.remove("btn-primary");
+    child.classList.add("btn-outline-primary");
+  });
+  filterContainer.firstElementChild.classList.add("btn-primary");
+  filterContainer.firstElementChild.classList.remove("btn-outline-primary");
+};
+
 const startLoading = () => {
   disableFilter();
   bookingListContainer.innerHTML = `<div class="mt-5 justify-content-center align-self-center">
@@ -42,6 +51,7 @@ const bookingListFetching = async (firstTime = false) => {
   try {
     const response = await getAllBookingRequest();
     if (response === "invalid") throw new Error("Invalid Reques");
+    resetFilter();
     modal.bookingList = JSON.parse(response);
   } catch (err) {
     if (firstTime) throw new Error(err.message);

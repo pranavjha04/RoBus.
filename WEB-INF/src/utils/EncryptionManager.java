@@ -22,4 +22,5 @@ public class EncryptionManager {
         }
         return true;
     }
+    
 }

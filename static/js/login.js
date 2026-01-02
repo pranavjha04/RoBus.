@@ -1,10 +1,6 @@
 import { loginEmailHandler } from "./service.js";
 import { toast } from "./toast.js";
-import {
-  displayInputError,
-  displayInputSuccess,
-  validatePassword,
-} from "./util.js";
+import { validatePassword } from "./util.js";
 
 const invalidFieldMessages = [
   "Invalid email",

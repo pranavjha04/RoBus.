@@ -323,3 +323,17 @@ export const convertTo24Hour = (time12h) => {
 
   return `${hours.toString().padStart(2, "0")}:${minutes}:${seconds}`;
 };
+
+export const validateDOB = (value, years) => {
+  const dob = new Date(value);
+  const today = new Date();
+
+  let age = today.getFullYear() - dob.getFullYear();
+  const m = today.getMonth() - dob.getMonth();
+
+  if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+    age--;
+  }
+
+  return age >= years && age <= 120;
+};
