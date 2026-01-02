@@ -145,7 +145,7 @@
       <div class="profile-card-header">
         <div class="avatar-container mb-3">
           <img
-            src="https://ui-avatars.com/api/?name=Pranav+Jha&background=0D6EFD&color=fff&size=200"
+            src="show_image.do?target=user&id=${sessionScope.user.userId}&name=${sessionScope.user.profilePic}"
             alt="Profile"
             class="avatar-img"
             id="profile_img"
@@ -158,11 +158,16 @@
             Upload photo
           </label>
           <button
-            class="btn btn-light btn-rounded border custom-btn-light"
-            hidden
-            id="save_photo_changes"
+            class="btn btn-light btn-rounded border custom-btn-light d-none"
+            id="save_profile_pic_change_btn"
           >
             Save changes
+          </button>
+          <button
+            class="btn btn-light btn-rounded border custom-btn-light d-none"
+            id="undo_profile_pic_change_btn"
+          >
+            Undo changes
           </button>
         </div>
 
@@ -265,7 +270,7 @@
             <div class="data-value">pranav.jha@gmail.com</div>
           </div>
           <a
-            href="change-email.jsp"
+            href="change_email.do"
             class="btn btn-light btn-rounded text-primary border"
             >Update</a
           >
@@ -279,7 +284,7 @@
             <div class="data-value">+91 98765 43210</div>
           </div>
           <a
-            href="change-contact.jsp"
+            href="change_contact.do"
             class="btn btn-light btn-rounded text-primary border"
             >Change</a
           >
@@ -291,9 +296,9 @@
             <div class="data-value">**********</div>
           </div>
           <a
-            href="change-password.jsp"
+            href="change_password.do"
             class="btn btn-outline-danger btn-rounded"
-            >Reset</a
+            >Change</a
           >
         </div>
       </div>

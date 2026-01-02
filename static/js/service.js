@@ -799,3 +799,13 @@ export const updateUserBasicInfoRequest = async (params) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const uploadUserProfilePicRequest = async (formData) => {
+  const res = await fetch(`upload_user_profile_pic.do`, {
+    method: "POST",
+    body: formData,
+  });
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};

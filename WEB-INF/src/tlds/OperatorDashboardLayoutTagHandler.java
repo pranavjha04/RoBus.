@@ -1,7 +1,3 @@
-/**
- * author - pranav jha
- */
-
 package tlds;
 
 import java.io.IOException;

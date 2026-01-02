@@ -96,7 +96,7 @@ busImages.addEventListener("input", (e) => {
     return validateFileSize(file.size) && validateFileType(file.type, "image");
   });
   if (!areAllFilesValid) {
-    toast.error("Upload file should be an Image and not be greater than 5MB");
+    toast.error("Uploaded file should be an Image and not be greater than 5MB");
     e.target.value = "";
     return;
   }
