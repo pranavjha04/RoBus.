@@ -1,8 +1,14 @@
 import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
-import { getActiveUserRequest } from "./service.js";
+import { getActiveUserRequest, updateUserBasicInfoRequest } from "./service.js";
 import { toast } from "./toast.js";
-import { validateDOB, validateName } from "./util.js";
+import {
+  createURLParams,
+  disableElements,
+  enableElements,
+  validateDOB,
+  validateName,
+} from "./util.js";
 
 const nameContainer = document.querySelector("#name_container");
 const dobContainer = document.querySelector("#dob_container");
@@ -107,10 +113,55 @@ dob.addEventListener("blur", (e) => {
   }
 });
 
+saveChangesBtn.addEventListener("click", async () => {
+  if (!validateName(fullName.value) || !validateDOB(dob.value, 16)) {
+    toast.error("Invalid Request");
+    return;
+  }
+  let newChange = false;
+  newChange =
+    fullName.value !== model.user.fullName ||
+    dob.value !== new Date(model.user.dob).toISOString().split("T")[0] ||
+    model.user.gender !== +gender.value;
 
-saveChangesBtn.addEventListener('click', () => {
-  
-})
+  if (!newChange) {
+    editModeOff();
+    toast.normal("No changes needed");
+    return;
+  }
+
+  try {
+    disableElements(undoChangesBtn, saveChangesBtn, fullName, dob, gender);
+    const response = await updateUserBasicInfoRequest(
+      createURLParams({
+        full_name: fullName.value,
+        dob: dob.value,
+        gender: +gender.value,
+      })
+    );
+    if (response === "ok") {
+      toast.success("Profile Updated successfully");
+      await activeAccountFetching();
+      displayBasicInfoContainer();
+      editModeOff();
+    } else if (response === "dob") {
+      dob.focus();
+      throw new Error("Invalid DOB");
+    } else if (response === "full_name") {
+      fullName.focus();
+      throw new Error("Invalid Full Name");
+    } else if (response === "gender") {
+      gender.focus();
+      throw new Error("Invalid Gender");
+    } else {
+      throw new Error("Invalid Request");
+    }
+  } catch (err) {
+    toast.error(err.message);
+  } finally {
+    enableElements(undoChangesBtn, saveChangesBtn, fullName, dob, gender);
+  }
+});
 const init = async () => {
   try {
     await activeAccountFetching();

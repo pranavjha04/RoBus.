@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.Date;
 
 import java.time.LocalDate;
+import java.time.Period;
 
 import models.User;
 import models.Operator;
@@ -13,10 +14,13 @@ import models.Operator;
 
 public final class FieldManager {
     
+    private static final Integer MINIMUM_ACCEPTED_AGE = 16;
+    private static final Integer MAXIMUM_ACCEPTED_AGE = 120;
     private FieldManager() {
 
     }
-   
+
+    
     public static final Boolean validateName(String name) {
         Pattern pattern = Pattern.compile("^[A-Za-z .-]{6,75}$");
         Matcher matcher = pattern.matcher(name);
@@ -46,9 +50,15 @@ public final class FieldManager {
     }
 
     public static final Boolean validateDob(String value) {
-       if(value == null || value.isEmpty()) return false;
+        if(value == null || value.isEmpty()) return false;
 
-       return true;
+        return true;
+    }
+    public static final Boolean validateDob(java.sql.Date dob) {
+        if(dob == null) return false;
+    
+        int age = Period.between(dob.toLocalDate(), LocalDate.now()).getYears();
+        return age >= MINIMUM_ACCEPTED_AGE && age <= MAXIMUM_ACCEPTED_AGE; 
     }
 
     public static final Boolean validateGender(Integer gender) {

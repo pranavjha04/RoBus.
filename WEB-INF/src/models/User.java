@@ -62,6 +62,33 @@ public class User implements Cloneable {
     
     public User() {}
 
+    public static boolean updateBasicInfo(int userId, String fullName, Date dob, Integer gender) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query =  
+                        "UPDATE users SET " +
+                        "full_name=?, dob=?, gender=? " +
+                        "WHERE user_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setString(1, fullName);
+            ps.setDate(2, dob);
+            ps.setInt(3, gender);
+            ps.setInt(4, userId);
+
+            flag = ps.executeUpdate() == 1;
+
+            con.close();  
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+
+        return flag;
+    }
+
     public static boolean updateStatus(Integer userId, Integer statusId) {
         boolean flag = false;
 

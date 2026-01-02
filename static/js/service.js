@@ -786,7 +786,16 @@ export const getDriverScheduleRequest = async (params) => {
 
 export const getActiveUserRequest = async () => {
   const res = await fetch(`get_active_user.do`);
-  if (!res.ok) throw new Error("Internal Server Errro");
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
+
+export const updateUserBasicInfoRequest = async (params) => {
+  const res = await fetch(`update_user_basic_profile.do?${params.toString()}`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Internal Server Error");
   const data = await res.text();
   return data.trim();
 };
