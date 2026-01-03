@@ -2,77 +2,109 @@ import { PageLoading } from "./pageLoading.js";
 
 const ctx = document.getElementById("bookingsChart");
 
-PageLoading.stopLoading();
+const model = { info: null };
 
-const init = async () => {};
+const operatorDashBoardRequest = async () => {
+  const res = await fetch(`operator_dashboard.do`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
+
+const infoFetching = async () => {
+  try {
+    const response = await operatorDashBoardRequest();
+    model.info = JSON.parse(response);
+    console.log(model);
+  } catch (err) {}
+};
+
+const displayInfoContainer = () => {
+  for (const params in model.info) {
+    document.querySelector(
+      `[data-type="${params.toLowerCase()}"]`
+    ).textContent = new Intl.NumberFormat("en-IN").format(model.info[params]);
+  }
+};
+
+const init = async () => {
+  try {
+    await infoFetching();
+    displayInfoContainer();
+  } catch (err) {
+  } finally {
+    PageLoading.stopLoading();
+  }
+};
+
+init();
+
 
 new Chart(ctx, {
   type: "bar",
-  maintainAspectRation: true,
   data: {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
+    labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
     datasets: [
       {
         label: "Bookings",
-        data: [10, 8, 3, 2, 11, 8, 2, 5, 9, 6, 4, 5],
-        pointRadius: 5,
-        pointBackgroundColor: "blue",
-        fill: true,
+        data: Array.from(
+          { length: 7 },
+          () => Math.floor(Math.random() * 10) + 1
+        ),
+        backgroundColor: "#0d6efd",
+        borderRadius: 8,
+        barThickness: 35,
       },
     ],
   },
   options: {
+    maintainAspectRatio: false,
     plugins: {
       title: {
         display: true,
-        text: "Monthly Bookings Trend (Jan - Dec)",
+        text: "Weekly Bookings Trend",
         font: {
-          size: 22,
+          size: 20,
           weight: "bold",
         },
         color: "#333",
         padding: {
-          top: 10,
           bottom: 20,
         },
+      },
+      legend: {
+        display: false,
       },
     },
     scales: {
       x: {
         title: {
           display: true,
-          text: "Months",
+          text: "Days of Week",
           font: {
-            size: 16,
+            size: 14,
             weight: "bold",
           },
-          color: "#333",
+        },
+        grid: {
+          display: false,
         },
       },
       y: {
+        beginAtZero: true,
         title: {
           display: true,
-          text: "No. of Bookings",
+          text: "Number of Bookings",
           font: {
-            size: 16,
+            size: 14,
             weight: "bold",
           },
-          color: "#333",
         },
-        beginAtZero: true,
+        ticks: {
+          stepSize: 2,
+        },
       },
     },
   },

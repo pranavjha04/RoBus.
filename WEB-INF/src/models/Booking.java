@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.sql.Date;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import utils.DBManager;
 
@@ -37,6 +38,55 @@ public class Booking {
 
     public Booking() {
 
+    }
+
+    public static int collectTotalBookingFareRevenue(int operatorId) {
+        int res = 0;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "SELECT SUM(total_fare) FROM bookings b " +
+                        "JOIN schedules s ON b.schedule_id = s.schedule_id " +
+                        "JOIN buses bs ON bs.bus_id = s.bus_id " +
+                        "WHERE bs.operator_id=? AND b.status_id != 6";
+
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, operatorId);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                res = rs.getInt(1);
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    public static int getNumberOfOperatorBookings(int operatorId) {
+        int res = 0;
+
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "SELECT COUNT(*) FROM bookings b " +
+                        "JOIN schedules s ON b.schedule_id = s.schedule_id " +
+                        "JOIN buses bs ON bs.bus_id = s.bus_id " +
+                        "WHERE bs.operator_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, operatorId);
+
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                res = rs.getInt(1);
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
     }
 
     public static boolean updateStatus(int bookingId, int statusId) {

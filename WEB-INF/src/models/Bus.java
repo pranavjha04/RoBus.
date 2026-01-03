@@ -49,6 +49,30 @@ public class Bus implements Cloneable {
         
     }
 
+    public static int collectTotalOperatorBuses(int operatorId) {
+        int res = 0;
+
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "SELECT COUNT(*) FROM buses " +
+                        "WHERE operator_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, operatorId);
+
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                res = rs.getInt(1);
+            } 
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        return res;
+    }
+
     public static ArrayList<Bus> collectAvailableTicketFareBusRecords(Integer operatorTicketFareId, String[] busIdList, Integer operatorId, int offSet) {
         ArrayList<Bus> busList = new ArrayList<>();
         try {

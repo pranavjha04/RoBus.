@@ -10,22 +10,122 @@
     <c:import url="essential_page_import.jsp" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <style>
+      :root {
+        --primary: #0d6efd;
+        --bg-light: #f8f9fa;
+        --border-color: #edf2f7;
+      }
+
+      .content-wrapper {
+        background-color: var(--bg-light);
+        min-height: 100vh;
+      }
+
+      .stat-card {
+        transition: transform 0.2s;
+        border: 1px solid var(--border-color);
+      }
+      .stat-card:hover {
+        transform: translateY(-4px);
+      }
+
+      .analytics-card {
+        background: #ffffff;
+        border: 1px solid var(--border-color);
+        border-radius: 1.25rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+      }
+
+      /* Date selector */
+      .date-grid {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding: 15px 5px;
+        scrollbar-width: none;
+      }
+      .date-grid::-webkit-scrollbar {
+        display: none;
+      }
+
+      .date-card {
+        min-width: 140px;
+        padding: 12px 24px;
+        border-radius: 15px;
+        border: 1px solid var(--border-color);
+        background: #fff;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .date-card.active {
+        background: var(--primary);
+        color: #fff;
+        border-color: var(--primary);
+        box-shadow: 0 8px 15px rgba(13, 110, 253, 0.3);
+      }
+
+      .week-label {
+        font-size: 0.7rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        display: block;
+        opacity: 0.8;
+      }
+
+      .range-label {
+        font-weight: 700;
+        font-size: 0.95rem;
+      }
+
+      /* Schedule Item Styling */
+      .schedule-item {
+        padding: 12px;
+        border-radius: 12px;
+        background-color: #f8fafc;
+        border: 1px solid #edf2f7;
+        transition: all 0.2s ease;
+      }
+
+      .schedule-item:hover {
+        background-color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border-color: #cbd5e1;
+      }
+
+      /* Custom Scrollbar for Schedule */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+      }
+    </style>
+
     <title>${sessionScope.operator.fullName} Dashboard</title>
   </head>
-  <body class="overflow-hidden">
+
+  <body>
     <c:import url="essential_page_display.jsp" />
+
     <div class="dashContainer">
-      <!-- Sidebar -->
       <c:import url="operator_navbar.jsp" />
 
-      <!-- Main content -->
-      <main class="content-wrapper bg-light overflow-hidden">
+      <main class="content-wrapper overflow-hidden">
         <c:import url="operator_sidebar.jsp" />
-        <!-- Top Navbar -->
 
-        <!-- Dashboard Content -->
-        <div class="p-4 d-flex flex-column gap-3 overflow-scroll">
-          <h2>Welcome, <c:out value="${sessionScope.operator.fullName}" /></h2>
+        <div class="p-4 d-flex flex-column gap-4">
+          <!-- Header -->
+          <div class="d-flex justify-content-between align-items-center">
+            <h2 class="fw-semibold">
+              Welcome, <c:out value="${sessionScope.operator.fullName}" />
+            </h2>
+          </div>
+
+          <!-- Stats -->
           <div class="businfo justify-content-between align-items-center gap-2">
             <div
               class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
@@ -61,7 +161,7 @@
                 >
                   BOOKINGS
                 </p>
-                <h5 class="mb-0 fs-5 fw-medium">20</h5>
+                <h5 class="mb-0 fs-5 fw-medium" data-type="noofbookings"></h5>
               </div>
             </div>
             <div
@@ -90,7 +190,10 @@
                 >
                   REVENUE
                 </p>
-                <h5 class="mb-0 fs-5 fw-medium">32,000</h5>
+                <h5
+                  class="mb-0 fs-5 fw-medium"
+                  data-type="revenuegenerated"
+                ></h5>
               </div>
             </div>
             <div
@@ -122,7 +225,7 @@
                 >
                   BUSES
                 </p>
-                <h5 class="mb-0 fs-5 fw-medium">25</h5>
+                <h5 class="mb-0 fs-5 fw-medium" data-type="totalbuses"></h5>
               </div>
             </div>
             <div
@@ -153,22 +256,151 @@
                 >
                   DRIVERS
                 </p>
-                <h5 class="mb-0 fs-5 fw-medium">30</h5>
+                <h5 class="mb-0 fs-5 fw-medium" data-type="totaldrivers"></h5>
               </div>
             </div>
           </div>
-          <div
-            class="align-items-stretch gap-3 bg-white border rounded-3 p-3"
-            style="display: grid; grid-template-columns: 1fr"
-          >
-            <canvas
-              id="bookingsChart"
-              style="max-height: 400px; margin: auto"
-            ></canvas>
+
+          <!-- Analytics -->
+          <div class="row g-4">
+            <div class="col-lg-8">
+              <div
+                class="analytics-card h-100 overflow-hidden bg-white border rounded-4 shadow-sm"
+              >
+                <div class="p-4 border-bottom bg-white">
+                  <div
+                    class="d-flex justify-content-between align-items-center mb-4"
+                  >
+                    <div>
+                      <h5 class="fw-bold mb-0">Booking Performance</h5>
+                      <small class="text-muted"
+                        >Weekly Overview - Jan 2026</small
+                      >
+                    </div>
+                    <div class="btn-group">
+                      <button
+                        class="btn btn-outline-secondary btn-sm"
+                        id="date_range_back"
+                      >
+                        <i class="bi bi-chevron-left">&lt;</i>
+                      </button>
+                      <button
+                        class="btn btn-outline-secondary btn-sm"
+                        id="date_range_next"
+                      >
+                        <i class="bi bi-chevron-right">&gt;</i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="date-grid" id="date_range">
+                    <div
+                      class="date-card active"
+                      data-from="2026-01-01"
+                      data-to="2026-01-07"
+                    >
+                      <span class="week-label">Week 01</span>
+                      <span class="range-label">01 Jan - 07 Jan</span>
+                    </div>
+                    <div
+                      class="date-card"
+                      data-from="2026-01-08"
+                      data-to="2026-01-14"
+                    >
+                      <span class="week-label">Week 02</span>
+                      <span class="range-label">08 Jan - 14 Jan</span>
+                    </div>
+                    <div
+                      class="date-card"
+                      data-from="2026-01-15"
+                      data-to="2026-01-21"
+                    >
+                      <span class="week-label">Week 03</span>
+                      <span class="range-label">15 Jan - 21 Jan</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-4">
+                  <div style="height: 320px; width: 100%">
+                    <canvas id="bookingsChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div
+                class="bg-white border rounded-4 shadow-sm h-100 d-flex flex-column"
+              >
+                <div class="p-4 border-bottom">
+                  <h6 class="fw-bold mb-0">Upcoming Schedules</h6>
+                  <small class="text-muted">Real-time status</small>
+                </div>
+
+                <div
+                  class="p-4 flex-grow-1 custom-scrollbar"
+                  style="max-height: 480px; overflow-y: auto"
+                >
+                  <div class="d-flex flex-column gap-3">
+                    <div class="schedule-item">
+                      <div
+                        class="d-flex justify-content-between align-items-start"
+                      >
+                        <div class="fw-bold text-dark">Jabalpur → Bhopal</div>
+                        <span class="badge bg-primary-subtle text-primary"
+                          >Active</span
+                        >
+                      </div>
+                      <div class="text-muted small mt-1">
+                        <i class="bi bi-clock me-1"></i> 10 Jan • 07:30 AM
+                      </div>
+                    </div>
+
+                    <div class="schedule-item">
+                      <div
+                        class="d-flex justify-content-between align-items-start"
+                      >
+                        <div class="fw-bold text-dark">Indore → Pune</div>
+                        <span class="badge bg-warning-subtle text-warning"
+                          >Upcoming</span
+                        >
+                      </div>
+                      <div class="text-muted small mt-1">
+                        <i class="bi bi-clock me-1"></i> 11 Jan • 09:00 PM
+                      </div>
+                    </div>
+
+                    <div class="schedule-item">
+                      <div
+                        class="d-flex justify-content-between align-items-start"
+                      >
+                        <div class="fw-bold text-dark">Bhopal → Nagpur</div>
+                        <span class="badge bg-success-subtle text-success"
+                          >Scheduled</span
+                        >
+                      </div>
+                      <div class="text-muted small mt-1">
+                        <i class="bi bi-clock me-1"></i> 12 Jan • 06:15 AM
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-3 bg-light-subtle border-top text-center mt-auto">
+                  <a
+                    href="#"
+                    class="text-primary small fw-semibold text-decoration-none"
+                    >View All Schedules</a
+                  >
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>
     </div>
+
     <script type="module" src="static/js/operatorDashboard.js"></script>
   </body>
 </html>

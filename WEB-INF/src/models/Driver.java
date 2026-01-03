@@ -34,6 +34,30 @@ public class Driver {
 
     }
 
+    public static int collectTotalOperatorDrivers(int operatorId) {
+        int res = 0;
+        
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "SELECT COUNT(*) FROM drivers " +
+                        "WHERE operator_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, operatorId);
+
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                res = rs.getInt(1);
+            } 
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        return res;
+    }
+
     public static boolean checkStatus(int driverId, int statusId, int operatorId) {
         boolean flag = false;
 
