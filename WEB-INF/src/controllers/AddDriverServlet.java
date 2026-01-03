@@ -96,10 +96,8 @@ public class AddDriverServlet extends HttpServlet {
                     if(!uploadDir.exists()) {
                         uploadDir.mkdirs();
                     }
-                    else {
-                        for(File oldImageFile : uploadDir.listFiles()) {
-                            oldImageFile.delete();
-                        }
+                    for(File oldImageFile : uploadDir.listFiles()) {
+                        oldImageFile.delete();
                     }
                     String fileName = FileManager.generateFileName(item.getName());
                     File currFile = new File(uploadDir, fileName);

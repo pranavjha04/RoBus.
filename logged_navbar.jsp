@@ -125,6 +125,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
             <img
               src="show_image.do?target=user&id=${sessionScope.user.userId}&name=${sessionScope.user.profilePic}"
               class="bts-avatar object-fit-cover"
+              id="user_profile_pic"
             />
             <span class="d-none d-lg-inline"
               >${sessionScope.user.fullName}</span

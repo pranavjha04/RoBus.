@@ -38,6 +38,8 @@ const fullName = document.querySelector("#full_name");
 const dob = document.querySelector("#dob");
 const gender = document.querySelector("#gender");
 
+const genInfo = document.querySelector(".gen-info");
+
 const model = {
   user: null,
   activeUploadFile: null,
@@ -46,7 +48,7 @@ const model = {
 const genderType = {
   1: "Male",
   2: "Female",
-  2: "Others",
+  3: "Others",
 };
 
 const activeAccountFetching = async () => {
@@ -94,7 +96,7 @@ const profilePicEditModeOff = () => {
 };
 
 const displayBasicInfoContainer = () => {
-  const { fullName, dob: birthDate, gender } = model.user;
+  const { fullName, dob: birthDate, gender, createdAt } = model.user;
   const dobDate = new Date(birthDate);
 
   nameContainer.querySelector("#full_name").value = fullName;
@@ -111,6 +113,14 @@ const displayBasicInfoContainer = () => {
 
   genderContainer.querySelector("#gender").value = gender;
   genderContainer.querySelector(".data-value").textContent = genderType[gender];
+
+  genInfo.querySelector("#name").textContent = model.user.fullName;
+  genInfo.querySelector("#joined_date").textContent = new Intl.DateTimeFormat(
+    navigator.language,
+    {
+      dateStyle: "long",
+    }
+  ).format(new Date(createdAt));
 };
 
 editProfileBtn.addEventListener("click", editModeOn);
@@ -208,18 +218,14 @@ profileImgReciever.addEventListener("input", (e) => {
     profilePicEditModeOn();
   } catch (err) {
     toast.error(err.message);
-    profileImg.src =
-      user.profilePic ??
-      `show_image.do?target=user&id=${user.userId}&name=${user.profilePic}`;
+    profileImg.src = `show_image.do?target=user&id=${user.userId}&name=${user.profilePic}`;
   }
 });
 
 undoProfileChangeBtn.addEventListener("click", () => {
   const { user } = model;
   profilePicEditModeOff();
-  profileImg.src =
-    user.profilePic ??
-    `show_image.do?target=user&id=${user.userId}&name=${user.profilePic}`;
+  profileImg.src = `show_image.do?target=user&id=${user.userId}&name=${user.profilePic}`;
   model.activeUploadFile = null;
 });
 
@@ -261,6 +267,7 @@ const init = async () => {
     await activeAccountFetching();
     editModeOff();
     displayBasicInfoContainer();
+    console.log(model.user);
   } catch (err) {
     toast.error(err.message);
     PageError.showOperatorError();

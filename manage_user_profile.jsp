@@ -173,10 +173,12 @@
 
         <input type="file" id="imgUpload" hidden accept="image/*" />
 
-        <h2 class="fw-bold m-0" id="name">Pranav Jha</h2>
-        <p class="text-muted small">
-          Joined <strong id="joined_date">August 2023</strong>
-        </p>
+        <div class="gen-info">
+          <h2 class="fw-bold m-0" id="name">Pranav Jha</h2>
+          <p class="text-muted small">
+            Joined <strong id="joined_date"></strong>
+          </p>
+        </div>
       </div>
 
       <!-- GENERAL INFO -->
@@ -207,7 +209,7 @@
             <div class="data-row" id="dob_container">
               <div class="view">
                 <div class="data-label">Birth Date</div>
-                <div class="data-value">23 August 2003</div>
+                <div class="data-value"></div>
               </div>
               <div class="edit d-none">
                 <label for="dob" class="form-label small fw-semibold">
@@ -222,10 +224,15 @@
             <div class="data-row" id="gender_container">
               <div class="view">
                 <div class="data-label">Gender</div>
-                <div class="data-value">Male</div>
+                <div class="data-value"></div>
               </div>
               <div class="edit d-none">
-                <select class="form-select fld" id="gender" name="gender">
+                <select
+                  class="form-select fld"
+                  id="gender"
+                  name="gender"
+                  value="${sessionScope.user.gender}"
+                >
                   <option value="">Select Gender</option>
                   <option value="1">Male</option>
                   <option value="2">Female</option>
@@ -267,11 +274,9 @@
         >
           <div>
             <div class="data-label">Email Address</div>
-            <div class="data-value">pranav.jha@gmail.com</div>
+            <div class="data-value">${sessionScope.user.email}</div>
           </div>
-          <a
-            href="change_email.do"
-            class="btn btn-light btn-rounded text-primary border"
+          <a href="change_email.do" class="btn btn-outline-primary btn-rounded"
             >Update</a
           >
         </div>
@@ -281,11 +286,9 @@
         >
           <div>
             <div class="data-label">Phone Number</div>
-            <div class="data-value">+91 98765 43210</div>
+            <div class="data-value">${sessionScope.user.contact}</div>
           </div>
-          <a
-            href="change_contact.do"
-            class="btn btn-light btn-rounded text-primary border"
+          <a href="change_contact.do" class="btn btn-outline-primary btn-rounded"
             >Change</a
           >
         </div>
