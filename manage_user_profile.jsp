@@ -288,7 +288,9 @@
             <div class="data-label">Phone Number</div>
             <div class="data-value">${sessionScope.user.contact}</div>
           </div>
-          <a href="change_contact.do" class="btn btn-outline-primary btn-rounded"
+          <a
+            href="change_contact.do"
+            class="btn btn-outline-primary btn-rounded"
             >Change</a
           >
         </div>
@@ -307,13 +309,7 @@
       </div>
 
       <!-- FOOTER -->
-      <div class="text-center mt-5">
-        <p class="text-muted small mb-1">Need to leave?</p>
-        <a href="#" class="text-danger fw-semibold"> Delete Account </a>
-        <p class="text-muted small mt-1">
-          This action is permanent and cannot be undone.
-        </p>
-      </div>
+      <div class="text-center mt-5"></div>
     </div>
     <script type="module" src="static/js/manageUserProfile.js"></script>
   </body>

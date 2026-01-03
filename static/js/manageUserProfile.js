@@ -267,7 +267,6 @@ const init = async () => {
     await activeAccountFetching();
     editModeOff();
     displayBasicInfoContainer();
-    console.log(model.user);
   } catch (err) {
     toast.error(err.message);
     PageError.showOperatorError();

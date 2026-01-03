@@ -1399,13 +1399,18 @@ export class ViewHelper {
                     <h5 class="mb-0 fw-bold text-dark">
                       ${source.name} &rightarrow; ${destination.name}
                     </h5>
-                    <div class="d-flex align-items-center gap-2">
-                      <span class="text-muted small">${operator.fullName}</span>
+                    <div class="d-flex align-items-center gap-2 fw-semibold">
+                      <span class="text-muted small fw-semibold">Operator : <span class='fw-normal'>${
+                        operator.fullName
+                      }</span></span>
                       <span class="text-muted small">&bull;</span>
-                      <span class="text-muted small">Booking ID: ${bookingId}</span>
-                      <span class="text-muted small"
-                        >Bus Number: ${busNumber}</span
-                      >
+                      <span class="text-muted small fw-semibold">Contact : <span class='fw-normal'>${
+                        operator.contact
+                      }</span></span>
+                      <span class="text-muted small">&bull;</span>
+                      <span class="text-muted small fw-semibold">Booking ID : <span class='fw-normal'>${bookingId}</span></span>
+                      <span class="text-muted small">&bull;</span>
+                      <span class="text-muted small fw-semibold">Bus Number : <span class='fw-normal'>${busNumber}</span></span>
                     </div>
                   </div>
                 </div>
