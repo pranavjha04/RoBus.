@@ -39,25 +39,29 @@
 
       /* Date selector */
       .date-grid {
-        display: flex;
-        gap: 12px;
-        overflow-x: auto;
-        padding: 15px 5px;
-        scrollbar-width: none;
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+        overflow-x: scroll;
       }
       .date-grid::-webkit-scrollbar {
         display: none;
       }
 
       .date-card {
-        min-width: 140px;
-        padding: 12px 24px;
+        padding: 6px 12px;
         border-radius: 15px;
         border: 1px solid var(--border-color);
         background: #fff;
         text-align: center;
         cursor: pointer;
         transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+      }
+      .date-card:hover {
+        background: #cbd5e1;
+        border: 1px solid var(--primary);
       }
 
       .date-card.active {
@@ -277,46 +281,71 @@
                         >Weekly Overview - Jan 2026</small
                       >
                     </div>
-                    <div class="btn-group">
-                      <button
-                        class="btn btn-outline-secondary btn-sm"
-                        id="date_range_back"
-                      >
-                        <i class="bi bi-chevron-left">&lt;</i>
-                      </button>
-                      <button
-                        class="btn btn-outline-secondary btn-sm"
-                        id="date_range_next"
-                      >
-                        <i class="bi bi-chevron-right">&gt;</i>
-                      </button>
-                    </div>
                   </div>
 
-                  <div class="date-grid" id="date_range">
+                  <div class="date-grid" id="dange_range_container">
                     <div
                       class="date-card active"
-                      data-from="2026-01-01"
-                      data-to="2026-01-07"
+                      data-year="2026"
+                      data-month="01"
+                      data-day="04"
                     >
-                      <span class="week-label">Week 01</span>
-                      <span class="range-label">01 Jan - 07 Jan</span>
+                      <span class="fw-semibold">Sun</span>
+                      <span class="small fw-medium">04</span>
                     </div>
                     <div
                       class="date-card"
-                      data-from="2026-01-08"
-                      data-to="2026-01-14"
+                      data-year="2026"
+                      data-month="01"
+                      data-day="04"
                     >
-                      <span class="week-label">Week 02</span>
-                      <span class="range-label">08 Jan - 14 Jan</span>
+                      <span class="fw-semibold">Sun</span>
+                      <span class="small fw-medium">04</span>
                     </div>
                     <div
                       class="date-card"
-                      data-from="2026-01-15"
-                      data-to="2026-01-21"
+                      data-year="2026"
+                      data-month="01"
+                      data-day="04"
                     >
-                      <span class="week-label">Week 03</span>
-                      <span class="range-label">15 Jan - 21 Jan</span>
+                      <span class="fw-semibold">Sun</span>
+                      <span class="small fw-medium">04</span>
+                    </div>
+                    <div
+                      class="date-card"
+                      data-year="2026"
+                      data-month="01"
+                      data-day="04"
+                    >
+                      <span class="fw-semibold">Sun</span>
+                      <span class="small fw-medium">04</span>
+                    </div>
+                    <div
+                      class="date-card"
+                      data-year="2026"
+                      data-month="01"
+                      data-day="04"
+                    >
+                      <span class="fw-semibold">Sun</span>
+                      <span class="small fw-medium">04</span>
+                    </div>
+                    <div
+                      class="date-card"
+                      data-year="2026"
+                      data-month="01"
+                      data-day="04"
+                    >
+                      <span class="fw-semibold">Sun</span>
+                      <span class="small fw-medium">04</span>
+                    </div>
+                    <div
+                      class="date-card"
+                      data-year="2026"
+                      data-month="01"
+                      data-day="04"
+                    >
+                      <span class="fw-semibold">Sun</span>
+                      <span class="small fw-medium">04</span>
                     </div>
                   </div>
                 </div>
@@ -347,7 +376,9 @@
                       <div
                         class="d-flex justify-content-between align-items-start"
                       >
-                        <div class="fw-bold text-dark">Jabalpur → Bhopal</div>
+                        <div class="fw-bold text-dark">
+                          Jabalpur &rightarrow; Bhopal
+                        </div>
                         <span class="badge bg-primary-subtle text-primary"
                           >Active</span
                         >
