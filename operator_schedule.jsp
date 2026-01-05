@@ -24,7 +24,7 @@ prefix="e" uri="bts" %>
       }
     </style>
   </head>
-  <body>
+  <body class="overflow-hidden">
     <c:import url="essential_page_display.jsp" />
     <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -237,13 +237,14 @@ prefix="e" uri="bts" %>
       <c:import url="operator_navbar.jsp" />
 
       <!-- Main content -->
-      <main class="content-wrapper bg-light" style="overflow: auto">
+      <main class="content-wrapper bg-light">
         <c:import url="operator_sidebar.jsp" />
 
         <!-- Dashboard Content -->
         <div class="wrapper">
           <div class="p-4 d-flex flex-column">
-            <div class="container mt-2 mb-4" id="pageWrapper">
+            <div class="p-4 d-flex flex-column gap-3 overflow-auto"
+            id="pageWrapper">
               <h2>All Schedules</h2>
               <div class="d-flex flex-column gap-3 rounded p-2">
                 <div

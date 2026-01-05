@@ -6,7 +6,7 @@
     <c:import url="essential_page_import.jsp" />
     <title>Document</title>
   </head>
-  <body>
+  <body class="overflow-hidden">
     <c:import url="essential_page_display.jsp" />
     <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
@@ -92,7 +92,7 @@
         <c:import url="operator_sidebar.jsp" />
 
         <div
-          class="p-4 d-flex flex-column gap-3 overflow-scroll"
+          class="p-4 d-flex flex-column gap-3 overflow-auto"
           id="pageWrapper"
         >
           <h2>All Fare Factors</h2>

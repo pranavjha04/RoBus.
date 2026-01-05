@@ -30,6 +30,7 @@ const addBusModal = document.querySelector("#centeredModal");
 const allFields = Array.from(document.querySelectorAll(".bfld"));
 const prevImagesContainer = document.querySelector("#preview_img_container");
 const busTable = document.querySelector("#bus_table");
+const busType = document.querySelector("#bus_type");
 
 const model = {
   busList: [],
@@ -41,6 +42,44 @@ const setFareLoader = () => {
 
 const removeFareLoader = () => {
   fareList.innerHTML = "";
+};
+
+const updateInfoContainer = () => {
+  const infoContainer = document.querySelector("#info_container");
+  if (!infoContainer) return;
+
+  const info = model.busList.reduce(
+    (acc, { status }) => {
+      switch (status.name.toLowerCase()) {
+        case "active": {
+          return { ...acc, total: acc.total + 1, active: acc.active + 1 };
+        }
+        case "inactive": {
+          return { ...acc, total: acc.total + 1, inactive: acc.inactive + 1 };
+        }
+        case "incomplete": {
+          return {
+            ...acc,
+            total: acc.total + 1,
+            incomplete: acc.incomplete + 1,
+          };
+        }
+        default: {
+          return acc;
+        }
+      }
+    },
+    {
+      total: 0,
+      active: 0,
+      inactive: 0,
+      incomplete: 0,
+    }
+  );
+
+  for (const params in info) {
+    infoContainer.querySelector(`[data-${params}]`).textContent = info[params];
+  }
 };
 
 const reset = () => {
@@ -121,16 +160,23 @@ busImages.addEventListener("input", (e) => {
 manufacturer.addEventListener("change", manufacturerHandler);
 busNumber.addEventListener("blur", busNumberHandler);
 
-const handleBusListDisplay = (busList) => {
+const handleBusListDisplay = (busList, filter = false) => {
   if (busList.length === 0) {
-    busTable.innerHTML =
-      "<h3 class='text-center fs-3 align-self-center mt-5'>Add records to display :)</h3>";
-    filterNav.disable();
-    filterNav.init();
+    busTable.innerHTML = `<h3 class='text-center fs-3 align-self-center mt-5'>${
+      filter ? "No records found for such filter" : "Add records to display :)"
+    }</h3>`;
+    if (!filter) {
+      filterNav.disable();
+      filterNav.init();
+      busType.disabled = true;
+    }
     busTable.classList.remove("border");
   } else {
     busTable.classList.add("border");
-    filterNav.enable();
+    if (!filter) {
+      filterNav.enable();
+      busType.disabled = false;
+    }
     busTable.innerHTML = ViewHelper.getBusTableHeading();
     const busTableBody = document.getElementById("bus_table_body");
     busTableBody.innerHTML = busList
@@ -149,14 +195,13 @@ const handleBusRecords = async (firstTime = false) => {
       throw new Error("Invalid Request");
     } else if (response.startsWith("[")) {
       model.busList = JSON.parse(response);
-      PageLoading.stopLoading();
       handleBusListDisplay(model.busList);
+      updateInfoContainer();
     } else {
       throw new Error("Invalid Request");
     }
   } catch (err) {
     toast.error(err.message);
-    PageLoading.stopLoading();
     PageError.showOperatorError();
   }
 };
@@ -240,9 +285,87 @@ busTable.addEventListener("click", (e) => {
   sessionStorage.setItem("activeBus", JSON.stringify(activeBus));
 });
 
+document.querySelector("#filter_nav").addEventListener("click", (e) => {
+  const target = e.target.closest("[data-type]");
+  if (!target) return;
+
+
+
+  const type = target.dataset.type;
+  if (!type) return;
+
+  switch (type) {
+    case "all": {
+      const filterResult = [...model.busList];
+      handleBusListDisplay(filterResult, true);
+      break;
+    }
+    case "active": {
+      const filterResult = [...model.busList].filter(
+        ({ status }) => status.name === "Active"
+      );
+      handleBusListDisplay(filterResult, true);
+      break;
+    }
+    case "inactive": {
+      const filterResult = [...model.busList].filter(
+        ({ status }) => status.name === "Inactive"
+      );
+      handleBusListDisplay(filterResult, true);
+      break;
+    }
+    case "incomplete": {
+      const filterResult = [...model.busList].filter(
+        ({ status }) => status.name === "Incomplete"
+      );
+      handleBusListDisplay(filterResult, true);
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+});
+
+busType.addEventListener("change", (e) => {
+  const value = e.target.value;
+  
+  switch (value) {
+    case "all": {
+      const filterResult = [...model.busList];
+      handleBusListDisplay(filterResult);
+      break;
+    }
+    case "single": {
+      const filterResult = [...model.busList].filter(
+        ({ doubleDecker }) => !doubleDecker
+      );
+      handleBusListDisplay(filterResult, true);
+      break;
+    }
+    case "double": {
+      const filterResult = [...model.busList].filter(
+        ({ doubleDecker }) => doubleDecker
+      );
+      handleBusListDisplay(filterResult, true);
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+});
+
 const init = async () => {
-  PageLoading.startLoading();
-  await handleBusRecords(true);
+  try {
+    await handleBusRecords(true);
+    updateInfoContainer();
+  } catch (err) {
+    toast.error(err.message);
+    PageError.showOperatorError();
+  } finally {
+    PageLoading.stopLoading();
+  }
 };
 
 init();

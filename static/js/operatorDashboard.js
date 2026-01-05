@@ -1,3 +1,4 @@
+import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import { toast } from "./toast.js";
 import { createURLParams, getFormattedTime } from "./util.js";
@@ -6,7 +7,7 @@ const ctx = document.getElementById("bookingsChart");
 const dateRangeContainer = document.querySelector("#dange_range_container");
 const scheduleListContainer = document.querySelector("#schedule_container");
 
-const model = { info: null, activeWeek: {}, scheduleList: [] };
+const model = { info: null, activeWeek: {}, scheduleList: null };
 let bookingChart = null;
 
 const operatorDashBoardRequest = async () => {
@@ -52,7 +53,6 @@ const infoFetching = async () => {
 };
 
 const displayScheduleList = () => {
-  console.log(model.scheduleList);
   scheduleListContainer.innerHTML = "";
   if (model.scheduleList.length === 0) {
     scheduleListContainer.innerHTML = `
@@ -133,6 +133,7 @@ const displayScheduleList = () => {
 };
 
 const showSchedules = async () => {
+  if (model.scheduleList) return;
   try {
     const response = await collectAllScheduleRequest();
     if (response === "invalid") throw new Error("Invalid Request");
@@ -320,14 +321,34 @@ dateRangeContainer.addEventListener("click", (e) => {
   target.classList.add("active");
   showActiveWeek();
 });
+
+scheduleListContainer.addEventListener("click", (e) => {
+  const target = e.target.closest("[data-schedule-id]");
+  if (!target) return;
+
+  const activeSchedule = model.scheduleList.find(
+    ({ scheduleId }) => scheduleId === +target.dataset.scheduleId
+  );
+
+  sessionStorage.setItem("activeSchedule", JSON.stringify(activeSchedule));
+
+  const APP_URL = window.location.href.substring(
+    0,
+    window.location.href.lastIndexOf("/")
+  );
+  window.location.href = `${APP_URL}/manage_bus_schedule.do`;
+});
+
 const init = async () => {
   try {
     await infoFetching();
     displayInfoContainer();
     updateDateRange();
+    await showActiveWeek();
     await showSchedules();
   } catch (err) {
-    console.error(err.message);
+    PageError.showOperatorError();
+    toast.error(err.message);
   } finally {
     PageLoading.stopLoading();
   }

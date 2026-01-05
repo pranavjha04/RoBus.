@@ -6,7 +6,7 @@
     <c:import url="essential_page_import.jsp" />
     <title>Document</title>
   </head>
-  <body>
+  <body class="overflow-hidden">
     <c:import url="essential_page_display.jsp" />
     <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -193,12 +193,15 @@
       <c:import url="operator_navbar.jsp" />
 
       <!-- Main content -->
-      <main class="content-wrapper bg-light" style="overflow: auto">
+      <main class="content-wrapper bg-light">
         <c:import url="operator_sidebar.jsp" />
 
         <!-- Dashboard Content -->
         <div class="wrapper">
-          <div class="p-4 d-flex flex-column gap-3" id="pageWrapper">
+          <div
+            class="p-4 d-flex flex-column gap-3 overflow-auto"
+            id="pageWrapper"
+          >
             <h2>All Routes</h2>
             <div
               class="businfo justify-content-between align-items-center gap-2"

@@ -50,6 +50,7 @@ export class ViewHelper {
                 <th class="p-3">Bus Number</th>
                 <th class="p-3">Manufacturer</th>
                 <th class="p-3">Status</th>
+                <th class='p-3'>Deck</th>
                 <th class="p-3">Options</th>
               </tr>
             </thead>
@@ -106,7 +107,7 @@ export class ViewHelper {
   }
 
   static getBusTableRow(bus) {
-    const { busId, manufacturer, busNumber, status } = bus;
+    const { busId, manufacturer, busNumber, status, doubleDecker } = bus;
     const { name: statusName } = status;
     const { name: manufacturerName } = manufacturer;
     return `<tr
@@ -136,6 +137,7 @@ export class ViewHelper {
                     >${statusName.toUpperCase()}</span
                   >
                 </td>
+                <td class='p-3'>${doubleDecker ? "Double" : "Single"} </td>
                 <td class="p-3">
                   <div class="dropdown">
                     <button

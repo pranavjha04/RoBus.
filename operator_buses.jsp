@@ -6,9 +6,7 @@
     <c:import url="essential_page_import.jsp" />
     <title>Bus Management</title>
   </head>
-  <body>
-    <c:import url="essential_page_display.jsp" />
-    <!-- Modal -->
+  <body class="overflow-hidden">
     <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -138,6 +136,8 @@
         </div>
       </div>
     </div>
+    <c:import url="essential_page_display.jsp" />
+    <!-- Modal -->
 
     <!-- Dashboard -->
     <div class="dashContainer">
@@ -149,7 +149,7 @@
         <c:import url="operator_sidebar.jsp" />
         <div class="wrapper">
           <!-- Page Header -->
-           
+
           <div
             class="p-4 d-flex flex-column gap-3 overflow-auto"
             id="pageWrapper"
@@ -157,6 +157,7 @@
             <h2>All Buses</h2>
             <div
               class="businfo gap-2 align-items-center justify-content-between"
+              id="info_container"
             >
               <div
                 class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
@@ -187,7 +188,7 @@
                   >
                     TOTAL BUSES
                   </p>
-                  <h5 class="mb-0 fs-5 fw-medium">25</h5>
+                  <h5 class="mb-0 fs-5 fw-medium" data-total="">0</h5>
                 </div>
               </div>
               <div
@@ -219,7 +220,7 @@
                   >
                     ACTIVE BUSES
                   </p>
-                  <h5 class="mb-0 fs-5 fw-medium">25</h5>
+                  <h5 class="mb-0 fs-5 fw-medium" data-active="">0</h5>
                 </div>
               </div>
               <div
@@ -251,7 +252,7 @@
                   >
                     INACTIVE BUSES
                   </p>
-                  <h5 class="mb-0 fs-5 fw-medium">25</h5>
+                  <h5 class="mb-0 fs-5 fw-medium" data-inactive>0</h5>
                 </div>
               </div>
               <div
@@ -283,7 +284,7 @@
                   >
                     INCOMPLETE BUSES
                   </p>
-                  <h5 class="mb-0 fs-5 fw-medium">25</h5>
+                  <h5 class="mb-0 fs-5 fw-medium" data-incomplete>0</h5>
                 </div>
               </div>
             </div>
@@ -293,18 +294,19 @@
                   class="d-flex align-items-center bg-white rounded p-1"
                   id="filter_nav"
                 >
-                  <button class="btn btn-primary">All</button>
-                  <button class="btn">Fixed charge</button>
-                  <button class="btn">Person / km</button>
+                  <button class="btn btn-primary" data-type="all">All</button>
+                  <button class="btn" data-type="active">Active</button>
+                  <button class="btn" data-type="inactive">Inactive</button>
+                  <button class="btn" data-type="incomplete">Incomplete</button>
                 </div>
 
                 <select
                   class="my-select focus-ring rounded border-0"
-                  id="sort_charges"
+                  id="bus_type"
                 >
-                  <option value="">Sort by Charges</option>
-                  <option value="low">Low to High</option>
-                  <option value="high">High to Low</option>
+                  <option value="all" selected>All</option>
+                  <option value="single">Single Decker</option>
+                  <option value="double">Double Decker</option>
                 </select>
                 <button
                   type="button"

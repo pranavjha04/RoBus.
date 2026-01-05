@@ -141,7 +141,7 @@
       }
     </style>
   </head>
-  <body>
+  <body class="overflow-hidden">
     <c:import url="essential_page_display.jsp" />
 
     <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
@@ -331,12 +331,15 @@
       <c:import url="operator_navbar.jsp" />
 
       <!-- Main content -->
-      <main class="content-wrapper bg-light" style="overflow: auto">
+      <main class="content-wrapper bg-light">
         <c:import url="operator_sidebar.jsp" />
 
         <!-- Dashboard Content -->
         <div class="wrapper">
-          <div class="p-4 d-flex flex-column gap-3" id="pageWrapper">
+          <div
+            class="p-4 d-flex flex-column gap-3 overflow-auto"
+            id="pageWrapper"
+          >
             <span
               class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link"
               style="cursor: pointer"

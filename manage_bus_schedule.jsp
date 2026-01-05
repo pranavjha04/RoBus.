@@ -7,7 +7,7 @@ prefix="e" uri="bts" %>
     <c:import url="essential_page_import.jsp" />
     <title>Manage Bus Schedule</title>
   </head>
-  <body class="">
+  <body class="overflow-hidden">
     <c:import url="essential_page_display.jsp" />
     <div class="modal fade" tabindex="-1" id="centeredModal">
       <div class="modal-dialog">
@@ -52,7 +52,8 @@ prefix="e" uri="bts" %>
         <c:import url="operator_sidebar.jsp" />
         <div class="wrapper">
           <!-- Dashboard Content -->
-          <div class="p-4 d-flex flex-column">
+          <div   class="p-4 d-flex flex-column gap-3 overflow-auto"
+            id="pageWrapper">
             <span
               class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link"
               style="cursor: pointer"
