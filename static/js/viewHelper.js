@@ -47,6 +47,7 @@ export class ViewHelper {
   static getBusTableHeading() {
     return `<thead>
               <tr class="border border-bottom text-center">
+                <th class="p-3">Bus ID</th>
                 <th class="p-3">Bus Number</th>
                 <th class="p-3">Manufacturer</th>
                 <th class="p-3">Status</th>
@@ -114,6 +115,7 @@ export class ViewHelper {
                 class="text-center border-bottom"
                 data-id="${busId}"
               >
+                <td class="p-3">${busId}</td>
                 <td class="p-3">${busNumber}</td>
                 <td class="p-3">${manufacturerName}</td>
 
