@@ -291,7 +291,7 @@
             <div class="d-flex justify-content-between align-items-center">
               <div class="ms-auto d-flex align-items-center gap-2">
                 <div
-                  class="d-flex align-items-center bg-white rounded p-1"
+                  class="d-flex align-items-center bg-white rounded p-1 border"
                   id="filter_nav"
                 >
                   <button class="btn btn-primary" data-type="all">All</button>
@@ -301,7 +301,7 @@
                 </div>
 
                 <select
-                  class="my-select focus-ring rounded border-0"
+                  class="my-select focus-ring rounded border-0 border"
                   id="bus_type"
                 >
                   <option value="all" selected>All</option>
