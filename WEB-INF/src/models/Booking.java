@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utils.DBManager;
+import utils.Pair;
 
 
 public class Booking {
@@ -38,6 +39,51 @@ public class Booking {
 
     public Booking() {
 
+    }
+
+    public static List<Pair<Date, Integer>> collectRecords(Date from, Date to, Integer operatorId) {
+        List<Pair<Date, Integer>> list = new ArrayList<>();
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "WITH RECURSIVE date_range AS ( " +
+                        "SELECT ? AS booking_date " +
+                        "UNION ALL " +
+                        "SELECT booking_date + INTERVAL 1 DAY " +
+                        "FROM date_range " +
+                        "WHERE booking_date <= ? ) " +
+                        "SELECT " + 
+                        "d.booking_date," +
+                        "COUNT(b.booking_date) AS total_bookings " +
+                        "FROM date_range d " +
+                        "LEFT JOIN bookings b " +
+                        "ON b.booking_date = d.booking_date " +
+                        "LEFT JOIN schedules s ON s.schedule_id = b.schedule_id " +
+                        "LEFT JOIN buses ON buses.bus_id = s.bus_id " +
+                        "LEFT JOIN operators o ON o.operator_id = buses.operator_id AND o.operator_id=? " +
+                        "GROUP BY d.booking_date " +
+                        "ORDER BY d.booking_date";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setDate(1, from);
+            ps.setDate(2, to);
+            ps.setInt(3, operatorId);
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()) {
+                Pair<Date, Integer> p = new Pair<>(
+                    rs.getDate("booking_date"),
+                    rs.getInt("total_bookings")
+                );
+
+                list.add(p);
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     public static int collectTotalBookingFareRevenue(int operatorId) {

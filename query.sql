@@ -626,3 +626,39 @@ CREATE TABLE booked_seats
   CONSTRAINT booked_seat_seating FOREIGN KEY (seating_id) REFERENCES seatings(seating_id)
 );
 
+WITH RECURSIVE date_range AS (
+    SELECT DATE('2025-12-31') AS booking_date
+    UNION ALL
+    SELECT booking_date + INTERVAL 1 DAY
+    FROM date_range
+    WHERE booking_date <= DATE('2026-01-10')
+)
+SELECT 
+    d.booking_date,
+    COUNT(b.booking_date) AS total_bookings
+FROM date_range d
+LEFT JOIN bookings b 
+    ON b.booking_date = d.booking_date
+LEFT JOIN schedules s ON s.schedule_id = b.schedule_id
+LEFT JOIN buses ON buses.bus_id = s.bus_id
+LEFT JOIN operators o ON o.operator_id = buses.operator_id
+GROUP BY d.booking_date
+HAVING o.operator_id = 9
+ORDER BY d.booking_date;
+
+
+WITH RECURSIVE count as (
+    select 1 as n 
+    union ALL
+    select n + 1 from count
+    where n < 3
+)
+select * from count;
+
+WITH RECURSIVE cte AS (
+    SELECT DATE(NOW()) AS booking_date, 0 AS n
+    UNION ALL
+    SELECT booking_date, n + 1 from cte
+    where n < 6
+)
+SELECT * from cte;

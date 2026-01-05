@@ -34,6 +34,17 @@
       <function-class>elfuncs.ActiveURLElFunc</function-class>
       <function-signature>java.lang.String activeURL(javax.servlet.http.HttpServletRequest)</function-signature>
     </function>
+    <function>
+      <name>monthShort</name>
+      <function-class>elfuncs.CurrentMonthShortDisplayElFunc</function-class>
+      <function-signature>java.lang.String monthShort()</function-signature>
+    </function>
+    <function>
+      <name>activeYear</name>
+      <function-class>elfuncs.ActiveYearElFunc</function-class>
+      <function-signature>java.lang.Integer activeYear()</function-signature>
+    </function>
+    
 
     <tag>
         <name>layout</name>

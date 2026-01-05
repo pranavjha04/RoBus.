@@ -1,4 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib
+prefix="e" uri="bts" %>
 
 <c:if test="${empty sessionScope.operator}">
   <c:redirect url="/" />
@@ -40,7 +41,7 @@
       /* Date selector */
       .date-grid {
         display: grid;
-        grid-template-columns: repeat(7, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         gap: 10px;
         overflow-x: scroll;
       }
@@ -48,43 +49,6 @@
         display: none;
       }
 
-      .date-card {
-        padding: 6px 12px;
-        border-radius: 15px;
-        border: 1px solid var(--border-color);
-        background: #fff;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        flex-direction: column;
-      }
-      .date-card:hover {
-        background: #cbd5e1;
-        border: 1px solid var(--primary);
-      }
-
-      .date-card.active {
-        background: var(--primary);
-        color: #fff;
-        border-color: var(--primary);
-        box-shadow: 0 8px 15px rgba(13, 110, 253, 0.3);
-      }
-
-      .week-label {
-        font-size: 0.7rem;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        display: block;
-        opacity: 0.8;
-      }
-
-      .range-label {
-        font-weight: 700;
-        font-size: 0.95rem;
-      }
-
-      /* Schedule Item Styling */
       .schedule-item {
         padding: 12px;
         border-radius: 12px;
@@ -99,13 +63,45 @@
         border-color: #cbd5e1;
       }
 
-      /* Custom Scrollbar for Schedule */
       .custom-scrollbar::-webkit-scrollbar {
         width: 4px;
       }
       .custom-scrollbar::-webkit-scrollbar-thumb {
         background: #cbd5e1;
         border-radius: 10px;
+      }
+      .week-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+      }
+
+      .week-card {
+        padding: 14px;
+        border-radius: 12px;
+        background: #f2f2f2;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .week-card:hover {
+        background-color: #cbd5e1;
+        border: 1px solid var(--primary);
+      }
+
+      .week-card.active {
+        background: #0d6efd;
+        color: white;
+        border: 1px solid var(--primary);
+      }
+
+      .week-title {
+        font-weight: 600;
+      }
+
+      .week-range {
+        font-size: 14px;
+        opacity: 0.9;
       }
     </style>
 
@@ -278,76 +274,13 @@
                     <div>
                       <h5 class="fw-bold mb-0">Booking Performance</h5>
                       <small class="text-muted"
-                        >Weekly Overview - Jan 2026</small
+                        >Weekly Overview - ${e:monthShort()}
+                        ${e:activeYear()}</small
                       >
                     </div>
                   </div>
 
-                  <div class="date-grid" id="dange_range_container">
-                    <div
-                      class="date-card active"
-                      data-year="2026"
-                      data-month="01"
-                      data-day="04"
-                    >
-                      <span class="fw-semibold">Sun</span>
-                      <span class="small fw-medium">04</span>
-                    </div>
-                    <div
-                      class="date-card"
-                      data-year="2026"
-                      data-month="01"
-                      data-day="04"
-                    >
-                      <span class="fw-semibold">Sun</span>
-                      <span class="small fw-medium">04</span>
-                    </div>
-                    <div
-                      class="date-card"
-                      data-year="2026"
-                      data-month="01"
-                      data-day="04"
-                    >
-                      <span class="fw-semibold">Sun</span>
-                      <span class="small fw-medium">04</span>
-                    </div>
-                    <div
-                      class="date-card"
-                      data-year="2026"
-                      data-month="01"
-                      data-day="04"
-                    >
-                      <span class="fw-semibold">Sun</span>
-                      <span class="small fw-medium">04</span>
-                    </div>
-                    <div
-                      class="date-card"
-                      data-year="2026"
-                      data-month="01"
-                      data-day="04"
-                    >
-                      <span class="fw-semibold">Sun</span>
-                      <span class="small fw-medium">04</span>
-                    </div>
-                    <div
-                      class="date-card"
-                      data-year="2026"
-                      data-month="01"
-                      data-day="04"
-                    >
-                      <span class="fw-semibold">Sun</span>
-                      <span class="small fw-medium">04</span>
-                    </div>
-                    <div
-                      class="date-card"
-                      data-year="2026"
-                      data-month="01"
-                      data-day="04"
-                    >
-                      <span class="fw-semibold">Sun</span>
-                      <span class="small fw-medium">04</span>
-                    </div>
-                  </div>
+                  <div class="date-grid" id="dange_range_container"></div>
                 </div>
 
                 <div class="p-4">
@@ -371,50 +304,11 @@
                   class="p-4 flex-grow-1 custom-scrollbar"
                   style="max-height: 480px; overflow-y: auto"
                 >
-                  <div class="d-flex flex-column gap-3">
-                    <div class="schedule-item">
-                      <div
-                        class="d-flex justify-content-between align-items-start"
-                      >
-                        <div class="fw-bold text-dark">
-                          Jabalpur &rightarrow; Bhopal
-                        </div>
-                        <span class="badge bg-primary-subtle text-primary"
-                          >Active</span
-                        >
-                      </div>
-                      <div class="text-muted small mt-1">
-                        <i class="bi bi-clock me-1"></i> 10 Jan • 07:30 AM
-                      </div>
-                    </div>
-
-                    <div class="schedule-item">
-                      <div
-                        class="d-flex justify-content-between align-items-start"
-                      >
-                        <div class="fw-bold text-dark">Indore → Pune</div>
-                        <span class="badge bg-warning-subtle text-warning"
-                          >Upcoming</span
-                        >
-                      </div>
-                      <div class="text-muted small mt-1">
-                        <i class="bi bi-clock me-1"></i> 11 Jan • 09:00 PM
-                      </div>
-                    </div>
-
-                    <div class="schedule-item">
-                      <div
-                        class="d-flex justify-content-between align-items-start"
-                      >
-                        <div class="fw-bold text-dark">Bhopal → Nagpur</div>
-                        <span class="badge bg-success-subtle text-success"
-                          >Scheduled</span
-                        >
-                      </div>
-                      <div class="text-muted small mt-1">
-                        <i class="bi bi-clock me-1"></i> 12 Jan • 06:15 AM
-                      </div>
-                    </div>
+                  <div class="d-flex flex-column gap-1" id="schedule_container">
+                    <div
+                      class="d-flex flex-column gap-1"
+                      id="schedule_container"
+                    ></div>
                   </div>
                 </div>
 
