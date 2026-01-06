@@ -174,7 +174,7 @@
         <input type="file" id="imgUpload" hidden accept="image/*" />
 
         <div class="gen-info">
-          <h2 class="fw-bold m-0" id="name">Pranav Jha</h2>
+          <h2 class="fw-bold m-0" id="name">${sessionScope.user.fullName}</h2>
           <p class="text-muted small">
             Joined <strong id="joined_date"></strong>
           </p>
@@ -190,7 +190,7 @@
             <div class="data-row" id="name_container">
               <div class="view">
                 <div class="data-label">Full Name</div>
-                <div class="data-value">Pranav Jha</div>
+                <div class="data-value">${sessionScope.user.fullName}</div>
               </div>
               <div class="edit d-none">
                 <label for="full_name" class="form-label fw-semibold"
@@ -200,6 +200,7 @@
                   type="text"
                   class="form-control bg-light"
                   id="full_name"
+                  value="${sessionScope.user.fullName}"
                 />
               </div>
             </div>

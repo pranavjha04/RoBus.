@@ -21,8 +21,7 @@ public class GetActiveAccountServlet extends HttpServlet {
             response.getWriter().println("invalid");
             return;
         }
-
-        
+                
         switch(accountType) {
             case "user": 
                 User activeUser = (User) session.getAttribute(accountType);

@@ -190,7 +190,7 @@
 </aside>
 <script>
   const navContainer = document.querySelector(".nav");
-  const APP_URL = "http://localhost:8080/bts";
+  const APP_URL = "http://localhost:8989/bts";
   const currentLink = window.location.pathname.substring(
     window.location.pathname.lastIndexOf("/") + 1
   );

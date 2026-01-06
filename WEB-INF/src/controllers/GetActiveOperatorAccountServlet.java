@@ -12,17 +12,18 @@ import java.io.IOException;
 
 import com.google.gson.Gson;
 
-@WebServlet("/get_active_user.do")
-public class GetActiveUserAccountServlet extends HttpServlet {
+
+@WebServlet("/get_active_operator.do")
+public class GetActiveOperatorAccountServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
-        if(session.getAttribute("user") == null) {
+        if(session.getAttribute("operator") == null) {
             response.getWriter().println("invalid");
             return;
         }
 
 
 
-        response.getWriter().println(new Gson().toJson((session.getAttribute("user"))));
+        response.getWriter().println(new Gson().toJson((session.getAttribute("operator"))));
     }
 }

@@ -809,3 +809,10 @@ export const uploadUserProfilePicRequest = async (formData) => {
   const data = await res.text();
   return data.trim();
 };
+
+export const getActiveOperatorRequest = async () => {
+  const res = await fetch(`get_active_operator.do`);
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
