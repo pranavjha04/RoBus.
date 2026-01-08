@@ -848,3 +848,12 @@ export const uploadOperatorBannerRequest = async (formData) => {
   const data = await res.text();
   return data.trim();
 };
+export const uploadOperatorCertificateRequest = async (formData) => {
+  const res = await fetch(`upload_operator_certificate.do`, {
+    method: "POST",
+    body: formData,
+  });
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};

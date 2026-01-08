@@ -122,6 +122,31 @@ public class Operator implements Cloneable {
         }
         return flag;
     }
+    public static boolean updateCertificate(String certificate, Integer operatorId) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                            "UPDATE operators " +
+                            "SET certificate=? " +
+                            "WHERE operator_id=?";
+            
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, certificate);
+            ps.setInt(2, operatorId);
+
+            int rows = ps.executeUpdate();
+            if(rows > 0) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
+    }
 
     public static boolean updateBasicInfo(int operatorId, String fullName, String address, String website) {
         boolean flag = false;

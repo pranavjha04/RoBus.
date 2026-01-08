@@ -7,7 +7,6 @@
     <title>My Account Settings</title>
 
     <style>
-      /* ================= BANNER & PROFILE CONTAINER ================= */
       .profile-container {
         background: #ffffff;
         border-radius: 24px;
@@ -59,22 +58,21 @@
       }
       .data-label {
         font-size: 0.85rem;
-        color: #6c757d; /* Muted gray color */
+        color: #6c757d;
         margin-bottom: 4px;
-        font-weight: 700; /* Change from 500 to 700 for extra boldness */
+        font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
 
       .data-value {
-        font-weight: 600; /* Keeps the actual data readable but distinct */
+        font-weight: 600;
         color: #212529;
         font-size: 1rem;
       }
 
-      /* ================= AVATAR OVERLAP ================= */
       .profile-card-header {
-        margin-top: -65px; /* Overlaps the banner */
+        margin-top: -65px;
         position: relative;
         z-index: 2;
         text-align: center;
@@ -96,7 +94,6 @@
         background: white;
       }
 
-      /* ================= CARDS & UI ================= */
       .settings-card {
         background: #ffffff;
         border: 1px solid #e9ecef;
@@ -108,7 +105,6 @@
 
       .settings-card:hover {
         box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
-        transform: translateY(-2px);
       }
 
       .section-badge {
@@ -145,21 +141,70 @@
       }
       .certificate-preview-container {
         background: #f8f9fa;
-        padding: 15px;
+        padding: 30px;
         border-radius: 16px;
-        border: 1px solid #e9ecef;
-        text-align: center;
+        border: 1px dashed #dee2e6;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .certificate-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 600px;
+        height: 400px;
+        border-radius: 14px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        background: #e9ecef;
+        border: 2px solid #ffffff;
       }
 
       .certificate-img {
-        max-height: 300px;
-        width: auto;
-        transition: transform 0.3s ease;
-        cursor: zoom-in;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
       }
 
-      .certificate-img:hover {
-        transform: scale(1.02);
+      .cert-edit-label {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: #0d6efd;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        cursor: pointer;
+        z-index: 10;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        transition: all 0.2s ease;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .cert-edit-label:hover {
+        background: #0b5ed7;
+      }
+
+      .cert-overlay-tools {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        gap: 12px;
+        z-index: 10;
+      }
+
+      .cert-overlay-tools .btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        border-radius: 10px;
+        font-weight: 700;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        border: 2px solid rgba(255, 255, 255, 0.1);
       }
     </style>
   </head>
@@ -281,6 +326,7 @@
               </div>
             </div>
           </div>
+
           <div class="col-12">
             <div class="data-row" id="address_container">
               <div class="view">
@@ -300,16 +346,51 @@
               </div>
             </div>
           </div>
+
+          <div class="col-12 mt-4">
+            <div class="data-label px-2">Operator Certificate</div>
+            <div class="certificate-preview-container">
+              <div class="certificate-wrapper">
+                <label for="cert_img_rcv" class="cert-edit-label">
+                  <i class="bi bi-camera-fill me-2"></i> Update Certificate
+                </label>
+
+                <img
+                  src="show_image.do?target=operator&id=${sessionScope.operator.operatorId}&name=${sessionScope.operator.certificate}"
+                  alt="Certificate"
+                  class="certificate-img"
+                  id="cert_img"
+                />
+
+                <div class="cert-overlay-tools">
+                  <button class="btn btn-primary d-none" id="save_cert_btn">
+                    Save Changes
+                  </button>
+                  <button class="btn btn-secondary d-none" id="undo_cert_btn">
+                    Undo
+                  </button>
+                </div>
+
+                <input type="file" id="cert_img_rcv" hidden accept="image/*" />
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="text-end mt-3">
+        <div class="text-end mt-4">
           <button class="btn btn-primary btn-rounded" id="profile_edit">
             <i class="bi bi-pencil-square me-2"></i>Edit Profile
           </button>
-          <button class="btn btn-secondary btn-rounded" id="undo_profile_edit">
+          <button
+            class="btn btn-secondary btn-rounded d-none"
+            id="undo_profile_edit"
+          >
             <span>Undo Changes</span>
           </button>
-          <button class="btn btn-primary btn-rounded" id="save_profile_edit">
+          <button
+            class="btn btn-primary btn-rounded d-none"
+            id="save_profile_edit"
+          >
             <span>Save Changes</span>
           </button>
         </div>

@@ -4,6 +4,7 @@ import {
   getActiveOperatorRequest,
   updateOperatorBasicInfoRequest,
   uploadOperatorBannerRequest,
+  uploadOperatorCertificateRequest,
   uploadOperatorLogoRequest,
 } from "./service.js";
 import { toast } from "./toast.js";
@@ -25,13 +26,13 @@ const addressContainer = document.querySelector("#address_container");
 const imageReciever = {
   logo: document.querySelector("#logo_img_rcv"),
   banner: document.querySelector("#banner_img_rcv"),
-  certificate: document.querySelector("#certificate_img_rcv"),
+  certificate: document.querySelector("#cert_img_rcv"),
 };
 
 const imageDisplay = {
   logo: document.querySelector("#logo_img"),
   banner: document.querySelector("#banner_img"),
-  certificate: document.querySelector("#certificate_img"),
+  certificate: document.querySelector("#cert_img"),
 };
 
 const name = document.querySelector("#full_name");
@@ -48,8 +49,8 @@ const undoLogoBtn = document.querySelector("#undo_logo_btn");
 const saveBannerBtn = document.querySelector("#save_banner_btn");
 const undoBannerBtn = document.querySelector("#undo_banner_btn");
 
-// const saveCertificateBtn = document.querySelector("#edit_certificate_btn");
-// const undoCertificateBtn = document.querySelector("#undo_certificate_btn");
+const saveCertificateBtn = document.querySelector("#save_cert_btn");
+const undoCertificateBtn = document.querySelector("#undo_cert_btn");
 
 const model = {
   operator: null,
@@ -117,6 +118,19 @@ const bannerEditModeOff = () => {
     btn.classList.add("d-none");
   });
   model.activeBannerFile = null;
+};
+const certificateEditModeOn = () => {
+  [saveCertificateBtn, undoCertificateBtn].forEach((btn) => {
+    btn.classList.remove("d-none");
+  });
+};
+const certificateEditModeOff = () => {
+  const { operator } = model;
+  imageDisplay.certificate.src = `show_image.do?target=operator&id=${operator.operatorId}&name=${operator.certificate}`;
+  [saveCertificateBtn, undoCertificateBtn].forEach((btn) => {
+    btn.classList.add("d-none");
+  });
+  model.activeCertificateFile = null;
 };
 
 const setJoinedDate = () => {
@@ -353,7 +367,57 @@ saveBannerBtn.addEventListener("click", async () => {
 });
 
 //certificate
+imageReciever.certificate.addEventListener("input", (e) => {
+  model.activeCertificateFile = null;
+  const [file] = [...e.target.files];
+  const { operator } = model;
+  try {
+    const isFileValid =
+      validateFileSize(file.size) && validateFileType(file.type, "image");
+    if (!isFileValid)
+      throw new Error(
+        "Uploaded file should be an Image and not be greater than 5MB"
+      );
+    model.activeCertificateFile = file;
+    imageDisplay.certificate.src = URL.createObjectURL(file);
+    certificateEditModeOn();
+  } catch (err) {
+    toast.error(err.message);
+    imageDisplay.certificate.src = `show_image.do?target=operator&id=${operator.operatorId}&name=${operator.certificate}`;
+  }
+});
+undoCertificateBtn.addEventListener("click", certificateEditModeOff);
+saveCertificateBtn.addEventListener("click", async () => {
+  if (!model.activeCertificateFile) return;
 
+  try {
+    disableElements(
+      saveCertificateBtn,
+      undoCertificateBtn,
+      imageReciever.certificate,
+      document.querySelector('label[for="cert_img_rcv"]')
+    );
+    const formData = new FormData();
+    formData.append("certificate", model.activeCertificateFile);
+    const response = await uploadOperatorCertificateRequest(formData);
+    if (response === "ok") {
+      toast.success("Certificate updated successfully");
+      await activeAccountFetching();
+      certificateEditModeOff();
+    } else {
+      throw new Error("Invalid Request");
+    }
+  } catch (err) {
+    toast.error(err.message);
+  } finally {
+    enableElements(
+      saveCertificateBtn,
+      undoCertificateBtn,
+      imageReciever.certificate,
+      document.querySelector('label[for="cert_img_rcv"]')
+    );
+  }
+});
 
 const init = async () => {
   try {
