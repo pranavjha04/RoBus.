@@ -176,13 +176,12 @@
         color: white;
         padding: 10px 16px;
         border-radius: 10px;
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         font-weight: 700;
         cursor: pointer;
         z-index: 10;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         transition: all 0.2s ease;
-        border: 2px solid rgba(255, 255, 255, 0.2);
       }
 
       .cert-edit-label:hover {
@@ -196,15 +195,6 @@
         display: flex;
         gap: 12px;
         z-index: 10;
-      }
-
-      .cert-overlay-tools .btn {
-        padding: 10px 20px;
-        font-size: 0.9rem;
-        border-radius: 10px;
-        font-weight: 700;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        border: 2px solid rgba(255, 255, 255, 0.1);
       }
     </style>
   </head>
@@ -363,10 +353,16 @@
                 />
 
                 <div class="cert-overlay-tools">
-                  <button class="btn btn-primary d-none" id="save_cert_btn">
+                  <button
+                    class="btn btn-primary d-none rounded-4 fw-semibold"
+                    id="save_cert_btn"
+                  >
                     Save Changes
                   </button>
-                  <button class="btn btn-secondary d-none" id="undo_cert_btn">
+                  <button
+                    class="btn btn-secondary d-none rounded-4 fw-semibold"
+                    id="undo_cert_btn"
+                  >
                     Undo
                   </button>
                 </div>

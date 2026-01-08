@@ -424,7 +424,6 @@ const init = async () => {
     await activeAccountFetching();
     setJoinedDate();
     editModeOff();
-    console.log(model);
   } catch (error) {
     toast.error(error.message);
     PageError.showOperatorError();
