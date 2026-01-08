@@ -52,6 +52,7 @@ public class ShowImageServlet extends HttpServlet {
         while((reader = is.read(bff)) != -1) {
             os.write(bff, 0, reader);
         }
+        is.close();
         os.flush();
         os.close();
     }

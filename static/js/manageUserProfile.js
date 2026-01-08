@@ -79,6 +79,8 @@ const editModeOff = () => {
   editProfileBtn.classList.remove("d-none");
   saveChangesBtn.classList.add("d-none");
   undoChangesBtn.classList.add("d-none");
+
+  fullName.focus();
 };
 
 const profilePicEditModeOn = () => {
@@ -115,12 +117,11 @@ const displayBasicInfoContainer = () => {
   genderContainer.querySelector(".data-value").textContent = genderType[gender];
 
   genInfo.querySelector("#name").textContent = model.user.fullName;
-  genInfo.querySelector("#joined_date").textContent = new Intl.DateTimeFormat(
-    navigator.language,
-    {
-      dateStyle: "long",
-    }
-  ).format(new Date(createdAt));
+  genInfo.querySelector(
+    "#joined_date"
+  ).textContent = `Joined,  ${new Intl.DateTimeFormat(navigator.language, {
+    dateStyle: "long",
+  }).format(new Date(createdAt))}`;
 };
 
 editProfileBtn.addEventListener("click", editModeOn);
@@ -227,6 +228,7 @@ undoProfileChangeBtn.addEventListener("click", () => {
   profilePicEditModeOff();
   profileImg.src = `show_image.do?target=user&id=${user.userId}&name=${user.profilePic}`;
   model.activeUploadFile = null;
+  profileImgReciever.value = null;
 });
 
 saveProfileChangeBtn.addEventListener("click", async () => {
@@ -241,7 +243,6 @@ saveProfileChangeBtn.addEventListener("click", async () => {
   try {
     const formData = new FormData();
     formData.append("pic", model.activeUploadFile);
-    await uploadUserProfilePicRequest(formData);
     const response = await uploadUserProfilePicRequest(formData);
     if (response === "ok") {
       toast.success("Profile pic updated successfully");

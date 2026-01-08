@@ -816,3 +816,35 @@ export const getActiveOperatorRequest = async () => {
   const data = await res.text();
   return data.trim();
 };
+
+export const updateOperatorBasicInfoRequest = async (params) => {
+  const res = await fetch(
+    `update_operator_basic_profile.do?${params.toString()}`,
+    {
+      method: "POST",
+    }
+  );
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
+
+export const uploadOperatorLogoRequest = async (formData) => {
+  const res = await fetch(`upload_operator_logo.do`, {
+    method: "POST",
+    body: formData,
+  });
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};
+
+export const uploadOperatorBannerRequest = async (formData) => {
+  const res = await fetch(`upload_operator_banner.do`, {
+    method: "POST",
+    body: formData,
+  });
+  if (!res.ok) throw new Error("Internal Server Error");
+  const data = await res.text();
+  return data.trim();
+};

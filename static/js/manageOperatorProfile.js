@@ -1,138 +1,151 @@
 import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import {
-  getActiveUserRequest,
-  updateUserBasicInfoRequest,
-  uploadUserProfilePicRequest,
+  getActiveOperatorRequest,
+  updateOperatorBasicInfoRequest,
+  uploadOperatorBannerRequest,
+  uploadOperatorLogoRequest,
 } from "./service.js";
 import { toast } from "./toast.js";
 import {
   createURLParams,
   disableElements,
   enableElements,
-  validateDOB,
+  validateAddress,
   validateFileSize,
   validateFileType,
   validateName,
+  validateWebsite,
 } from "./util.js";
 
 const nameContainer = document.querySelector("#name_container");
-const dobContainer = document.querySelector("#website_container");
-const genderContainer = document.querySelector("#address_container");
-const securityInfoContainer = document.querySelector(
-  "#security_info_container"
-);
-const editProfileBtn = document.querySelector("#edit_profile_btn");
-const undoChangesBtn = document.querySelector("#undo_changes_btn");
-const saveChangesBtn = document.querySelector("#save_changes_btn");
-const saveProfileChangeBtn = document.querySelector(
-  "#save_profile_pic_change_btn"
-);
-const undoProfileChangeBtn = document.querySelector(
-  "#undo_profile_pic_change_btn"
-);
-const saveBannerProfileChangeBtn = document.querySelector(
-  "#save_banner_profile_pic_change_btn"
-);
-const undoBannerProfileChangeBtn = document.querySelector(
-  "#undo_banner_profile_pic_change_btn"
-);
-const profileImgReciever = document.querySelector("#imgUpload");
-const profileImg = document.querySelector("#profile_img");
+const websiteContainer = document.querySelector("#website_container");
+const addressContainer = document.querySelector("#address_container");
 
-const fullName = document.querySelector("#full_name");
-const dob = document.querySelector("#dob");
-const gender = document.querySelector("#gender");
-
-const genInfo = document.querySelector(".gen-info");
-
-const model = {
-  user: null,
-  activeUploadFile: null,
+const imageReciever = {
+  logo: document.querySelector("#logo_img_rcv"),
+  banner: document.querySelector("#banner_img_rcv"),
+  certificate: document.querySelector("#certificate_img_rcv"),
 };
 
-const genderType = {
-  1: "Male",
-  2: "Female",
-  3: "Others",
+const imageDisplay = {
+  logo: document.querySelector("#logo_img"),
+  banner: document.querySelector("#banner_img"),
+  certificate: document.querySelector("#certificate_img"),
+};
+
+const name = document.querySelector("#full_name");
+const website = document.querySelector("#website");
+const address = document.querySelector("#address");
+
+const profileEditBtn = document.querySelector("#profile_edit");
+const undoProfileEditBtn = document.querySelector("#undo_profile_edit");
+const saveProfileBtn = document.querySelector("#save_profile_edit");
+
+const saveLogoBtn = document.querySelector("#save_logo_btn");
+const undoLogoBtn = document.querySelector("#undo_logo_btn");
+
+const saveBannerBtn = document.querySelector("#save_banner_btn");
+const undoBannerBtn = document.querySelector("#undo_banner_btn");
+
+// const saveCertificateBtn = document.querySelector("#edit_certificate_btn");
+// const undoCertificateBtn = document.querySelector("#undo_certificate_btn");
+
+const model = {
+  operator: null,
+  activeLogoFile: null,
+  activeBannerFile: null,
+  activeCertificateFile: null,
 };
 
 const activeAccountFetching = async () => {
   try {
-    const response = await getActiveUserRequest();
+    const response = await getActiveOperatorRequest();
     if (response === "invalid") throw new Error(err.message);
-    model.user = JSON.parse(response);
+    model.operator = JSON.parse(response);
   } catch (err) {
     toast.error(err.message);
   }
 };
 
 const editModeOn = () => {
-  [nameContainer, dobContainer, genderContainer].forEach((node) => {
+  [nameContainer, websiteContainer, addressContainer].forEach((node) => {
     node.querySelector(".view")?.classList.add("d-none");
     node.querySelector(".edit")?.classList.remove("d-none");
   });
-  editProfileBtn.classList.add("d-none");
-  saveChangesBtn.classList.remove("d-none");
-  undoChangesBtn.classList.remove("d-none");
+  profileEditBtn.classList.add("d-none");
+  saveProfileBtn.classList.remove("d-none");
+  undoProfileEditBtn.classList.remove("d-none");
+
+  name.focus();
 };
 
 const editModeOff = () => {
-  [nameContainer, dobContainer, genderContainer].forEach((node) => {
+  [nameContainer, websiteContainer, addressContainer].forEach((node) => {
     node.querySelector(".view")?.classList.remove("d-none");
     node.querySelector(".edit")?.classList.add("d-none");
   });
-  editProfileBtn.classList.remove("d-none");
-  saveChangesBtn.classList.add("d-none");
-  undoChangesBtn.classList.add("d-none");
-};
 
-const profilePicEditModeOn = () => {
-  [saveProfileChangeBtn, undoProfileChangeBtn].forEach((btn) => {
+  profileEditBtn.classList.remove("d-none");
+  saveProfileBtn.classList.add("d-none");
+  undoProfileEditBtn.classList.add("d-none");
+};
+const logoEditModeOn = () => {
+  [saveLogoBtn, undoLogoBtn].forEach((btn) => {
     btn.classList.remove("d-none");
   });
 };
 
-const profilePicEditModeOff = () => {
-  [saveProfileChangeBtn, undoProfileChangeBtn].forEach((btn) => {
+const logoEditModeOff = () => {
+  const { operator } = model;
+  imageDisplay.logo.src = `show_image.do?target=operator&id=${operator.operatorId}&name=${operator.logo}`;
+  [saveLogoBtn, undoLogoBtn].forEach((btn) => {
     btn.classList.add("d-none");
   });
-
-  model.activeUploadFile = null;
+  model.activeLogoFile = null;
 };
 
-const displayBasicInfoContainer = () => {
-  const { fullName, dob: birthDate, gender, createdAt } = model.user;
-  const dobDate = new Date(birthDate);
+const bannerEditModeOn = () => {
+  [saveBannerBtn, undoBannerBtn].forEach((btn) => {
+    btn.classList.remove("d-none");
+  });
+};
+const bannerEditModeOff = () => {
+  const { operator } = model;
+  imageDisplay.banner.src = `show_image.do?target=operator&id=${operator.operatorId}&name=${operator.banner}`;
+  [saveBannerBtn, undoBannerBtn].forEach((btn) => {
+    btn.classList.add("d-none");
+  });
+  model.activeBannerFile = null;
+};
+
+const setJoinedDate = () => {
+  document.querySelector(
+    "#joined_date"
+  ).textContent = `Joined,  ${new Intl.DateTimeFormat(navigator.language, {
+    dateStyle: "long",
+  }).format(new Date(model.operator.createdAt))}`;
+};
+const updateBasicInfoChanges = () => {
+  const {
+    fullName,
+    address: operatorAddress,
+    website: operatorWebsite,
+  } = model.operator;
 
   nameContainer.querySelector("#full_name").value = fullName;
   nameContainer.querySelector(".data-value").textContent = fullName;
 
-  dobContainer.querySelector("#dob").value = dobDate
-    .toISOString()
-    .split("T")[0];
+  addressContainer.querySelector("#address").value = operatorAddress;
+  addressContainer.querySelector(".data-value").textContent = operatorAddress;
 
-  dobContainer.querySelector(".data-value").textContent =
-    new Intl.DateTimeFormat(navigator.language, {
-      dateStyle: "medium",
-    }).format(dobDate);
+  websiteContainer.querySelector("#website").value = operatorWebsite;
+  websiteContainer.querySelector(".data-value").textContent = operatorWebsite;
 
-  genderContainer.querySelector("#gender").value = gender;
-  genderContainer.querySelector(".data-value").textContent = genderType[gender];
-
-  genInfo.querySelector("#name").textContent = model.user.fullName;
-  genInfo.querySelector("#joined_date").textContent = new Intl.DateTimeFormat(
-    navigator.language,
-    {
-      dateStyle: "long",
-    }
-  ).format(new Date(createdAt));
+  document.querySelector("#name-display").textContent = fullName;
 };
 
-editProfileBtn.addEventListener("click", editModeOn);
-undoChangesBtn.addEventListener("click", editModeOff);
-
-fullName.addEventListener("blur", (e) => {
+name.addEventListener("blur", (e) => {
   const value = e.target.value;
   const response = validateName(value);
   try {
@@ -141,33 +154,58 @@ fullName.addEventListener("blur", (e) => {
     }
   } catch (err) {
     toast.error(err.message);
-    fullName.value = model.user.fullName;
+    name.value = model.operator.fullName;
   }
 });
 
-dob.addEventListener("blur", (e) => {
+website.addEventListener("blur", (e) => {
   const value = e.target.value;
+  const response = validateWebsite(value);
   try {
-    const response = validateDOB(value, 16);
     if (!response) {
-      throw new Error("Age must be minimum 16 and maximum 120");
+      throw new Error("Invalid URL");
     }
   } catch (err) {
     toast.error(err.message);
-    dob.value = new Date(model.user.dob).toISOString().split("T")[0];
+    website.value = model.operator.website ? model.operator.website : "";
   }
 });
 
-saveChangesBtn.addEventListener("click", async () => {
-  if (!validateName(fullName.value) || !validateDOB(dob.value, 16)) {
+address.addEventListener("blur", (e) => {
+  const value = e.target.value;
+  const response = validateAddress(value);
+  try {
+    if (!response) {
+      throw new Error("Invalid Address");
+    }
+  } catch (err) {
+    toast.error(err.message);
+    address.value = model.operator.address ? model.operator.address : "";
+  }
+});
+
+profileEditBtn.addEventListener("click", () => {
+  editModeOn();
+});
+
+undoProfileEditBtn.addEventListener("click", () => {
+  editModeOff();
+});
+
+saveProfileBtn.addEventListener("click", async () => {
+  if (
+    !validateName(name.value) ||
+    !validateAddress(address.value) ||
+    (website.value.length > 1 && !validateWebsite(website.value))
+  ) {
     toast.error("Invalid Request");
     return;
   }
   let newChange = false;
   newChange =
-    fullName.value !== model.user.fullName ||
-    dob.value !== new Date(model.user.dob).toISOString().split("T")[0] ||
-    model.user.gender !== +gender.value;
+    name.value !== model.operator.fullName ||
+    address.value !== model.operator.address ||
+    website.value !== model.operator.website;
 
   if (!newChange) {
     editModeOff();
@@ -176,42 +214,43 @@ saveChangesBtn.addEventListener("click", async () => {
   }
 
   try {
-    disableElements(undoChangesBtn, saveChangesBtn, fullName, dob, gender);
-    const response = await updateUserBasicInfoRequest(
+    disableElements(undoProfileEditBtn, saveProfileBtn, name, website, address);
+    const response = await updateOperatorBasicInfoRequest(
       createURLParams({
-        full_name: fullName.value,
-        dob: dob.value,
-        gender: +gender.value,
+        full_name: name.value,
+        address: address.value,
+        website: website.value,
       })
     );
     if (response === "ok") {
       toast.success("Profile Updated successfully");
       await activeAccountFetching();
-      displayBasicInfoContainer();
+      updateBasicInfoChanges();
       editModeOff();
-    } else if (response === "dob") {
-      dob.focus();
-      throw new Error("Invalid DOB");
+    } else if (response === "website") {
+      website.focus();
+      throw new Error("Invalid Website");
     } else if (response === "full_name") {
       fullName.focus();
       throw new Error("Invalid Full Name");
-    } else if (response === "gender") {
-      gender.focus();
-      throw new Error("Invalid Gender");
+    } else if (response === "address") {
+      address.focus();
+      throw new Error("Invalid Address");
     } else {
       throw new Error("Invalid Request");
     }
   } catch (err) {
     toast.error(err.message);
   } finally {
-    enableElements(undoChangesBtn, saveChangesBtn, fullName, dob, gender);
+    enableElements(undoProfileEditBtn, saveProfileBtn, name, website, address);
   }
 });
 
-profileImgReciever.addEventListener("input", (e) => {
-  model.activeUploadFile = null;
+// logo
+imageReciever.logo.addEventListener("input", (e) => {
+  model.activeLogoFile = null;
   const [file] = [...e.target.files];
-  const { user } = model;
+  const { operator } = model;
   try {
     const isFileValid =
       validateFileSize(file.size) && validateFileType(file.type, "image");
@@ -219,40 +258,32 @@ profileImgReciever.addEventListener("input", (e) => {
       throw new Error(
         "Uploaded file should be an Image and not be greater than 5MB"
       );
-    model.activeUploadFile = file;
-    profileImg.src = URL.createObjectURL(file);
-    profilePicEditModeOn();
+    model.activeLogoFile = file;
+    imageDisplay.logo.src = URL.createObjectURL(file);
+    logoEditModeOn();
   } catch (err) {
     toast.error(err.message);
-    profileImg.src = `show_image.do?target=user&id=${user.userId}&name=${user.profilePic}`;
+    imageDisplay.logo.src = `show_image.do?target=operator&id=${operator.operatorId}&name=${operator.logo}`;
   }
 });
-
-undoProfileChangeBtn.addEventListener("click", () => {
-  const { user } = model;
-  profilePicEditModeOff();
-  profileImg.src = `show_image.do?target=user&id=${user.userId}&name=${user.profilePic}`;
-  model.activeUploadFile = null;
-});
-
-saveProfileChangeBtn.addEventListener("click", async () => {
-  if (!model.activeUploadFile) return;
-  disableElements(
-    saveProfileChangeBtn,
-    undoProfileChangeBtn,
-    profileImgReciever,
-    document.querySelector('label[for="imgUpload"]')
-  );
+undoLogoBtn.addEventListener("click", logoEditModeOff);
+saveLogoBtn.addEventListener("click", async () => {
+  if (!model.activeLogoFile) return;
 
   try {
+    disableElements(
+      saveLogoBtn,
+      undoLogoBtn,
+      imageReciever.logo,
+      document.querySelector('label[for="logo_img_rcv"]')
+    );
     const formData = new FormData();
-    formData.append("pic", model.activeUploadFile);
-    await uploadUserProfilePicRequest(formData);
-    const response = await uploadUserProfilePicRequest(formData);
+    formData.append("logo", model.activeLogoFile);
+    const response = await uploadOperatorLogoRequest(formData);
     if (response === "ok") {
-      toast.success("Profile pic updated successfully");
+      toast.success("Logo updated successfully");
       await activeAccountFetching();
-      profilePicEditModeOff();
+      logoEditModeOff();
     } else {
       throw new Error("Invalid Request");
     }
@@ -260,21 +291,78 @@ saveProfileChangeBtn.addEventListener("click", async () => {
     toast.error(err.message);
   } finally {
     enableElements(
-      saveProfileChangeBtn,
-      undoProfileChangeBtn,
-      profileImgReciever,
-      document.querySelector('label[for="imgUpload"]')
+      saveLogoBtn,
+      undoLogoBtn,
+      imageReciever.logo,
+      document.querySelector('label[for="logo_img_rcv"]')
     );
   }
 });
 
+// banner
+imageReciever.banner.addEventListener("input", (e) => {
+  model.activeBannerFile = null;
+  const [file] = [...e.target.files];
+  const { operator } = model;
+  try {
+    const isFileValid =
+      validateFileSize(file.size) && validateFileType(file.type, "image");
+    if (!isFileValid)
+      throw new Error(
+        "Uploaded file should be an Image and not be greater than 5MB"
+      );
+    model.activeBannerFile = file;
+    imageDisplay.banner.src = URL.createObjectURL(file);
+    bannerEditModeOn();
+  } catch (err) {
+    toast.error(err.message);
+    imageDisplay.banner.src = `show_image.do?target=operator&id=${operator.operatorId}&name=${operator.banner}`;
+  }
+});
+undoBannerBtn.addEventListener("click", bannerEditModeOff);
+saveBannerBtn.addEventListener("click", async () => {
+  if (!model.activeBannerFile) return;
+
+  try {
+    disableElements(
+      saveBannerBtn,
+      undoBannerBtn,
+      imageReciever.banner,
+      document.querySelector('label[for="banner_img_rcv"]')
+    );
+    const formData = new FormData();
+    formData.append("banner", model.activeBannerFile);
+    const response = await uploadOperatorBannerRequest(formData);
+    if (response === "ok") {
+      toast.success("Banner updated successfully");
+      await activeAccountFetching();
+      bannerEditModeOff();
+    } else {
+      throw new Error("Invalid Request");
+    }
+  } catch (err) {
+    toast.error(err.message);
+  } finally {
+    enableElements(
+      saveBannerBtn,
+      undoBannerBtn,
+      imageReciever.banner,
+      document.querySelector('label[for="banner_img_rcv"]')
+    );
+  }
+});
+
+//certificate
+
+
 const init = async () => {
   try {
     await activeAccountFetching();
+    setJoinedDate();
     editModeOff();
-    displayBasicInfoContainer();
-  } catch (err) {
-    toast.error(err.message);
+    console.log(model);
+  } catch (error) {
+    toast.error(error.message);
     PageError.showOperatorError();
   } finally {
     PageLoading.stopLoading();

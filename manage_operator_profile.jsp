@@ -165,67 +165,76 @@
   </head>
 
   <body>
+    <c:import url="essential_page_display.jsp" />
     <c:import url="operator_navbar.jsp" />
 
     <div class="container py-5" style="max-width: 850px" id="pageWrapper">
       <div class="profile-container">
         <div class="banner-wrapper">
           <img
-            src="show_image.do?target=operator&id=${sessionScope.operator.operatorId}&name=${sessionScope.operator.logo}"
+            src="show_image.do?target=operator&id=${sessionScope.operator.operatorId}&name=${sessionScope.operator.banner}"
             alt="Cover Banner"
             class="banner-img"
-            id="banner_img_preview"
+            id="banner_img"
           />
 
           <div class="banner-overlay-tools">
-            <button
-              class="btn btn-primary btn-sm btn-rounded d-none"
-              id="save_banner_profile_pic_change_btn"
-            >
-              Save Banner
-            </button>
-            <label for="bannerUpload" class="banner-edit-btn">
+            <label for="banner_img_rcv" class="banner-edit-btn">
               <i class="bi bi-camera-fill"></i> Change Banner
             </label>
+            <button
+              class="btn btn-primary rounded-4 d-none gap-2 fw-medium d-flex align-items-center px-3 py-2"
+              id="save_banner_btn"
+            >
+              <span>Save Changes</span>
+            </button>
+            <button
+              class="btn btn-secondary d-none rounded-4 gap-2 fw-medium d-flex align-items-center px-3 py-2"
+              id="undo_banner_btn"
+            >
+              <span>Undo Changes</span>
+            </button>
           </div>
-          <input type="file" id="bannerUpload" hidden accept="image/*" />
+          <input type="file" id="banner_img_rcv" hidden accept="image/*" />
         </div>
 
         <div class="profile-card-header">
           <div class="avatar-container mb-2">
             <img
               src="show_image.do?target=operator&id=${sessionScope.operator.operatorId}&name=${sessionScope.operator.logo}"
-              alt="Profile"
+              alt="Logo"
               class="avatar-img"
-              id="profile_img_preview"
+              id="logo_img"
             />
           </div>
 
           <div class="d-flex justify-content-center gap-2 mt-2">
             <label
-              for="imgUpload"
+              for="logo_img_rcv"
               class="btn btn-light btn-rounded border btn-sm"
             >
               Change Photo
             </label>
             <button
               class="btn btn-primary rounded-4 d-none gap-2 fw-medium d-flex align-items-center px-3 py-2"
-              id="save_changes_btn"
+              id="save_logo_btn"
             >
               <span>Save Changes</span>
             </button>
             <button
               class="btn btn-secondary d-none rounded-4 gap-2 fw-medium d-flex align-items-center px-3 py-2"
-              id="undo_changes_btn"
+              id="undo_logo_btn"
             >
               <span>Undo Changes</span>
             </button>
           </div>
-          <input type="file" id="imgUpload" hidden accept="image/*" />
+          <input type="file" id="logo_img_rcv" hidden accept="image/*" />
 
           <div class="gen-info mt-3 pb-4">
-            <h2 class="fw-bold m-0">${sessionScope.operator.fullName}</h2>
-            <p class="text-muted small">Account Operator</p>
+            <h2 class="fw-bold m-0" id="name-display">
+              ${sessionScope.operator.fullName}
+            </h2>
+            <p class="text-muted small" id="joined_date"></p>
           </div>
         </div>
       </div>
@@ -273,7 +282,7 @@
             </div>
           </div>
           <div class="col-12">
-            <div class="data-row" id="website_container">
+            <div class="data-row" id="address_container">
               <div class="view">
                 <div class="data-label">Address</div>
                 <div class="data-value">${sessionScope.operator.address}</div>
@@ -291,23 +300,17 @@
               </div>
             </div>
           </div>
-          <div class="col-12 mt-3">
-            <div class="data-row">
-              <div class="data-label">Certificate</div>
-              <div class="certificate-preview-container mt-2">
-                <img
-                  src="show_image.do?target=operator&id=${sessionScope.operator.operatorId}&name=${sessionScope.operator.certificate}"
-                  alt="Operator Certificate"
-                  class="img-fluid rounded border shadow-sm certificate-img"
-                />
-              </div>
-            </div>
-          </div>
         </div>
 
         <div class="text-end mt-3">
-          <button class="btn btn-primary btn-rounded" id="edit_profile_btn">
+          <button class="btn btn-primary btn-rounded" id="profile_edit">
             <i class="bi bi-pencil-square me-2"></i>Edit Profile
+          </button>
+          <button class="btn btn-secondary btn-rounded" id="undo_profile_edit">
+            <span>Undo Changes</span>
+          </button>
+          <button class="btn btn-primary btn-rounded" id="save_profile_edit">
+            <span>Save Changes</span>
           </button>
         </div>
       </div>

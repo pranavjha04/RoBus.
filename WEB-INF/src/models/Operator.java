@@ -72,6 +72,173 @@ public class Operator implements Cloneable {
     public Operator() {
     }
 
+    public static boolean updateLogo(String logo, Integer operatorId) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                            "UPDATE operators " +
+                            "SET logo=? " +
+                            "WHERE operator_id=?";
+            
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, logo);
+            ps.setInt(2, operatorId);
+
+            int rows = ps.executeUpdate();
+            if(rows > 0) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
+    }
+    public static boolean updateBanner(String banner, Integer operatorId) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                            "UPDATE operators " +
+                            "SET banner=? " +
+                            "WHERE operator_id=?";
+            
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, banner);
+            ps.setInt(2, operatorId);
+
+            int rows = ps.executeUpdate();
+            if(rows > 0) {
+                flag = true;
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+        return flag;
+    }
+
+    public static boolean updateBasicInfo(int operatorId, String fullName, String address, String website) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query =  
+                        "UPDATE operators SET " +
+                        "full_name=?, address=?, website=? " +
+                        "WHERE operator_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setString(1, fullName);
+            ps.setString(2, address);
+            ps.setString(3, website);
+            ps.setInt(4, operatorId);
+            flag = ps.executeUpdate() == 1;
+
+            con.close();  
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            flag = false;
+        }
+
+        return flag;
+    }
+
+    public static Operator getOperatorById(Integer operatorId) {
+        Operator operator = null;
+        try {
+            Connection con = DBManager.getConnection();
+            String query =
+                    "SELECT " +
+                    "o.operator_id, " +
+                    "o.full_name AS operator_full_name, " +
+                    "o.contact AS operator_contact, " +
+                    "o.email AS operator_email, " +
+                    "o.password AS operator_password, " +
+                    "o.address AS operator_address, " +
+                    "o.certificate AS operator_certificate, " +
+                    "o.website AS operator_website, " +
+                    "o.logo AS operator_logo, " +
+                    "o.banner AS operator_banner, " +
+                    "o.base_charge AS operator_base_charge, " +
+                    "o.created_at AS operator_created_at, " +
+                    "o.updated_at AS operator_updated_at, " +
+                    "o.verification_code AS operator_verification_code, " +
+                    "os.status_id AS operator_status_id, " +
+                    "os.name AS operator_status_name, " +
+                    "u.user_id, " +
+                    "u.full_name AS user_full_name, " +
+                    "u.contact AS user_contact, " +
+                    "u.email AS user_email, " +
+                    "u.password AS user_password, " +
+                    "u.dob AS user_dob, " +
+                    "u.gender AS user_gender, " +
+                    "u.profile_pic AS user_profile_pic, " +
+                    "u.created_at AS user_created_at, " +
+                    "u.updated_at AS user_updated_at, " +
+                    "u.verification_code AS user_verification_code, " +
+                    "us.status_id AS user_status_id, " +
+                    "us.name AS user_status_name, " +
+                    "ut.user_type_id, " +
+                    "ut.name AS user_type_name " +
+                    "FROM operators o " +
+                    "JOIN status os ON o.status_id = os.status_id " +
+                    "JOIN users u ON o.user_id = u.user_id " +
+                    "JOIN status us ON u.status_id = us.status_id " +
+                    "JOIN user_types ut ON u.user_type_id = ut.user_type_id " +
+                    "WHERE o.operator_id = ?";
+
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, operatorId); 
+
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                operator = new Operator(
+                    rs.getInt("operator_id"),
+                    rs.getString("operator_full_name"),
+                    rs.getString("operator_address"),
+                    rs.getString("operator_email"),
+                    rs.getString("operator_password"),
+                    rs.getString("operator_contact"),
+                    rs.getString("operator_certificate"),
+                    rs.getString("operator_website"),
+                    rs.getString("operator_logo"),
+                    rs.getString("operator_banner"),
+                    rs.getString("operator_verification_code"),
+                    rs.getInt("operator_base_charge"),
+                    new Status(rs.getInt("operator_status_id"), rs.getString("operator_status_name")),
+                    rs.getTimestamp("operator_created_at"),
+                    rs.getTimestamp("operator_updated_at"),
+                    new User(
+                        rs.getInt("user_id"),
+                        rs.getString("user_full_name"),
+                        rs.getDate("user_dob"),
+                        rs.getString("user_contact"),
+                        rs.getInt("user_gender"),
+                        rs.getString("user_email"),
+                        rs.getString("user_password"),
+                        rs.getString("user_profile_pic"),
+                        new Status(rs.getInt("user_status_id"), rs.getString("user_status_name")),
+                        rs.getString("user_verification_code"),
+                        rs.getTimestamp("user_created_at"),
+                        rs.getTimestamp("user_updated_at"),
+                        new UserType(rs.getInt("user_type_id"), rs.getString("user_type_name"))
+                    )
+                );
+            }
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return operator;
+    }
+
     public int addRecord() {
         int generatedId = -1;
 
