@@ -30,6 +30,10 @@ public class DeleteOperatorRouteMidCityServlet extends HttpServlet {
 
         try {
             Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                throw new IllegalArgumentException("Not verified");
+            }
+            
             Integer operatorId = operator.getOperatorId();
             Integer operatorRouteId = Integer.parseInt(request.getParameter("operator_route_id"));
             Integer operatorRouteMidCityId = Integer.parseInt(request.getParameter("operator_route_mid_city_id"));
@@ -40,7 +44,7 @@ public class DeleteOperatorRouteMidCityServlet extends HttpServlet {
             }
             response.getWriter().println(isDeleted ? "success" : "failed");
         }
-        catch(NumberFormatException e) {
+        catch(IllegalArgumentException e) {
             e.printStackTrace();
             response.getWriter().println("invalid");
             return;

@@ -27,6 +27,11 @@ public class GetAllBookingServlet extends HttpServlet {
             return;
         }
         User user = (User) session.getAttribute("user");
+        if(!user.getStatus().getStatusId().equals(1)) {
+            response.getWriter().println("[]");
+            return;
+        }
+        
         ArrayList<Booking> bookingList = (ArrayList<Booking>)  Booking.collectAllRecords(user.getUserId());
 
         for(Booking next : bookingList) {

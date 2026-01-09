@@ -89,7 +89,7 @@ const reset = () => {
   prevImagesContainer.innerHTML = "";
 };
 
-addBusModal.addEventListener("show.bs.modal", async () => {
+addBusModal?.addEventListener("show.bs.modal", async () => {
   setFareLoader();
   setTimeout(async () => {
     try {
@@ -118,7 +118,7 @@ addBusModal.addEventListener("show.bs.modal", async () => {
   }, 500);
 });
 
-addBusModal.addEventListener("hidden.bs.modal", function () {
+addBusModal?.addEventListener("hidden.bs.modal", function () {
   reset();
   basicBusForm.reset();
 });
@@ -289,8 +289,6 @@ document.querySelector("#filter_nav").addEventListener("click", (e) => {
   const target = e.target.closest("[data-type]");
   if (!target) return;
 
-
-
   const type = target.dataset.type;
   if (!type) return;
 
@@ -329,7 +327,7 @@ document.querySelector("#filter_nav").addEventListener("click", (e) => {
 
 busType.addEventListener("change", (e) => {
   const value = e.target.value;
-  
+
   switch (value) {
     case "all": {
       const filterResult = [...model.busList];

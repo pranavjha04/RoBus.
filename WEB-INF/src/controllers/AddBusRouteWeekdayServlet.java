@@ -30,6 +30,10 @@ public class AddBusRouteWeekdayServlet extends HttpServlet {
             }
             
             Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                throw new IllegalArgumentException("Not Verified");
+            }
+        
             Integer operatorRouteId = Integer.parseInt(request.getParameter("operator_route_id"));
             String[] weekdays = request.getParameterValues("weekday");
 
@@ -45,6 +49,7 @@ public class AddBusRouteWeekdayServlet extends HttpServlet {
         catch(IllegalArgumentException e) {
             success = false;
             e.printStackTrace();
+            response.getWriter().println("invalid");
         }       
     }
 }

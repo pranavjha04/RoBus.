@@ -22,6 +22,11 @@ import utils.FieldManager;
 public class AddOperatorTicketFareServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
+        Operator operator = (Operator) session.getAttribute("operator");
+        if(!operator.getStatus().getStatusId().equals(1)) {
+            response.getWriter().println("internal");
+            return;
+        }
 
         if(
             session.getAttribute("operator") == null ||
@@ -41,8 +46,6 @@ public class AddOperatorTicketFareServlet extends HttpServlet {
 
         Integer fareFactorId = Integer.parseInt(request.getParameter("fare_factor_id"));
         
-        Operator operator = (Operator) session.getAttribute("operator");
-
         boolean success = OperatorTicketFare.addRecord(fareFactorId, charge, operator.getOperatorId());
         if(success) {
             Enumeration<String> allAttributes = session.getAttributeNames();

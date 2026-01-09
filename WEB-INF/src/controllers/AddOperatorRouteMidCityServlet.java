@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import models.RouteMidCity;
+import models.Operator;
 
 @WebServlet("/add_operator_route_mid_city.do")
 public class AddOperatorRouteMidCityServlet extends HttpServlet {
@@ -23,6 +24,8 @@ public class AddOperatorRouteMidCityServlet extends HttpServlet {
             return;
         }
 
+        Operator operator = (Operator) session.getAttribute("operator");
+
         if(
             request.getParameter("route_id") == null || 
             request.getParameter("operator_route_id") == null || 
@@ -33,6 +36,9 @@ public class AddOperatorRouteMidCityServlet extends HttpServlet {
         }
 
         try {
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                throw new IllegalArgumentException("Not verified");
+            }
             Integer routeId = Integer.parseInt(request.getParameter("route_id"));
             Integer operatorRouteId = Integer.parseInt(request.getParameter("operator_route_id"));
 

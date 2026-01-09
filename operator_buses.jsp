@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<c:set var="operator" value="${sessionScope.operator}" />
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -308,14 +309,29 @@
                   <option value="single">Single Decker</option>
                   <option value="double">Double Decker</option>
                 </select>
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#centeredModal"
-                >
-                  + Add Bus
-                </button>
+                <c:choose>
+                  <c:when test="${operator.status.statusId eq 1}">
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#centeredModal"
+                    >
+                      + Add Bus
+                    </button>
+                  </c:when>
+                  <c:otherwise>
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-toggle="modal"
+                      disabled
+                      data-bs-target="#centeredModal"
+                    >
+                      + Add Bus (Verify your email address)
+                    </button>
+                  </c:otherwise>
+                </c:choose>
               </div>
             </div>
             <table

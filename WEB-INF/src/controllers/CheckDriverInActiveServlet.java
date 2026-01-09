@@ -32,6 +32,9 @@ public class CheckDriverInActiveServlet extends HttpServlet {
         boolean isInActive = false;
 
         try {
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                throw new IllegalArgumentException("Not Verified");
+            }
             if(isIncludeRequest) {
                 if(request.getAttribute("driver_id") == null) {
                     throw new IllegalArgumentException("Invalid Request");

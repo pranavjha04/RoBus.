@@ -24,6 +24,7 @@ prefix="e" uri="bts" %>
       }
     </style>
   </head>
+  <c:set var="operator" value="${sessionScope.operator}" />
   <body class="overflow-hidden">
     <c:import url="essential_page_display.jsp" />
     <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
@@ -221,11 +222,23 @@ prefix="e" uri="bts" %>
 
               <!-- Submit -->
               <div class="d-flex justify-content-end">
-                <input
-                  type="submit"
-                  value="Add Schedule"
-                  class="btn btn-primary px-4 py-2"
-                />
+                <c:choose>
+                  <c:when test="${operator.status.statusId eq 1}">
+                    <input
+                      type="submit"
+                      value="Add Schedule"
+                      class="btn btn-primary px-4 py-2"
+                    />
+                  </c:when>
+                  <c:otherwise>
+                    <input
+                      type="submit"
+                      value="Add Schedule (Verify your email address)"
+                      class="btn btn-primary px-4 py-2"
+                      disabled
+                    />
+                  </c:otherwise>
+                </c:choose>
               </div>
             </form>
           </div>
@@ -243,8 +256,10 @@ prefix="e" uri="bts" %>
         <!-- Dashboard Content -->
         <div class="wrapper">
           <div class="p-4 d-flex flex-column">
-            <div class="p-4 d-flex flex-column gap-3 overflow-auto"
-            id="pageWrapper">
+            <div
+              class="p-4 d-flex flex-column gap-3 overflow-auto"
+              id="pageWrapper"
+            >
               <h2>All Schedules</h2>
               <div class="d-flex flex-column gap-3 rounded p-2">
                 <div

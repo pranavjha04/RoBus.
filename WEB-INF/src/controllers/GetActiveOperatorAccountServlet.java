@@ -21,9 +21,6 @@ public class GetActiveOperatorAccountServlet extends HttpServlet {
             response.getWriter().println("invalid");
             return;
         }
-
-
-
         response.getWriter().println(new Gson().toJson((session.getAttribute("operator"))));
     }
 }

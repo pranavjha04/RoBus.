@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 
 import models.Bus;
+import models.Operator;
 
 @WebServlet("/bus_seating_configuration.do")
 public class BusSeatingConfiguration extends HttpServlet {
@@ -23,14 +24,16 @@ public class BusSeatingConfiguration extends HttpServlet {
         if(
             session.getAttribute("operator") == null ||
             request.getParameter("bus_id") == null ||
-            request.getParameter("bus_id").isEmpty() ||
-            !Bus.checkRecordExist(Integer.parseInt(request.getParameter("bus_id")))
+            request.getParameter("bus_id").isEmpty() 
         ) {
             response.sendRedirect(backURL);
             return;
         }
-
-        int busId = Integer.parseInt(request.getParameter("bus_id"));
+        Operator operator = (Operator) session.getAttribute("operator");
+        if(!operator.getStatus().getStatusId().equals(1)) {
+            response.sendRedirect(backURL);
+            return;
+        }
         
         request.getRequestDispatcher("bus_seating_configuration.jsp").forward(request, response);
     }

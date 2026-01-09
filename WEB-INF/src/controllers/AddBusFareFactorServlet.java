@@ -34,6 +34,11 @@ public class AddBusFareFactorServlet extends HttpServlet {
         }
 
         Operator operator = (Operator) session.getAttribute("operator");
+        if(!operator.getStatus().getStatusId().equals(1)) {
+            response.getWriter().println("internal");
+            return;
+        }
+        
         int operatorId = operator.getOperatorId();
 
         int operatorTicketFareId = Integer.parseInt(request.getParameter("operator_ticket_fare_id"));

@@ -35,9 +35,13 @@ public class BookTicketServlet extends HttpServlet {
             response.sendRedirect("/bts");
             return;
         }
+    
 
         try {
             User activeUser = (User) session.getAttribute("user");
+            if(!activeUser.getStatus().getStatusId().equals(1)) {
+                throw new IllegalArgumentException("Not verified");
+            }
             ServletContext context = getServletContext();
             for(String next : acceptedParameterList) {
                 if(request.getParameter(next) == null) {

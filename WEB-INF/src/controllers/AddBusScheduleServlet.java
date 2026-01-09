@@ -37,6 +37,8 @@ public class AddBusScheduleServlet extends HttpServlet {
             return;
         }
 
+
+
         try {
             // validate journey_date if any missing parameter
             for(String next : acceptedParams) {
@@ -47,6 +49,9 @@ public class AddBusScheduleServlet extends HttpServlet {
 
             // store all parameters
             Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                throw new IllegalArgumentException("Not verified");
+            }
             Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
             Time departureTime = Time.valueOf(request.getParameter("departure_time"));
             Time arrivalTime = Time.valueOf(request.getParameter("arrival_time"));
@@ -167,6 +172,7 @@ public class AddBusScheduleServlet extends HttpServlet {
         }       
         catch(Exception e) {
             e.printStackTrace();
+            response.getWriter().println("invalid");
         }
         finally {
             request.removeAttribute("driver_id");

@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<c:set var="operator" value="${sessionScope.operator}" />
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -313,15 +313,29 @@
                   <button class="btn">Active</button>
                   <button class="btn">Inactive</button>
                 </div>
-
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#centeredModal"
-                >
-                  + Add Route
-                </button>
+                <c:choose>
+                  <c:when test="${operator.status.statusId eq 1}">
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#centeredModal"
+                    >
+                      + Add Route
+                    </button>
+                  </c:when>
+                  <c:otherwise>
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#centeredModal"
+                      disabled
+                    >
+                      + Add Route (Verify your email address)
+                    </button>
+                  </c:otherwise>
+                </c:choose>
               </div>
             </div>
             <div class="d-flex align-self-end gap-2">

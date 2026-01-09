@@ -40,12 +40,15 @@ public class AddDriverServlet extends HttpServlet {
             return;
         }
         try {
+            Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                throw new Exception("Not Verified");
+            }
             List<FileItem> items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
             if(items.isEmpty()) {
                 throw new Exception("invalid");
             }
             List<FileItem> validFiles = new ArrayList<>();
-            Operator operator = (Operator) session.getAttribute("operator");
             Integer operatorId = operator.getOperatorId();
             String licenceNumber = null;
             Integer userId = null;

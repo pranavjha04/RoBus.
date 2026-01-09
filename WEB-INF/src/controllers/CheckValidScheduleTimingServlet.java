@@ -40,13 +40,17 @@ public class CheckValidScheduleTimingServlet extends HttpServlet {
         boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
         
         try {
+            Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                throw new IllegalArgumentException("Not Verified");
+            }
+            
             for(String next : acceptedParams) {
                 if(request.getParameter(next) == null) {
                     throw new IllegalArgumentException("Missing Parameter");
                 }
             }
 
-            Operator operator = (Operator) session.getAttribute("operator");
             Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
             Time departureTime = Time.valueOf(request.getParameter("departure_time"));
             Time arrivalTime = Time.valueOf(request.getParameter("arrival_time"));

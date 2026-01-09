@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import models.OperatorTicketFare;
+import models.Operator;
 
 @WebServlet("/delete_fare_factor.do")
 public class DeleteFareFactorServlet extends HttpServlet {
@@ -25,6 +26,13 @@ public class DeleteFareFactorServlet extends HttpServlet {
         ) {
             response.getWriter().println("invalid");
             return;
+        }
+        else {
+            Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                response.getWriter().println("invalid");
+                return;
+            }
         }
 
         try {

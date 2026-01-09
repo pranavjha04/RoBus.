@@ -37,6 +37,10 @@ public class CancelBookingServlet extends HttpServlet {
             Integer bookingId = Integer.parseInt(request.getParameter("booking_id"));
             User user = (User) session.getAttribute("user");
 
+            if(!user.getStatus().getStatusId().equals(1)) {
+                throw new IllegalArgumentException("Not Verified");
+            }
+
             // check karo booking ka status agr upcoming ho toh he cancel karo
             Booking targetBooking = Booking.getRecord(bookingId);
             if(targetBooking == null || !targetBooking.getStatus().getName().equals("Upcoming")) {

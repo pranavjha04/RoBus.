@@ -31,6 +31,10 @@ public class GetBusFareFactorServlet extends HttpServlet {
             }
 
             Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                throw new IllegalArgumentException("Not verified");
+            }            
+
             if(request.getParameter("bus_id") == null) {
                 throw new IllegalArgumentException("Missing Parameter");
             }

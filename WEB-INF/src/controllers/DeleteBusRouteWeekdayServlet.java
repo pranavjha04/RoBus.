@@ -25,10 +25,13 @@ public class DeleteBusRouteWeekdayServlet extends HttpServlet {
         boolean success = false;
 
         try {
+            Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                throw new IllegalArgumentException("Not verified");
+            }
             for(String next : acceptedParams) {
                 if(request.getParameter(next) == null) throw new IllegalArgumentException("Missing Parameter");
             }
-            Operator operator = (Operator) session.getAttribute("operator");
             Integer operatorRouteId = Integer.parseInt(request.getParameter("operator_route_id"));
             Integer busRouteWeekdayId = Integer.parseInt(request.getParameter("bus_route_weekday_id"));
             Integer operatorId = operator.getOperatorId();

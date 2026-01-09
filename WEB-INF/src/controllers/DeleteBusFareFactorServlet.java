@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 
 import models.BusFareFactor;
+import models.Operator;
 
 @WebServlet("/delete_bus_fare_factor.do")
 public class DeleteBusFareFactorServlet extends HttpServlet {
@@ -30,6 +31,10 @@ public class DeleteBusFareFactorServlet extends HttpServlet {
         }
 
         try {
+            Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                throw new IllegalArgumentException("Not verified");
+            }
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));
             Integer busFareFactorId = Integer.parseInt(request.getParameter("bus_fare_factor_id"));
             Integer operatorTicketFareId = Integer.parseInt(request.getParameter("operator_ticket_fare_id"));
@@ -41,7 +46,7 @@ public class DeleteBusFareFactorServlet extends HttpServlet {
             }
             response.getWriter().println(success ? "success" : "internal");
         } 
-        catch(NumberFormatException e) {
+        catch(IllegalArgumentException e) {
             response.getWriter().println("invalid");
             e.printStackTrace();
             return;

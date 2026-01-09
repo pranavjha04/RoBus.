@@ -36,6 +36,11 @@ public class GetAvailableTicketFareBusServlet extends HttpServlet {
         }
 
         Operator operator = (Operator) session.getAttribute("operator");
+        if(!operator.getStatus().getStatusId().equals(1)) {
+            response.getWriter().println("invalid");
+            return;
+        }
+        
         int operatorId = operator.getOperatorId();
         String[] busIdList = request.getParameterValues("bus_id");
         int operatorTicketFareId = Integer.parseInt(request.getParameter("operator_ticket_fare_id"));

@@ -43,7 +43,7 @@ final public class EmailHandler {
     }
 
     // util methods
-    public void sendVerificationMail(String to, String name, String verificationCode) {
+    public void sendVerificationMail(String to, String name, String verificationLink) {
         try {
             Session session = Session.getInstance(props, auth);
             MimeMessage message = new MimeMessage(session);
@@ -51,16 +51,15 @@ final public class EmailHandler {
             message.setFrom(Email.getFrom());
             message.setRecipients(Message.RecipientType.TO, to);
             message.setSubject("Verify Your Account Email Address");
-            message.setText(getVerificationEmailMessage(name, verificationCode));  
+            message.setText(getVerificationEmailMessage(name, verificationLink), "text/html; charset=UTF-8");  
             
             Transport.send(message);
-
         } catch(MessagingException e) {
             e.printStackTrace();
         }
     }
 
-    private static String getVerificationEmailMessage(String name, String verificationCode) {
+    private static String getVerificationEmailMessage(String name, String verificationLink) {
         return "<!DOCTYPE html>"
             + "<html>"
             + "<head>"
@@ -78,7 +77,7 @@ final public class EmailHandler {
             + "    <div class='card'>"
             + "        <p>Hi " + name + ",</p>"
             + "        <p>Tap the button below to verify your email.</p>"
-            + "        <a href='" + verificationCode + "' class='btn'>Verify Email Address</a>"
+            + "        <a href='" + verificationLink + "' class='btn'>Verify Email Address</a>"
             + "    </div>"
             + "</body>"
             + "</html>";

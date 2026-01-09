@@ -27,6 +27,11 @@ public class GetAvailableRouteMidCitiesServlet extends HttpServlet {
             response.getWriter().println("invalid");
             return;
         }
+        Operator operator = (Operator) session.getAttribute("operator");
+        if(!operator.getStatus().getStatusId().equals(1)) {
+            response.getWriter().println("invalid");
+            return;
+        }
 
         if(request.getParameter("route_id") == null) {
             response.getWriter().println("invalid");

@@ -59,6 +59,9 @@ public class AddBusServlet extends HttpServlet {
             Integer manufacturerId = -1;
             
             Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                throw new Exception();
+            }
 
             Bus bus = new Bus();
             bus.setOperator(operator);
