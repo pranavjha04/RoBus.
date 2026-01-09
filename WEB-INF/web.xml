@@ -87,6 +87,15 @@
         <param-value>6Lc4_a0rAAAAAB-oDX_NDA5FvMvrG3UjgDRr9Wxe</param-value>
     </context-param>
     <!-- ######## Recaptcha Config End ######## -->
+    <context-param>
+        <param-name>admin_mail</param-name>
+        <param-value>pranavop2580@gmail.com</param-value>
+    </context-param>
+    <!-- ######## Recaptcha Config End ######## -->
+    <context-param>
+        <param-name>mail_code</param-name>
+        <param-value>tsnxeowrmpwcbhei</param-value>
+    </context-param>
 
 
     <welcome-file-list>

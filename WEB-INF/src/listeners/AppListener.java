@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 // APP UTILS
 import utils.DBManager;
+import utils.Email;
 
 // APP MODELS
 import utils.DBManager;
@@ -31,6 +32,7 @@ public class AppListener implements ServletContextListener {
         
         System.out.println("-------- BTS App is Starting --------");
         setDbConfiguration(context);
+        setEmailConfiguration(context);
         setParameters(context);
     }
 
@@ -44,6 +46,12 @@ public class AppListener implements ServletContextListener {
         DBManager.setDbUser(context.getInitParameter("dbuser"));
         DBManager.setDbPassword(context.getInitParameter("dbpassword"));
         DBManager.configureDatabase();
+    }
+
+    private static void setEmailConfiguration(ServletContext context) {
+        System.out.println("-------- Email Config Starting --------");
+        Email.setFrom(context.getInitParameter("admin_mail"));
+        Email.setKey(context.getInitParameter("mail_code"));
     }
 
     private void setParameters(ServletContext context) {
@@ -74,5 +82,7 @@ public class AppListener implements ServletContextListener {
         System.out.println("-------- Status Config Starting --------");
         ArrayList<Status> statusList = Status.collectAllRecords();
         context.setAttribute("statusList", statusList);
+
+
     }
 }
