@@ -15,6 +15,8 @@ import javax.mail.Message;
 final public class EmailHandler {
 
     private static final Properties props = new Properties();  
+    private static String FROM;
+    private static String KEY;
    
     static {
         props.put("mail.transport.protocol", "smtp");
@@ -28,8 +30,8 @@ final public class EmailHandler {
         @Override
         public PasswordAuthentication getPasswordAuthentication() {
             return new PasswordAuthentication(
-                Email.getFrom(),   
-                Email.getKey()   
+                FROM,  
+                KEY
             );
         }
     };
@@ -48,7 +50,7 @@ final public class EmailHandler {
             Session session = Session.getInstance(props, auth);
             MimeMessage message = new MimeMessage(session);
 
-            message.setFrom(Email.getFrom());
+            message.setFrom(FROM);
             message.setRecipients(Message.RecipientType.TO, to);
             message.setSubject("Verify Your Account Email Address");
             message.setText(getVerificationEmailMessage(name, verificationLink), "text/html; charset=UTF-8");  
@@ -81,5 +83,12 @@ final public class EmailHandler {
             + "    </div>"
             + "</body>"
             + "</html>";
+    }
+
+    public static void setFrom(String from) {
+        FROM = from;
+    }
+    public static void setKey(String key) {
+        KEY = key;
     }
 }

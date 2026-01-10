@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 // APP UTILS
 import utils.DBManager;
-import utils.Email;
+import utils.EmailHandler;
 
 // APP MODELS
 import utils.DBManager;
@@ -50,8 +50,8 @@ public class AppListener implements ServletContextListener {
 
     private static void setEmailConfiguration(ServletContext context) {
         System.out.println("-------- Email Config Starting --------");
-        Email.setFrom(context.getInitParameter("admin_mail"));
-        Email.setKey(context.getInitParameter("mail_code"));
+        EmailHandler.setFrom(context.getInitParameter("admin_mail"));
+        EmailHandler.setKey(context.getInitParameter("mail_code"));
     }
 
     private void setParameters(ServletContext context) {
