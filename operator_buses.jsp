@@ -1,5 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<c:if test="${empty sessionScope.operator}">
+  <c:redirect url="/" />
+</c:if>
+
 <c:set var="operator" value="${sessionScope.operator}" />
 <!DOCTYPE html>
 <html lang="en">

@@ -31,6 +31,10 @@ public class GetSeatingServlet extends HttpServlet {
             }
 
             Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                response.getWriter().println("[]");
+                return;
+            }
             int busId = Integer.parseInt(request.getParameter("bus_id"));
             int operatorId = operator.getOperatorId();
 

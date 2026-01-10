@@ -34,6 +34,10 @@ public class GetOperatorBookingDateRangeServlet extends HttpServlet {
         Operator operator = (Operator) session.getAttribute("operator");
 
         try {
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                response.getWriter().println("[]");
+                return;
+            }
             for(String next : acceptedParamsList) {
                 if(request.getParameter(next) == null) {
                     throw new MissingParameterException();

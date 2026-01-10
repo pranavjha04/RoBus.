@@ -37,7 +37,7 @@ public class GetAvailableTicketFareBusServlet extends HttpServlet {
 
         Operator operator = (Operator) session.getAttribute("operator");
         if(!operator.getStatus().getStatusId().equals(1)) {
-            response.getWriter().println("invalid");
+            response.getWriter().println("[]");
             return;
         }
         

@@ -30,6 +30,10 @@ public class GetWeekdayRouteServlet extends HttpServlet {
         try {
             Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
             Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                response.getWriter().println("[]");
+                return;
+            }
             int operatorId = operator.getOperatorId();
             
             @SuppressWarnings("deprecation")

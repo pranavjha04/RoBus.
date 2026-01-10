@@ -23,6 +23,7 @@ import models.Seating;
 import models.OperatorRoute;
 import models.OperatorRouteMidCity;
 import models.BusImage;
+import models.Operator;
 import models.BookedSeat;
 
 import utils.AppUtil;
@@ -48,6 +49,16 @@ public class GetScheduleServlet extends HttpServlet {
         ServletContext context = getServletContext();
         LocalTime currTime = LocalTime.now();
         try {
+            if(session.getAttribute("operator") == null) {
+                throw new IllegalArgumentException("Invalid Request");
+            }
+            else {
+                Operator operator = (Operator) session.getAttribute("operator");
+                if(!operator.getStatus().getStatusId().equals(1)) {
+                    response.getWriter().println("[]");
+                    return;
+                }
+            }
             if (isIncludeRequest) {
                 for (String p : acceptedParametersList) {
                     if (request.getAttribute(p) == null)
@@ -260,10 +271,5 @@ public class GetScheduleServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
         }
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
-        HttpSession session = request.getSession();
     }
 }

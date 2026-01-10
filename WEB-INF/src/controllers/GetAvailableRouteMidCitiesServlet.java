@@ -28,28 +28,35 @@ public class GetAvailableRouteMidCitiesServlet extends HttpServlet {
             return;
         }
         Operator operator = (Operator) session.getAttribute("operator");
-        if(!operator.getStatus().getStatusId().equals(1)) {
-            response.getWriter().println("invalid");
-            return;
-        }
 
         if(request.getParameter("route_id") == null) {
             response.getWriter().println("invalid");
             return;
         }
 
-        Integer routeId = Integer.parseInt(request.getParameter("route_id"));
+        if(!operator.getStatus().getStatusId().equals(1)) {
+            response.getWriter().println("[]");
+            return;
+        }
+        try {
+            Integer routeId = Integer.parseInt(request.getParameter("route_id"));
 
-        @SuppressWarnings("unchecked")
-        ArrayList<RouteMidCity> routeMidCityList = (ArrayList<RouteMidCity>) getServletContext().getAttribute("routeMidCities");
-        ArrayList<RouteMidCity> availableMidCityList = new ArrayList<>();
+            @SuppressWarnings("unchecked")
+            ArrayList<RouteMidCity> routeMidCityList = (ArrayList<RouteMidCity>) getServletContext().getAttribute("routeMidCities");
+            ArrayList<RouteMidCity> availableMidCityList = new ArrayList<>();
 
-        for(RouteMidCity midCity : routeMidCityList) {
-            if(midCity.getRoute().getRouteId() == routeId) {
-                availableMidCityList.add(midCity);
-            }
-        } 
+            for(RouteMidCity midCity : routeMidCityList) {
+                if(midCity.getRoute().getRouteId() == routeId) {
+                    availableMidCityList.add(midCity);
+                }
+            } 
 
-        response.getWriter().println(new Gson().toJson(availableMidCityList));
+            response.getWriter().println(new Gson().toJson(availableMidCityList));
+        }
+        catch(IllegalArgumentException e) {
+            e.printStackTrace();
+            response.getWriter().println("invalid");
+            return;
+        }
     }
 }

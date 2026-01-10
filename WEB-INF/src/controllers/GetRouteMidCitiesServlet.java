@@ -16,6 +16,7 @@ import java.util.HashMap;
 import com.google.gson.Gson;
 
 import models.RouteMidCity;
+import models.Operator;
 
 @WebServlet("/get_route_mid_cities.do")
 public class GetRouteMidCitiesServlet extends HttpServlet {
@@ -27,6 +28,11 @@ public class GetRouteMidCitiesServlet extends HttpServlet {
         }
 
         try {
+            Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                response.getWriter().println("[]");
+                return;
+            }
             Integer routeId = Integer.parseInt(request.getParameter("route_id"));
             
             @SuppressWarnings("unchecked")
@@ -41,7 +47,7 @@ public class GetRouteMidCitiesServlet extends HttpServlet {
 
             response.getWriter().println(new Gson().toJson(prepareRouteMidCityList));
         }
-        catch(NumberFormatException e) {
+        catch(IllegalArgumentException e) {
             e.printStackTrace();
             response.getWriter().println("invalid");
             return;

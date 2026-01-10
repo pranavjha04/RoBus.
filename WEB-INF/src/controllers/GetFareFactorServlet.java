@@ -32,6 +32,10 @@ public class GetFareFactorServlet extends HttpServlet {
         Gson gson = new Gson();
         boolean onlyFactors = request.getParameter("onlyFactors").equals("true") ? true : false;
         Operator operator = (Operator) session.getAttribute("operator");
+        if(!operator.getStatus().getStatusId().equals(1)) {
+            response.getWriter().println("[]");
+            return;
+        }
         if(session.getAttribute("fare_factors" + onlyFactors) == null) {
             ArrayList<OperatorTicketFare> factors = OperatorTicketFare.getAvailableFareFactors(operator.getOperatorId(), onlyFactors);
 

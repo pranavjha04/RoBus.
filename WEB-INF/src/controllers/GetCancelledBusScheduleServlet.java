@@ -51,6 +51,10 @@ public class GetCancelledBusScheduleServlet extends HttpServlet {
 
             Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
             Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                if(!isIncludeRequest) response.getWriter().println("[]");
+                return;
+            }
 
             ArrayList<Schedule> scheduleList = Schedule.collectBusScheduleRecords(journeyDate, busId, operator.getOperatorId(), 6);
 

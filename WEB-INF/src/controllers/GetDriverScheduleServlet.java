@@ -33,6 +33,10 @@ public class GetDriverScheduleServlet extends HttpServlet {
         }
 
         User user = (User) session.getAttribute("user");
+        if(!user.getStatus().getStatusId().equals(1)) {
+            response.getWriter().println("[]");
+            return;
+        }
         ServletContext context = getServletContext();
         try {
             if(!user.getUserType().getUserTypeId().equals(3) || request.getParameter("journey_date") == null) {

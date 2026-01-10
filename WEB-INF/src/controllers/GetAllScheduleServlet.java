@@ -39,7 +39,8 @@ public class GetAllScheduleServlet extends HttpServlet {
             Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
             Operator operator = (Operator) session.getAttribute("operator");
             if(!operator.getStatus().getStatusId().equals(1)) {
-                throw new IllegalArgumentException("Invalid Request");
+                response.getWriter().println("[]");
+                return;
             }
 
             ArrayList<Schedule> scheduleList = Schedule.collectAllScheduleRecords(journeyDate, operator.getOperatorId());

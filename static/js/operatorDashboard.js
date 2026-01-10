@@ -140,7 +140,8 @@ const showSchedules = async () => {
     model.scheduleList = JSON.parse(response);
     displayScheduleList();
   } catch (error) {
-    console.error(err.message);
+    console.error(error.message);
+    toast.error(error.message);
   }
 };
 

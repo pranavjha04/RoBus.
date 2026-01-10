@@ -1,6 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib
 prefix="e" uri="bts" %>
 
+<c:if test="${empty sessionScope.operator}">
+  <c:redirect url="/" />
+</c:if>
 <!DOCTYPE html>
 <html lang="en">
   <head>

@@ -32,6 +32,11 @@ public class OperatorDashboardServlet extends HttpServlet {
         }
 
         Operator operator = (Operator) session.getAttribute("operator");
+        if(!operator.getStatus().getStatusId().equals(1)) {
+            response.getWriter().println(new Gson().toJson(new DashBoardFormatHelper(0, 0, 0, 0)));
+            return;
+        }
+           
 
         int noOfBookings = Booking.getNumberOfOperatorBookings(operator.getOperatorId());
         int revenueGenerated = Booking.collectTotalBookingFareRevenue(operator.getOperatorId());

@@ -28,6 +28,10 @@ public class GetOperatorRouteServlet extends HttpServlet {
 
             Operator operator = (Operator) session.getAttribute("operator");
             Integer operatorId = operator.getOperatorId();
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                response.getWriter().println("[]");
+                return;
+            }
             String cachedAttribute = "opetator_route_list" + operatorId;
             
             if(session.getAttribute(cachedAttribute) == null) {

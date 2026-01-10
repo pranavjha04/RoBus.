@@ -12,6 +12,7 @@ import java.io.IOException;
 import com.google.gson.Gson;
 
 import models.Seating;
+import models.Operator;
 
 
 @WebServlet("/update_seating.do")
@@ -24,6 +25,13 @@ public class UpdateSeatingServlet extends HttpServlet {
         if(session.getAttribute("operator") == null) {
             response.getWriter().println("invalid");
             return;
+        }
+        else {
+            Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                response.getWriter().println("invalid");
+                return;
+            }
         }
 
         if(request.getParameter("bus_id") != null && request.getParameter("deck") != null) {

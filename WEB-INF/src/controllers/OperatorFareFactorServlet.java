@@ -13,8 +13,4 @@ public class OperatorFareFactorServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.getRequestDispatcher("operator_fare_factor.jsp").forward(request, response);        
     }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        
-    }
 }

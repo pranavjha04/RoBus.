@@ -188,13 +188,14 @@ const handleCollectAllDrivers = async (firstTime = true) => {
       throw new Error("Invalid Request");
     }
     modal.driverList = JSON.parse(response);
-    PageLoading.stopLoading();
     console.log(modal.driverList);
     displayDriverInfo();
     displayDriverStatus();
   } catch (err) {
     toast.error(err.message);
-    PageError.showOperatorError();
+    if (firstTime) PageError.showOperatorError();
+  } finally {
+    PageLoading.stopLoading();
   }
 };
 
@@ -293,7 +294,10 @@ addDriverForm.addEventListener("submit", async (e) => {
     }
   } catch (err) {
     toast.error(err.message);
-    enableFormFields();
+    PageError.showOperatorError();
+    disableFormFields();
+  } finally {
+    PageLoading.stopLoading();
   }
 });
 

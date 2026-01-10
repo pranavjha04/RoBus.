@@ -43,6 +43,10 @@ public class GetUpcomingAllScheduleServlet extends HttpServlet {
 
             Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
             Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                response.getWriter().println("[]");
+                return;
+            }
 
             ArrayList<Schedule> scheduleList = Schedule.collectAllScheduleRecords(journeyDate, operator.getOperatorId(), 11);
             if(scheduleList == null) throw new IllegalArgumentException("Internal Server Error");

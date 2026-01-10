@@ -33,9 +33,13 @@ public class GetBusRouteWeekdaysServlet extends HttpServlet {
             if(session.getAttribute("operator") == null) {
                 throw new IllegalArgumentException("Invalid  Request");
             }
-
-            Integer operatorRouteId = Integer.parseInt(request.getParameter("operator_route_id"));
             Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                response.getWriter().println("[]");
+                return;
+            }
+            
+            Integer operatorRouteId = Integer.parseInt(request.getParameter("operator_route_id"));
             Integer operatorId = operator.getOperatorId();
 
             if(context.getAttribute("bus_route_weekday_list" + operatorRouteId) == null) {

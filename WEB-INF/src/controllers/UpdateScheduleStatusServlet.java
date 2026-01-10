@@ -43,7 +43,10 @@ public class UpdateScheduleStatusServlet extends HttpServlet {
             }
             else if(session.getAttribute("operator") != null) {
                 Operator operator = (Operator) session.getAttribute("operator");
-                operatorId = operator.getOperatorId();
+                if(operator.getStatus().getStatusId().equals(1)) {
+                    operatorId = operator.getOperatorId();
+                    return;
+                }
             }
 
             if(operatorId == -1) throw new IllegalArgumentException("Invalid Request");

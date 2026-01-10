@@ -1,5 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<c:if test="${empty sessionScope.operator}">
+  <c:redirect url="/" />
+</c:if>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -177,14 +179,29 @@
                 <option value="low">Low to High</option>
                 <option value="high">High to Low</option>
               </select>
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#centeredModal"
-              >
-                + Add Fare Factor
-              </button>
+              <c:choose>
+                <c:when test="${operator.status.statusId eq 1}">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#centeredModal"
+                  >
+                    + Add Fare Factor
+                  </button>
+                </c:when>
+                <c:otherwise>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#centeredModal"
+                    disabled
+                  >
+                    + Add Fare Factor (Verify your email address)
+                  </button>
+                </c:otherwise>
+              </c:choose>
             </div>
           </div>
 

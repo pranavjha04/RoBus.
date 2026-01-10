@@ -1,6 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib
 prefix="e" uri="bts" %>
-
+<c:if test="${empty sessionScope.operator}">
+  <c:redirect url="/" />
+</c:if>
+<c:set var="operator" value="${sessionScope.operator}" />
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -235,14 +238,29 @@ prefix="e" uri="bts" %>
               class="d-flex justify-content-between align-items-center gap-2"
             >
               <div class="ms-auto d-flex align-items-center gap-2">
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#centeredModal"
-                >
-                  + Add Driver
-                </button>
+                <c:choose>
+                  <c:when test="${operator.status.statusId eq 1}">
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#centeredModal"
+                    >
+                      + Add Driver
+                    </button>
+                  </c:when>
+                  <c:otherwise>
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#centeredModal"
+                      disabled
+                    >
+                      + Add Driver (Verify your email address)
+                    </button>
+                  </c:otherwise>
+                </c:choose>
               </div>
             </div>
             <table

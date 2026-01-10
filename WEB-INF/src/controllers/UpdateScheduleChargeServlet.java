@@ -40,6 +40,10 @@ public class UpdateScheduleChargeServlet extends HttpServlet {
             }   
 
             Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                response.getWriter().println("invalid");
+                return;
+            }
             Integer additionalCharges = Integer.parseInt(request.getParameter("additional_charges"));
             Integer seaterFare = Integer.parseInt(request.getParameter("seater_fare"));
             Integer sleeperFare = Integer.parseInt(request.getParameter("sleeper_fare"));

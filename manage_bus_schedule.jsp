@@ -1,5 +1,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib
 prefix="e" uri="bts" %>
+<c:if test="${empty sessionScope.operator}">
+  <c:redirect url="/" />
+</c:if>
+<c:if test="${sessionScope.operator.status.statusId ne 1}">
+  <c:redirect url="/" />
+</c:if>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -52,8 +58,10 @@ prefix="e" uri="bts" %>
         <c:import url="operator_sidebar.jsp" />
         <div class="wrapper">
           <!-- Dashboard Content -->
-          <div   class="p-4 d-flex flex-column gap-3 overflow-auto"
-            id="pageWrapper">
+          <div
+            class="p-4 d-flex flex-column gap-3 overflow-auto"
+            id="pageWrapper"
+          >
             <span
               class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link"
               style="cursor: pointer"

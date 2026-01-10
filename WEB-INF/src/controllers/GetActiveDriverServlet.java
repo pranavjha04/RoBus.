@@ -32,7 +32,8 @@ public class GetActiveDriverServlet extends HttpServlet {
             }
             Operator operator = (Operator) session.getAttribute("operator");
             if(!operator.getStatus().getStatusId().equals(1)) {
-                throw new IllegalArgumentException("Not verified");
+                if(!isIncludeRequest) response.getWriter().println("[]");
+                return;
             }
 
             ArrayList<Driver> driverList = Driver.collectActiveDrivers(operator.getOperatorId());

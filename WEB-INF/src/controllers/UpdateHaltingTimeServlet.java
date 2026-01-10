@@ -33,6 +33,9 @@ public class UpdateHaltingTimeServlet extends HttpServlet {
                 }
             }
             Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                throw new IllegalArgumentException("Not verified");
+            }
             Integer operatorId = operator.getOperatorId();
             Integer operatorRouteId = Integer.parseInt(request.getParameter("operator_route_id"));
             Integer operatorRouteMidCityId = Integer.parseInt(request.getParameter("operator_route_mid_city_id"));

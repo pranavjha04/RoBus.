@@ -701,9 +701,9 @@ const filteAppliedInterval = setInterval(() => {
     searchFilterDestination.value ||
     !filterNavContainer.firstElementChild.classList.contains("btn-primary")
   ) {
-    enableElements(removeFilter);
+    enableElements(removeFilter, searchRoutesBtn);
   } else {
-    disableElements(removeFilter);
+    disableElements(removeFilter, searchRoutesBtn);
   }
 }, 100);
 

@@ -31,6 +31,10 @@ public class GetOperatorTicketFareBusServlet extends HttpServlet {
 
         Operator operator = (Operator) session.getAttribute("operator");
         try {
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                response.getWriter().println("[]");
+                return;
+            }
             Integer operatorTicketFareId = Integer.parseInt(request.getParameter("operator_ticket_fare_id"));
             ArrayList<BusFareFactor> busList = BusFareFactor.collectAllRecordsWithOperatorTicketFare(operatorTicketFareId, operator.getOperatorId()); 
             if(busList == null) {
@@ -41,7 +45,7 @@ public class GetOperatorTicketFareBusServlet extends HttpServlet {
             response.getWriter().println(new Gson().toJson(busList));
             return;
         }
-        catch(NumberFormatException e) {
+        catch(IllegalArgumentException e) {
             e.printStackTrace();
             response.getWriter().println("invalid");
             return;

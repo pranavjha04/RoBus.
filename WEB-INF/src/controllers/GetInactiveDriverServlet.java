@@ -31,6 +31,10 @@ public class GetInactiveDriverServlet extends HttpServlet {
                 throw new IllegalArgumentException("Invalid Request");
             }
             Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                if(!isIncludeRequest) response.getWriter().println("[]");
+                return;
+            }
 
             ArrayList<Driver> driverList = Driver.collectInactiveDrivers(operator.getOperatorId());
             if(driverList == null) {

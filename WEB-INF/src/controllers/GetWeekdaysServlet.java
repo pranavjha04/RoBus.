@@ -24,10 +24,14 @@ public class GetWeekdaysServlet extends HttpServlet {
             response.getWriter().println("invalid");
             return;
         }
+        Operator operator = (Operator) session.getAttribute("operator");
+        if(!operator.getStatus().getStatusId().equals(1)) {
+            response.getWriter().println("[]");
+            return;
+        }
 
         @SuppressWarnings("unchecked")
         ArrayList<Weekday> weekdayList = (ArrayList<Weekday>) getServletContext().getAttribute("weekdayList");
-
         response.getWriter().println(new Gson().toJson(weekdayList));
     }
 }

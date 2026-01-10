@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 
 import models.Route;
 import models.RouteMidCity;
+import models.Operator;
 
 @WebServlet("/get_route.do")
 public class GetRouteServlet extends HttpServlet {
@@ -29,7 +30,14 @@ public class GetRouteServlet extends HttpServlet {
         }
 
         try {
-
+            Operator operator = (Operator) session.getAttribute("operator");
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                HashMap<String, ArrayList> map = new HashMap<>();
+                map.put("routeList", new ArrayList<Integer>());
+                map.put("routeMidCityList", new ArrayList<Integer>());
+                response.getWriter().println(new Gson().toJson(map));
+                return;
+            }
             String source = request.getParameter("source").toLowerCase();
             String destination = request.getParameter("destination").toLowerCase();
 
@@ -76,7 +84,7 @@ public class GetRouteServlet extends HttpServlet {
 
             response.getWriter().println(new Gson().toJson(map));
         }
-        catch(NumberFormatException e) {
+        catch(IllegalArgumentException e) {
             e.printStackTrace();
             response.getWriter().println("invalid");
             return;   

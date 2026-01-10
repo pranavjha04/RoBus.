@@ -31,15 +31,17 @@ public class GetBusFareFactorServlet extends HttpServlet {
             }
 
             Operator operator = (Operator) session.getAttribute("operator");
-            if(!operator.getStatus().getStatusId().equals(1)) {
-                throw new IllegalArgumentException("Not verified");
-            }            
 
             if(request.getParameter("bus_id") == null) {
                 throw new IllegalArgumentException("Missing Parameter");
             }
 
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));
+            if(!operator.getStatus().getStatusId().equals(1)) {
+                if(!isIncludeRequest) response.getWriter().println("[]");
+                return;
+            }          
+
             if(getServletContext().getAttribute("bus_fare_factor_list" + busId) == null) {
                 ArrayList<BusFareFactor> busFareFactorList = BusFareFactor.collectAllRecords(busId, operator.getOperatorId());
                 if(busFareFactorList == null) {
