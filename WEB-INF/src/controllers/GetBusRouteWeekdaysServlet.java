@@ -70,7 +70,7 @@ public class GetBusRouteWeekdaysServlet extends HttpServlet {
         boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
 
         if(session.getAttribute("operator") == null) {
-            response.sendRedirect("/bts");
+            response.sendRedirect("/robus");
         }
         if(isIncludeRequest) {
             doGet(request, response);

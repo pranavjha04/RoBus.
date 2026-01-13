@@ -29,14 +29,14 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 
 <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
   <div class="container d-flex justify-content-between align-items-center">
-    <a class="navbar-brand mb-0" href="/bts">
+    <a class="navbar-brand mb-0" href="/robus">
       <img src="static/media/images/logo.png" height="42" />
     </a>
 
     <div class="d-flex align-items-center gap-2">
       <a
         class="nav-link d-flex align-items-center gap-2 ${page eq 'help.jsp' ? 'active' : ''}"
-        href="/bts/help.do"
+        href="/robus/help.do"
       >
         <i class="bi bi-question-circle"></i>
         <span class="d-none d-sm-inline">Help</span>
@@ -68,7 +68,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               <c:otherwise>
                 <a
                   class="dropdown-item border-bottom rounded rounded-bottom-0 rounded-4"
-                  href="/bts/manage_profile.do"
+                  href="/robus/manage_profile.do"
                 >
                   <i class="bi bi-person me-2"></i>Profile
                 </a>

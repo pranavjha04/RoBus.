@@ -90,7 +90,7 @@ public class GetUpcomingAllScheduleServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         if(session.getAttribute("operator") == null) {
-            response.sendRedirect("/bts");
+            response.sendRedirect("/robus");
             return;
         }
 

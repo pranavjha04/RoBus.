@@ -33,7 +33,7 @@ public class AddBusScheduleServlet extends HttpServlet {
         HttpSession session = request.getSession();
         ServletContext context = getServletContext();
         if(session.getAttribute("operator") == null) {
-            response.sendRedirect("/bts");
+            response.sendRedirect("/robus");
             return;
         }
 

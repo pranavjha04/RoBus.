@@ -32,7 +32,7 @@ public class CheckValidScheduleTimingServlet extends HttpServlet {
         HttpSession session = request.getSession();
         session.removeAttribute("isScheduleDateTimeValid");
         if(session.getAttribute("operator") == null) {
-            response.sendRedirect("/bts");
+            response.sendRedirect("/robus");
             return;
         }
 

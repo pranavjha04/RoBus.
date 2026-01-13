@@ -55,7 +55,7 @@ public class LoginServlet extends HttpServlet {
                             session.removeAttribute("operator");
                         }
                         session.setAttribute("user", user);
-                        String redirectURL = "/bts";
+                        String redirectURL = "/robus";
                         if(request.getParameter("from") != null) {
                             System.out.println("Jell");
                             redirectURL += "/book_ticket.do?" + request.getQueryString();

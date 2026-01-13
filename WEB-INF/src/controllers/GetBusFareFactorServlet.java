@@ -72,7 +72,7 @@ public class GetBusFareFactorServlet extends HttpServlet {
         boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
 
         if(session.getAttribute("operator") == null || !isIncludeRequest) {
-            response.sendRedirect("/bts");
+            response.sendRedirect("/robus");
         }
         if(isIncludeRequest) {
             doGet(request, response);

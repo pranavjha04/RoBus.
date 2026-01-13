@@ -58,7 +58,7 @@ public class GetInactiveDriverServlet extends HttpServlet {
 
         boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestURL);
         if(session.getAttribute("operator") == null || !isIncludeRequest) {
-            response.sendRedirect("/bts");
+            response.sendRedirect("/robus");
             return;
         }
 

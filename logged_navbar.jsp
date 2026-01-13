@@ -31,7 +31,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
   <div class="container">
     <!-- Logo -->
-    <a class="navbar-brand" href="/bts">
+    <a class="navbar-brand" href="/robus">
       <img src="static/media/images/logo.png" height="42" />
     </a>
 
@@ -50,7 +50,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
         <li class="nav-item">
           <a
             class="nav-link d-flex align-items-center gap-2 ${page eq 'home.jsp' ? 'active' : ''}"
-            href="/bts"
+            href="/robus"
           >
             <i class="bi bi-house-door"></i>
             <span>Home</span>
@@ -61,7 +61,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
         <li class="nav-item">
           <a
             class="nav-link d-flex align-items-center gap-2"
-            href="/bts/search_results.do"
+            href="/robus/search_results.do"
           >
             <i class="bi bi-search"></i>
             <span>Search Buses</span>
@@ -72,7 +72,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
         <li class="nav-item">
           <a
             class="nav-link d-flex align-items-center gap-2 ${page eq 'bookings.jsp' ? 'active' : ''}"
-            href="/bts/manage_bookings.do"
+            href="/robus/manage_bookings.do"
           >
             <i class="bi bi-ticket-perforated"></i>
             <span>Manage Bookings</span>
@@ -84,7 +84,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           <li class="nav-item">
             <a
               class="nav-link d-flex align-items-center gap-2"
-              href="/bts/operator_accounts.do"
+              href="/robus/operator_accounts.do"
             >
               <i class="bi bi-building"></i>
               <span>Operator Accounts</span>
@@ -97,7 +97,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           <li class="nav-item">
             <a
               class="nav-link d-flex align-items-center gap-2"
-              href="/bts/manage_schedules.do"
+              href="/robus/manage_schedules.do"
             >
               <i class="bi bi-calendar2-check"></i>
               <span>Schedules</span>
@@ -109,7 +109,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
         <li class="nav-item">
           <a
             class="nav-link d-flex align-items-center gap-2"
-            href="/bts/help.do"
+            href="/robus/help.do"
           >
             <i class="bi bi-question-circle"></i>
             <span>Help</span>
@@ -146,7 +146,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                 <c:otherwise>
                   <a
                     class="dropdown-item p-2 rounded rounded-4 rounded-bottom-0"
-                    href="/bts/manage_profile.do"
+                    href="/robus/manage_profile.do"
                   >
                     <i class="bi bi-person me-2"></i>Profile
                   </a>

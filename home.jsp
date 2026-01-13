@@ -87,7 +87,7 @@
       <c:if test="${sessionScope.user.status.statusId eq 2}">
         <div class="bg-danger py-2 text-white text-center">
           <a href="#" class="text-white fw-semibold">
-            Complete your email verification to unlock everything →
+            Complete your email verification to unlock everything <a href="send_verification_email.do" />
           </a>
         </div>
       </c:if>

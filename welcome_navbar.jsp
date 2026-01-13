@@ -7,7 +7,7 @@
   <div class="container">
 
     <!-- Logo -->
-    <a class="navbar-brand" href="/bts">
+    <a class="navbar-brand" href="/robus">
       <img src="static/media/images/logo.png" alt="Logo" height="42" />
     </a>
 
@@ -38,7 +38,7 @@
                  data-target="hero"
                </c:when>
                <c:otherwise>
-                 href="/bts"
+                 href="/robus"
                </c:otherwise>
              </c:choose>
           >
@@ -55,7 +55,7 @@
                  data-target="search_bus_form"
                </c:when>
                <c:otherwise>
-                 href="/bts/search_results.do"
+                 href="/robus/search_results.do"
                </c:otherwise>
              </c:choose>
           >
@@ -72,7 +72,7 @@
                  data-target="service"
                </c:when>
                <c:otherwise>
-                 href="/bts/services.do"
+                 href="/robus/services.do"
                </c:otherwise>
              </c:choose>
           >
@@ -89,7 +89,7 @@
                  data-target="operator"
                </c:when>
                <c:otherwise>
-                 href="/bts/operators.do"
+                 href="/robus/operators.do"
                </c:otherwise>
              </c:choose>
           >
@@ -106,7 +106,7 @@
                  data-target="help"
                </c:when>
                <c:otherwise>
-                 href="/bts/help.do"
+                 href="/robus/help.do"
                </c:otherwise>
              </c:choose>
           >
@@ -139,7 +139,7 @@
             </c:when>
             <c:otherwise>
               <a class="dropdown-item border-bottom rounded-top-3"
-                href="/bts/login.do">
+                href="/robus/login.do">
                 Login
               </a>
             </c:otherwise>
@@ -156,7 +156,7 @@
             </c:when>
             <c:otherwise>
               <a class="dropdown-item rounded-bottom-3"
-                href="/bts/signup.do">
+                href="/robus/signup.do">
                 Sign Up
               </a>
             </c:otherwise>

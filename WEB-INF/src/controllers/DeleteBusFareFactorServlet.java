@@ -18,7 +18,7 @@ public class DeleteBusFareFactorServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         if(session.getAttribute("operator") == null) {
-            response.sendRedirect("/bts");
+            response.sendRedirect("/robus");
             return;
         }
         if(

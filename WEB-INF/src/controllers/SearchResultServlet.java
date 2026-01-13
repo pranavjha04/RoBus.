@@ -19,7 +19,7 @@ public class SearchResultServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         for(String next : acceptedParameterList) {
             if(request.getParameter(next) == null) {
-                response.sendRedirect("/bts?invalid=true");
+                response.sendRedirect("/robus?invalid=true");
             }
         }
     }

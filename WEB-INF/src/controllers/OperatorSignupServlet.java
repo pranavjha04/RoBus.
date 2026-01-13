@@ -31,7 +31,7 @@ public class OperatorSignupServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         if(session.getAttribute("user") == null) {
-            response.sendRedirect("/bts");
+            response.sendRedirect("/robus");
             return;
         }
         request.getRequestDispatcher("operator_signup.jsp").forward(request, response);
@@ -43,7 +43,7 @@ public class OperatorSignupServlet extends HttpServlet {
         String backURL = request.getParameter("back_url");
         
         if(backURL == null) {
-            backURL = "/bts";
+            backURL = "/robus";
         }
 
         // user logged in nahi hai so kick to home page;
