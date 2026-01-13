@@ -27,7 +27,7 @@ public class GetBusServlet extends HttpServlet {
             }
             if(session.getAttribute("busList") == null) {
                 Operator operator = (Operator) session.getAttribute("operator");
-                if(!operator.getStatus().getStatusId().equals(1)) {
+                if(operator.getStatus().getStatusId().equals(2)) {
                     response.getWriter().println("[]");
                     return;
                 }

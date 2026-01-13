@@ -37,7 +37,7 @@ public class CancelBookingServlet extends HttpServlet {
             Integer bookingId = Integer.parseInt(request.getParameter("booking_id"));
             User user = (User) session.getAttribute("user");
 
-            if(!user.getStatus().getStatusId().equals(1)) {
+            if(user.getStatus().getStatusId().equals(2)) {
                 throw new IllegalArgumentException("Not Verified");
             }
 

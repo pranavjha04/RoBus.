@@ -36,7 +36,7 @@ public class AddOperatorRouteMidCityServlet extends HttpServlet {
         }
 
         try {
-            if(!operator.getStatus().getStatusId().equals(1)) {
+            if(operator.getStatus().getStatusId().equals(2)) {
                 throw new IllegalArgumentException("Not verified");
             }
             Integer routeId = Integer.parseInt(request.getParameter("route_id"));

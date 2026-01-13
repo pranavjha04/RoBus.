@@ -29,7 +29,7 @@ public class DeleteFareFactorServlet extends HttpServlet {
         }
         else {
             Operator operator = (Operator) session.getAttribute("operator");
-            if(!operator.getStatus().getStatusId().equals(1)) {
+            if(operator.getStatus().getStatusId().equals(2)) {
                 response.getWriter().println("invalid");
                 return;
             }

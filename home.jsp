@@ -82,16 +82,7 @@
 
   <body class="bg-light" style="overflow: scroll">
     <c:import url="essential_page_display.jsp" />
-    <!-- EMAIL VERIFICATION ALERT -->
-    <c:if test="${not empty sessionScope.user}">
-      <c:if test="${sessionScope.user.status.statusId eq 2}">
-        <div class="bg-danger py-2 text-white text-center">
-          <a href="#" class="text-white fw-semibold">
-            Complete your email verification to unlock everything <a href="send_verification_email.do" />
-          </a>
-        </div>
-      </c:if>
-    </c:if>
+   
 
     <!-- NAVBAR -->
     <c:choose>
@@ -104,7 +95,7 @@
     </c:choose>
 
     <!-- HERO -->
-    <section class="hero-section d-flex align-items-center ">
+    <section class="hero-section d-flex align-items-center">
       <div class="container text-center text-white">
         <h1 class="hero-title">Simple. Fast. Reliable.</h1>
         <p class="hero-subtitle mb-4">

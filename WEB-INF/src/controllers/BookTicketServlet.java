@@ -39,7 +39,7 @@ public class BookTicketServlet extends HttpServlet {
 
         try {
             User activeUser = (User) session.getAttribute("user");
-            if(!activeUser.getStatus().getStatusId().equals(1)) {
+            if(activeUser.getStatus().getStatusId().equals(2)) {
                 throw new IllegalArgumentException("Not verified");
             }
             ServletContext context = getServletContext();

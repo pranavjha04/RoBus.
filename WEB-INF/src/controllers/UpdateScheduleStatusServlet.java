@@ -38,7 +38,10 @@ public class UpdateScheduleStatusServlet extends HttpServlet {
                     throw new MissingParameterException();
                 }
                 else {
-                    operatorId = Integer.parseInt(request.getParameter("operator_id"));
+                    User user = (User) session.getAttribute("user");
+                    if(!user.getStatus().getStatusId().equals(2)) {
+                        operatorId = Integer.parseInt(request.getParameter("operator_id"));
+                    }
                 }
             }
             else if(session.getAttribute("operator") != null) {

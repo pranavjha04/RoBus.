@@ -34,7 +34,7 @@ public class UpdateDriverStatusServlet extends HttpServlet {
         Operator operator = (Operator) session.getAttribute("operator");
 
         try {
-            if(!operator.getStatus().getStatusId().equals(1)) {
+            if(operator.getStatus().getStatusId().equals(2)) {
                 throw new IllegalArgumentException("Not verified");
             }
             int driverId = -1;

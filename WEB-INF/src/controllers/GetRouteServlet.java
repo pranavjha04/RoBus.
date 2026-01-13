@@ -31,7 +31,7 @@ public class GetRouteServlet extends HttpServlet {
 
         try {
             Operator operator = (Operator) session.getAttribute("operator");
-            if(!operator.getStatus().getStatusId().equals(1)) {
+            if(operator.getStatus().getStatusId().equals(2)) {
                 HashMap<String, ArrayList> map = new HashMap<>();
                 map.put("routeList", new ArrayList<Integer>());
                 map.put("routeMidCityList", new ArrayList<Integer>());

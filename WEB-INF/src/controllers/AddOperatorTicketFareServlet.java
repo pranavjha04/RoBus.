@@ -23,7 +23,7 @@ public class AddOperatorTicketFareServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         Operator operator = (Operator) session.getAttribute("operator");
-        if(!operator.getStatus().getStatusId().equals(1)) {
+        if(operator.getStatus().getStatusId().equals(2)) {
             response.getWriter().println("internal");
             return;
         }

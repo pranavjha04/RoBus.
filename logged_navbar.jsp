@@ -28,6 +28,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:set var="page" value="${e:activeURL(pageContext.request)}" />
 
+<c:import url="email_verification.jsp" />
 <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
   <div class="container">
     <!-- Logo -->

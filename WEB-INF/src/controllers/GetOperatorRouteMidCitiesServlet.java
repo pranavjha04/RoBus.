@@ -33,7 +33,7 @@ public class GetOperatorRouteMidCitiesServlet extends HttpServlet {
         String requestURLPath = request.getServletPath().substring(1);
         boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
         Operator operator = (Operator) session.getAttribute("operator");
-        if(!operator.getStatus().getStatusId().equals(1)) {
+        if(operator.getStatus().getStatusId().equals(2)) {
             if(!isIncludeRequest) response.getWriter().println("[]");
             return;
         }

@@ -72,6 +72,50 @@ public class Operator implements Cloneable {
     public Operator() {
     }
 
+    public static boolean updateStatus(Integer operatorId, Integer statusId) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "UPDATE operators SET status_id=? " +
+                        "WHERE opetator_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setInt(1, statusId);
+            ps.setInt(2, operatorId);
+
+            flag = ps.executeUpdate() > 0;
+
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        return flag;
+    }
+
+    public static boolean updateVerificationCode(String verificationCode, Integer operatorId) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "UPDATE operators SET verification_code=? " +
+                        "WHERE operator_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setString(1, verificationCode);
+            ps.setInt(2, operatorId);
+
+            flag = ps.executeUpdate() > 0;
+            con.close();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return flag;
+    }
+
     public static boolean updateLogo(String logo, Integer operatorId) {
         boolean flag = false;
         try {

@@ -39,7 +39,7 @@ public class UpdateScheduleDriverServlet extends HttpServlet {
                 }
             }
             Operator operator = (Operator) session.getAttribute("operator");
-            if(!operator.getStatus().getStatusId().equals(1)) {
+            if(operator.getStatus().getStatusId().equals(2)) {
                 throw new IllegalArgumentException("Not verified");
             }
             Integer newDriverId = Integer.parseInt(request.getParameter("new_driver_id"));

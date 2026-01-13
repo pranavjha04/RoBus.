@@ -37,7 +37,7 @@ public class GetBusFareFactorServlet extends HttpServlet {
             }
 
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));
-            if(!operator.getStatus().getStatusId().equals(1)) {
+            if(operator.getStatus().getStatusId().equals(2)) {
                 if(!isIncludeRequest) response.getWriter().println("[]");
                 return;
             }          

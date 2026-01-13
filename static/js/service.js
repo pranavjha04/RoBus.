@@ -57,8 +57,8 @@ export const collectBusRecordRequest = async (allRecord = false) => {
   return data.trim();
 };
 
-export const getActiveAccountID = async (accountType) => {
-  const res = await fetch(`get_active_account.do?accountType=${accountType}`);
+export const getActiveAccount = async () => {
+  const res = await fetch(`get_active_account.do`);
   if (!res.ok) throw new Error("Internal server error");
 
   const data = await res.text();

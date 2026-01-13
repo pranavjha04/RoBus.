@@ -62,6 +62,26 @@ public class User implements Cloneable {
     
     public User() {}
 
+    public static boolean updateVerificationCode(String verificationCode, Integer userId) {
+        boolean flag = false;
+        try {
+            Connection con = DBManager.getConnection();
+            String query = 
+                        "UPDATE users SET verification_code=? " +
+                        "WHERE user_id=?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, verificationCode);
+            ps.setUserId(2, userId);
+
+            flag = ps.executeUpdate() > 0;
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+        return flag;
+    }
+
     public static boolean updateBasicInfo(int userId, String fullName, Date dob, Integer gender) {
         boolean flag = false;
         try {

@@ -96,6 +96,11 @@
         <param-name>mail_code</param-name>
         <param-value>tsnxeowrmpwcbhei</param-value>
     </context-param>
+    <!--######## APP URL #############-->
+    <context-param>
+        <param-name>app_url</param-name>
+        <param-value>http://localhost:8989/robus</param-value>
+    </context-param>
 
 
     <welcome-file-list>

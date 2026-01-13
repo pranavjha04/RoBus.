@@ -7,6 +7,7 @@ import java.util.Map;
 
 import java.util.Random;
 public final class AppUtil {
+
     private static final Random random = new Random();
     
     private AppUtil() {
@@ -23,6 +24,10 @@ public final class AppUtil {
     
     public static final int generateRandomInt() {
         return Math.abs(random.nextInt());
+    }
+
+    public static final String generateVerificationURL(String appURL, String verificationCode) {
+        return new StringBuilder(appURL).append("?verification_code=").append(verificationCode).toString();
     }
 
     public static final boolean isIncludeRequest(String request, String[] acceptedIncludeRequestList) {

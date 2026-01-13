@@ -31,7 +31,7 @@ public class GetActiveDriverServlet extends HttpServlet {
                 throw new IllegalArgumentException("Invalid Request");
             }
             Operator operator = (Operator) session.getAttribute("operator");
-            if(!operator.getStatus().getStatusId().equals(1)) {
+            if(operator.getStatus().getStatusId().equals(2)) {
                 if(!isIncludeRequest) response.getWriter().println("[]");
                 return;
             }
