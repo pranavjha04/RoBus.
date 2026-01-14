@@ -11,9 +11,8 @@ import models.User;
 import models.Operator;
 
 @WebListener
-public class SessionListener extends HttpSessionListener {
+public class SessionListener implements HttpSessionListener {
     
-    @Override
     public void sessionDestroyed(HttpSessionEvent se) {
         HttpSession session = se.getSession();
 

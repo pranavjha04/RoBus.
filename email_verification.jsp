@@ -5,12 +5,13 @@
       <span class="text-white fw-medium fs-5">
         Complete your email verification to unlock everything
         <a
-          href="send_verification_email.do"
+          role="button"
           class="text-decoration-none link-light"
+          id="verify_email_btn"
           >&rightarrow;</a
         >
       </span>
     </div>
+    <script type="module" src="static/js/email_verification.js"></script>
   </c:if>
 </c:if>
-<script type="module" src="static/js/email_verification.js"></script>

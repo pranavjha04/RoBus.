@@ -52,6 +52,8 @@ public class AppListener implements ServletContextListener {
         System.out.println("-------- Email Config Starting --------");
         EmailHandler.setFrom(context.getInitParameter("admin_mail"));
         EmailHandler.setKey(context.getInitParameter("mail_code"));
+
+        EmailHandler.setAuth();
     }
 
     private void setParameters(ServletContext context) {

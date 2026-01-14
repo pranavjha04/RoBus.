@@ -90,6 +90,18 @@ public class AddDriverServlet extends HttpServlet {
                 throw new Exception();
             }
 
+            // check if user is verified
+            User user = User.getRecord(userId);
+
+            if(user == null || !user.getUserType().getUserTypeId().equals(1)) {
+                throw new Exception("Invalid User");
+            }
+            else if(user.getStatus().getStatusId().equals(2)) {
+                // not verified
+                response.getWriter().println("not_verified");
+                return;
+            }
+
             // check for files
             FileItem licencePic = null;
             for(FileItem item: validFiles) {

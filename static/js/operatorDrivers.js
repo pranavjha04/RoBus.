@@ -291,6 +291,8 @@ addDriverForm.addEventListener("submit", async (e) => {
       delete cache.licence[licenceNumber.value];
       delete cache.email[email.value];
       handleCollectAllDrivers();
+    } else if (response === "not_verified") {
+      throw new Error("User not verified");
     }
   } catch (err) {
     toast.error(err.message);

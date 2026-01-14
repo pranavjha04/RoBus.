@@ -1,6 +1,7 @@
 package controllers;
 
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
@@ -9,6 +10,9 @@ import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 
 import utils.FieldManager;
+
+import models.User;
+import models.Operator;
 
 @WebServlet("/verify_email.do")
 public class VerifyEmailServlet extends HttpServlet {
@@ -42,7 +46,7 @@ public class VerifyEmailServlet extends HttpServlet {
                         request.setAttribute("invalid", true);
                         break;
                     }
-                    session.setAttribute("user", user.getRecordByEmail(user.getEmail()));
+                    session.setAttribute("user", user.getRecord(user.getUserId()));
                     request.setAttribute("valid", true);
                 }
                 else {

@@ -17,10 +17,10 @@ public class GetActiveAccountServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         if(session.getAttribute("user") != null) {
-            response.getWriter(new Gson().toJson(session.getAttribute("user")));
+            response.getWriter().println(new Gson().toJson(session.getAttribute("user")));
         }
         else if(session.getAttribute("operator") != null) {
-            response.getWriter(new Gson().toJson(session.getAttribute("operator")));
+            response.getWriter().println(new Gson().toJson(session.getAttribute("operator")));
         }
         else {
             response.getWriter().println("invalid");

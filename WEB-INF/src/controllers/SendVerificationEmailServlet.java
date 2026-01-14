@@ -17,6 +17,7 @@ import models.User;
 import models.Status;
 
 import utils.AppUtil;
+import utils.EmailHandler;
 
 @WebServlet("/send_verification_email.do")
 public class SendVerificationEmailServlet extends HttpServlet {
@@ -25,7 +26,6 @@ public class SendVerificationEmailServlet extends HttpServlet {
     }
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
-        EmailHandler handler = EmailHandler.getInstance();
         final String APP_URL = getServletContext().getInitParameter("app_url");
 
         if(session.getAttribute("operator") != null) {
@@ -47,7 +47,7 @@ public class SendVerificationEmailServlet extends HttpServlet {
             
             operator.setVerificationCode(verificationCode);
 
-            boolean isSent = handler.sendVerificationMail(operator.getEmail(), operator.getFullName(), AppUtil.generateVerificationURL(APP_URL, verificationCode));
+            boolean isSent = EmailHandler.sendVerificationMail(operator.getEmail(), operator.getFullName(), AppUtil.generateVerificationURL(APP_URL, verificationCode));
 
             if(!isSent) response.getWriter().println("internal");
 
@@ -60,17 +60,19 @@ public class SendVerificationEmailServlet extends HttpServlet {
                 response.getWriter().println("invalid");
                 return;
             }
+            String verificationCode = UUID.randomUUID().toString();
 
             boolean isVerificationCodeSet = user.updateVerificationCode(verificationCode, user.getUserId());
-
+            
             if(!isVerificationCodeSet) {
                 response.getWriter().println("invalid");
                 return;
             }
 
+            
             user.setVerificationCode(verificationCode);
 
-            boolean isSent = handler.sendVerificationMail(user.getEmail(), user.getFullName(), AppUtil.generateVerificationURL(APP_URL, verificationCode));
+            boolean isSent = EmailHandler.sendVerificationMail(user.getEmail(), user.getFullName(), AppUtil.generateVerificationURL(APP_URL, verificationCode));
 
             if(!isSent) response.getWriter().println("internal");
 
