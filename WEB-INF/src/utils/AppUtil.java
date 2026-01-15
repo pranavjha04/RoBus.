@@ -27,7 +27,7 @@ public final class AppUtil {
     }
 
     public static final String generateVerificationURL(String appURL, String verificationCode) {
-        return new StringBuilder(appURL).append("?verification_code=").append(verificationCode).toString();
+        return new StringBuilder(appURL).append("/verify_email.do").append("?verification_code=").append(verificationCode).toString();
     }
 
     public static final boolean isIncludeRequest(String request, String[] acceptedIncludeRequestList) {

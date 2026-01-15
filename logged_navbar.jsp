@@ -28,7 +28,11 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:set var="page" value="${e:activeURL(pageContext.request)}" />
 
-<c:import url="email_verification.jsp" />
+<c:if test="${not empty sessionScope.user}">
+  <c:if test="${sessionScope.user.status.statusId eq 2}">
+    <c:import url="email_verification.jsp" />
+  </c:if>
+</c:if>
 <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
   <div class="container">
     <!-- Logo -->
