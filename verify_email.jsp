@@ -1,8 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<c:if test="${empty sessionScope.user or sessionScope.user.status.statusId ne 2}">
+<c:if test="${empty sessionScope.user and empty sessionScope.operator}">
   <c:redirect url="/" />
 </c:if>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -21,7 +21,6 @@
         align-items: center;
         justify-content: center;
         margin: 0;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       }
       .verification-card {
         background: #ffffff;

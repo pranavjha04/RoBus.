@@ -19,7 +19,7 @@ import utils.AppUtil;
 import com.google.gson.Gson;
 @WebServlet("/get_bus_fare_factors.do")
 public class GetBusFareFactorServlet extends HttpServlet {
-    private static String[] acceptedIncludeRequestList = {"update_schedule_charges.do", "add_bus_schedule.do"};
+    private static String[] acceptedIncludeRequestList = {"update_schedule_charges.do"};
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         String requestURLPath = request.getServletPath().substring(1);
@@ -42,20 +42,11 @@ public class GetBusFareFactorServlet extends HttpServlet {
                 return;
             }          
 
-            if(getServletContext().getAttribute("bus_fare_factor_list" + busId) == null) {
-                ArrayList<BusFareFactor> busFareFactorList = BusFareFactor.collectAllRecords(busId, operator.getOperatorId());
-                if(busFareFactorList == null) {
-                    throw new IllegalArgumentException("invalid");
-                }
-                getServletContext().setAttribute("bus_fare_factor_list" + busId, busFareFactorList);
-            }
-
-            
+            ArrayList<BusFareFactor> busFareFactorList = BusFareFactor.collectAllRecords(busId, operator.getOperatorId());
             if(!isIncludeRequest) {
-                @SuppressWarnings("unchecked")
-                ArrayList<BusFareFactor> list = (ArrayList<BusFareFactor>) getServletContext().getAttribute("bus_fare_factor_list" + busId);
                 response.getWriter().println(new Gson().toJson(list));
             }
+            
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();

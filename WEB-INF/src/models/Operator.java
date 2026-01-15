@@ -78,7 +78,7 @@ public class Operator implements Cloneable {
             Connection con = DBManager.getConnection();
             String query = 
                         "UPDATE operators SET status_id=? " +
-                        "WHERE opetator_id=?";
+                        "WHERE operator_id=?";
             PreparedStatement ps = con.prepareStatement(query);
 
             ps.setInt(1, statusId);

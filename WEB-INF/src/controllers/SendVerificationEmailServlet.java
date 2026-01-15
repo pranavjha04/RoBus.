@@ -26,6 +26,7 @@ public class SendVerificationEmailServlet extends HttpServlet {
     }
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
+        
         final String APP_URL = getServletContext().getInitParameter("app_url");
 
         if(session.getAttribute("operator") != null) {

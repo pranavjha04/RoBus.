@@ -38,7 +38,6 @@ public class DeleteBusRouteWeekdayServlet extends HttpServlet {
 
             success = BusRouteWeekday.deleteRecord(busRouteWeekdayId, operatorRouteId, operatorId);
             if(success) {
-                session.removeAttribute("bus_route_weekday_list" + operatorRouteId);
                 response.getWriter().println("success");
             }
             else {

@@ -155,10 +155,8 @@ public class BusRouteWeekday {
             ps.setInt(2, operatorRouteId);
             ps.setInt(3, operatorId);
 
-            int rows = ps.executeUpdate();
-            if(rows > 0) {
-                flag = true;
-            }
+            flag = ps.executeUpdate() > 0;
+            
             con.close();
         }
         catch(SQLException e) {

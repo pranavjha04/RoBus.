@@ -39,8 +39,8 @@ public class VerifyEmailServlet extends HttpServlet {
                     request.setAttribute("expired", true);
                     break;
                 }
-                else if(user.getStatus().getStatusId() != 2) {
-                    request.setAttribute("already_verified", true);
+                else if(!user.getStatus().getStatusId().equals(2)) {
+                    request.setAttribute("invalid", true);
                 }
                 else if(user.getVerificationCode().equals(verificationCode)) {
                     // db mei save karlo
@@ -63,8 +63,8 @@ public class VerifyEmailServlet extends HttpServlet {
                     request.setAttribute("expired", true);
                     break;
                 }
-                else if(operator.getStatus().getStatusId().equals(2)) {
-                    request.setAttribute("already_verified", true);
+                else if(!operator.getStatus().getStatusId().equals(2)) {
+                    request.setAttribute("invalid", true);
                 }
                 else if(operator.getVerificationCode().equals(verificationCode)) {
                     // db mei save karlo

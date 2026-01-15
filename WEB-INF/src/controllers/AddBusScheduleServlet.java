@@ -101,27 +101,10 @@ public class AddBusScheduleServlet extends HttpServlet {
                 throw new IllegalArgumentException("Invalid Bus ID");
             }
             /* -------- BUS END -------- */
-
-            /* -------- TOTAL CHARGES START -------- */
-            if(context.getAttribute("bus_fare_factor_list" + busId) == null) {
-                request.getRequestDispatcher("get_bus_fare_factors.do").include(request, response);
-                if(context.getAttribute("bus_fare_factor_list" + busId) == null) {
-                    throw new IllegalArgumentException("Invalid Request");
-                }
-            }
-            if(context.getAttribute("bus_route_weekday_list" + operatorRouteId) == null) {
-                request.getRequestDispatcher("get_bus_route_weekday_all.do").include(request, response);
-                if(context.getAttribute("bus_route_weekday_list" + operatorRouteId) == null) {
-                    throw new IllegalArgumentException("Invalid Request");
-                }
-            }
-
-            @SuppressWarnings("unchecked")
-            ArrayList<BusFareFactor> busFareFactorList = (ArrayList<BusFareFactor>) context.getAttribute("bus_fare_factor_list"+ busId);
-
-            @SuppressWarnings("unchecked")
-            ArrayList<BusRouteWeekday> busRouteWeekdayList = (ArrayList<BusRouteWeekday>) context.getAttribute("bus_route_weekday_list" + operatorRouteId);
             
+            ArrayList<BusFareFactor> busFareFactorList = BusFareFactor.collectAllRecords(busId, operator.getOperatorId());
+            ArrayList<BusRouteWeekday> busRouteWeekdayList = BusRouteWeekday.collectAllRecords(operatorRouteId, operator.getOperatorId());
+            System.out.println(busRouteWeekdayList);
             int distance = 0;
             Integer source = null;
             Integer destination = null;

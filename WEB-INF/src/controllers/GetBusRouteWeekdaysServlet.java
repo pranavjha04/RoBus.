@@ -21,7 +21,7 @@ import com.google.gson.Gson;
 
 @WebServlet("/get_bus_route_weekday_all.do")
 public class GetBusRouteWeekdaysServlet extends HttpServlet {
-    private static String[] acceptedIncludeRequestList = {"update_schedule_charges.do", "add_bus_schedule.do"};
+    private static String[] acceptedIncludeRequestList = {"update_schedule_charges.do"};
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();

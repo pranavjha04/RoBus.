@@ -1,5 +1,11 @@
 <%@ taglib prefix="e" uri="bts" %> <%@ taglib prefix="c"
 uri="http://java.sun.com/jsp/jstl/core" %>
+
+<c:if test="${not empty sessionScope.operator}">
+  <c:if test="${sessionScope.operator.status.statusId eq 2}">
+    <c:import url="email_verification.jsp" />
+  </c:if>
+</c:if>
 <!-- Logout Modal -->
 <div class="modal fade" tabindex="-1" id="logoutModal">
   <div class="modal-dialog modal-dialog-centered">
