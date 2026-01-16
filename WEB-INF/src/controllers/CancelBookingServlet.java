@@ -51,7 +51,6 @@ public class CancelBookingServlet extends HttpServlet {
             boolean isBookingStatusUpdated = Booking.updateStatus(bookingId, 6);
             if(!isBookingStatusUpdated) throw new IllegalArgumentException("Internal Server Error");
 
-            context.removeAttribute("booked_schedule" + targetBooking.getSchedule().getScheduleId());
             response.getWriter().println("ok");
         }
         catch(IllegalArgumentException e) {

@@ -47,23 +47,6 @@ public class AddOperatorTicketFareServlet extends HttpServlet {
         Integer fareFactorId = Integer.parseInt(request.getParameter("fare_factor_id"));
         
         boolean success = OperatorTicketFare.addRecord(fareFactorId, charge, operator.getOperatorId());
-        if(success) {
-            Enumeration<String> allAttributes = session.getAttributeNames();
-            List<String> toRemove = new ArrayList<>();
-
-            while (allAttributes.hasMoreElements()) {
-                String attributeName = allAttributes.nextElement();
-                if (attributeName.startsWith("bus_fare_factor_list")) {
-                    toRemove.add(attributeName);
-                }
-            }
-
-            for (String name : toRemove) {
-                session.removeAttribute(name);
-            }
-            session.removeAttribute("fare_factors" + true);
-            session.removeAttribute("fare_factors" + false);
-        }
         response.getWriter().println(success ? "success" : "internal");
     }
 }

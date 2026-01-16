@@ -39,12 +39,6 @@ public class AddBusRouteWeekdayServlet extends HttpServlet {
 
             success = BusRouteWeekday.addRecord(weekdays, operatorRouteId);
             response.getWriter().println(success ? "success" : "invalid");
-            if(success) {
-                session.removeAttribute("bus_route_weekday_list" + operatorRouteId);
-                for(String next : weekdays) {
-                    session.removeAttribute("weekday_route_list" + next);
-                }
-            }
         }
         catch(IllegalArgumentException e) {
             success = false;

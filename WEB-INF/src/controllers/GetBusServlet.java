@@ -25,26 +25,15 @@ public class GetBusServlet extends HttpServlet {
             if(session.getAttribute("operator") == null) {
                 throw new IllegalArgumentException("Invalid Request");
             }
-            if(session.getAttribute("busList") == null) {
-                Operator operator = (Operator) session.getAttribute("operator");
-                if(operator.getStatus().getStatusId().equals(2)) {
-                    response.getWriter().println("[]");
-                    return;
-                }
-                ArrayList<Bus> busList = Bus.collectRecords(operator.getOperatorId());
-
-                if(busList == null) {
-                    throw new IllegalArgumentException("Invalid Request");
-                }
-
-                session.setAttribute("busList", busList);
+            Operator operator = (Operator) session.getAttribute("operator");
+            if(operator.getStatus().getStatusId().equals(2)) {
+                response.getWriter().println("[]");
+                return;
             }
-
-            @SuppressWarnings("unchecked")
-            ArrayList<Bus> busList = (ArrayList<Bus>) session.getAttribute("busList");
+        
+            ArrayList<Bus> busList = Bus.collectRecords(operator.getOperatorId());
 
             response.getWriter().println(new Gson().toJson(busList));
-
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();

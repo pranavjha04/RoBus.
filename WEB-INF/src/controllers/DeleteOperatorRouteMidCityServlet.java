@@ -39,9 +39,6 @@ public class DeleteOperatorRouteMidCityServlet extends HttpServlet {
             Integer operatorRouteMidCityId = Integer.parseInt(request.getParameter("operator_route_mid_city_id"));
 
             boolean isDeleted = OperatorRouteMidCity.deleteRecord(operatorRouteId, operatorRouteMidCityId, operatorId);
-            if(isDeleted) {
-                session.removeAttribute("operator_route_midcities" + operatorRouteId);
-            }
             response.getWriter().println(isDeleted ? "success" : "failed");
         }
         catch(IllegalArgumentException e) {

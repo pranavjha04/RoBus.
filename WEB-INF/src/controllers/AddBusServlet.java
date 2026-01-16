@@ -52,7 +52,7 @@ public class AddBusServlet extends HttpServlet {
                 response.getWriter().println("Invalid");
                 return;
             }
-            ServletContext context = this.getServletContext();
+            ServletContext context = getServletContext();
 
             List<FileItem> validFiles = new ArrayList<>();
             List<FileItem> fareFactors = new ArrayList<>();
@@ -151,7 +151,6 @@ public class AddBusServlet extends HttpServlet {
                 item.write(currFile);
             }
 
-            session.removeAttribute("busList");
             response.getWriter().println(new Gson().toJson(bus));
 
         } catch (FileUploadException e) {

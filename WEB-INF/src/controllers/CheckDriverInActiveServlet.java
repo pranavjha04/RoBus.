@@ -29,7 +29,6 @@ public class CheckDriverInActiveServlet extends HttpServlet {
         boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
         Operator operator = (Operator) session.getAttribute("operator");
         int driverId = -1;
-        boolean isInActive = false;
 
         try {
             if(operator.getStatus().getStatusId().equals(2)) {
@@ -55,20 +54,8 @@ public class CheckDriverInActiveServlet extends HttpServlet {
             if(driverId == -1) {
                 throw new IllegalArgumentException("Invalid Request");
             }
-            if(session.getAttribute("inactiveDriverList") != null) {
-                @SuppressWarnings("unchecked")
-                ArrayList<Driver> inactiveDriverList = (ArrayList<Driver>) session.getAttribute("inactiveDriverList");
-                for(Driver driver : inactiveDriverList) {
-                    if(driver.getDriverId().equals(driverId)) {
-                        isInActive = true;
-                        break;
-                    }
-                }
-            }
-            else {
-                isInActive = Driver.checkStatus(driverId, 5, operator.getOperatorId());
-            }
-
+            boolean isInActive = Driver.checkStatus(driverId, 5, operator.getOperatorId());
+            
             if(isIncludeRequest) {
                 request.setAttribute("isInActive", isInActive);
             }

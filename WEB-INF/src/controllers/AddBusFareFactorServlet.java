@@ -9,13 +9,12 @@ import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
 
-import java.util.Enumeration;
-
 import models.Operator;
 import models.BusFareFactor;
 
 @WebServlet("/add_bus_fare_factor.do")
 public class AddBusFareFactorServlet extends HttpServlet {
+    private static final String[] acceptedParamList = {"bus_id", "operator_ticket_fare_id"};
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
 
@@ -24,15 +23,13 @@ public class AddBusFareFactorServlet extends HttpServlet {
             return;
         }
 
-        Enumeration<String> params = request.getParameterNames();
-        while(params.hasMoreElements()) {
-            String next = params.nextElement();
+        for(String next : acceptedParamList) {
             if(request.getParameter(next) == null) {
                 response.getWriter().println("invalid");
                 return;
             }
         }
-
+        
         Operator operator = (Operator) session.getAttribute("operator");
         if(operator.getStatus().getStatusId().equals(2)) {
             response.getWriter().println("internal");
@@ -40,17 +37,11 @@ public class AddBusFareFactorServlet extends HttpServlet {
         }
         
         int operatorId = operator.getOperatorId();
-
         int operatorTicketFareId = Integer.parseInt(request.getParameter("operator_ticket_fare_id"));
         String[] busIdList = request.getParameterValues("bus_id");
 
         boolean success = BusFareFactor.addMultipleRecords(busIdList, operatorTicketFareId);
 
         response.getWriter().println(success ? "success" : "internal");
-        if(success) {
-            for(String busId : busIdList) {
-                getServletContext().removeAttribute("bus_fare_factor_list" + busId);
-            }
-        }
     }
 }

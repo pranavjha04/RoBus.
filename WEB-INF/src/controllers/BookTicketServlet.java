@@ -42,7 +42,6 @@ public class BookTicketServlet extends HttpServlet {
             if(activeUser.getStatus().getStatusId().equals(2)) {
                 throw new IllegalArgumentException("Not verified");
             }
-            ServletContext context = getServletContext();
             for(String next : acceptedParameterList) {
                 if(request.getParameter(next) == null) {
                     throw new MissingParameterException();
@@ -56,7 +55,6 @@ public class BookTicketServlet extends HttpServlet {
             int destination = Integer.parseInt(request.getParameter("destination"));
             Map<Integer, Pair> selectedSeats = AppUtil.getFormattedSeatChargeRecord(request.getParameterValues("seat"));
 
-            String SCHEDULE_BOOKED_SEAT_CACHE_KEY = "booked_schedule" + scheduleId;
             
             /* VALIDATION */
             // 1) validate  schedule    
@@ -72,21 +70,13 @@ public class BookTicketServlet extends HttpServlet {
                 if(isSeatAlreadyBooked) throw new IllegalArgumentException("Seat is already booked");
             }
 
-            // check if it's seater or sleeper actually supported
-            String SEATING_CACHE_KEY = "seatingList" + schedule.getBus().getBusId();    
-            if(context.getAttribute(SEATING_CACHE_KEY) == null) {
-                ArrayList<Seating> seatingList = Seating.collectRecords(schedule.getBus().getBusId(), schedule.getBus().getOperator().getOperatorId());
-
-                if(seatingList == null) {
-                    throw new IllegalArgumentException("Seating is missing");
-                }
-
-                AppUtil.formateSeatingRecord(seatingList);
-                context.setAttribute(SEATING_CACHE_KEY, seatingList);
+            // check if it's seater or sleeper actually supported 
+            ArrayList<Seating> seatingList = Seating.collectRecords(schedule.getBus().getBusId(), schedule.getBus().getOperator().getOperatorId());
+            if(seatingList == null) {
+                throw new IllegalArgumentException("Seating is missing");
             }
+            AppUtil.formateSeatingRecord(seatingList);
             
-            @SuppressWarnings("unchecked")
-            ArrayList<Seating> seatingList = (ArrayList<Seating>) context.getAttribute(SEATING_CACHE_KEY);
 
             // check if it's it's number is <= to totalSeats
             int totalAvailableSeats = 0;
@@ -153,9 +143,6 @@ public class BookTicketServlet extends HttpServlet {
             else {
                 throw new IllegalArgumentException("Invalid Seats Booked updation");
             }
-
-            schedule.setBookedSeatList(BookedSeat.collectAllRecords(scheduleId));
-            context.setAttribute(SCHEDULE_BOOKED_SEAT_CACHE_KEY, schedule.getBookedSeatList());
             
             response.getWriter().println("ok");
         }

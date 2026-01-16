@@ -104,7 +104,7 @@ public class AddBusScheduleServlet extends HttpServlet {
             
             ArrayList<BusFareFactor> busFareFactorList = BusFareFactor.collectAllRecords(busId, operator.getOperatorId());
             ArrayList<BusRouteWeekday> busRouteWeekdayList = BusRouteWeekday.collectAllRecords(operatorRouteId, operator.getOperatorId());
-            System.out.println(busRouteWeekdayList);
+            
             int distance = 0;
             Integer source = null;
             Integer destination = null;

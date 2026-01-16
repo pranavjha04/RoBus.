@@ -56,10 +56,6 @@ public class AddOperatorRouteServlet extends HttpServlet {
                         return;
                     }
                     Boolean success = OperatorRouteMidCity.addRecord(generatedOperatorRouteId, routeMidCityId, haltingTime);
-
-                    if(success) {
-                        session.removeAttribute("opetator_route_list" + operatorId);
-                    }
                     response.getWriter().println(success ? "success" : "internal");
                 }
             }

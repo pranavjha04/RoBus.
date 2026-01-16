@@ -33,7 +33,6 @@ public class GetAllDriverServlet extends HttpServlet {
             
             ArrayList<Driver> driverList = Driver.collectRecords(operatorId);
             response.getWriter().println(new Gson().toJson(driverList));
-
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();

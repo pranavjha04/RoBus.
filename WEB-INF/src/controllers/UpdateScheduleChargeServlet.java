@@ -52,16 +52,13 @@ public class UpdateScheduleChargeServlet extends HttpServlet {
             Integer scheduleId = Integer.parseInt(request.getParameter("schedule_id"));
             Date journeyDate = Date.valueOf(request.getParameter("journey_date"));
             Schedule currSchedule = Schedule.getRecord(scheduleId, operator.getOperatorId());
-
+            Integer operatorRouteId = Integer.parseInt(request.getParameter("operator_route_id"));
             if(currSchedule == null || !currSchedule.getStatus().getStatusId().equals(11))  { // upcoming nahi hai
                 throw new IllegalArgumentException("Invalid Request");
             }
         
-            @SuppressWarnings("unchecked")
-            ArrayList<BusFareFactor> busFareFactorList = (ArrayList<BusFareFactor>) context.getAttribute("bus_fare_factor_list"+ busId);
-
-            @SuppressWarnings("unchecked")
-            ArrayList<BusRouteWeekday> busRouteWeekdayList = (ArrayList<BusRouteWeekday>) context.getAttribute("bus_route_weekday_list" + operatorRouteId);
+            ArrayList<BusFareFactor> busFareFactorList = BusFareFactor.collectAllRecords(busId, operator.getOperatorId());
+            ArrayList<BusRouteWeekday> busRouteWeekdayList = BusRouteWeekday.collectAllRecords(operatorRouteId, operator.getOperatorId());
             
             int distance = 0;
             for(BusRouteWeekday next : busRouteWeekdayList) {

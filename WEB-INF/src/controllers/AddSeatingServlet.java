@@ -35,7 +35,6 @@ public class AddSeatingServlet extends HttpServlet {
             response.getWriter().println("invalid");
             return;
         }
-        ServletContext context = getServletContext();
 
         if(request.getParameter("bus_id") != null && request.getParameter("deck") != null) {
             Integer busId = Integer.parseInt(request.getParameter("bus_id"));
@@ -76,44 +75,17 @@ public class AddSeatingServlet extends HttpServlet {
             return;
         }
 
-        System.out.println(generatedId);
 
-        Bus activeBus = null;
-        if(session.getAttribute("busList") != null) {
-            @SuppressWarnings("unchecked")
-            ArrayList<Bus> busList = (ArrayList<Bus>) session.getAttribute("busList");
-
-            for(Bus bus : busList) {
-                if(bus.getBusId().equals(busId)) {
-                    activeBus = bus;
-                    break;
-                }
-            }
-        }
+        Bus activeBus = Bus.getRecord(busId, operator.getOperatorId());
         if(activeBus == null) {
-            activeBus = Bus.getRecord(busId, operator.getOperatorId());
-            if(activeBus == null) {
-                response.getWriter().println("internal");
-                return;
-            }
+            response.getWriter().println("internal");
+            return;
         }
     
-
         ArrayList<Seating> seatingList = Seating.collectRecords(busId, operator.getOperatorId());
         AppUtil.formateSeatingRecord(seatingList);
 
-        context.setAttribute("seatingList" + busId, seatingList);
-        Boolean isUpdatable = false;
-        if(activeBus.getDoubleDecker()) {
-            if(seatingList.size() == 2) {
-                isUpdatable = true;
-            }
-        }
-        else {
-            if(seatingList.size() == 1) {
-                isUpdatable = true;
-            }
-        }
+        Boolean isUpdatable = activeBus.getDoubleDecker() ? seatingList.size() == 2 : seatingList.size() == 1;
 
         if(isUpdatable) {
             Boolean success = Bus.updateStatus(busId, 5, operator.getOperatorId()); // 2nd column is statusId  (5) <-> Inactive
@@ -124,10 +96,7 @@ public class AddSeatingServlet extends HttpServlet {
             
         }
 
-        
         seating.setSeatingId(generatedId);
-        session.removeAttribute("busList");
         response.getWriter().println(new Gson().toJson(seating));
-
     } 
 }

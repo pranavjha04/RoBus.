@@ -32,17 +32,10 @@ public class GetAllBookingServlet extends HttpServlet {
             return;
         }
         
-        ArrayList<Booking> bookingList = (ArrayList<Booking>)  Booking.collectAllRecords(user.getUserId());
+        ArrayList<Booking> bookingList = Booking.collectAllRecords(user.getUserId());
 
         for(Booking next : bookingList) {
-            String cache = next.getBookingId() + "bookedSeats";
-            if(session.getAttribute(cache) == null) {
-                ArrayList<BookedSeat> list = BookedSeat.collectAllRecordsByBooking(next.getBookingId());
-                session.setAttribute(cache, list);
-            } 
-
-            @SuppressWarnings("unchecked")
-            ArrayList<BookedSeat> list = (ArrayList<BookedSeat>) session.getAttribute(cache);
+            ArrayList<BookedSeat> list = BookedSeat.collectAllRecordsByBooking(next.getBookingId());
             next.setBookedSeatList(list);
         }
         

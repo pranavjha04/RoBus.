@@ -40,10 +40,6 @@ public class DeleteBusFareFactorServlet extends HttpServlet {
             Integer operatorTicketFareId = Integer.parseInt(request.getParameter("operator_ticket_fare_id"));
 
             Boolean success = BusFareFactor.deleteRecord(busId, busFareFactorId, operatorTicketFareId);
-
-            if(success) {
-                getServletContext().removeAttribute("bus_fare_factor_list" + busId);
-            }
             response.getWriter().println(success ? "success" : "internal");
         } 
         catch(IllegalArgumentException e) {

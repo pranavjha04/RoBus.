@@ -38,26 +38,7 @@ public class DeleteFareFactorServlet extends HttpServlet {
         try {
             int operatorTicketFareId = Integer.parseInt(request.getParameter("operator_ticket_fare_id"));
             boolean success = OperatorTicketFare.deleteRecord(operatorTicketFareId);
-
-            if(success) {
-                Enumeration<String> allAttributes = session.getAttributeNames();
-                List<String> toRemove = new ArrayList<>();
-
-                while (allAttributes.hasMoreElements()) {
-                    String attributeName = allAttributes.nextElement();
-                    if (attributeName.startsWith("bus_fare_factor_list")) {
-                        toRemove.add(attributeName);
-                    }
-                }
-                for (String name : toRemove) {
-                    session.removeAttribute(name);
-                }
-
-                response.getWriter().println("success");
-            }
-            else {
-                throw new IllegalArgumentException("Invalid Request");
-            }
+            response.getWriter().println(success ? "success" : "invalid");
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();

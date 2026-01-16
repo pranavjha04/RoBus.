@@ -48,24 +48,10 @@ public class GetAllScheduleServlet extends HttpServlet {
  
             for(Schedule next : scheduleList) {
                 OperatorRoute operatorRoute = next.getBusRouteWeekday().getOperatorRoute();
-
                 int operatorRouteId = operatorRoute.getOperatorRouteId();
-                String OPERATOR_MID_CITY_CACHE = "operator_route_midcities_" + operatorRouteId;
 
-                if(session.getAttribute(OPERATOR_MID_CITY_CACHE) == null) {
-                    ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = 
-                                    OperatorRouteMidCity.collectAllRecords(
-                                        operatorRouteId,
-                                        operator.getOperatorId()
-                    );
-                        
-                    if(operatorRouteMidCityList == null) throw new IllegalArgumentException("Invalid Request");
-                        
-                    session.setAttribute(OPERATOR_MID_CITY_CACHE, operatorRouteMidCityList);
-                }
-                @SuppressWarnings("unchecked")
-                ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = (ArrayList<OperatorRouteMidCity>) session.getAttribute(OPERATOR_MID_CITY_CACHE);
-
+                ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = OperatorRouteMidCity.collectAllRecords(operatorRouteId, operator.getOperatorId()
+                );
                 operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
             }
 
