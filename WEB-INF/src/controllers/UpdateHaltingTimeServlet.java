@@ -46,19 +46,6 @@ public class UpdateHaltingTimeServlet extends HttpServlet {
 
             boolean isUpdated = OperatorRouteMidCity.updateHaltingTime(operatorRouteId, operatorRouteMidCityId, haltingTime, operatorId);
 
-            if(isUpdated) {
-                if(session.getAttribute("operator_route_midcities" + operatorRouteId) != null) {
-                    @SuppressWarnings("unchecked")
-                    ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = (ArrayList<OperatorRouteMidCity>) session.getAttribute("operator_route_midcities" + operatorRouteId);
-
-                    for(OperatorRouteMidCity next : operatorRouteMidCityList) {
-                        if(next.getOperatorRouteMidCityId().equals(operatorRouteMidCityId)) {
-                            next.setHaltingTime(haltingTime);
-                        }
-                    }
-                }
-            }
-
             response.getWriter().println(isUpdated ? "success" : "failed");
         }
         catch (IllegalArgumentException e) {

@@ -26,9 +26,6 @@ import models.OperatorRouteMidCity;
 public class GetCompletedBusScheduleServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
-        String requestURLPath = request.getServletPath().substring(1);
-        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestList);
-
         try {
             int busId = Integer.parseInt(request.getParameter("bus_id"));
 

@@ -37,6 +37,7 @@ public class GetDriverScheduleServlet extends HttpServlet {
             response.getWriter().println("[]");
             return;
         }
+        
         ServletContext context = getServletContext();
         try {
             if(!user.getUserType().getUserTypeId().equals(3) || request.getParameter("journey_date") == null) {
@@ -52,22 +53,12 @@ public class GetDriverScheduleServlet extends HttpServlet {
                 OperatorRoute operatorRoute = next.getBusRouteWeekday().getOperatorRoute();
 
                 int operatorRouteId = operatorRoute.getOperatorRouteId();
-                String OPERATOR_MID_CITY_CACHE = "operator_route_midcities_" + operatorRouteId;
-
-                if(session.getAttribute(OPERATOR_MID_CITY_CACHE) == null) {
-                    ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = 
-                                    OperatorRouteMidCity.collectAllRecords(
-                                        operatorRouteId,
-                                        next.getBus().getOperator().getOperatorId()
-                    );
-                        
-                    if(operatorRouteMidCityList == null) throw new IllegalArgumentException("Invalid Request");
-                        
-                    session.setAttribute(OPERATOR_MID_CITY_CACHE, operatorRouteMidCityList);
-                }
-                @SuppressWarnings("unchecked")
-                ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = (ArrayList<OperatorRouteMidCity>) session.getAttribute(OPERATOR_MID_CITY_CACHE);
-
+                int operatorId = next.getBus().getOperator().getOperatorId();
+                ArrayList<OperatorRouteMidCity> operatorRouteMidCityList = 
+                        OperatorRouteMidCity.collectAllRecords(
+                        operatorRouteId,
+                        operatorId
+                );
                 operatorRoute.setOperatorRouteMidCities(operatorRouteMidCityList);
             }
             response.getWriter().println(new Gson().toJson(scheduleList));

@@ -54,9 +54,6 @@ public class GetRouteServlet extends HttpServlet {
                 if(currSource && currDestination) {
                     preparRouteList.add(route);
                 }
-                else {
-                    System.out.println("Route");
-                }
             }
 
             @SuppressWarnings("unchecked")
@@ -68,11 +65,7 @@ public class GetRouteServlet extends HttpServlet {
                 for(RouteMidCity routeMidCity : routeMidCityList) {
                     int currRouteId = routeMidCity.getRoute().getRouteId();
                     if(routeId == currRouteId) {
-                        System.out.println("yo");
                         prepareRouteMidCityList.add(routeMidCity);
-                    }
-                    else {
-                        System.out.println("yoi");
                     }
                 }
             }

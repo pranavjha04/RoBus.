@@ -103,7 +103,7 @@ public class BookedSeat {
         return flag;
     }
 
-    public static boolean checkRecordExistBySeatNumber(int seatNumber) {
+    public static boolean checkRecordExistBySeatNumber(int seatNumber, int scheduleId) {
         boolean flag = false;
 
         try {
@@ -111,10 +111,11 @@ public class BookedSeat {
             String query = 
                         "SELECT * FROM booked_seats bs " + 
                         "JOIN bookings b ON b.booking_id = bs.booking_id " +
-                        "WHERE seat_number=? AND b.status_id=11";
+                        "WHERE seat_number=? AND b.status_id=11 AND b.schedule_id=?";
             
             PreparedStatement ps = con.prepareStatement(query);
             ps.setInt(1, seatNumber);
+            ps.setInt(2, scheduleId);
 
             ResultSet rs = ps.executeQuery();
             if(rs.next()) {

@@ -32,20 +32,11 @@ public class GetOperatorRouteServlet extends HttpServlet {
                 response.getWriter().println("[]");
                 return;
             }
-            String cachedAttribute = "opetator_route_list" + operatorId;
             
-            if(session.getAttribute(cachedAttribute) == null) {
-                ArrayList<OperatorRoute> operatorRouteList = OperatorRoute.collectAllRecords(operatorId);
-                if(operatorRouteList == null) {
-                    throw new IllegalArgumentException("Invalid Request");
-                }
-
-                session.setAttribute(cachedAttribute, operatorRouteList);
-            }
-
-            @SuppressWarnings("unchecked")
-            ArrayList<OperatorRoute> list = (ArrayList<OperatorRoute>) session.getAttribute(cachedAttribute);
-            response.getWriter().println(new Gson().toJson(list));
+            ArrayList<OperatorRoute> operatorRouteList = OperatorRoute.collectAllRecords(operatorId);
+            if(operatorRouteList == null) throw new IllegalArgumentException("Invalid Request");
+            
+            response.getWriter().println(new Gson().toJson(operatorRouteList));
         }   
         catch(IllegalArgumentException e) {
             e.printStackTrace();

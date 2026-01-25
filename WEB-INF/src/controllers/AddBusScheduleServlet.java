@@ -85,12 +85,10 @@ public class AddBusScheduleServlet extends HttpServlet {
             /* -------- EXTRA FARE CHARGES END -------- */
 
             /* -------- DRIVER START -------- */
-            request.setAttribute("driver_id", driverId);
-            request.getRequestDispatcher("check_inactive_driver.do").include(request, response);
-
-            Object isInActive = request.getAttribute("isInActive");
-            if(isInActive == null || !((Boolean) isInActive)) {
-                throw new IllegalArgumentException("Invalid Request");
+            Driver targetDriver = Driver.getRecord(driverId, operator.getOperatorId());
+            // check karo ki jo  driver hai inactive hai ya nahi
+            if(!targetDriver.getUser().getStatus().getStatusId().equals(5)) {
+                throw new IllegalArgumentException("Driver is not available");
             }
 
             /* -------- DRIVER END -------- */

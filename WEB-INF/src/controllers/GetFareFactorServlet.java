@@ -29,27 +29,18 @@ public class GetFareFactorServlet extends HttpServlet {
             response.getWriter().println("invalid");
             return;
         }
-        Gson gson = new Gson();
         boolean onlyFactors = request.getParameter("onlyFactors").equals("true") ? true : false;
         Operator operator = (Operator) session.getAttribute("operator");
         if(operator.getStatus().getStatusId().equals(2)) {
             response.getWriter().println("[]");
             return;
         }
-        if(session.getAttribute("fare_factors" + onlyFactors) == null) {
-            ArrayList<OperatorTicketFare> factors = OperatorTicketFare.getAvailableFareFactors(operator.getOperatorId(), onlyFactors);
-
-            if(factors == null) {
-                response.getWriter().println("internal");
-                return;
-            }
-
-            session.setAttribute("fare_factors" + onlyFactors, factors);
+        ArrayList<OperatorTicketFare> factors = OperatorTicketFare.getAvailableFareFactors(operator.getOperatorId(), onlyFactors);
+        if(factors == null) {
+            response.getWriter().println("internal");
+            return;
         }
-
-        @SuppressWarnings("unchecked")
-        ArrayList<OperatorTicketFare> factors = (ArrayList<OperatorTicketFare>) session.getAttribute("fare_factors" + onlyFactors);
         
-        response.getWriter().println(gson.toJson(factors));        
+        response.getWriter().println(new Gson().toJson(factors));        
     }
 }

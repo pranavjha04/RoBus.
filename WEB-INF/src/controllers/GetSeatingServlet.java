@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
-import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
@@ -23,7 +22,6 @@ import com.google.gson.Gson;
 public class GetSeatingServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
-        ServletContext context = getServletContext();
 
         try {
             if(session.getAttribute("operator") == null || request.getParameter("bus_id") == null) {
@@ -38,21 +36,12 @@ public class GetSeatingServlet extends HttpServlet {
             int busId = Integer.parseInt(request.getParameter("bus_id"));
             int operatorId = operator.getOperatorId();
 
-            String cachedAttribute = "seatingList" + busId;
-
-            if(context.getAttribute(cachedAttribute) == null) {
-                ArrayList<Seating> seatingList = Seating.collectRecords(busId, operatorId);
-
-                if(seatingList == null) {
-                    throw new IllegalArgumentException("Internal or Invalid Request");
-                }
-
-                AppUtil.formateSeatingRecord(seatingList);
-                context.setAttribute(cachedAttribute, seatingList);
+            ArrayList<Seating> seatingList = Seating.collectRecords(busId, operatorId);
+            if(seatingList == null) {
+                throw new IllegalArgumentException("Internal or Invalid Request");
             }
-            
-            @SuppressWarnings("unchecked")
-            ArrayList<Seating> seatingList = (ArrayList<Seating>) context.getAttribute(cachedAttribute);
+            AppUtil.formateSeatingRecord(seatingList);
+
             response.getWriter().println(new Gson().toJson(seatingList));
         }
         catch(IllegalArgumentException e) {

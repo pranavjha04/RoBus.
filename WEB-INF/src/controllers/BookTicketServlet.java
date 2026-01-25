@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
-import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
 
 import java.io.IOException;
@@ -27,7 +26,7 @@ import exceptions.MissingParameterException;
 
 @WebServlet("/book_ticket.do")
 public class BookTicketServlet extends HttpServlet {
-    private final static String[] acceptedParameterList = {"seat", "total_fare", "schedule_id","source", "destination"};
+    private final static String[] acceptedParameterList = {"seat", "total_fare", "schedule_id","source", "destination", "journey_date"};
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
@@ -66,7 +65,7 @@ public class BookTicketServlet extends HttpServlet {
             // 2) validate selectedSeats
             // check if it's not already booked
             for(int seatNumber : selectedSeats.keySet()) {
-                boolean isSeatAlreadyBooked = BookedSeat.checkRecordExistBySeatNumber(seatNumber);
+                boolean isSeatAlreadyBooked = BookedSeat.checkRecordExistBySeatNumber(seatNumber, scheduleId);
                 if(isSeatAlreadyBooked) throw new IllegalArgumentException("Seat is already booked");
             }
 
@@ -93,10 +92,7 @@ public class BookTicketServlet extends HttpServlet {
             }
 
             for(int seatNumber : selectedSeats.keySet()) {
-                if(seatNumber < 0  || seatNumber > totalAvailableSeats) {
-                    throw new IllegalArgumentException("Invalid Seat");
-                }
-
+                if(seatNumber <= 0 || seatNumber > totalAvailableSeats)
             }
 
             // check if it's fare charge
@@ -138,7 +134,7 @@ public class BookTicketServlet extends HttpServlet {
 
             if(isUpdated) {
                 schedule.setSeaterSeatsBooked(schedule.getSeaterSeatsBooked() + seaterCount);
-                schedule.setSeaterSeatsBooked(schedule.getSleeperSeatsBooked() + sleeperCount);
+                schedule.setSleeperSeatsBooked(schedule.getSleeperSeatsBooked() + sleeperCount);
             }
             else {
                 throw new IllegalArgumentException("Invalid Seats Booked updation");

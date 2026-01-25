@@ -20,19 +20,15 @@ import com.google.gson.Gson;
 
 @WebServlet("/get_inactive_drivers.do")
 public class GetInactiveDriverServlet extends HttpServlet {
-    private static String[] acceptedIncludeRequestURL = {"add_bus_schedule.do", "check_inactive_driver.do", "update_schedule_driver.do", "update_schedule_status.do"};
-
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
-        String requestURLPath = request.getServletPath().substring(1);
-        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestURL);
         try {
             if(session.getAttribute("operator") == null) {
                 throw new IllegalArgumentException("Invalid Request");
             }
             Operator operator = (Operator) session.getAttribute("operator");
             if(operator.getStatus().getStatusId().equals(2)) {
-                if(!isIncludeRequest) response.getWriter().println("[]");
+                response.getWriter().println("[]");
                 return;
             }
 
@@ -41,29 +37,11 @@ public class GetInactiveDriverServlet extends HttpServlet {
                 throw new IllegalArgumentException("Invalid Request");
             }
 
-            if(!isIncludeRequest) response.getWriter().println(new Gson().toJson(driverList)); 
+            response.getWriter().println(new Gson().toJson(driverList)); 
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
-            if(!isIncludeRequest) {
-                response.getWriter().println("invalid");
-                return;
-            }
-        }
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        HttpSession session = request.getSession();
-        String requestURLPath = request.getServletPath().substring(1);
-
-        boolean isIncludeRequest = AppUtil.isIncludeRequest(requestURLPath, acceptedIncludeRequestURL);
-        if(session.getAttribute("operator") == null || !isIncludeRequest) {
-            response.sendRedirect("/robus");
-            return;
-        }
-
-        if(isIncludeRequest) {
-            doGet(request, response);
+            response.getWriter().println("invalid");
         }
     }
 }

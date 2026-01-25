@@ -42,9 +42,7 @@ public class GetBusRouteWeekdaysServlet extends HttpServlet {
         }
         catch(IllegalArgumentException e) {
             e.printStackTrace();
-            if(!isIncludeRequest) {
-                response.getWriter().println("invalid");
-            }
+            response.getWriter().println("invalid");
             return;
         }
     }
