@@ -191,7 +191,7 @@ export class ViewHelper {
                         <div class="d-flex gap-3 small text-muted mt-1">
                           <div class="d-flex gap-1">
                             &#128338; <span class='duration'>${getFormatedDuration(
-                              duration
+                              duration,
                             )}</span>
                           </div>
                           <div class="d-flex gap-1">
@@ -227,12 +227,12 @@ export class ViewHelper {
                             <span class="small text-muted distance">${distanceFromSource} km</span>
                             <span class='small text-muted'>|</span>
                             <span class='small text-muted duration'>${Math.trunc(
-                              durationFromSource / 60
+                              durationFromSource / 60,
                             )
                               .toString()
                               .padStart(2, "0")}h ${(durationFromSource % 60)
-      .toString()
-      .padStart(2, "0")}m</span> 
+                              .toString()
+                              .padStart(2, "0")}m</span> 
                         </div>
                       </li>`;
   }
@@ -265,7 +265,7 @@ export class ViewHelper {
                             <td class="p-2">${midCityName}</td>
                             <td class="p-2">${distanceFromSource} km</td>
                             <td class="p-2">${getFormatedDuration(
-                              durationFromSource
+                              durationFromSource,
                             )}</td>
                             <td class="px-0 py-2 halting position-relative d-flex align-items-center justify-content-center">
                                 ${getFormatedDuration(haltingTime)}
@@ -411,8 +411,8 @@ export class ViewHelper {
                     statusName === "Active"
                       ? "text-success bg-success-subtle border-success"
                       : statusName === "Inactive"
-                      ? "text-danger bg-danger-subtle border-danger"
-                      : "text-warning bg-warning-subtle border-warning"
+                        ? "text-danger bg-danger-subtle border-danger"
+                        : "text-warning bg-warning-subtle border-warning"
                   }"
                 >
                   ${statusName.toUpperCase()}
@@ -776,7 +776,7 @@ export class ViewHelper {
                         <div class="d-flex gap-3 small text-muted mt-1">
                           <div class="d-flex gap-1">
                             &#128338; <span class='duration'>${getFormatedDuration(
-                              duration
+                              duration,
                             )}</span>
                           </div>
                           <div class="d-flex gap-1">
@@ -835,7 +835,7 @@ export class ViewHelper {
         .toString()
         .padStart(2, "0")} data-year=${currDate.getFullYear()}>
                   <td class="p-3">${getFormattedTime(
-                    departureTime
+                    departureTime,
                   )} → ${getFormattedTime(arrivalTime)}</td>
                   <td class="d-flex align-items-center text-center justify-content-center">
                     <div
@@ -921,8 +921,8 @@ export class ViewHelper {
                         role="status"
                       ></div>
                       <span style="color: ${textColor[status.name]}">${
-      status.name
-    }</span>
+                        status.name
+                      }</span>
                     </div>`;
   }
 
@@ -944,7 +944,7 @@ export class ViewHelper {
                     navigator.language,
                     {
                       day: "2-digit",
-                    }
+                    },
                   ).format(currDate)}</span>
                 </button>`;
   }
@@ -966,7 +966,7 @@ export class ViewHelper {
                           ${
                             bookedSeatList.some(
                               (bookedSeat) =>
-                                bookedSeat.seatNumber === counter.count
+                                bookedSeat.seatNumber === counter.count,
                             )
                               ? "disabled"
                               : ""
@@ -974,15 +974,15 @@ export class ViewHelper {
                           class="${
                             sleeper ? "sleeper_seat" : "seater_seat"
                           } seat btn ${
-                           bookedSeatList.some(
-                             (bookedSeat) =>
-                               bookedSeat.seatNumber === counter.count
-                           )
-                             ? "booked"
-                             : ""
-                         }"
+                            bookedSeatList.some(
+                              (bookedSeat) =>
+                                bookedSeat.seatNumber === counter.count,
+                            )
+                              ? "booked"
+                              : ""
+                          }"
                          
-                         >${counter.count++}</button>`
+                         >${counter.count++}</button>`,
                      )
                      .join("")}
                 </div>
@@ -996,7 +996,7 @@ export class ViewHelper {
                              ${
                                bookedSeatList.some(
                                  (bookedSeat) =>
-                                   bookedSeat.seatNumber === counter.count
+                                   bookedSeat.seatNumber === counter.count,
                                )
                                  ? "disabled"
                                  : ""
@@ -1004,13 +1004,13 @@ export class ViewHelper {
                             class="${
                               sleeper ? "sleeper_seat" : "seater_seat"
                             } seat btn ${
-                             bookedSeatList.some(
-                               (bookedSeat) =>
-                                 bookedSeat.seatNumber === counter.count
-                             )
-                               ? "booked"
-                               : ""
-                           }">${counter.count++}</button>`
+                              bookedSeatList.some(
+                                (bookedSeat) =>
+                                  bookedSeat.seatNumber === counter.count,
+                              )
+                                ? "booked"
+                                : ""
+                            }">${counter.count++}</button>`,
                        )
                        .join("")}
                 </div>
@@ -1033,13 +1033,13 @@ export class ViewHelper {
                                           bookedSeatList.some(
                                             (bookedSeat) =>
                                               bookedSeat.seatNumber ===
-                                              counter.count
+                                              counter.count,
                                           )
                                             ? "disabled"
                                             : ""
                                         }>
                                         ${counter.count++}
-                                      </button>`
+                                      </button>`,
                                     )
                                     .join("")}
                               </div>
@@ -1064,14 +1064,14 @@ export class ViewHelper {
       source,
       true,
       routeDistance,
-      formateTime(startDate)
+      formateTime(startDate),
     );
 
     let sumHaltingTime = 0;
     result += [...operatorRouteMidCities]
       .sort(
         (a, b) =>
-          a.routeMidCity.distanceFromSource - b.routeMidCity.distanceFromSource
+          a.routeMidCity.distanceFromSource - b.routeMidCity.distanceFromSource,
       )
       .map((midCity) => {
         const { routeMidCity, haltingTime } = midCity;
@@ -1080,13 +1080,13 @@ export class ViewHelper {
         const currDate = new Date(startDate.getTime());
         currDate.setTime(
           startDate.getTime() +
-            (routeMidCity.durationFromSource + sumHaltingTime) * 60000
+            (routeMidCity.durationFromSource + sumHaltingTime) * 60000,
         );
 
         return ViewHelper.getMidCityRouteTimeLine(
           routeMidCity,
           haltingTime,
-          formateTime(currDate)
+          formateTime(currDate),
         );
       })
       .join("");
@@ -1102,7 +1102,7 @@ export class ViewHelper {
       destination,
       false,
       routeDistance,
-      formateTime(endDate)
+      formateTime(endDate),
     );
 
     return result;
@@ -1136,7 +1136,7 @@ export class ViewHelper {
       (acc, curr) => {
         return acc + curr.haltingTime;
       },
-      operatorRoute.route.duration
+      operatorRoute.route.duration,
     );
     const totalSeats = seatingList.reduce((acc, curr) => {
       return acc + curr.seats;
@@ -1163,7 +1163,7 @@ export class ViewHelper {
                 <div class="d-flex align-items-center gap-3">
                   <div class="text-center">
                     <p class="mb-1 fw-bold fs-5">${getFormattedTime(
-                      departureTime
+                      departureTime,
                     )}</p>
                     <div class="d-flex flex-column gap-0">
                     <span class="text-secondary fs-5 mb-0">${
@@ -1178,13 +1178,13 @@ export class ViewHelper {
                   <div class="text-center">
                     <div class="duration-line my-2"></div>
                     <small class="text-muted fw-medium">${getFormatedDuration(
-                      totalDuration
+                      totalDuration,
                     )}</small>
                   </div>
 
                   <div class="text-center">
                     <p class="mb-1 fw-bold fs-5">${getFormattedTime(
-                      arrivalTime
+                      arrivalTime,
                     )}</p>
                     <div class="d-flex flex-column gap-0">
                     <span class="text-secondary fs-5 mb-0">${
@@ -1292,7 +1292,7 @@ export class ViewHelper {
                                     ${ViewHelper.getBusSeatingDiagram(
                                       seating,
                                       counter,
-                                      bookedSeatList
+                                      bookedSeatList,
                                     )}
                                   </div>
                               </div>`;
@@ -1456,7 +1456,7 @@ export class ViewHelper {
                       <div class="d-flex align-items-center gap-2">
                         <i class="bi bi-calendar-check text-secondary"></i>
                         <span class="fw-semibold">${formattedDate(
-                          bookingDate
+                          bookingDate,
                         )}</span>
                       </div>
                     </div>
@@ -1479,11 +1479,11 @@ export class ViewHelper {
                       <div class="d-flex align-items-center gap-2">
                         <i class="bi bi-clock-fill text-secondary"></i>
                         <span class="fw-semibold">${getFormattedTime(
-                          departureTime
+                          departureTime,
                         )}</span>
                         &dash;
                         <span class="fw-semibold">${getFormattedTime(
-                          arrivalTime
+                          arrivalTime,
                         )}</span>
                       </div>
                     </div>
@@ -1493,7 +1493,7 @@ export class ViewHelper {
                         ${bookedSeatList
                           .map(
                             ({ seatNumber }) =>
-                              `<span class="seat-badge">${seatNumber}</span>`
+                              `<span class="seat-badge">${seatNumber}</span>`,
                           )
                           .join("")}
                       </div>
@@ -1511,7 +1511,7 @@ export class ViewHelper {
                 <div>
                   <span class="label-muted">Total Paid</span>
                   <div class="fw-bold fs-4 text-dark">₹ ${new Intl.NumberFormat(
-                    "en-IN"
+                    "en-IN",
                   ).format(totalFare)}</div>
                 </div>
 
@@ -1553,7 +1553,7 @@ export class ViewHelper {
       (acc, curr) => {
         return acc + curr.haltingTime;
       },
-      operatorRoute.route.duration
+      operatorRoute.route.duration,
     );
     return `<div class="aesthetic-card  card-${status.name.toLowerCase()}" data-schedule-id="${scheduleId}" data-status="${
       status.name
@@ -1612,7 +1612,7 @@ export class ViewHelper {
               <div class="duration-bridge">
                 <div class="dash-line"></div>
                 <span class="duration-text">${getFormatedDuration(
-                  totalDuration
+                  totalDuration,
                 )}</span>
               </div>
               <div class="point">

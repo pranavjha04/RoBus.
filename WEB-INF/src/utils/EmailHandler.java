@@ -7,6 +7,7 @@ import models.Schedule;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.Date;
 
 import javax.mail.Authenticator;
 import javax.mail.MessagingException;
@@ -121,6 +122,7 @@ final public class EmailHandler {
         String departureTime = schedule.getDepartureTime().toString().substring(0, 5);
         String arrivalTime = schedule.getArrivalTime().toString().substring(0, 5);
         String journeyDate = schedule.getJourneyDate().toLocalDate().format(DateTimeFormatter.ofPattern("EEEE, dd MMM yyyy"));
+        String bookingDate = new Date(currentTimeMillis()).toLocalDate().format(DateTimeFormatter.ofPattern("EEEE, dd MMM yyyy"));
         String operatorName = schedule.getBus().getOperator().getFullName();
         String busNumber = schedule.getBus().getBusNumber();
         String driverName = schedule.getDriver().getUser().getFullName();
@@ -128,9 +130,9 @@ final public class EmailHandler {
         StringBuilder selectedSeatsString = new StringBuilder();
         
         for(int seat : selectedSeats.keySet()) {
-            selectedSeatsString.append(seat).append(", ");
+            selectedSeatsString.append(seat).append(",");
         }
-        selectedSeatsString.setLength(selectedSeatsString.length() - 2);
+        selectedSeatsString.setLength(selectedSeatsString.length() - 1);
         
         return "<!DOCTYPE html>"
             + "<html>"
@@ -183,6 +185,9 @@ final public class EmailHandler {
 
             + "<div style='margin-top:8px; font-size:12px; color:#666;'>"
             + "Journey Date: " + journeyDate 
+            + "</div>"
+            + "<div style='margin-top:2px; font-size:12px; color:#666;'>"
+            + "Booking Date: " + bookingDate 
             + "</div>"
 
             + "</td>"

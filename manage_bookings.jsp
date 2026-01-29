@@ -42,6 +42,16 @@
       }
     </style>
   </head>
+
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="busTicketModal"
+    tabindex="-1"
+    aria-labelledby="busTicketLabel"
+    aria-hidden="true"
+  ></div>
+
   <body class="bg-light min-vh-100 overflow-y-scroll">
     <div class="modal fade" tabindex="-1" id="cancelBookingModal">
       <div class="modal-dialog modal-dialog-centered">

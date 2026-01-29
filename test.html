@@ -4,6 +4,83 @@
     <meta charset="UTF-8" />
     <title>Bus Ticket</title>
   </head>
+  <!-- Button to open modal -->
+
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="busTicketModal"
+    tabindex="-1"
+    aria-labelledby="busTicketLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <!-- Header -->
+        <div class="modal-header border-bottom">
+          <div>
+            <h5 class="modal-title fw-bold" id="busTicketLabel">Bus Ticket</h5>
+            <small class="text-muted">Booking ID: BTX98456123</small>
+          </div>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+
+        <!-- Body -->
+        <div class="modal-body">
+          <!-- Route -->
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              <strong>Jabalpur, MP</strong><br />
+              <small class="text-muted">22:30</small>
+            </div>
+
+            <div class="text-muted">→</div>
+
+            <div class="text-end">
+              <strong>Indore, MP</strong><br />
+              <small class="text-muted">06:15</small>
+            </div>
+          </div>
+          
+          <div class="text-muted small ">Journey Date: 12 Feb 2026</div>
+          <div class="text-muted small m">Journey Date: 12 Feb 2026</div>
+
+          <!-- Details -->
+          <table class="table table-sm mb-0">
+            <tbody>
+              <tr>
+                <td>Operator</td>
+                <td class="text-end">Shivneri Travels</td>
+              </tr>
+              <tr>
+                <td>Bus No</td>
+                <td class="text-end">MP20 AB 4589</td>
+              </tr>
+              <tr>
+                <td>Driver</td>
+                <td class="text-end">Rakesh Verma</td>
+              </tr>
+              <tr>
+                <td>Seats</td>
+                <td class="text-end">A5, A6</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer d-flex justify-content-between">
+          <strong>Total Paid</strong>
+          <strong>₹1,270</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <body
     style="
       margin: 0;
@@ -61,7 +138,8 @@
                     <td>Operator</td>
                     <td align="right">Shivneri Travels</td>
                   </tr>
-                  <tr>&
+                  <tr>
+                    &
                     <td>Bus No</td>
                     <td align="right">MP20 AB 4589</td>
                   </tr>
@@ -85,7 +163,7 @@
                   </tr>
                 </table>
               </td>
-            </tr>            
+            </tr>
           </table>
         </td>
       </tr>

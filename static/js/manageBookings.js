@@ -3,7 +3,7 @@ import { PageError } from "./pageError.js";
 import { PageLoading } from "./pageLoading.js";
 import { cancelBookingRequest, getAllBookingRequest } from "./service.js";
 import { toast } from "./toast.js";
-import { createURLParams } from "./util.js";
+import { createURLParams, getFormattedTime } from "./util.js";
 import { ViewHelper } from "./viewHelper.js";
 
 const infoContainer = document.querySelector("#info_container");
@@ -12,6 +12,7 @@ const contentWrapper = document.querySelector("#pageWrapper");
 const bookingListContainer = document.querySelector("#booking_list_container");
 const cancelBookingBtn = document.querySelector("#cancel_btn");
 const cancelBookingModal = document.querySelector("#cancelBookingModal");
+const showTicketModel = document.querySelector("#busTicketModal");
 
 const modal = {
   bookingList: [],
@@ -39,6 +40,12 @@ const resetFilter = () => {
   filterContainer.firstElementChild.classList.remove("btn-outline-primary");
 };
 
+const formattedDate = (date) => {
+  return new Intl.DateTimeFormat(navigator.language, {
+    dateStyle: "medium",
+  }).format(new Date(date));
+};
+
 const startLoading = () => {
   disableFilter();
   bookingListContainer.innerHTML = `<div class="mt-5 justify-content-center align-self-center">
@@ -56,6 +63,14 @@ const bookingListFetching = async (firstTime = false) => {
   } catch (err) {
     if (firstTime) throw new Error(err.message);
   }
+};
+
+const getCityStateName = (route, target) => {
+  if (!route || !target) return;
+  const curr = route[target];
+  if (!curr) return;
+
+  return `${curr.name}, ${curr.state.name}`;
 };
 
 const displayInfoContainer = () => {
@@ -83,7 +98,7 @@ const displayInfoContainer = () => {
       upcoming: 0,
       completed: 0,
       cancelled: 0,
-    }
+    },
   );
 
   for (const prop in info) {
@@ -163,6 +178,91 @@ const displayBookingList = (list) => {
   }
 };
 
+const showTicket = (booking) => {
+  const { bookingId, schedule, totalFare, bookingDate, bookedSeatList } =
+    booking;
+  const {
+    arrivalTime,
+    departureTime,
+    bus,
+    journeyDate,
+    busRouteWeekday,
+    driver,
+  } = schedule;
+  const { busNumber, operator } = bus;
+
+  showTicketModel.innerHTML = `<div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0">
+        <!-- Header -->
+        <div class="modal-header border-0">
+          <div>
+            <h5 class="modal-title fw-bold" id="busTicketLabel">Bus Ticket</h5>
+            <small class="text-muted">Booking ID: ${bookingId}</small>
+          </div>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+
+        <!-- Body -->
+        <div class="modal-body pt-0">
+          <!-- Route -->
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              <strong>${getCityStateName(busRouteWeekday.operatorRoute.route, "source")}</strong><br />
+              <small class="text-muted">${getFormattedTime(departureTime)}</small>
+            </div>
+
+            <div class="text-muted">→</div>
+
+            <div class="text-end">
+              <strong>${getCityStateName(busRouteWeekday.operatorRoute.route, "destination")}</strong><br />
+              <small class="text-muted">${getFormattedTime(arrivalTime)}</small>
+            </div>
+          </div>
+          <div class="text-muted small mb-1">Journey Date: ${formattedDate(
+            journeyDate,
+          )}</div>
+          <div class="text-muted small mb-3">Booking Date: ${formattedDate(
+            bookingDate,
+          )}</div>
+
+          <!-- Details -->
+          <table class="table table-sm table-borderless mb-0">
+            <tbody>
+              <tr>
+                <td>Operator</td>
+                <td class="text-end">${operator.fullName}</td>
+              </tr>
+              <tr>
+                <td>Bus No</td>
+                <td class="text-end">${busNumber}</td>
+              </tr>
+              <tr>
+                <td>Driver</td>
+                <td class="text-end">${driver.user.fullName}</td>
+              </tr>
+              <tr>
+                <td>Seats</td>
+                <td class="text-end">${bookedSeatList.map(({ seatNumber }) => seatNumber).join(",")}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer border-0 d-flex justify-content-between">
+          <strong>Total Paid</strong>
+          <strong>₹${new Intl.NumberFormat("en-IN").format(totalFare)}</strong>
+        </div>
+      </div>
+    </div>`;
+
+  ModalHandler.show(showTicketModel);
+};
+
 const getFilteresList = (callback) => {
   const filterResultList = [...modal.bookingList].filter(callback);
   displayBookingList(filterResultList);
@@ -224,6 +324,11 @@ bookingListContainer.addEventListener("click", (e) => {
       break;
     }
     case "ticket": {
+      showTicket(
+        modal.bookingList.find(
+          ({ bookingId }) => bookingId === +targetBookingId,
+        ),
+      );
       break;
     }
     default: {
@@ -260,6 +365,8 @@ cancelBookingBtn.addEventListener("click", async () => {
 cancelBookingModal.addEventListener("hide.bs.modal", () => {
   modal.activeBookingId = null;
 });
+
+showTicketModel.addEventListener("hide.bs.modal", () => {});
 
 const init = async () => {
   try {
