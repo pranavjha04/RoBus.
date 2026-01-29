@@ -22,6 +22,8 @@ import models.User;
 
 import utils.AppUtil;
 import utils.Pair;
+import utils.EmailHandler;
+
 import exceptions.MissingParameterException;
 
 @WebServlet("/book_ticket.do")
@@ -92,7 +94,9 @@ public class BookTicketServlet extends HttpServlet {
             }
 
             for(int seatNumber : selectedSeats.keySet()) {
-                if(seatNumber <= 0 || seatNumber > totalAvailableSeats)
+                if(seatNumber <= 0 || seatNumber > totalAvailableSeats) {
+                    throw new IllegalArgumentException("Invalid Seat Selection");
+                }
             }
 
             // check if it's fare charge
@@ -139,7 +143,9 @@ public class BookTicketServlet extends HttpServlet {
             else {
                 throw new IllegalArgumentException("Invalid Seats Booked updation");
             }
-            
+
+            // send ticket in mail
+            EmailHandler.sendTicketMail(activeUser.getEmail(), schedule, selectedSeats, newBookingId, totalFare);
             response.getWriter().println("ok");
         }
         catch(IllegalArgumentException e) {

@@ -19,11 +19,6 @@ class Toast {
       document.body.appendChild(el);
       this.#parentElement = el;
     }
-
-    this.#parentElement.addEventListener(
-      "click",
-      this.#removeToastEvent.bind(this)
-    );
   }
 
   #createToast(message, type) {
@@ -33,13 +28,7 @@ class Toast {
     toast.innerHTML = `
       <div class="rht-bar"></div>
       <div class="rht-content">${message}</div>
-      <button class="rht-close" aria-label="Close">&times;</button>
     `;
-
-    toast.querySelector(".rht-close").onclick = (e) => {
-      e.stopPropagation();
-      this.#removeToast(toast);
-    };
 
     return toast;
   }
@@ -49,13 +38,6 @@ class Toast {
 
     el.classList.add("rht-exit");
     setTimeout(() => el.remove(), this.exitDuration);
-  }
-
-  #removeToastEvent(e) {
-    const toast = e.target.closest(".rht-toast");
-    if (!toast) return;
-
-    this.#removeToast(toast);
   }
 
   #show(message, type, delay) {

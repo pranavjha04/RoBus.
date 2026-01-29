@@ -3,7 +3,7 @@
 <c:if test="${empty sessionScope.user}">
   <c:redirect url="login.do?back_url='confirm_booking.do'" />
 </c:if>
-<c:if test="${sessionScope.user.status.statusId ne 1}">
+<c:if test="${sessionScope.user.status.statusId eq 2}">
   <c:redirect url="/" />
 </c:if>
 
