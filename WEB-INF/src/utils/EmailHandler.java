@@ -7,7 +7,7 @@ import models.Schedule;
 
 import java.io.IOException;
 import java.util.Properties;
-import java.util.Date;
+import java.sql.Date;
 
 import javax.mail.Authenticator;
 import javax.mail.MessagingException;
@@ -22,6 +22,7 @@ final public class EmailHandler {
     private static final Properties props = new Properties();  
     private static String FROM;
     private static String KEY;
+    private static String HELP_MAIL;
     private static Authenticator auth;
     private static Session session;
    
@@ -47,6 +48,29 @@ final public class EmailHandler {
             message.setRecipients(Message.RecipientType.TO, to);
             message.setSubject("Verify Your Account Email Address");
             message.setContent(getVerificationEmailMessage(name, verificationLink), "text/html; charset=UTF-8");  
+            
+            new Thread(() -> {
+                try {
+                    Transport.send(message);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        
+        } catch(MessagingException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean sendHelpQueryMail(String subject, String mailMessage) {
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(FROM);
+            message.setRecipients(Message.RecipientType.TO, HELP_MAIL);
+            message.setSubject(subject);
+            message.setContent(mailMessage, "text/html; charset=UTF-8");  
             
             new Thread(() -> {
                 try {
@@ -122,7 +146,7 @@ final public class EmailHandler {
         String departureTime = schedule.getDepartureTime().toString().substring(0, 5);
         String arrivalTime = schedule.getArrivalTime().toString().substring(0, 5);
         String journeyDate = schedule.getJourneyDate().toLocalDate().format(DateTimeFormatter.ofPattern("EEEE, dd MMM yyyy"));
-        String bookingDate = new Date(currentTimeMillis()).toLocalDate().format(DateTimeFormatter.ofPattern("EEEE, dd MMM yyyy"));
+        String bookingDate = new Date(System.currentTimeMillis()).toLocalDate().format(DateTimeFormatter.ofPattern("EEEE, dd MMM yyyy"));
         String operatorName = schedule.getBus().getOperator().getFullName();
         String busNumber = schedule.getBus().getBusNumber();
         String driverName = schedule.getDriver().getUser().getFullName();
@@ -233,6 +257,10 @@ final public class EmailHandler {
     }
     public static void setKey(String key) {
         KEY = key;
+    }
+
+    public static void setHelpMail(String helpMail) {
+        HELP_MAIL = helpMail;
     }
 
     public static void setAuth() {

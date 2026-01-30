@@ -91,6 +91,10 @@
         <param-name>admin_mail</param-name>
         <param-value>pranavop2580@gmail.com</param-value>
     </context-param>
+    <context-param>
+        <param-name>admin_help_mail</param-name>
+        <param-value>anshjha2580@gmail.com</param-value>
+    </context-param>
     <!-- ######## Recaptcha Config End ######## -->
     <context-param>
         <param-name>mail_code</param-name>
