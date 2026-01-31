@@ -145,7 +145,138 @@
     </style>
   </head>
   <c:choose>
-    <c:when test="${not empty sessionScope.operator}"> </c:when>
+    <c:when test="${not empty sessionScope.operator}">
+      <div class="dashContainer">
+        <c:import url="operator_navbar.jsp" />
+
+        <!-- Main content -->
+        <main class="content-wrapper bg-light">
+          <c:import url="operator_sidebar.jsp" />
+
+          <!-- Dashboard Content -->
+          <div class="wrapper">
+            <!-- OPERATOR SERVICES HEADER -->
+            <section class="page-header bg-primary">
+              <div class="container">
+                <h1>Operator Services</h1>
+                <p>
+                  Everything a bus operator needs to manage operations
+                  efficiently - from fleet control to route planning and driver
+                  scheduling.
+                </p>
+              </div>
+            </section>
+
+            <div class="container" style="max-width: 1140px; margin-top: 70px">
+              <!-- OPERATOR SERVICE 1 -->
+              <div class="service-section">
+                <div class="row align-items-center g-4">
+                  <div class="col-lg-6">
+                    <div class="service-image">
+                      <img
+                        src="${pageContext.request.contextPath}/static/media/images/ChatGPT Image Jan 31, 2026, 11_01_29 PM.jpg"
+                        alt="Manage Buses"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <span class="service-number">OPERATOR 01</span>
+                    <div class="service-content">
+                      <h2>Manage buses with complete visibility</h2>
+                      <p>
+                        Keep track of every bus in your buses from a single
+                        dashboard. Add new buses, update details, assign routes,
+                        and monitor status in real time.
+                      </p>
+                      <ul class="features-list">
+                        <li>Add, update, or remove buses easily</li>
+                        <li>Assign buses to routes instantly</li>
+                        <li>Track availability and operational status</li>
+                      </ul>
+                      <a
+                        href="/robus/operator_buses.do"
+                        class="btn btn-primary rounded-pill fs-4 fw-semibold fs-6 px-4 py-2"
+                        >Manage Buses</a
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- OPERATOR SERVICE 2 -->
+              <div class="service-section">
+                <div class="row align-items-center g-4">
+                  <div class="col-lg-6 order-lg-2">
+                    <div class="service-image">
+                      <img
+                        src="${pageContext.request.contextPath}/static/media/images/Gemini_Generated_Image_we5qwkwe5qwkwe5q.jpg"
+                        alt="Manage Routes"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-lg-6 order-lg-1">
+                    <span class="service-number">OPERATOR 02</span>
+                    <div class="service-content">
+                      <h2>Plan and control routes efficiently</h2>
+                      <p>
+                        Create and manage routes with full control over stops,
+                        timings, pricing, and bus assignments - all designed to
+                        reduce errors and maximize occupancy.
+                      </p>
+                      <ul class="features-list">
+                        <li>Create and edit routes quickly</li>
+                        <li>Define stops, timings, and fares</li>
+                        <li>Assign buses based on demand</li>
+                      </ul>
+                      <a
+                        href="/robus/operator_routes.do"
+                        class="btn btn-primary rounded-pill fs-4 fw-semibold fs-6 px-4 py-2"
+                        >Manage Routes</a
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- OPERATOR SERVICE 3 -->
+              <div class="service-section">
+                <div class="row align-items-center g-4">
+                  <div class="col-lg-6">
+                    <div class="service-image">
+                      <img
+                        src="${pageContext.request.contextPath}/static/media/images/ChatGPT Image Jan 31, 2026, 11_08_02 PM.jpg"
+                        alt="Driver Scheduling"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <span class="service-number">OPERATOR 03</span>
+                    <div class="service-content">
+                      <h2>Smart driver scheduling & assignment</h2>
+                      <p>
+                        Assign drivers to buses and routes with confidence.
+                        Avoid overlaps, manage shifts efficiently, and ensure
+                        smooth daily operations.
+                      </p>
+                      <ul class="features-list">
+                        <li>Create driver profiles and availability</li>
+                        <li>Assign shifts without conflicts</li>
+                        <li>Maintain clear operational schedules</li>
+                      </ul>
+                      <a
+                        href="/robus/operator_drivers.do"
+                        class="btn btn-primary rounded-pill fs-4 fw-semibold fs-6 px-4 py-2"
+                        >Manage Drivers</a
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </c:when>
     <c:otherwise>
       <body>
         <c:choose>
@@ -293,7 +424,7 @@
                     <c:when test="${not empty sessionScope.user}">
                       <a
                         role="button"
-                        href="/robus/manage_bookings.do"
+                        href="/robus/operator_signup.do"
                         class="btn btn-primary rounded-pill fs-4 fw-semibold fs-6 px-4 py-2"
                         >Join as Operator</a
                       >

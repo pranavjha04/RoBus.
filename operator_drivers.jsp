@@ -5,6 +5,115 @@ prefix="e" uri="bts" %>
 </c:if>
 <c:set var="operator" value="${sessionScope.operator}" />
 <!DOCTYPE html>
+<div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-semibold">Add New Driver</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Nav Tabs -->
+        <!-- Tab Content -->
+        <div class="tab-content">
+          <!-- Basic Info -->
+          <div class="tab-pane fade show active" id="basic">
+            <form
+              id="add_driver_form"
+              enctype="multipart/form-data"
+              class="d-flex flex-column gap-3"
+            >
+              <div>
+                <label for="email" class="form-label small fw-semibold"
+                  >Email</label
+                >
+                <input
+                  id="email"
+                  type="email"
+                  name="email"
+                  autocomplete="email"
+                  class="form-control"
+                  placeholder="pranavjha@gmail.com"
+                />
+              </div>
+
+              <div id="form_container_essential">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <label
+                      for="licence_no"
+                      class="form-label small fw-semibold"
+                      >Licence Number</label
+                    >
+                    <input
+                      type="date"
+                      name="start_date"
+                      id="start_date"
+                      class="form-control custome-date"
+                      min="${e:currentDate()}"
+                      value="${e:currentDate()}"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      for="licence_no"
+                      class="form-label small fw-semibold"
+                      >Licence Number</label
+                    >
+                    <input
+                      id="licence_no"
+                      type="text"
+                      name="licence_no"
+                      class="form-control"
+                      placeholder="e.g. MH12 20150012345"
+                    />
+                  </div>
+                </div>
+
+                <div class="mt-2">
+                  <label
+                    for="licence_pic"
+                    class="form-label small fw-semibold"
+                    >Licence Pic</label
+                  >
+                  <input
+                    class="form-control"
+                    type="file"
+                    id="licence_pic"
+                    name="licence_pic"
+                    accept="image/*"
+                  />
+                </div>
+
+                <div
+                  class="gap-2 prevcontainer mt-2"
+                  id="licence_pic_preview"
+                ></div>
+
+                <div id="profile_pic_container"></div>
+                <div class="ms-auto text-end align-self-end mt-2">
+                  <button
+                    type="submit"
+                    class="btn btn-primary px-4 fw-medium ms-1"
+                    form="add_driver_form"
+                  >
+                    Add Bus
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <html lang="en">
   <head>
     <c:import url="essential_page_import.jsp" />
@@ -12,115 +121,6 @@ prefix="e" uri="bts" %>
   </head>
   <body>
     <c:import url="essential_page_display.jsp" />
-    <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header border-0">
-            <h5 class="modal-title fw-semibold">Add New Driver</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-
-          <div class="modal-body">
-            <!-- Nav Tabs -->
-            <!-- Tab Content -->
-            <div class="tab-content">
-              <!-- Basic Info -->
-              <div class="tab-pane fade show active" id="basic">
-                <form
-                  id="add_driver_form"
-                  enctype="multipart/form-data"
-                  class="d-flex flex-column gap-3"
-                >
-                  <div>
-                    <label for="email" class="form-label small fw-semibold"
-                      >Email</label
-                    >
-                    <input
-                      id="email"
-                      type="email"
-                      name="email"
-                      autocomplete="email"
-                      class="form-control"
-                      placeholder="pranavjha@gmail.com"
-                    />
-                  </div>
-
-                  <div id="form_container_essential">
-                    <div class="d-flex justify-content-between">
-                      <div>
-                        <label
-                          for="licence_no"
-                          class="form-label small fw-semibold"
-                          >Licence Number</label
-                        >
-                        <input
-                          type="date"
-                          name="start_date"
-                          id="start_date"
-                          class="form-control custome-date"
-                          min="${e:currentDate()}"
-                          value="${e:currentDate()}"
-                        />
-                      </div>
-
-                      <div>
-                        <label
-                          for="licence_no"
-                          class="form-label small fw-semibold"
-                          >Licence Number</label
-                        >
-                        <input
-                          id="licence_no"
-                          type="text"
-                          name="licence_no"
-                          class="form-control"
-                          placeholder="e.g. MH12 20150012345"
-                        />
-                      </div>
-                    </div>
-
-                    <div class="mt-2">
-                      <label
-                        for="licence_pic"
-                        class="form-label small fw-semibold"
-                        >Licence Pic</label
-                      >
-                      <input
-                        class="form-control"
-                        type="file"
-                        id="licence_pic"
-                        name="licence_pic"
-                        accept="image/*"
-                      />
-                    </div>
-
-                    <div
-                      class="gap-2 prevcontainer mt-2"
-                      id="licence_pic_preview"
-                    ></div>
-
-                    <div id="profile_pic_container"></div>
-                    <div class="ms-auto text-end align-self-end mt-2">
-                      <button
-                        type="submit"
-                        class="btn btn-primary px-4 fw-medium ms-1"
-                        form="add_driver_form"
-                      >
-                        Add Bus
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="dashContainer">
       <c:import url="operator_navbar.jsp" />
 

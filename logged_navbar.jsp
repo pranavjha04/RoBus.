@@ -65,7 +65,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
         <!-- Search -->
         <li class="nav-item">
           <a
-            class="nav-link d-flex align-items-center gap-2"
+            class="nav-link d-flex align-items-center gap-2 ${page eq 'search_results.jsp' ? 'active' : ''}"
             href="/robus/search_results.do"
           >
             <i class="bi bi-search"></i>
@@ -76,7 +76,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
         <!-- Bookings -->
         <li class="nav-item">
           <a
-            class="nav-link d-flex align-items-center gap-2 ${page eq 'bookings.jsp' ? 'active' : ''}"
+            class="nav-link d-flex align-items-center gap-2 ${page eq 'manage_bookings.jsp' ? 'active' : ''}"
             href="/robus/manage_bookings.do"
           >
             <i class="bi bi-ticket-perforated"></i>
@@ -88,7 +88,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
         <c:if test="${sessionScope.user.userType.userTypeId eq 2}">
           <li class="nav-item">
             <a
-              class="nav-link d-flex align-items-center gap-2"
+              class="nav-link d-flex align-items-center gap-2 ${page eq 'operators_accounts.jsp' ? 'active' : ''}"
               href="/robus/operator_accounts.do"
             >
               <i class="bi bi-building"></i>
@@ -98,7 +98,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
         </c:if>
 
         <!-- Driver -->
-        <c:if test="${sessionScope.user.userType.userTypeId eq 3}">
+        <c:if test="${sessionScope.user.userType.userTypeId eq 3} ${page eq 'manage_schedules.jsp' ? 'active' : ''}">
           <li class="nav-item">
             <a
               class="nav-link d-flex align-items-center gap-2"
@@ -113,11 +113,18 @@ uri="http://java.sun.com/jsp/jstl/core" %>
         <!-- Help -->
         <li class="nav-item">
           <a
-            class="nav-link d-flex align-items-center gap-2"
+            class="nav-link d-flex align-items-center gap-2 ${page eq 'help.jsp' ? 'active' : ''}"
             href="/robus/help.do"
           >
             <i class="bi bi-question-circle"></i>
             <span>Help</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center gap-2 ${page eq 'services.jsp' ? 'active' : ''}" href="/robus/services.do">
+            <i class="bi bi-gear"></i>
+            <span>Services</span>
           </a>
         </li>
 

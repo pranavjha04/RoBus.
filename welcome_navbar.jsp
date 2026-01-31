@@ -49,7 +49,7 @@
 
         <!-- Search Buses -->
         <li class="nav-item">
-          <a class="nav-link d-flex align-items-center gap-2"
+          <a class="nav-link d-flex align-items-center gap-2 ${page eq 'search_results.jsp' ? 'active' : ''}"
              <c:choose>
                <c:when test="${page eq 'search_results.jsp'}">
                  data-target="search_bus_form"
@@ -66,16 +66,7 @@
 
         <!-- Services -->
         <li class="nav-item">
-          <a class="nav-link d-flex align-items-center gap-2"
-             <c:choose>
-               <c:when test="${page eq 'home.jsp'}">
-                 data-target="service"
-               </c:when>
-               <c:otherwise>
-                 href="/robus/services.do"
-               </c:otherwise>
-             </c:choose>
-          >
+          <a class="nav-link d-flex align-items-center gap-2 ${page eq 'services.jsp' ? 'active' : ''}" href="/robus/services.do">
             <i class="bi bi-gear"></i>
             <span>Services</span>
           </a>
@@ -83,15 +74,8 @@
 
         <!-- Operators -->
         <li class="nav-item">
-          <a class="nav-link d-flex align-items-center gap-2"
-             <c:choose>
-               <c:when test="${page eq 'home.jsp'}">
-                 data-target="operator"
-               </c:when>
-               <c:otherwise>
-                 href="/robus/operators.do"
-               </c:otherwise>
-             </c:choose>
+          <a class="nav-link d-flex align-items-center gap-2 ${page eq 'operators.jsp' ? 'active' : ''} "
+          href="/robus/operators.do"
           >
             <i class="bi bi-building"></i>
             <span>Operators</span>

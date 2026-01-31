@@ -47,6 +47,14 @@ uri="http://java.sun.com/jsp/jstl/core" %>
         <i class="bi bi-question-circle"></i>
         <span class="d-none d-sm-inline">Help</span>
       </a>
+      <a
+        class="nav-link d-flex align-items-center gap-2 ${page eq 'services.jsp' ? 'active' : ''}"
+        href="/robus/services.do"
+      >
+        <i class="bi bi-gear"></i>
+        <span class="d-none d-sm-inline">Services</span>
+      </a>
+      
 
       <div class="dropdown">
         <button

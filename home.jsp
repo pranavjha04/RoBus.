@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib
+prefix="e" uri="bts" %>
 
 <c:if test="${not empty sessionScope.operator}">
   <c:redirect url="operator_dashboard.do" />
@@ -173,7 +175,7 @@
       <div class="container">
         <div class="row align-items-center">
           <div class="col-md-6">
-            <p class="mb-0">© 2025 RoBus. All rights reserved.</p>
+            <p class="mb-0">&copy; ${e:currentDate().substring(0, 4)} RoBus. All rights reserved.</p>
           </div>
           <div class="col-md-6 text-md-end">
             <a href="#" class="me-3">Privacy</a>
