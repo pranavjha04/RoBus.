@@ -233,16 +233,16 @@ const showTicket = (booking) => {
           <table class="table table-sm table-borderless mb-0">
             <tbody>
               <tr>
-                <td>Operator</td>
-                <td class="text-end">${operator.fullName}</td>
+                <td>Operator & Contact</td>
+                <td class="text-end">${operator.fullName}, ${operator.contact}</td>
               </tr>
               <tr>
                 <td>Bus No</td>
                 <td class="text-end">${busNumber}</td>
               </tr>
               <tr>
-                <td>Driver</td>
-                <td class="text-end">${driver.user.fullName}</td>
+                <td>Driver & Contact</td>
+                <td class="text-end">${driver.user.fullName}, ${driver.user.contact}</td>
               </tr>
               <tr>
                 <td>Seats</td>

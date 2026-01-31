@@ -148,8 +148,10 @@ final public class EmailHandler {
         String journeyDate = schedule.getJourneyDate().toLocalDate().format(DateTimeFormatter.ofPattern("EEEE, dd MMM yyyy"));
         String bookingDate = new Date(System.currentTimeMillis()).toLocalDate().format(DateTimeFormatter.ofPattern("EEEE, dd MMM yyyy"));
         String operatorName = schedule.getBus().getOperator().getFullName();
+        String operatorContact = schedule.getBus().getOperator().getContact();
         String busNumber = schedule.getBus().getBusNumber();
         String driverName = schedule.getDriver().getUser().getFullName();
+        String driverContact = schedule.getDriver().getUser().getContact();
 
         StringBuilder selectedSeatsString = new StringBuilder();
         
@@ -222,9 +224,9 @@ final public class EmailHandler {
             + "<td style='padding:0 20px 16px;'>"
 
             + "<table width='100%' style='font-size:13px; color:#444;'>"
-            + "<tr><td>Operator</td><td align='right'>" + operatorName + "</td></tr>"
+            + "<tr><td>Operator & Contact</td><td align='right'>" + operatorName + ", " + operatorContact + "</td></tr>"
             + "<tr><td>Bus No</td><td align='right'>" + busNumber + "</td></tr>"
-            + "<tr><td>Driver</td><td align='right'>" + driverName + "</td></tr>"
+            + "<tr><td>Driver & Contact</td><td align='right'>" + driverName + ", " + driverContact + "</td></tr>"
             + "<tr><td>Seats</td><td align='right'>" + selectedSeatsString.toString() + "</td></tr>"
             + "</table>"
 

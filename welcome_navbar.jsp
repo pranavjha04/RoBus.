@@ -3,7 +3,7 @@
 
 <c:set var="page" value="${e:activeURL(pageContext.request)}" />
 
-<nav class="navbar navbar-expand-lg bg-white shadow-sm bts-navbar z-3">
+<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top ">
   <div class="container">
 
     <!-- Logo -->
@@ -97,24 +97,6 @@
             <span>Operators</span>
           </a>
         </li>
-
-        <!-- Help -->
-        <li class="nav-item">
-          <a class="nav-link d-flex align-items-center gap-2"
-             <c:choose>
-               <c:when test="${page eq 'home.jsp'}">
-                 data-target="help"
-               </c:when>
-               <c:otherwise>
-                 href="/robus/help.do"
-               </c:otherwise>
-             </c:choose>
-          >
-            <i class="bi bi-question-circle"></i>
-            <span>Help</span>
-          </a>
-        </li>
-
       </ul>
 
       <!-- Right: Login / Signup -->

@@ -25,7 +25,6 @@
   </head>
   
   <body class="overflow-hidden">
-  
     <div class="toast-container"></div>
     <c:if test="${not empty sessionScope.user}">
       <c:import url="logged_navbar.jsp" />
