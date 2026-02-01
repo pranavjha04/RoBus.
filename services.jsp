@@ -423,12 +423,35 @@
                   </ul>
                   <c:choose>
                     <c:when test="${not empty sessionScope.user}">
-                      <a
-                        role="button"
-                        href="/robus/operator_signup.do"
-                        class="btn btn-primary rounded-pill fs-4 fw-semibold fs-6 px-4 py-2"
-                        >Join as Operator</a
-                      >
+                      <c:choose>
+                        <c:when test="${sessionScope.user.status.statusId eq 2}"
+                          ><button
+                            role="button"
+                            disabled
+                            class="btn btn-primary rounded-pill fs-4 fw-semibold fs-6 px-4 py-2"
+                          >
+                            Join as Operator (Verify Yourself)
+                          </button>
+                        </c:when>
+                        <c:when
+                          test="${sessionScope.user.userType.userTypeId eq 3}"
+                          ><button
+                            role="button"
+                            disabled
+                            class="btn btn-primary rounded-pill fs-4 fw-semibold fs-6 px-4 py-2"
+                          >
+                            Join as Operator
+                          </button>
+                        </c:when>
+                        <c:otherwise>
+                          <a
+                            role="button"
+                            href="/robus/operator_signup.do"
+                            class="btn btn-primary rounded-pill fs-4 fw-semibold fs-6 px-4 py-2"
+                            >Join as Operator</a
+                          ></c:otherwise
+                        >
+                      </c:choose>
                     </c:when>
                     <c:otherwise>
                       <a

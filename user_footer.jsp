@@ -21,7 +21,7 @@ prefix="e" uri="bts" %>
           <li><a href="/robus/" class="text-white-50 text-decoration-none">Home</a></li>
           <li><a href="/robus/services.do" class="text-white-50 text-decoration-none">Services</a></li>
           <c:if test="${not empty sessionScope.user}">
-            <li><a href="/robus/operator_signup.do" class="text-white-50 text-decoration-none">Join as Operator</a></li>
+            <li><a href="/robus/operators.do" class="text-white-50 text-decoration-none">Join as Operator</a></li>
             <li><a href="/robus/help.do" class="text-white-50 text-decoration-none">Contact</a></li>
           </c:if>
           <c:if test="${empty sessionScope.user}">
