@@ -11,44 +11,76 @@ prefix="e" uri="bts" %>
 <html lang="en">
   <head>
     <c:import url="essential_page_import.jsp" />
-    <title>Manage Bus Schedule</title>
+    <title>Manage Bus Schedule | RoBus</title>
+    <style>
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .dashContainer {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .wrapper {
+        flex: 1;
+        overflow: auto;
+      }
+
+      #pageWrapper {
+        min-height: auto;
+        flex: 1;
+      }
+
+      /* Link styling */
+      .link {
+        gap: 5px;
+        transition: all 0.3s;
+      }
+      .link:hover {
+        margin-left: 10px;
+      }
+    </style>
   </head>
-  <body class="overflow-hidden">
-    <c:import url="essential_page_display.jsp" />
-    <div class="modal fade" tabindex="-1" id="centeredModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Confirm Schedule Cancel</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <p>Are you sure you want to cancel this schedule?</p>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              id="cancel_schedule_btn"
-            >
-              Save changes
-            </button>
-          </div>
+  <div class="modal fade" tabindex="-1" id="centeredModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirm Schedule Cancel</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to cancel this schedule?</p>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            id="cancel_schedule_btn"
+          >
+            Save changes
+          </button>
         </div>
       </div>
     </div>
+  </div>
+  <body>
+    <c:import url="essential_page_display.jsp" />
 
     <div class="dashContainer">
       <c:import url="operator_navbar.jsp" />
@@ -58,10 +90,7 @@ prefix="e" uri="bts" %>
         <c:import url="operator_sidebar.jsp" />
         <div class="wrapper">
           <!-- Dashboard Content -->
-          <div
-            class="p-4 d-flex flex-column gap-3 overflow-auto"
-            id="pageWrapper"
-          >
+          <div class="p-4 d-flex flex-column gap-3" id="pageWrapper">
             <span
               class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link"
               style="cursor: pointer"
@@ -70,7 +99,7 @@ prefix="e" uri="bts" %>
               <span>&larr;</span>
               <span>Back</span>
             </span>
-            <div class="px-2 mt-2 mb-4" id="pageWrapper">
+            <div class="px-2 mt-2 mb-4">
               <div class="d-flex gap-2 align-items-center mt-4 mb-2" id="nav">
                 <button
                   class="btn btn-primary rounded-pill"
@@ -507,13 +536,14 @@ prefix="e" uri="bts" %>
                   </div>
                 </div>
               </div>
-
-              <footer class="container mt-4 mb-4"></footer>
             </div>
           </div>
         </div>
       </main>
     </div>
+
+    <c:import url="operator_footer.jsp" />
+
     <script type="module" src="static/js/manageSchedule.js"></script>
   </body>
 </html>

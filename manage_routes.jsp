@@ -9,7 +9,7 @@
 <html lang="en">
   <head>
     <c:import url="essential_page_import.jsp" />
-    <title>Route Information</title>
+    <title>Manage Route | RoBus</title>
     <style>
       /* Existing styles */
       .dropdown-menu {
@@ -93,12 +93,6 @@
         color: #ff8c00;
       }
 
-      .route-card {
-        border-bottom: 1px solid #e0e0e0;
-        background: #fff;
-        transition: all 0.3s ease;
-      }
-
       .route-item {
         display: flex;
         flex-direction: column;
@@ -144,9 +138,41 @@
         align-items: center;
         gap: 5px;
       }
+
+      /* Fix layout for footer */
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .dashContainer {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .wrapper {
+        flex: 1;
+        overflow: auto;
+      }
+
+      #pageWrapper {
+        min-height: auto;
+        flex: 1;
+      }
+
+      /* Link styling */
+      .link {
+        gap: 5px;
+        transition: all 0.3s;
+      }
+      .link:hover {
+        margin-left: 10px;
+      }
     </style>
   </head>
-  <body class="overflow-hidden">
+  <body>
     <c:import url="essential_page_display.jsp" />
 
     <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
@@ -341,10 +367,7 @@
 
         <!-- Dashboard Content -->
         <div class="wrapper">
-          <div
-            class="p-4 d-flex flex-column gap-3 overflow-auto"
-            id="pageWrapper"
-          >
+          <div class="p-4 d-flex flex-column gap-3" id="pageWrapper">
             <span
               class="link-primary link-underline-opacity-0 fw-medium fs-4 d-flex link"
               style="cursor: pointer"
@@ -479,15 +502,13 @@
                 ></table>
               </div>
             </div>
-
-            <!-- Rest of your existing content -->
-            <footer class="container mt-4 mb-4">
-              <!-- Your existing fare factor and table content here -->
-            </footer>
           </div>
         </div>
       </main>
     </div>
+
+    <c:import url="operator_footer.jsp" />
+
     <script type="module" src="static/js/manageRoute.js"></script>
   </body>
 </html>

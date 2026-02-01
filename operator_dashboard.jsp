@@ -1,5 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib
-prefix="e" uri="bts" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<%@ taglib prefix="e" uri="bts" %>
 
 <c:if test="${empty sessionScope.operator}">
   <c:redirect url="/" />
@@ -102,12 +102,35 @@ prefix="e" uri="bts" %>
         font-size: 14px;
         opacity: 0.9;
       }
+      
+      /* Fix layout for footer */
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .dashContainer {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .wrapper {
+        flex: 1;
+        overflow: auto;
+      }
+      
+      #pageWrapper {
+        min-height: auto;
+        flex: 1;
+      }
     </style>
 
-    <title>${sessionScope.operator.fullName} Dashboard</title>
+    <title>${sessionScope.operator.fullName} Dashboard | RoBus</title>
   </head>
 
-  <body class="overflow-hidden">
+  <body>
     <c:import url="essential_page_display.jsp" />
 
     <div class="dashContainer">
@@ -118,7 +141,7 @@ prefix="e" uri="bts" %>
 
         <div class="wrapper">
           <div
-            class="p-4 d-flex flex-column gap-4 overflow-auto"
+            class="p-4 d-flex flex-column gap-4"
             id="pageWrapper"
           >
             <!-- Header -->
@@ -331,7 +354,9 @@ prefix="e" uri="bts" %>
         </div>
       </main>
     </div>
-
+    
+    <c:import url="operator_footer.jsp" />
+    
     <script type="module" src="static/js/operatorDashboard.js"></script>
   </body>
 </html>

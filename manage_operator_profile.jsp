@@ -196,6 +196,18 @@
         gap: 12px;
         z-index: 10;
       }
+      
+      /* Fix layout for footer */
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      #pageWrapper {
+        flex: 1;
+        padding-bottom: 2rem;
+      }
     </style>
   </head>
 
@@ -434,6 +446,8 @@
         </div>
       </div>
     </div>
+    
+    <c:import url="operator_footer.jsp" />
 
     <script type="module" src="static/js/manageOperatorProfile.js"></script>
   </body>

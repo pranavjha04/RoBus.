@@ -8,7 +8,7 @@ prefix="e" uri="bts" %>
 <html lang="en">
   <head>
     <c:import url="essential_page_import.jsp" />
-    <title>Route Information</title>
+    <title>Schedule Management | RoBus</title>
     <style>
       .norm {
         background: none;
@@ -25,10 +25,33 @@ prefix="e" uri="bts" %>
       .active:hover {
         background-color: #0451c3;
       }
+
+      /* Fix layout for footer */
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .dashContainer {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .wrapper {
+        flex: 1;
+        overflow: auto;
+      }
+
+      #pageWrapper {
+        min-height: auto;
+        flex: 1;
+      }
     </style>
   </head>
   <c:set var="operator" value="${sessionScope.operator}" />
-  <body class="overflow-hidden">
+  <body>
     <c:import url="essential_page_display.jsp" />
     <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -259,10 +282,7 @@ prefix="e" uri="bts" %>
         <!-- Dashboard Content -->
         <div class="wrapper">
           <div class="p-4 d-flex flex-column">
-            <div
-              class="p-4 d-flex flex-column gap-3 overflow-auto"
-              id="pageWrapper"
-            >
+            <div class="p-4 d-flex flex-column gap-3" id="pageWrapper">
               <h2>All Schedules</h2>
               <div class="d-flex flex-column gap-3 rounded p-2">
                 <div
@@ -320,6 +340,9 @@ prefix="e" uri="bts" %>
         </div>
       </main>
     </div>
+
+    <c:import url="operator_footer.jsp" />
+
     <script type="module" src="static/js/operatorSchedule.js"></script>
   </body>
 </html>

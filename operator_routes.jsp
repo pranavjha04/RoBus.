@@ -7,9 +7,33 @@
 <html lang="en">
   <head>
     <c:import url="essential_page_import.jsp" />
-    <title>Document</title>
+    <title>Route Management | Routes</title>
+    <style>
+      /* Fix layout for footer */
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .dashContainer {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .wrapper {
+        flex: 1;
+        overflow: auto;
+      }
+      
+      #pageWrapper {
+        min-height: auto;
+        flex: 1;
+      }
+    </style>
   </head>
-  <body class="overflow-hidden">
+  <body>
     <c:import url="essential_page_display.jsp" />
     <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -202,7 +226,7 @@
         <!-- Dashboard Content -->
         <div class="wrapper">
           <div
-            class="p-4 d-flex flex-column gap-3 overflow-auto"
+            class="p-4 d-flex flex-column gap-3"
             id="pageWrapper"
           >
             <h2>All Routes</h2>
@@ -413,6 +437,8 @@
       </main>
     </div>
 
+    <c:import url="operator_footer.jsp" />
+    
     <script type="module" src="static/js/operaterRoutes.js"></script>
   </body>
 </html>

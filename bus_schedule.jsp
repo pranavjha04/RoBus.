@@ -5,7 +5,7 @@ prefix="e" uri="bts" %>
 <html lang="en">
   <head>
     <c:import url="essential_page_import.jsp" />
-    <title>Route Information</title>
+    <title>Bus Schedule | RoBus</title>
     <style>
       .route-card {
         background-color: rgba(255, 255, 255, 0.9);
@@ -61,6 +61,38 @@ prefix="e" uri="bts" %>
       }
       .active:hover {
         background-color: #0451c3;
+      }
+
+      /* Fix layout for footer */
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .dashContainer {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .wrapper {
+        flex: 1;
+        overflow: auto;
+      }
+
+      #pageWrapper {
+        min-height: auto;
+        flex: 1;
+      }
+
+      /* Link styling */
+      .link {
+        gap: 5px;
+        transition: all 0.3s;
+      }
+      .link:hover {
+        margin-left: 10px;
       }
     </style>
   </head>
@@ -397,13 +429,14 @@ prefix="e" uri="bts" %>
                   ></table>
                 </div>
               </div>
-
-              <footer class="container mt-4 mb-4"></footer>
             </div>
           </div>
         </div>
       </main>
     </div>
+
+    <c:import url="operator_footer.jsp" />
+
     <script type="module" src="static/js/busSchedule.js"></script>
   </body>
 </html>

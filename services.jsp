@@ -275,6 +275,7 @@
             </div>
           </div>
         </main>
+        <c:import url="operator_footer.jsp" />
       </div>
     </c:when>
     <c:otherwise>

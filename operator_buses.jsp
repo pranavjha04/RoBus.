@@ -9,9 +9,38 @@
 <html lang="en">
   <head>
     <c:import url="essential_page_import.jsp" />
-    <title>Bus Management</title>
+    <title>Bus Management | RoBus</title>
+    <style>
+      /* Remove overflow-hidden and ensure proper layout */
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .dashContainer {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .wrapper {
+        flex: 1;
+        overflow: auto;
+      }
+      
+      #pageWrapper {
+        min-height: auto;
+        flex: 1;
+      }
+      
+      /* Ensure table is responsive */
+      .table-responsive {
+        overflow-x: auto;
+      }
+    </style>
   </head>
-  <body class="overflow-hidden">
+  <body>
     <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -156,7 +185,7 @@
           <!-- Page Header -->
 
           <div
-            class="p-4 d-flex flex-column gap-3 overflow-auto"
+            class="p-4 d-flex flex-column gap-3"
             id="pageWrapper"
           >
             <h2>All Buses</h2>
@@ -346,7 +375,7 @@
         </div>
       </main>
     </div>
-
+    <c:import url="operator_footer.jsp" />
     <script type="module" src="static/js/operatorBuses.js"></script>
   </body>
 </html>

@@ -6,9 +6,33 @@
 <html lang="en">
   <head>
     <c:import url="essential_page_import.jsp" />
-    <title>Document</title>
+    <title>Ticket Fare Management | RoBus</title>
+    <style>
+      /* Fix layout for footer */
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .dashContainer {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .wrapper {
+        flex: 1;
+        overflow: auto;
+      }
+
+      #pageWrapper {
+        min-height: auto;
+        flex: 1;
+      }
+    </style>
   </head>
-  <body class="overflow-hidden">
+  <body>
     <c:import url="essential_page_display.jsp" />
     <div class="modal fade" id="centeredModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
@@ -86,6 +110,7 @@
         </div>
       </div>
     </div>
+
     <div class="dashContainer">
       <c:import url="operator_navbar.jsp" />
 
@@ -93,125 +118,128 @@
       <main class="content-wrapper bg-light">
         <c:import url="operator_sidebar.jsp" />
 
-        <div
-          class="p-4 d-flex flex-column gap-3 overflow-auto"
-          id="pageWrapper"
-        >
-          <h2>All Fare Factors</h2>
-          <div class="businfo justify-content-between align-items-center gap-2">
+        <div class="wrapper">
+          <div class="p-4 d-flex flex-column gap-3" id="pageWrapper">
+            <h2>All Fare Factors</h2>
             <div
-              class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
+              class="businfo justify-content-between align-items-center gap-2"
             >
               <div
-                class="bg-primary-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
+                class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="28"
-                  height="28"
-                  fill="#0d6efd"
-                  class="bi bi-credit-card"
-                  viewBox="0 0 16 16"
+                <div
+                  class="bg-primary-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
                 >
-                  <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1H0V4z" />
-                  <path
-                    fill-rule="evenodd"
-                    d="M0 7v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7H0zm3 3.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p
-                  class="mb-1 text-secondary fw-medium"
-                  style="font-size: small"
-                >
-                  TOTAL FARE FACTOR
-                </p>
-                <h5 class="mb-0 fs-5 fw-medium" id="total_fare">0</h5>
-              </div>
-            </div>
-            <div
-              class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
-            >
-              <div
-                class="bg-success-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="28"
-                  height="28"
-                  fill="#198754"
-                  class="bi bi-currency-rupee"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4z"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p
-                  class="mb-1 text-secondary fw-medium"
-                  style="font-size: small"
-                >
-                  TOTAL FARE CHARGES
-                </p>
-                <h5 class="mb-0 fs-5 fw-medium" id="total_charges">0</h5>
-              </div>
-            </div>
-          </div>
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="ms-auto d-flex align-items-center gap-2">
-              <div
-                class="d-flex align-items-center bg-white rounded p-1"
-                id="filter_nav"
-              >
-                <button class="btn btn-primary">All</button>
-                <button class="btn">Fixed charge</button>
-                <button class="btn">Person / km</button>
-              </div>
-
-              <select
-                class="my-select focus-ring rounded border-0 filter"
-                id="sort_charges"
-              >
-                <option value="">Sort by Charges</option>
-                <option value="low">Low to High</option>
-                <option value="high">High to Low</option>
-              </select>
-              <c:choose>
-                <c:when test="${operator.status.statusId eq 1}">
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#centeredModal"
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="28"
+                    height="28"
+                    fill="#0d6efd"
+                    class="bi bi-credit-card"
+                    viewBox="0 0 16 16"
                   >
-                    + Add Fare Factor
-                  </button>
-                </c:when>
-                <c:otherwise>
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#centeredModal"
-                    disabled
+                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1H0V4z" />
+                    <path
+                      fill-rule="evenodd"
+                      d="M0 7v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7H0zm3 3.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-1 text-secondary fw-medium"
+                    style="font-size: small"
                   >
-                    + Add Fare Factor (Verify your email address)
-                  </button>
-                </c:otherwise>
-              </c:choose>
+                    TOTAL FARE FACTOR
+                  </p>
+                  <h5 class="mb-0 fs-5 fw-medium" id="total_fare">0</h5>
+                </div>
+              </div>
+              <div
+                class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border"
+              >
+                <div
+                  class="bg-success-subtle p-3 rounded-circle d-flex align-items-center justify-content-center"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="28"
+                    height="28"
+                    fill="#198754"
+                    class="bi bi-currency-rupee"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <p
+                    class="mb-1 text-secondary fw-medium"
+                    style="font-size: small"
+                  >
+                    TOTAL FARE CHARGES
+                  </p>
+                  <h5 class="mb-0 fs-5 fw-medium" id="total_charges">0</h5>
+                </div>
+              </div>
             </div>
-          </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="ms-auto d-flex align-items-center gap-2">
+                <div
+                  class="d-flex align-items-center bg-white rounded p-1"
+                  id="filter_nav"
+                >
+                  <button class="btn btn-primary">All</button>
+                  <button class="btn">Fixed charge</button>
+                  <button class="btn">Person / km</button>
+                </div>
 
-          <table
-            class="border rounded table-responsive border-bottom-0"
-            id="fare_factor_table"
-          ></table>
+                <select
+                  class="my-select focus-ring rounded border-0 filter"
+                  id="sort_charges"
+                >
+                  <option value="">Sort by Charges</option>
+                  <option value="low">Low to High</option>
+                  <option value="high">High to Low</option>
+                </select>
+                <c:choose>
+                  <c:when test="${operator.status.statusId eq 1}">
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#centeredModal"
+                    >
+                      + Add Fare Factor
+                    </button>
+                  </c:when>
+                  <c:otherwise>
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#centeredModal"
+                      disabled
+                    >
+                      + Add Fare Factor (Verify your email address)
+                    </button>
+                  </c:otherwise>
+                </c:choose>
+              </div>
+            </div>
+
+            <table
+              class="border rounded table-responsive border-bottom-0"
+              id="fare_factor_table"
+            ></table>
+          </div>
         </div>
       </main>
     </div>
+
+    <c:import url="operator_footer.jsp" />
 
     <script type="module" src="static/js/operatorFareFactors.js"></script>
   </body>
