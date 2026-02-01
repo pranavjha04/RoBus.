@@ -51,31 +51,31 @@
     aria-labelledby="busTicketLabel"
     aria-hidden="true"
   ></div>
-
-  <body class="bg-light min-vh-100 overflow-y-scroll">
-    <div class="modal fade" tabindex="-1" id="cancelBookingModal">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Confirm Cancel Booking</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <p>Are you sure you want to cancel booking?</p>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" data-bs-dismiss="modal">
-              Cancel
-            </button>
-            <button class="btn btn-danger" id="cancel_btn">Yes</button>
-          </div>
+  <div class="modal fade" tabindex="-1" id="cancelBookingModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirm Cancel Booking</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to cancel booking?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <button class="btn btn-danger" id="cancel_btn">Yes</button>
         </div>
       </div>
     </div>
+  </div>
+
+  <body class="bg-light min-vh-100 overflow-y-scroll">
     <c:import url="essential_page_display.jsp" />
     <c:import url="logged_navbar.jsp" />
 
@@ -246,6 +246,7 @@
         ></div>
       </div>
     </div>
+    <c:import url="user_footer.jsp" />
 
     <script type="module" src="static/js/manageBookings.js"></script>
   </body>

@@ -98,10 +98,10 @@ uri="http://java.sun.com/jsp/jstl/core" %>
         </c:if>
 
         <!-- Driver -->
-        <c:if test="${sessionScope.user.userType.userTypeId eq 3} ${page eq 'manage_schedules.jsp' ? 'active' : ''}">
+        <c:if test="${sessionScope.user.userType.userTypeId eq 3}">
           <li class="nav-item">
             <a
-              class="nav-link d-flex align-items-center gap-2"
+              class="nav-link d-flex align-items-center gap-2  ${page eq 'manage_schedules.jsp' ? 'active' : ''}"
               href="/robus/manage_schedules.do"
             >
               <i class="bi bi-calendar2-check"></i>

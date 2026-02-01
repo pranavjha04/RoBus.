@@ -484,6 +484,7 @@
             </c:choose>
           </div>
         </div>
+        <c:import url="user_footer.jsp" />
       </body>
     </c:otherwise>
   </c:choose>

@@ -1,5 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib
 prefix="e" uri="bts" %>
 
 <c:if test="${not empty sessionScope.operator}">
@@ -20,7 +19,8 @@ prefix="e" uri="bts" %>
 
       /* HERO */
       .hero-section {
-        background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+        background:
+          linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
           url("${pageContext.request.contextPath}/static/src/unnamed (1).jpg");
         background-size: cover;
         background-position: center;
@@ -64,27 +64,11 @@ prefix="e" uri="bts" %>
         background: #0d6efd;
         color: #fff;
       }
-
-      /* FOOTER */
-      .footer {
-        background: #212529;
-        color: #adb5bd;
-      }
-
-      .footer a {
-        text-decoration: none;
-        color: #dee2e6;
-      }
-
-      .footer a:hover {
-        color: #ffffff;
-      }
     </style>
   </head>
 
   <body class="bg-light" style="overflow: scroll">
     <c:import url="essential_page_display.jsp" />
-   
 
     <!-- NAVBAR -->
     <c:choose>
@@ -169,21 +153,6 @@ prefix="e" uri="bts" %>
         </div>
       </div>
     </section>
-
-    <!-- FOOTER -->
-    <footer class="footer py-4">
-      <div class="container">
-        <div class="row align-items-center">
-          <div class="col-md-6">
-            <p class="mb-0">&copy; ${e:currentDate().substring(0, 4)} RoBus. All rights reserved.</p>
-          </div>
-          <div class="col-md-6 text-md-end">
-            <a href="#" class="me-3">Privacy</a>
-            <a href="#" class="me-3">Terms</a>
-            <a href="#">Support</a>
-          </div>
-        </div>
-      </div>
-    </footer>
+    <c:import url="user_footer.jsp" />
   </body>
 </html>

@@ -428,6 +428,7 @@
         ></div>
       </div>
     </div>
+    <c:import url="user_footer.jsp" />
     <script type="module" src="static/js/manageDriverSchedule.js"></script>
   </body>
 </html>

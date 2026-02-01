@@ -1,10 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:if
-  test="${
-            not empty sessionScope.operator
-            or not empty sessionScope.user}"
->
+<c:if test="${not empty sessionScope.operator or not empty sessionScope.user}">
   <c:redirect url="/" />
 </c:if>
 
@@ -12,25 +8,76 @@
 <html lang="en">
   <head>
     <c:import url="essential_page_import.jsp" />
-    <title>Login</title>
+    <title>Login | RoBus</title>
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+
+      .login-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - 56px - 60px);
+      }
+
+      .login-card {
+        max-width: 420px;
+        width: 100%;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border: 1px solid #dee2e6;
+      }
+
+      .form-control {
+        border-radius: 4px;
+      }
+
+      .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.1);
+        border-color: #80bdff;
+      }
+
+      .btn-primary {
+        padding: 0.5rem;
+        font-weight: 500;
+      }
+
+      .logo-container {
+        display: inline-block;
+        margin-bottom: 0.5rem;
+      }
+
+      .welcome-text {
+        color: #333;
+        font-weight: 500;
+      }
+
+      .login-links a {
+        transition: color 0.2s ease;
+      }
+
+      .login-links a:hover {
+        text-decoration: underline;
+      }
+    </style>
   </head>
   <body>
     <div
-      style="display: grid; grid-template-rows: auto 1fr"
-      class="vh-100 align-items-center"
+      style="display: grid; grid-template-rows: auto 1fr auto"
+      class="min-vh-100"
     >
       <c:import url="welcome_navbar.jsp" />
-      <section
-        class="d-flex align-items-center justify-content-center px-3 flex-grow-1"
-      >
-        <div
-          class="bg-white shadow p-4 border rounded-3 w-100"
-          style="max-width: 420px"
-        >
+
+      <section class="login-wrapper px-3">
+        <div class="bg-white shadow-sm p-4 border rounded login-card">
           <form method="post" action="login.do" id="login_form">
             <div class="mb-4 text-center">
-              <c:import url="logo.jsp" />
-              <h3 class="mt-2 fw-bold fs-4">Login to your account</h3>
+              <div class="logo-container">
+                <c:import url="logo.jsp" />
+              </div>
+              <h3 class="mt-2 fw-semibold fs-4 welcome-text">
+                Login to your account
+              </h3>
             </div>
 
             <div class="mb-3">
@@ -45,7 +92,7 @@
                 required
                 placeholder="example@email.com"
                 autocomplete="off"
-                class="form-control fld ${empty param.email ? '' : 'border-success'}"
+                class="form-control ${empty param.email ? '' : 'border-success'}"
                 autofocus
               />
             </div>
@@ -61,7 +108,7 @@
                 autocomplete="current-password"
                 required
                 placeholder="<c:out value='********' />"
-                class="form-control fld"
+                class="form-control"
               />
             </div>
 
@@ -81,30 +128,32 @@
             </div>
           </form>
 
-          <p class="text-center small mb-2">
-            <a
-              href="forgot-password.do"
-              id="forget_password"
-              class="text-primary text-decoration-none"
-            >
-              Forgot Password?
-            </a>
-          </p>
+          <div class="login-links">
+            <p class="text-center small mb-2">
+              <a
+                href="forgot-password.do"
+                id="forget_password"
+                class="text-primary text-decoration-none"
+              >
+                Forgot Password?
+              </a>
+            </p>
 
-          <p class="text-muted text-center small mb-0">
-            New here?
-            <a
-              target="_parent"
-              href="signup.do"
-              class="text-primary border-0 text-decoration-none"
-            >
-              Create an account
-            </a>
-          </p>
+            <p class="text-muted text-center small mb-0">
+              New here?
+              <a
+                target="_parent"
+                href="signup.do"
+                class="text-primary border-0 text-decoration-none"
+              >
+                Create an account
+              </a>
+            </p>
+          </div>
         </div>
       </section>
 
-      <footer></footer>
+      <c:import url="user_footer.jsp" />
     </div>
 
     <script src="static/js/login.js" type="module"></script>

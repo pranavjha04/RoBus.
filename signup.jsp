@@ -1,9 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@ taglib prefix="e" uri="bts" %>
 
-<c:if test="${
-            not empty sessionScope.operator
-            or not empty sessionScope.user}">
+<c:if test="${not empty sessionScope.operator or not empty sessionScope.user}">
   <c:redirect url="/" />
 </c:if>
 
@@ -14,15 +12,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <c:import url="essential_page_import.jsp" />
-    <title>Signup</title>
+    <title>Signup | RoBus</title>
+    <style>
+      .signup-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - 56px - 60px);
+        padding: 1rem;
+      }
+    </style>
   </head>
 
   <body class="d-flex flex-column bg-light vh-100">
     <c:import url="welcome_navbar.jsp" />
-    <!-- Toasts container -->
-    <section
-      class="d-flex align-items-center justify-content-center flex-grow-1 px-3"
-    >
+    
+    <section class="signup-wrapper px-3">
       <form
         method="POST"
         action="signup.do"
@@ -35,9 +40,8 @@
           <h3 class="mt-2 fw-bold fs-4 text-center">Create an account</h3>
         </div>
 
-        <div id="formWrapper" >
+        <div id="formWrapper">
           <div id="page_1" class="d-flex flex-column gap-3 d-block">
-            <!-- FULL NAME -->
             <div>
               <label for="full_name" class="form-label small fw-semibold"
                 >Full Name</label
@@ -51,7 +55,6 @@
                 placeholder="Pranav Jha"
               />
             </div>
-            <!-- EMAIL -->
             <div>
               <label for="email" class="form-label small fw-semibold"
                 >Email address</label
@@ -66,7 +69,6 @@
                 class="form-control fld ${empty param.email ? '' : 'border-success'}"
               />
             </div>
-            <!-- PASSWORD -->
             <div>
               <label for="password" class="form-label small fw-semibold"
                 >Password</label
@@ -231,6 +233,8 @@
         </p>
       </form>
     </section>
+
+    <c:import url="user_footer.jsp" />
   
     <script type="module" src="static/js/signup.js"></script>
   </body>

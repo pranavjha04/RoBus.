@@ -67,10 +67,10 @@ export const getActiveAccount = async () => {
 
 export const updateFareFactorChargeRequest = async (
   charge,
-  operatorTicketFareId
+  operatorTicketFareId,
 ) => {
   const res = await fetch(
-    `update_fare_factor_charge.do?charge=${charge}&operator_ticket_fare_id=${operatorTicketFareId}`
+    `update_fare_factor_charge.do?charge=${charge}&operator_ticket_fare_id=${operatorTicketFareId}`,
   );
   if (!res.ok) throw new Error("Internal server error");
 
@@ -80,7 +80,7 @@ export const updateFareFactorChargeRequest = async (
 
 export const deleteFareFactorRequest = async (operatorTicketFareId) => {
   const res = await fetch(
-    `delete_fare_factor.do?operator_ticket_fare_id=${operatorTicketFareId}`
+    `delete_fare_factor.do?operator_ticket_fare_id=${operatorTicketFareId}`,
   );
   if (!res.ok) throw new Error("Internal server error");
 
@@ -180,12 +180,11 @@ export const signupEmailHandler = async (e) => {
 
 export const loginEmailHandler = async (e) => {
   const email = e.target.value;
-  const element = e.target;
+  if (!email) return;
   const isRegexValid = validateEmail(email);
 
   if (!isRegexValid) {
     toast.error("Please enter valid mail");
-    displayInputError(element);
     return;
   }
 
@@ -194,7 +193,6 @@ export const loginEmailHandler = async (e) => {
 
     switch (response) {
       case "true": {
-        displayInputSuccess(element);
         break;
       }
       case "false": {
@@ -209,12 +207,12 @@ export const loginEmailHandler = async (e) => {
     }
   } catch (err) {
     toast.error(err.message);
-    displayInputError(element);
   }
 };
 
 export const busNumberHandler = async (e) => {
   const busNumber = e.target.value.toString().toUpperCase();
+  if (!busNumber) return;
   e.target.value = busNumber;
   const element = e.target;
 
@@ -247,7 +245,7 @@ export const busNumberHandler = async (e) => {
 
 export const handleAddFareFactor = async (charge, fareFactorId) => {
   const res = await fetch(
-    `add_operator_ticket_fare.do?charge=${charge}&fare_factor_id=${fareFactorId}`
+    `add_operator_ticket_fare.do?charge=${charge}&fare_factor_id=${fareFactorId}`,
   );
   if (!res.ok) throw new Error("Internal server error");
 
@@ -329,7 +327,7 @@ export const collectAllRecordsWithOperatorTicketFareRequest = async (obj) => {
     `get_operator_ticket_fare_bus.do?${queryParams.toString()}`,
     {
       method: "POST",
-    }
+    },
   );
   if (!res.ok) throw new Error("Internal Server Error");
 
@@ -343,7 +341,7 @@ export const deleteBusFareFactor = async (obj) => {
     `delete_bus_fare_factor.do?${queryParams.toString()}`,
     {
       method: "POST",
-    }
+    },
   );
   if (!res.ok) throw new Error("Internal Server Error");
   const data = await res.text();
@@ -351,13 +349,13 @@ export const deleteBusFareFactor = async (obj) => {
 };
 
 export const collectAvailableTicketFareBusRecordsRequest = async (
-  queryParams
+  queryParams,
 ) => {
   const res = await fetch(
     `get_available_ticket_fare_bus.do?${queryParams.toString()}`,
     {
       method: "POST",
-    }
+    },
   );
   if (!res.ok) throw new Error("Internal Server Error");
   const data = await res.text();
@@ -377,7 +375,7 @@ export const addBusFareFactorRequest = async (params) => {
 export const collectAvailableRouteMidCitiesRequest = async (route_id) => {
   const queryParams = createURLParams(route_id);
   const res = await fetch(
-    `get_available_route_mid_cities.do?${queryParams.toString()}`
+    `get_available_route_mid_cities.do?${queryParams.toString()}`,
   );
 
   if (!res.ok) throw new Error("Invalid Request");
@@ -391,7 +389,7 @@ export const addOperatorRouteMidCities = async (params) => {
     `add_operator_route_mid_city.do?${params.toString()}`,
     {
       method: "POST",
-    }
+    },
   );
   if (!res.ok) throw new Error("Internal Server Error");
 
@@ -408,13 +406,13 @@ export const searchCityRequest = debounce(async (value, callback) => {
 });
 
 export const collectOperatorRouteMidCitiesRequest = async (
-  operator_route_id
+  operator_route_id,
 ) => {
   const queryParams = createURLParams({
     operator_route_id,
   });
   const res = await fetch(
-    `get_operator_route_mid_cities.do?${queryParams.toString()}`
+    `get_operator_route_mid_cities.do?${queryParams.toString()}`,
   );
   if (!res.ok) throw new Error("Internal Server Error");
   const data = await res.text();
@@ -435,7 +433,7 @@ export const deleteOperatorRouteMidCityRequest = async (params) => {
     `delete_operator_route_mid_city.do?${params.toString()}`,
     {
       method: "POST",
-    }
+    },
   );
   if (!res.ok) throw new Error("Internal Server Error");
   const data = await res.text();
@@ -494,7 +492,7 @@ export const collectAllDriverRequest = async () => {
 export const collectAllBusRouteWeekdayRequest = async (params) => {
   const queryParams = createURLParams(params);
   const res = await fetch(
-    `get_bus_route_weekday_all.do?${queryParams.toString()}`
+    `get_bus_route_weekday_all.do?${queryParams.toString()}`,
   );
   if (!res.ok) throw new Error("Internal Server Error");
   const data = await res.text();
@@ -514,7 +512,7 @@ export const addBusRouteWeedayRequest = async (formData) => {
     `add_bus_route_weekday.do?${queryParams.toString()}`,
     {
       method: "POST",
-    }
+    },
   );
   if (!res.ok) throw new Error("Internal Server Error");
   const data = await res.text();
@@ -527,7 +525,7 @@ export const deleteBusRouteWeekdayRequest = async (params) => {
     `delete_bus_route_weekday.do?${queryParams.toString()}`,
     {
       method: "POST",
-    }
+    },
   );
   if (!res.ok) throw new Error("Internal Server Error");
   const data = await res.text();
@@ -549,7 +547,7 @@ export const validateScheduleTimeClash = async (
   departure_time,
   arrival_time,
   bus_id,
-  journey_date
+  journey_date,
 ) => {
   const params = createURLParams({
     arrival_time,
@@ -562,7 +560,7 @@ export const validateScheduleTimeClash = async (
     `check_valid_schedule_timings.do?${params.toString()}`,
     {
       method: "POST",
-    }
+    },
   );
   if (!res.ok) throw new Error("Invalid Request");
 
@@ -687,7 +685,7 @@ export const updateScheduleDriver = async (
   new_driver_id,
   schedule_id,
   journey_date,
-  bus_id
+  bus_id,
 ) => {
   const params = createURLParams({
     old_driver_id,
@@ -712,7 +710,7 @@ export const updateScheduleChargeRequest = async (params) => {
     `update_schedule_charges.do?${queryParams.toString()}`,
     {
       method: "POST",
-    }
+    },
   );
   if (!res.ok) throw new Error("Internal Server Error");
   const data = await res.text();
@@ -725,7 +723,7 @@ export const updateScheduleStatusRequest = async (params) => {
     `update_schedule_status.do?${queryParams.toString()}`,
     {
       method: "POST",
-    }
+    },
   );
   if (!res.ok) throw new Error("Internal Server Error");
   const data = await res.text();
@@ -822,7 +820,7 @@ export const updateOperatorBasicInfoRequest = async (params) => {
     `update_operator_basic_profile.do?${params.toString()}`,
     {
       method: "POST",
-    }
+    },
   );
   if (!res.ok) throw new Error("Internal Server Error");
   const data = await res.text();

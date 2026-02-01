@@ -1,5 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib
-prefix="e" uri="bts" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<%@ taglib prefix="e" uri="bts" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,8 +7,20 @@ prefix="e" uri="bts" %>
     <c:import url="essential_page_import.jsp" />
     <title>Bus Search</title>
     <style>
+      /* Minimal improvement - just ensure proper layout */
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      main {
+        flex: 1;
+      }
+      
+      /* Keep all your original styles below */
       .navbar {
-        background-color: #007bff; /* Primary blue for navbar */
+        background-color: #007bff;
       }
       .filter-sidebar {
         background-color: #ffffff;
@@ -30,33 +42,33 @@ prefix="e" uri="bts" %>
       .badge-custom {
         font-size: 0.85rem;
         padding: 0.4em 0.8em;
-        border-radius: 20px; /* More pill-like */
+        border-radius: 20px;
       }
       .badge-ac {
-        background-color: #0d6efd; /* Blue for AC */
+        background-color: #0d6efd;
         color: white;
       }
       .badge-non-ac {
-        background-color: #6c757d; /* Gray for Non-AC */
+        background-color: #6c757d;
         color: white;
       }
       .badge-seater {
-        background-color: #198754; /* Green for Seater */
+        background-color: #198754;
         color: white;
       }
       .badge-sleeper {
-        background-color: #ffc107; /* Yellow for Sleeper */
+        background-color: #ffc107;
         color: #212529;
       }
       .badge-seats {
-        background-color: #20c997; /* Teal for seats config */
+        background-color: #20c997;
         color: white;
       }
       .price {
-        color: #212529; /* Green for price */
+        color: #212529;
       }
       .seats-available {
-        color: #dc3545; /* Red for urgency */
+        color: #dc3545;
         font-size: 0.9rem;
       }
       .duration-line {
@@ -84,7 +96,6 @@ prefix="e" uri="bts" %>
         border-color: #007bff;
         box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
       }
-      /* Amenities Button */
       .amenities-btn {
         background-color: #e8f1ff;
         color: #0d47a1;
@@ -95,11 +106,9 @@ prefix="e" uri="bts" %>
         cursor: pointer;
         transition: background 0.2s;
       }
-
       .amenities-btn:hover {
         background-color: #d7e7ff;
       }
-
       .midcities-btn {
         background-color: oklch(89.4% 0.057 293.283);
         color: oklch(49.1% 0.27 292.581);
@@ -110,11 +119,9 @@ prefix="e" uri="bts" %>
         cursor: pointer;
         transition: background 0.2s;
       }
-
       .midcities-btn:hover {
         background-color: oklch(89.4% 0.057 293.283);
       }
-
       .decker {
         background-color: #ffe9d6;
         color: #d46a1f;
@@ -129,7 +136,6 @@ prefix="e" uri="bts" %>
         white-space: nowrap;
         cursor: default;
       }
-
       .image-list {
         margin-top: 0.75rem;
         display: flex;
@@ -138,7 +144,6 @@ prefix="e" uri="bts" %>
         padding: 0.5rem;
         animation: fadeSlide 0.3s ease;
       }
-
       .image-list img {
         width: 100%;
         aspect-ratio: 1 / 1;
@@ -147,7 +152,6 @@ prefix="e" uri="bts" %>
         background-color: #f1f5f9;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
       }
-
       .image-list img:hover {
         transform: scale(1.03);
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
@@ -162,12 +166,10 @@ prefix="e" uri="bts" %>
         cursor: pointer;
         transition: background 0.2s, transform 0.15s;
       }
-
       .show-images-btn:hover {
         background-color: #d1f2e7;
         transform: translateY(-1px);
       }
-
       .amenities-list {
         background-color: #f4f8ff;
         border-radius: 10px;
@@ -175,7 +177,6 @@ prefix="e" uri="bts" %>
         margin-top: 0.8rem;
         animation: fadeSlide 0.3s ease;
       }
-
       .amenity-item {
         background: #e8f1ff;
         color: #0d47a1;
@@ -185,7 +186,6 @@ prefix="e" uri="bts" %>
         display: inline-block;
         margin: 4px;
       }
-
       .badge-layout {
         background-color: #20c997;
         color: white;
@@ -193,7 +193,6 @@ prefix="e" uri="bts" %>
         border-radius: 20px;
         font-size: 0.85rem;
       }
-
       .layout-dot {
         width: 6px;
         height: 6px;
@@ -201,7 +200,6 @@ prefix="e" uri="bts" %>
         background: #0b6b45;
         display: inline-block;
       }
-      /* Suggestion box */
       .suggestion-box {
         position: absolute;
         background: #ffffff;
@@ -214,22 +212,18 @@ prefix="e" uri="bts" %>
         z-index: 1000;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
       }
-
       .suggestion-item {
         padding: 10px 14px;
         cursor: pointer;
         border-bottom: 1px solid #f1f3f5;
         font-size: 0.95rem;
       }
-
       .suggestion-item:last-child {
         border-bottom: none;
       }
-
       .suggestion-item:hover {
         background: #f8f9fa;
       }
-
       .bus {
         display: grid;
         grid-template-columns: 1fr;
@@ -240,12 +234,10 @@ prefix="e" uri="bts" %>
         max-width: 260px;
         justify-content: center;
       }
-
       .seater_seat {
         width: 30px;
         height: 35px;
       }
-
       .sleeper_seat {
         width: 40px;
         height: 80px;
@@ -261,53 +253,44 @@ prefix="e" uri="bts" %>
         color: #0b6b45;
         transition: background-color 0.2s ease, color 0.2s ease;
       }
-
       .seat:hover {
         background-color: #d1e7dd;
         color: #0b6b45;
       }
-
       .seat:active {
         background-color: #0b6b45;
         color: #ffffff;
       }
-
       .seat.selected {
         background-color: #0b6b45;
         color: #ffffff;
         border-color: #0b6b45;
       }
-
       input[type="number"]::-webkit-outer-spin-button,
       input[type="number"]::-webkit-inner-spin-button {
         -webkit-appearance: none;
         margin: 0;
       }
-
       .side-bar {
         max-width: 400px;
       }
-
       .link {
         gap: 5px;
         transition: all 0.3s;
-        &:hover {
-          margin-left: 10px;
-        }
       }
-
+      .link:hover {
+        margin-left: 10px;
+      }
       .active {
         background-color: #0d6efd;
       }
       .active:hover {
         background-color: #084aae;
       }
-
       .inactive:hover {
         background-color: #cfe2ff;
         color: rgb(36, 36, 36);
       }
-
       .seat.booked {
         background-color: #adb5bd;
         border-color: #adb5bd;
@@ -316,7 +299,6 @@ prefix="e" uri="bts" %>
         animation: none;
         transition: none;
       }
-
       .seat.selected {
         background-color: #0b6b45;
         color: #fff;
@@ -326,16 +308,13 @@ prefix="e" uri="bts" %>
         max-height: 300px;
         overflow-y: auto;
       }
-
       .seat-list::-webkit-scrollbar {
         width: 6px;
       }
-
       .seat-list::-webkit-scrollbar-thumb {
         background-color: #ced4da;
         border-radius: 10px;
       }
-
       .time-line,
       .bus-container,
       #search_result_containe {
@@ -344,9 +323,7 @@ prefix="e" uri="bts" %>
     </style>
   </head>
   <c:import url="essential_page_display.jsp" />
-  <body
-    class="d-flex flex-column text-dark min-vh-100 bg-white overflow-y-scroll"
-  >
+  <body class="d-flex flex-column text-dark min-vh-100 bg-white">
     <c:choose>
       <c:when test="${empty sessionScope.user}">
         <c:import url="welcome_navbar.jsp" />
@@ -355,12 +332,12 @@ prefix="e" uri="bts" %>
         <c:import url="logged_navbar.jsp" />
       </c:otherwise>
     </c:choose>
-    <section class="container-fluid px-3 mt-4">
+    
+    <main class="container-fluid px-3 py-4">
       <div class="row g-4">
         <aside class="col-lg-3 d-none d-lg-block">
           <div class="filter-sidebar">
             <h5 class="fw-bold mb-4 text-primary">Filters</h5>
-            <%-- #################### BUS TYPE #################### --%>
             <div class="d-flex flex-column gap-3">
               <h6 class="fw-semibold">Bus Type</h6>
               <div class="d-flex align-items-center gap-2">
@@ -428,7 +405,8 @@ prefix="e" uri="bts" %>
             </div>
           </div>
         </aside>
-        <main class="col-12 col-lg-9">
+        
+        <div class="col-12 col-lg-9">
           <div class="d-lg-none mb-3">
             <button
               class="btn btn-outline-primary rounded-pill"
@@ -444,7 +422,6 @@ prefix="e" uri="bts" %>
             </button>
           </div>
 
-          <!-- Added Search Form Above Results -->
           <div class="search-form">
             <h5 class="fw-bold mb-4 text-primary">Search Buses</h5>
             <form class="row g-3 align-items-end" id="search_bus_form">
@@ -474,6 +451,7 @@ prefix="e" uri="bts" %>
                     class="form-control rounded-pill"
                     id="to"
                     name="to"
+                    value="${param.to}"
                     placeholder="e.g., Kashmir"
                   />
                   <ul
@@ -493,14 +471,14 @@ prefix="e" uri="bts" %>
                   id="journey_date"
                   name="journey_date"
                   min="${e:currentDate()}"
-                    <c:choose>
-                      <c:when test="${empty param.journey_date}">
-                        value="${e:currentDate()}"
-                      </c:when>
-                      <c:otherwise>
-                        value="${param.journey_date}"
-                      </c:otherwise>
-                    </c:choose>
+                  <c:choose>
+                    <c:when test="${empty param.journey_date}">
+                      value="${e:currentDate()}"
+                    </c:when>
+                    <c:otherwise>
+                      value="${param.journey_date}"
+                    </c:otherwise>
+                  </c:choose>
                 />
               </div>
               <div class="col-md-3">
@@ -557,12 +535,14 @@ prefix="e" uri="bts" %>
               </button>
             </div>
           </div>
+          
           <ul class="list-unstyled" id="search_result_container"></ul>
-        </main>
+        </div>
       </div>
-    </section>
-    <%-- ####################### FILTER SIDE BAR START #######################
-    --%>
+    </main>
+    
+    <c:import url="user_footer.jsp" />
+    
     <div class="offcanvas offcanvas-start" tabindex="-1" id="filterOffcanvas">
       <div class="offcanvas-header border-bottom">
         <h5 class="offcanvas-title fw-bold text-primary">Filters</h5>
@@ -639,8 +619,6 @@ prefix="e" uri="bts" %>
         </div>
       </div>
     </div>
-    <%-- ####################### FILTER SIDE BAR END #######################
-    --%>
   </body>
   <script type="module" src="static/js/searchResult.js"></script>
 </html>
