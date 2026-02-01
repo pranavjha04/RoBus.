@@ -19,9 +19,33 @@ prefix="e" uri="bts" %>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <c:import url="essential_page_import.jsp" />
     <title>Operator Signup</title>
+    <style>
+      /* More space between form and navbar/footer */
+      .operator-signup-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(
+          100vh - 80px - 80px
+        ); /* More space for navbar and footer */
+        padding: 3rem 1rem; /* More padding */
+      }
+
+      .operator-signup-form {
+        max-width: 480px;
+        width: 100%;
+        margin-top: 1rem; /* Additional top margin */
+        margin-bottom: 1rem; /* Additional bottom margin */
+      }
+
+      /* Ensure body takes full height */
+      body {
+        min-height: 100vh;
+      }
+    </style>
   </head>
 
-  <body class="d-flex flex-column bg-light vh-100">
+  <body class="d-flex flex-column bg-light">
     <c:import url="welcome_navbar.jsp" />
     <!-- Toasts container -->
     <div
@@ -29,20 +53,17 @@ prefix="e" uri="bts" %>
       style="z-index: 1080"
     ></div>
 
-    <section
-      class="d-flex align-items-center justify-content-center flex-grow-1 px-3"
-    >
+    <section class="operator-signup-wrapper px-3">
       <form
         method="POST"
         action="operator_signup.do"
         enctype="multipart/form-data"
-        class="bg-white border shadow p-4 rounded-3 w-100"
-        style="max-width: 420px"
+        class="bg-white border shadow p-4 rounded-3 operator-signup-form"
         id="signup_form"
       >
-        <div class="d-flex flex-column align-items-center">
+        <div class="d-flex flex-column align-items-center mb-4">
           <c:import url="logo.jsp" />
-          <h3 class="mt-2 fw-bold fs-4 text-center">
+          <h3 class="mt-3 fw-bold fs-4 text-center">
             Create an Operator account
           </h3>
         </div>
@@ -58,7 +79,7 @@ prefix="e" uri="bts" %>
                 id="full_name"
                 type="text"
                 name="full_name"
-                class="form-control fld ${empty param.full_name ? '' : 'border-success'}"
+                class="form-control fld ${empty param.full_name ? '' : 'border-success'} py-2"
                 value="${param.full_name}"
                 placeholder="Pranav Travels"
               />
@@ -75,7 +96,7 @@ prefix="e" uri="bts" %>
                 placeholder="pranavtravels@gmail.com"
                 autocomplete="email"
                 value="${param.email}"
-                class="form-control fld ${empty param.email ? '' : 'border-success'}"
+                class="form-control fld ${empty param.email ? '' : 'border-success'} py-2"
               />
             </div>
             <!-- PASSWORD -->
@@ -90,7 +111,7 @@ prefix="e" uri="bts" %>
                 autocomplete="current-password"
                 placeholder="<c:out value='********' />"
                 value="${param.password}"
-                class="form-control fld ${empty param.password ? '' : 'border-success'}"
+                class="form-control fld ${empty param.password ? '' : 'border-success'} py-2"
               />
             </div>
           </div>
@@ -104,7 +125,7 @@ prefix="e" uri="bts" %>
                 id="contact"
                 type="tel"
                 name="contact"
-                class="form-control fld ${empty param.contact ? '' : 'border-success'}"
+                class="form-control fld ${empty param.contact ? '' : 'border-success'} py-2"
                 value="${param.contact}"
                 autocomplete="off"
                 minlength="10"
@@ -112,31 +133,33 @@ prefix="e" uri="bts" %>
               />
             </div>
 
-            <input
-              type="button"
-              value="Send OTP"
-              id="send_otp_btn"
-              disabled
-              class="btn btn-primary px-4 fw-medium align-self-end"
-            />
-            <button
-              class="ms-auto btn btn-primary d-none"
-              id="load_otp_btn"
-              type="button"
-              disabled
-            >
-              <span
-                class="spinner-border spinner-border-sm"
-                aria-hidden="true"
-              ></span>
-              <span role="status" class="fw-medium">Sending OTP</span>
-            </button>
-            <input
-              type="button"
-              value="Edit Contact"
-              id="edit_contact_btn"
-              class="btn btn-primary px-4 fw-medium align-self-end d-none"
-            />
+            <div class="d-flex justify-content-end">
+              <input
+                type="button"
+                value="Send OTP"
+                id="send_otp_btn"
+                disabled
+                class="btn btn-primary px-4 fw-medium"
+              />
+              <button
+                class="btn btn-primary d-none ms-2"
+                id="load_otp_btn"
+                type="button"
+                disabled
+              >
+                <span
+                  class="spinner-border spinner-border-sm"
+                  aria-hidden="true"
+                ></span>
+                <span role="status" class="fw-medium">Sending OTP</span>
+              </button>
+              <input
+                type="button"
+                value="Edit Contact"
+                id="edit_contact_btn"
+                class="btn btn-primary px-4 fw-medium d-none ms-2"
+              />
+            </div>
 
             <!-- OTP CONTAINER -->
             <div id="otp_container" class="d-none">
@@ -146,42 +169,42 @@ prefix="e" uri="bts" %>
               <div class="d-flex justify-content-between gap-2">
                 <input
                   type="tel"
-                  class="form-control text-center py-md-2"
+                  class="form-control text-center py-2"
                   id="otp-1"
                   name="otp"
                   maxlength="1"
                 />
                 <input
                   type="tel"
-                  class="form-control text-center py-md-2"
+                  class="form-control text-center py-2"
                   id="otp-2"
                   name="otp"
                   maxlength="1"
                 />
                 <input
                   type="tel"
-                  class="form-control text-center py-md-2"
+                  class="form-control text-center py-2"
                   id="otp-3"
                   name="otp"
                   maxlength="1"
                 />
                 <input
                   type="tel"
-                  class="form-control text-center py-md-2"
+                  class="form-control text-center py-2"
                   id="otp-4"
                   name="otp"
                   maxlength="1"
                 />
                 <input
                   type="tel"
-                  class="form-control text-center py-md-2"
+                  class="form-control text-center py-2"
                   id="otp-5"
                   name="otp"
                   maxlength="1"
                 />
                 <input
                   type="tel"
-                  class="form-control text-center py-md-2"
+                  class="form-control text-center py-2"
                   id="otp-6"
                   name="otp"
                   maxlength="1"
@@ -192,7 +215,7 @@ prefix="e" uri="bts" %>
               type="button"
               value="Verify OTP"
               id="verify_otp_btn"
-              class="btn btn-primary px-4 fw-medium align-self-end d-none"
+              class="btn btn-primary px-4 fw-medium align-self-end d-none mt-2"
             />
           </div>
           <div id="page_3" class="d-flex flex-column gap-3 d-none">
@@ -204,8 +227,8 @@ prefix="e" uri="bts" %>
               <textarea
                 id="address"
                 name="address"
-                class="form-control fld h-100 text-start fld ${empty param.address ? '' : 'border-success'}"
-                rows="3"
+                class="form-control fld h-100 text-start fld ${empty param.address ? '' : 'border-success'} py-2"
+                rows="4"
                 maxlength="500"
                 placeholder="Enter your address here..."
               >
@@ -221,7 +244,7 @@ ${empty param.address ? '' : param.address}</textarea
                 id="website"
                 type="text"
                 name="website"
-                class="form-control fld ${empty param.website ? '' : 'border-success'}"
+                class="form-control fld ${empty param.website ? '' : 'border-success'} py-2"
                 value="${param.website}"
                 placeholder="https://www.pranavtravels.com"
               />
@@ -237,7 +260,7 @@ ${empty param.address ? '' : param.address}</textarea
                 min="0"
                 max="200"
                 name="base_charge"
-                class="form-control fld ${empty param.base_charge ? '' : 'border-success'}"
+                class="form-control fld ${empty param.base_charge ? '' : 'border-success'} py-2"
                 value="${param.base_charge}"
                 placeholder="Amount Ranging from 0 to 200"
               />
@@ -250,7 +273,7 @@ ${empty param.address ? '' : param.address}</textarea
                 >Certificate</label
               >
               <input
-                class="form-control fld"
+                class="form-control fld py-2"
                 type="file"
                 name="certificate"
                 id="certificate"
@@ -263,7 +286,7 @@ ${empty param.address ? '' : param.address}</textarea
                 >Logo</label
               >
               <input
-                class="form-control fld"
+                class="form-control fld py-2"
                 type="file"
                 id="logo"
                 name="logo"
@@ -276,7 +299,7 @@ ${empty param.address ? '' : param.address}</textarea
                 >Banner</label
               >
               <input
-                class="form-control fld"
+                class="form-control fld py-2"
                 type="file"
                 id="banner"
                 name="banner"
@@ -284,7 +307,7 @@ ${empty param.address ? '' : param.address}</textarea
               />
             </div>
             <!-- PREVIEW OF CERTIFICATE,LOGO,BANNER -->
-            <div>
+            <div class="mt-2">
               <div
                 class="d-flex gap-4 align-items-start justify-content-between flex-wrap"
               >
@@ -334,7 +357,7 @@ ${empty param.address ? '' : param.address}</textarea
                 </div>
               </div>
             </div>
-            <div class="d-flex justify-content-center">
+            <div class="d-flex justify-content-center my-3">
               <div
                 class="g-recaptcha"
                 data-sitekey="${initParam.captcha_site_key}"
@@ -343,7 +366,7 @@ ${empty param.address ? '' : param.address}</textarea
             <input
               type="submit"
               value="Create an account"
-              class="btn btn-primary px-4 fw-medium"
+              class="btn btn-primary px-4 fw-medium py-2"
               id="submit_form_btn"
             />
           </div>
@@ -357,6 +380,11 @@ ${empty param.address ? '' : param.address}</textarea
         </p>
       </form>
     </section>
+
+    <div class="mt-auto">
+      <c:import url="user_footer.jsp" />
+    </div>
+
     <script type="module" src="static/js/operatorSignup.js"></script>
   </body>
 </html>

@@ -176,7 +176,7 @@
         <div class="gen-info">
           <h2 class="fw-bold m-0" id="name">${sessionScope.user.fullName}</h2>
           <p class="text-muted small">
-            Joined <strong id="joined_date"></strong>
+             <strong id="joined_date"></strong>
           </p>
         </div>
       </div>
@@ -310,8 +310,8 @@
       </div>
 
       <!-- FOOTER -->
-      <div class="text-center mt-5"></div>
     </div>
     <script type="module" src="static/js/manageUserProfile.js"></script>
+    <c:import url="user_footer.jsp" />
   </body>
 </html>
