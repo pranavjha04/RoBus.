@@ -11,7 +11,7 @@
 <html lang="en">
   <head>
     <c:import url="essential_page_import.jsp" />
-    <title>Confirm Booking</title>
+    <title>Confirm Booking | RoBus</title>
 
     <style>
       body {

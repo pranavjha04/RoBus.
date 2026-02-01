@@ -8,7 +8,7 @@
 <html lang="en">
   <head>
     <c:import url="essential_page_import.jsp" />
-    <title>Manage Bookings | TravelEase</title>
+    <title>Manage Bookings | RoBus</title>
 
     <style>
       .ticket-card {

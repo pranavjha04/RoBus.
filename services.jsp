@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <c:import url="essential_page_import.jsp" />
-    <title>Robus | Our Services</title>
+    <title>Services | RoBus</title>
 
     <style>
       :root {

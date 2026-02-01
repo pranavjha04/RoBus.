@@ -201,7 +201,7 @@
         background-color: #0451c3;
       }
     </style>
-    <title>Manage Schedules</title>
+    <title>Manage Schedules | RoBus</title>
   </head>
   <body class="bg-light min-vh-100 overflow-y-scroll">
     <c:import url="essential_page_display.jsp" />

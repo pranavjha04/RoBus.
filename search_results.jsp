@@ -5,9 +5,8 @@
 <html lang="en">
   <head>
     <c:import url="essential_page_import.jsp" />
-    <title>Bus Search</title>
+    <title>Search Bus Resuls | RoBus</title>
     <style>
-      /* Minimal improvement - just ensure proper layout */
       body {
         min-height: 100vh;
         display: flex;
@@ -17,8 +16,6 @@
       main {
         flex: 1;
       }
-      
-      /* Keep all your original styles below */
       .navbar {
         background-color: #007bff;
       }
